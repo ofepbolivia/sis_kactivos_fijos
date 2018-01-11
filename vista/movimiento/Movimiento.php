@@ -240,6 +240,53 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
 			grid : true,
 			form : true
 		},
+
+        {
+            config: {
+                name: 'id_deposito',
+                fieldLabel: 'Deposito',
+                allowBlank: true,
+                emptyText: 'Elija un deposito...',
+                hidden: true,
+                store: new Ext.data.JsonStore({
+                    url: '../../sis_kactivos_fijos/control/Deposito/listarDeposito',
+                    id: 'id_deposito',
+                    root: 'datos',
+                    fields: ['id_deposito','codigo','nombre'],
+                    totalProperty: 'total',
+                    sortInfo: {
+                        field: 'codigo',
+                        direction: 'ASC'
+                    },
+                    baseParams:{par_filtro:'dep.codigo#dep.nombre'}
+
+                }),
+                valueField: 'id_deposito',
+                displayField: 'nombre',
+                gdisplayField: 'deposito',
+                hiddenName: 'id_deposito',
+                forceSelection: false,
+                typeAhead: false,
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'remote',
+                pageSize: 15,
+                queryDelay: 1000,
+                anchor: '95%',
+                gwidth: 150,
+                minChars: 2,
+                disabled: true,
+                renderer : function(value, p, record) {
+                    return String.format('{0}', record.data['deposito']);
+                }
+            },
+            type: 'ComboBox',
+            id_grupo: 0,
+            filters: {pfiltro: 'depo.nombre',type: 'string'},
+            grid: true,
+            form: true
+        },
+
 		{
 			config:{
 				name: 'glosa',
@@ -420,50 +467,7 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
 				grid:true,
 				form:true
 		},
-		{
-			config: {
-				name: 'id_deposito',
-				fieldLabel: 'Deposito',
-				allowBlank: true,
-				emptyText: 'Elija una opción...',
-				hidden: true,
-				store: new Ext.data.JsonStore({
-                    url: '../../sis_kactivos_fijos/control/Deposito/listarDeposito',
-                    id: 'id_deposito',
-                    root: 'datos',
-                    fields: ['id_deposito','codigo','nombre'],
-                    totalProperty: 'total',
-                    sortInfo: {
-                        field: 'codigo',
-                        direction: 'ASC'
-                    },
-                    baseParams:{par_filtro:'dep.codigo#dep.nombre'}
-                    
-                }),
-				valueField: 'id_deposito',
-				displayField: 'nombre',
-				gdisplayField: 'deposito',
-				hiddenName: 'id_deposito',
-				forceSelection: false,
-				typeAhead: false,
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '95%',
-				gwidth: 150,
-				minChars: 2,
-				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['deposito']);
-				}
-			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			filters: {pfiltro: 'depo.nombre',type: 'string'},
-			grid: true,
-			form: true
-		},
+
 		{
 			config : {
 				name : 'id_depto_dest',

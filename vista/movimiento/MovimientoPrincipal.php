@@ -134,6 +134,15 @@ Phx.vista.MovimientoPrincipal = {
                     limit:this.tam_pag
                 }
             });
+            //(f.e.a) deshabilitamos el deposito
+            this.Cmp.id_deposito.setDisabled(true);
+        }, this);
+        //(f.e.a)Que el campo deposito dependa de depto.
+        this.Cmp.id_depto.on('select', function(cmp,rec,el){
+            this.Cmp.id_deposito.setDisabled(false);
+            this.Cmp.id_deposito.reset();
+            this.Cmp.id_deposito.modificado=true;
+            this.Cmp.id_deposito.store.baseParams.id_depto=rec.data.id_depto;
         }, this);
         
         //Add handler to id_cat_movimiento field
@@ -217,7 +226,7 @@ Phx.vista.MovimientoPrincipal = {
     },
 
     habilitarCampos: function(mov){
-    	var swDireccion=false,swFechaHasta=false,swFuncionario=false,swOficina=false,swPersona=false,h=130,w=450,swDeptoDest=false,swDepositoDest=false,swFuncionarioDest=false,swCatMovMotivo=false,swPrestamo=false,swTipoAsig=false;
+    	var swDeposito=false,swDireccion=false,swFechaHasta=false,swFuncionario=false,swOficina=false,swPersona=false,h=130,w=450,swDeptoDest=false,swDepositoDest=false,swFuncionarioDest=false,swCatMovMotivo=false,swPrestamo=false,swTipoAsig=false;
 
     	//Muesta y habilita los campos basicos
     	this.Cmp.fecha_mov.setVisible(true);
@@ -238,6 +247,7 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=253;
+            swDeposito=true;
     	} else if(mov=='asig'){
     		swDireccion=true;
     		swFechaHasta=false;
@@ -250,6 +260,7 @@ Phx.vista.MovimientoPrincipal = {
     		swCatMovMotivo=true;
             swPrestamo=true;
     		h=381;
+            swDeposito=true;
     	} else if(mov=='baja'||mov=='retiro'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -261,6 +272,7 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=275;
+            swDeposito=true;
     	} else if(mov=='deprec'){
     		swDireccion=false;
     		swFechaHasta=true;
@@ -272,6 +284,7 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=280;
+            swDeposito=true;
     	} else if(mov=='desuso'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -283,6 +296,7 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=275;
+            swDeposito=true;
     	} else if(mov=='devol'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -295,6 +309,7 @@ Phx.vista.MovimientoPrincipal = {
     		swCatMovMotivo=true;
             swTipoAsig=true;
     		h=298;
+            swDeposito=true;
     	} else if(mov=='ajuste'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -306,6 +321,7 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=275;
+            swDeposito=true;
     	} else if(mov=='reval'||mov=='mejora'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -317,6 +333,7 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=275;
+            swDeposito=true;
     	} else if(mov=='transf'){
     		swDireccion=true;
     		swFechaHasta=false;
@@ -329,6 +346,7 @@ Phx.vista.MovimientoPrincipal = {
     		swCatMovMotivo=true;
             swTipoAsig=true;
     		h=415;
+            swDeposito=true;
     	} else if(mov=='tranfdep'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -351,6 +369,7 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=280;
+            swDeposito=true;
     	} else if(mov=='divis'||mov=='desgl'||mov=='intpar'){
             swDireccion=false;
             swFechaHasta=false;
@@ -362,6 +381,7 @@ Phx.vista.MovimientoPrincipal = {
             swFuncionarioDest=false;
             swCatMovMotivo=true;
             h=253;
+            swDeposito=true;
         } else if(mov=='transito'){
             swDireccion=false;
             swFechaHasta=false;
@@ -388,6 +408,8 @@ Phx.vista.MovimientoPrincipal = {
         this.Cmp.prestamo.setVisible(swPrestamo);
         this.Cmp.fecha_dev_prestamo.setVisible(swPrestamo);
         this.Cmp.tipo_asig.setVisible(swTipoAsig);
+        //(f.e.a)Habilitando campo deposito
+        this.Cmp.id_deposito.setVisible(swDeposito);
 
     	//Set required or not
     	this.Cmp.direccion.allowBlank=!swDireccion;
@@ -400,7 +422,8 @@ Phx.vista.MovimientoPrincipal = {
     	this.Cmp.id_funcionario_dest.allowBlank=!swFuncionarioDest;
     	this.Cmp.id_movimiento_motivo.allowBlank=!swCatMovMotivo;
         this.Cmp.tipo_asig.allowBlank=!swTipoAsig;
-
+        //(f.e.a) Haciendo el campo exiguible, y de entrada deshabilitado
+        this.Cmp.id_deposito.allowBlank=!swDeposito;
     	//Resize window
     	this.window.setSize(w,h);
     },
@@ -571,6 +594,7 @@ Phx.vista.MovimientoPrincipal = {
     },
 
     onButtonNew: function() {
+
     	this.hideFields();
     	this.window.setSize(450,130);
     	Phx.vista.Movimiento.superclass.onButtonNew.call(this);
@@ -594,6 +618,8 @@ Phx.vista.MovimientoPrincipal = {
         this.Cmp.prestamo.hide();
         this.Cmp.fecha_dev_prestamo.hide();
         this.Cmp.tipo_asig.hide();
+        //(f.e.a)Ocultando el campo deposito
+        this.Cmp.id_deposito.hide();
     }  ,
     arrayDefaultColumHidden:['fecha_reg','usr_reg','fecha_mod','usr_mod','fecha_hasta','id_proceso_wf','id_estado_wf','id_funcionario','estado_reg','id_usuario_ai','usuario_ai','direccion','id_oficina'],
 	rowExpander: new Ext.ux.grid.RowExpander({
