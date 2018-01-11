@@ -247,7 +247,6 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=253;
-            swDeposito=true;
     	} else if(mov=='asig'){
     		swDireccion=true;
     		swFechaHasta=false;
@@ -260,7 +259,6 @@ Phx.vista.MovimientoPrincipal = {
     		swCatMovMotivo=true;
             swPrestamo=true;
     		h=381;
-            swDeposito=true;
     	} else if(mov=='baja'||mov=='retiro'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -272,7 +270,6 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=275;
-            swDeposito=true;
     	} else if(mov=='deprec'){
     		swDireccion=false;
     		swFechaHasta=true;
@@ -284,7 +281,6 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=280;
-            swDeposito=true;
     	} else if(mov=='desuso'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -296,7 +292,6 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=275;
-            swDeposito=true;
     	} else if(mov=='devol'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -321,7 +316,6 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=275;
-            swDeposito=true;
     	} else if(mov=='reval'||mov=='mejora'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -333,7 +327,6 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=275;
-            swDeposito=true;
     	} else if(mov=='transf'){
     		swDireccion=true;
     		swFechaHasta=false;
@@ -346,7 +339,6 @@ Phx.vista.MovimientoPrincipal = {
     		swCatMovMotivo=true;
             swTipoAsig=true;
     		h=415;
-            swDeposito=true;
     	} else if(mov=='tranfdep'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -369,7 +361,6 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
     		h=280;
-            swDeposito=true;
     	} else if(mov=='divis'||mov=='desgl'||mov=='intpar'){
             swDireccion=false;
             swFechaHasta=false;
@@ -381,7 +372,6 @@ Phx.vista.MovimientoPrincipal = {
             swFuncionarioDest=false;
             swCatMovMotivo=true;
             h=253;
-            swDeposito=true;
         } else if(mov=='transito'){
             swDireccion=false;
             swFechaHasta=false;
