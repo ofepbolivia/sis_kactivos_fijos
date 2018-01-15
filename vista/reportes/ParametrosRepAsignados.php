@@ -85,9 +85,13 @@ Phx.vista.ParametrosRepAsignados = {
 		this.configElement(this.fieldSetGeneral,true,true);
 		this.configElement(this.fieldSetIncluir,true,true);
 		this.configElement(this.fieldSetCompra,false,true);
+		this.configElement(this.cmbTipo,true,true);
+		
 	},
 	onSubmit: function(){
+		
 		if(this.formParam.getForm().isValid()){
+
 			var win = Phx.CP.loadWindows(
 				this.rutaReporte,
                 this.titleReporte, {
