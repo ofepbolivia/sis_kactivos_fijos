@@ -466,7 +466,8 @@ class MODActivoFijo extends MODbase{
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 
 		$this->setParametro('fecha_mov','fecha_mov','date');
-				
+		$this->setParametro('no_asignado','no_asignado','varchar');
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_activo_fijo','int4');
 		$this->captura('id_persona','int4');
@@ -555,6 +556,26 @@ class MODActivoFijo extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+	function listarActivosNoAsignados(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this->procedimiento='kaf.ft_activo_fijo_sel';
+        $this->transaccion='SKA_NO_ASIGNADO_SEL';
+        $this->tipo_procedimiento='SEL';
+
+        //Define los parametros para la funcion
+        $this->captura('id_activo_fijo','int4');
+        $this->captura('codigo','varchar');
+        $this->captura('descripcion','varchar');
+        $this->captura('denominacion','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
 
 	function consultaQR(){
 		//Definicion de variables para ejecucion del procedimiento

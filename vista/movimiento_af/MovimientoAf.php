@@ -137,7 +137,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 					totalProperty: 'total',
 					fields: ['id_activo_fijo', 'denominacion', 'codigo','descripcion','cantidad_revaloriz','desc_moneda_orig','monto_compra','vida_util','fecha_ini_dep','monto_vigente_real_af','vida_util_real_af','fecha_ult_dep_real_af','depreciacion_acum_real_af','depreciacion_per_real_af'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'afij.denominacion#afij.codigo#afij.descripcion', fecha_mov:''}
+					baseParams: {par_filtro: 'afij.denominacion#afij.codigo#afij.descripcion', fecha_mov:'', no_asignado: 'asignado'}
 				}),
 				valueField: 'id_activo_fijo',
 				displayField: 'denominacion',
@@ -153,6 +153,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 				anchor: '100%',
 				gwidth: 300,
 				minChars: 2,
+				resizable: true,
 				renderer : function(value, p, record) {
 					return String.format('{0}', record.data['denominacion']);
 				},
@@ -656,7 +657,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 		
 		//Define the filter to apply to activos fijos drop down
 		this.Cmp.id_activo_fijo.store.baseParams = {
-		"start":"0","limit":"15","sort":"denominacion","dir":"ASC","par_filtro":"afij.denominacion#afij.codigo#afij.descripcion",fecha_mov: this.maestro.fecha_mov
+		"start":"0","limit":"15","sort":"denominacion","dir":"ASC","par_filtro":"afij.denominacion#afij.codigo#afij.descripcion",fecha_mov: this.maestro.fecha_mov, no_asignado: 'asignado'
 		};
 		//este 
 		Ext.apply(this.Cmp.id_activo_fijo.store.baseParams,{codMov:this.maestro.cod_movimiento});
@@ -857,6 +858,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
     },
     onButtonNew: function(){
     	this.swAccion='new';
+		this.Cmp.id_activo_fijo.store.reload();
     	if(this.maestro.cod_movimiento=='divis'||this.maestro.cod_movimiento=='desgl'||this.maestro.cod_movimiento=='intpar'){
     		this.reinicializarParams();
     		this.abrirVentanaMovEspeciales();

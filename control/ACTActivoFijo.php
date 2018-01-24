@@ -428,6 +428,12 @@ class ACTActivoFijo extends ACTbase{
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
+    function listarActivosNoAsignados(){
+        $this->objFunc=$this->create('MODActivoFijo');
+        $this->res=$this->objFunc->listarActivosNoAsignados($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
 	function repCodigoQRVarios(){    	
 		$nombreArchivo = 'CodigoAF'.uniqid(md5(session_id())).'.pdf';
 
