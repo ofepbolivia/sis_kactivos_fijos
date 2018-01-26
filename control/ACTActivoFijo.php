@@ -505,6 +505,29 @@ class ACTActivoFijo extends ACTbase{
 			exit;
 		}
 	}
+
+	function comprasXgestion(){
+		$this->objFunc = $this->create('MODActivoFijo');
+
+		//$datos = $this->objFunc->comprasXgestion($this->objParam);
+		$tipo_activo = $this->objParam->getParametro('tipo_activo');
+		$fecha_ini = $this->objParam->getParametro('fecha_ini');
+		$fecha_fin = $this->objParam->getParametro('fecha_fin');
+		$estado = $this->objParam->getParametro('estado');
+		$tipo_rep = $this->objParam->getParametro('tipo_reporte');
+		if($this->objParam->getParametro('formato_reporte') == 'excel'){
+			header("location:http://sms.obairlines.bo/ActivosCodBidi/Home/VerDatosDepreE?TipoActivo=" .$tipo_activo. "&FechaIni=".$fecha_ini."&FechaFin=".$fecha_fin."&estado=".$estado."&usr=612&Tipo=".$tipo_rep);
+		}else{
+			header("location:http://sms.obairlines.bo/ActivosCodBidi/Home/VerDatosDepre?TipoActivo=" .$tipo_activo. "&FechaIni=".$fecha_ini."&FechaFin=".$fecha_fin."&estado=".$estado."&usr=612&Tipo=".$tipo_rep);
+		}
+		/*if($datos->getTipo() == 'EXITO'){
+			return $datos;
+		} else
+		{
+			$datos->imprimirRespuesta($datos->generarJson());
+			exit;
+		}*/
+	}
 		
 
 }
