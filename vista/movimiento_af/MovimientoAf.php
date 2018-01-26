@@ -17,7 +17,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 
 	constructor:function(config){
 		this.maestro=config.maestro;
-		
+
     	//llama al constructor de la clase padre
 		Phx.vista.MovimientoAf.superclass.constructor.call(this,config);
 		this.init();
@@ -137,7 +137,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 					totalProperty: 'total',
 					fields: ['id_activo_fijo', 'denominacion', 'codigo','descripcion','cantidad_revaloriz','desc_moneda_orig','monto_compra','vida_util','fecha_ini_dep','monto_vigente_real_af','vida_util_real_af','fecha_ult_dep_real_af','depreciacion_acum_real_af','depreciacion_per_real_af'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'afij.denominacion#afij.codigo#afij.descripcion', fecha_mov:'', no_asignado: 'asignado'}
+					baseParams: {par_filtro: 'afij.denominacion#afij.codigo#afij.descripcion', fecha_mov:''}
 				}),
 				valueField: 'id_activo_fijo',
 				displayField: 'denominacion',
@@ -646,19 +646,36 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 	onReloadPage : function(m) {
 		this.maestro = m;
 		this.Atributos[1].valorInicial = this.maestro.id_movimiento;
-		console.log('reload page',m);
-
 		//Crear ventana mov esp y componentes
 		if(this.maestro.cod_movimiento=='divis'||this.maestro.cod_movimiento=='desgl'||this.maestro.cod_movimiento=='intpar'){
 			this.reinicializarParams();
 		} else {
 			this.eliminarComponentesMovEsp();
 		}
-		
-		//Define the filter to apply to activos fijos drop down
-		this.Cmp.id_activo_fijo.store.baseParams = {
-		"start":"0","limit":"15","sort":"denominacion","dir":"ASC","par_filtro":"afij.denominacion#afij.codigo#afij.descripcion",fecha_mov: this.maestro.fecha_mov, no_asignado: 'asignado'
-		};
+		console.log('cod_movimiento', this.maestro.cod_movimiento);
+		if(this.maestro.cod_movimiento == 'alta') {
+            //Define the filter to apply to activos fijos drop down
+            this.Cmp.id_activo_fijo.store.baseParams = {
+                "start": "0",
+                "limit": "15",
+                "sort": "denominacion",
+                "dir": "ASC",
+                "par_filtro": "afij.denominacion#afij.codigo#afij.descripcion",
+                fecha_mov: this.maestro.fecha_mov,
+                no_asignado: 'alta'
+            };
+        }
+		else {
+            //Define the filter to apply to activos fijos drop down
+            this.Cmp.id_activo_fijo.store.baseParams = {
+                "start": "0",
+                "limit": "15",
+                "sort": "denominacion",
+                "dir": "ASC",
+                "par_filtro": "afij.denominacion#afij.codigo#afij.descripcion",
+                fecha_mov: this.maestro.fecha_mov
+            };
+        }
 		//este 
 		Ext.apply(this.Cmp.id_activo_fijo.store.baseParams,{codMov:this.maestro.cod_movimiento});
 		this.Cmp.id_activo_fijo.modificado=true;
