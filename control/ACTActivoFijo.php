@@ -8,6 +8,7 @@
 */
 require_once(dirname(__FILE__).'/../reportes/RCodigoQRAF.php');
 require_once(dirname(__FILE__).'/../reportes/RCodigoQRAF_v1.php');
+require_once(dirname(__FILE__).'/../reportes/RCompraGestionPDF.php');
 
 class ACTActivoFijo extends ACTbase{    
 			
@@ -507,26 +508,49 @@ class ACTActivoFijo extends ACTbase{
 	}
 
 	function comprasXgestion(){
+
+		if($this->objParam->getParametro('fecha_ini')!='' &&  $this->objParam->getParametro('fecha_fin')!=''){
+			$this->objParam->addFiltro("taf.fecha_compra between ''".$this->objParam->getParametro('fecha_ini')."''::date and ''".$this->objParam->getParametro('fecha_fin')."''::date");
+		}
+
+		if($this->objParam->getParametro('estado')!= ''){
+			$this->objParam->addFiltro("taf.estado = ''".$this->objParam->getParametro('estado')."''");
+		}
+
+		if($this->objParam->getParametro('tipo_activo')== 1){
+			$this->objParam->addFiltro("niv.tipo_activo  = ''tangible''");
+		}else if($this->objParam->getParametro('tipo_activo')== 2){
+			$this->objParam->addFiltro("niv.tipo_activo = ''intangible''");
+		}else{
+			$this->objParam->addFiltro("niv.tipo_activo in  (''tangible'', ''intangible'')");
+		}
+
+
+
 		$this->objFunc = $this->create('MODActivoFijo');
 
-		//$datos = $this->objFunc->comprasXgestion($this->objParam);
-		$tipo_activo = $this->objParam->getParametro('tipo_activo');
-		$fecha_ini = $this->objParam->getParametro('fecha_ini');
-		$fecha_fin = $this->objParam->getParametro('fecha_fin');
-		$estado = $this->objParam->getParametro('estado');
-		$tipo_rep = $this->objParam->getParametro('tipo_reporte');
-		if($this->objParam->getParametro('formato_reporte') == 'excel'){
-			header("location:http://sms.obairlines.bo/ActivosCodBidi/Home/VerDatosDepreE?TipoActivo=" .$tipo_activo. "&FechaIni=".$fecha_ini."&FechaFin=".$fecha_fin."&estado=".$estado."&usr=612&Tipo=".$tipo_rep);
-		}else{
-			header("location:http://sms.obairlines.bo/ActivosCodBidi/Home/VerDatosDepre?TipoActivo=" .$tipo_activo. "&FechaIni=".$fecha_ini."&FechaFin=".$fecha_fin."&estado=".$estado."&usr=612&Tipo=".$tipo_rep);
-		}
-		/*if($datos->getTipo() == 'EXITO'){
-			return $datos;
-		} else
-		{
-			$datos->imprimirRespuesta($datos->generarJson());
-			exit;
-		}*/
+        $this->res = $this->objFunc->comprasXgestion($this->objParam);
+
+
+        //Genera el nombre del archivo (aleatorio + titulo)
+        $nombreArchivo = uniqid(md5(session_id()).'[Reporte-Compras x Gestion]').'.pdf';
+
+        $this->objParam->addParametro('orientacion','P');
+        $this->objParam->addParametro('tamano','LETTER');
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        //Instancia la clase de pdf
+        $this->objReporteFormato=new RCompraGestionPDF ($this->objParam);
+        $this->objReporteFormato->setDatos($this->res->datos);
+        $this->objReporteFormato->generarReporte();
+        $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+
 	}
 		
 

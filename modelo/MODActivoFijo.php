@@ -600,7 +600,7 @@ class MODActivoFijo extends MODbase{
 		$this->transaccion='SKA_QRVARIOS_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 		$this->setCount(false);
-				
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_activo_fijo','int4');
         $this->captura('codigo','varchar');
@@ -610,15 +610,53 @@ class MODActivoFijo extends MODbase{
         $this->captura('nombre_entidad','varchar');
         $this->captura('descripcion','varchar');
         $this->captura('clase_rep','varchar');
-		
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		//echo $this->consulta;exit;
 		$this->ejecutarConsulta();
-		
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+    function comprasXgestion(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='kaf.ft_activo_fijo_sel';
+        $this->transaccion='SKA_COMPRAS_GEST_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        $this->setCount(false);
+
+
+
+
+        //Definicion de la lista del resultado del query
+        $this->captura('id_clasificacion','int4');
+        $this->captura('id_clasificacion_fk','int4');
+        $this->captura('codigo','varchar');
+        $this->captura('codigo_completo','varchar');
+        $this->captura('nivel','int4');
+        $this->captura('nombre','varchar');
+        $this->captura('camino','text');
+        $this->captura('codigo_af','varchar');
+        $this->captura('denominacion','varchar');
+        $this->captura('fecha_compra','varchar');
+        $this->captura('nro_cbte_asociado','varchar');
+        $this->captura('fecha_cbte_asociado','varchar');
+        $this->captura('fecha_ini_dep','varchar');
+        $this->captura('vida_util_original','int4');
+        $this->captura('monto_compra_orig_100','numeric');
+        $this->captura('monto_compra_orig','numeric');
+        $this->captura('tipo_activo','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //echo $this->consulta;exit;
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
 			
 }
 ?>

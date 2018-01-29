@@ -9,7 +9,7 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-    Phx.vista.ComprasGestion = Ext.extend(Phx.frmInterfaz, {
+    Phx.vista.DetalleActivoFijo = Ext.extend(Phx.frmInterfaz, {
 
         Atributos : [
 
@@ -149,7 +149,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         data : [['1', 'Activos Fijos'], ['2', 'Activos Intangibles'], ['3', 'Todos']]
                     }),
                     anchor : '50%',
-                    valueField : 'id',
+                    valueField : 'tipo',
                     displayField : 'valor'
                 },
                 type : 'ComboBox',
@@ -167,53 +167,53 @@ header("content-type: text/javascript; charset=UTF-8");
         tooltipSubmit : '<b>Generar Reporte Libro Bancos</b>',
 
         constructor : function(config) {
-            Phx.vista.ComprasGestion.superclass.constructor.call(this, config);
+            Phx.vista.DetalleActivoFijo.superclass.constructor.call(this, config);
             this.init();
             this.iniciarEventos();
         },
 
         iniciarEventos:function(){
             /*this.cmpFormatoReporte = this.getComponente('formato_reporte');
-            this.cmpFechaIni = this.getComponente('fecha_ini');
-            this.cmpFechaFin = this.getComponente('fecha_fin');
-            this.cmpIdCuentaBancaria = this.getComponente('id_cuenta_bancaria');
-            this.cmpEstado = this.getComponente('estado');
-            this.cmpTipo = this.getComponente('tipo');
-            this.cmpNombreBanco = this.getComponente('nombre_banco');
-            this.cmpNroCuenta = this.getComponente('nro_cuenta');
+             this.cmpFechaIni = this.getComponente('fecha_ini');
+             this.cmpFechaFin = this.getComponente('fecha_fin');
+             this.cmpIdCuentaBancaria = this.getComponente('id_cuenta_bancaria');
+             this.cmpEstado = this.getComponente('estado');
+             this.cmpTipo = this.getComponente('tipo');
+             this.cmpNombreBanco = this.getComponente('nombre_banco');
+             this.cmpNroCuenta = this.getComponente('nro_cuenta');
 
-            this.getComponente('finalidad').hide(true);
-            this.cmpNroCuenta.hide(true);
-            this.getComponente('id_finalidad').on('change',function(c,r,n){
-                this.getComponente('finalidad').setValue(c.lastSelectionText);
-            },this);
+             this.getComponente('finalidad').hide(true);
+             this.cmpNroCuenta.hide(true);
+             this.getComponente('id_finalidad').on('change',function(c,r,n){
+             this.getComponente('finalidad').setValue(c.lastSelectionText);
+             },this);
 
-            this.cmpIdCuentaBancaria.on('select',function(c,r,n){
-                this.cmpNombreBanco.setValue(r.data.nombre_institucion);
-                this.cmpNroCuenta.setValue(c.lastSelectionText);
-                this.getComponente('id_finalidad').reset();
-                this.getComponente('id_finalidad').store.baseParams={id_cuenta_bancaria:c.value, vista: 'reporte'};
-                this.getComponente('id_finalidad').modificado=true;
-            },this);*/
+             this.cmpIdCuentaBancaria.on('select',function(c,r,n){
+             this.cmpNombreBanco.setValue(r.data.nombre_institucion);
+             this.cmpNroCuenta.setValue(c.lastSelectionText);
+             this.getComponente('id_finalidad').reset();
+             this.getComponente('id_finalidad').store.baseParams={id_cuenta_bancaria:c.value, vista: 'reporte'};
+             this.getComponente('id_finalidad').modificado=true;
+             },this);*/
         },
 
         onSubmit:function(o){
             /*if(this.cmpFormatoReporte.getValue()==2){
-                var data = 'FechaIni=' + this.cmpFechaIni.getValue().format('d-m-Y');
-                data = data + '&FechaFin=' + this.cmpFechaFin.getValue().format('d-m-Y');
-                data = data + '&IdCuentaBancaria=' + this.cmpIdCuentaBancaria.getValue();
-                data = data + '&Estado=' + this.cmpEstado.getValue();
-                data = data + '&Tipo=' + this.cmpTipo.getValue();
-                data = data + '&NombreBanco=' + this.cmpNombreBanco.getValue();
-                data = data + '&NumeroCuenta=' + this.cmpNroCuenta.getValue();
+             var data = 'FechaIni=' + this.cmpFechaIni.getValue().format('d-m-Y');
+             data = data + '&FechaFin=' + this.cmpFechaFin.getValue().format('d-m-Y');
+             data = data + '&IdCuentaBancaria=' + this.cmpIdCuentaBancaria.getValue();
+             data = data + '&Estado=' + this.cmpEstado.getValue();
+             data = data + '&Tipo=' + this.cmpTipo.getValue();
+             data = data + '&NombreBanco=' + this.cmpNombreBanco.getValue();
+             data = data + '&NumeroCuenta=' + this.cmpNroCuenta.getValue();
 
-                console.log(data);
-                window.open('http://sms.obairlines.bo/LibroBancos/Home/VerLibroBancos?'+data);
-                //window.open('http://localhost:2309/Home/VerLibroBancos?'+data);				
-            }else{
-                Phx.vista.ReporteLibroBancos.superclass.onSubmit.call(this,o);
-            }*/
-            Phx.vista.ComprasGestion.superclass.onSubmit.call(this,o);
+             console.log(data);
+             window.open('http://sms.obairlines.bo/LibroBancos/Home/VerLibroBancos?'+data);
+             //window.open('http://localhost:2309/Home/VerLibroBancos?'+data);
+             }else{
+             Phx.vista.ReporteLibroBancos.superclass.onSubmit.call(this,o);
+             }*/
+            Phx.vista.DetalleActivoFijo.superclass.onSubmit.call(this,o);
         },
 
         tipo : 'reporte',
@@ -232,7 +232,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 columnWidth : .40,
                 items : [],
                 id_grupo : 0/*,
-                collapsible : true*/
+                 collapsible : true*/
             }]
         }]
     })
