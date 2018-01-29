@@ -161,6 +161,29 @@ class RCompraGestionPDF extends  ReportePDF{
 
         }
 
+        $total_general_87 = $total_general_87 + $cont_87;
+        $total_general_100 = $total_general_100 + $cont_100;
+        $this->SetFillColor(21, 66, 199);
+
+        $this->SetTextColor(0);
+        $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
+        $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2);
+        $RowArray = array(
+            's0'  => '',
+            's1' => '',
+            's2' => 'Total Parcial',
+            's3' => '',
+            's4' => '',
+            's5' => '',
+            's6' => '',
+            's7' => '',
+            's8' => '',
+            's9' => $cont_100,
+            's10' => $cont_87
+        );
+
+        $this->MultiRow($RowArray,true,1);
+
         $this->SetFillColor(21, 66, 199);
         $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
         $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2);

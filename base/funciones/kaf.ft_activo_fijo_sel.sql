@@ -604,6 +604,65 @@ BEGIN
             return v_consulta;
         
         end;
+  /*********************************
+    #TRANSACCION:  'SKA_COMPRAS_GEST_SEL'
+    #DESCRIPCION:   Reporte Compras por Gestion
+    #AUTOR:         FEA
+    #FECHA:         24/1/2018
+    ***********************************/
+
+    elsif(p_transaccion='SKA_COMPRAS_GEST_SEL')then
+
+        begin
+
+            --Sentencia de la consulta
+            v_consulta:='
+            	with recursive niveles (nivel, id_clasificacion, id_clasificacion_fk, codigo, nombre, camino, codigo_completo, tipo_activo) as
+				(
+                    select 0, tcc.id_clasificacion, tcc.id_clasificacion_fk, tcc.codigo, tcc.nombre, tcc.codigo::TEXT as camino, tcc.codigo_completo_tmp, tcc.tipo_activo
+                    from kaf.tclasificacion tcc
+                    where tcc.id_clasificacion_fk is null
+
+                    union all
+
+                    select padre.nivel+1,  hijo.id_clasificacion, hijo.id_clasificacion_fk, hijo.codigo, hijo.nombre, padre.camino || ''.'' || hijo.codigo::TEXT,  hijo.codigo_completo_tmp, hijo.tipo_activo
+                    from kaf.tclasificacion hijo,  niveles padre
+                    where hijo.id_clasificacion_fk  = padre.id_clasificacion
+
+				)
+
+
+              select
+              niv.id_clasificacion,
+              niv.id_clasificacion_fk,
+              niv.codigo,
+              niv.codigo_completo,
+              niv.nivel,
+              niv.nombre,
+              niv.camino,
+              taf.codigo as codig_af,
+              coalesce(taf.denominacion, ''-'') as denominacion,
+              coalesce(taf.fecha_compra::varchar, ''-'')::varchar as fecha_compra,
+              coalesce(taf.nro_cbte_asociado, ''-'') as nro_cbte_asociado,
+              coalesce(taf.fecha_cbte_asociado::varchar, ''-'') as fecha_cbte_asociado,
+              coalesce(taf.fecha_ini_dep::varchar, ''-'') as fecha_ini_dep,
+              coalesce(taf.vida_util_original, 0) as  vida_util_original,
+              coalesce(taf.monto_compra_orig_100, 0) as monto_compra_orig_100,
+              coalesce(taf.monto_compra_orig, 0) as monto_compra_orig,
+              niv.tipo_activo
+              from niveles  niv
+              left join kaf.tactivo_fijo taf on taf.id_clasificacion = niv.id_clasificacion
+              where niv.nivel in (0,1,2) OR (
+            ';
+
+            --Definicion de la respuesta
+            v_consulta:=v_consulta||v_parametros.filtro||')';
+            v_consulta = v_consulta||' order by niv.camino, taf.codigo';
+			raise notice 'v_consulta: %',v_consulta;
+            --Devuelve la respuesta
+            return v_consulta;
+
+        end;
     
     				
 	else
