@@ -627,7 +627,8 @@ class MODActivoFijo extends MODbase{
         $this->tipo_procedimiento='SEL';//tipo de transaccion
         $this->setCount(false);
 
-
+		$this->setParametro('fecha_ini','fecha_ini','date');
+		$this->setParametro('fecha_fin','fecha_fin','date');
 
 
         //Definicion de la lista del resultado del query

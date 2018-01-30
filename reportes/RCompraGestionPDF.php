@@ -17,36 +17,38 @@ class RCompraGestionPDF extends  ReportePDF{
         $this->ln(5);
         $this->SetMargins(10, 40, 10);
 
-        $this->SetFont('','B',16);
+        $this->SetFont('','B',10);
+        $this->Cell(0,5,"DEPARTAMENTO ACTIVOS FIJOS",0,1,'C');
         $this->Cell(0,5,"COMPRAS DE GESTIÓN",0,1,'C');
+        $this->Cell(0,5,'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: '.$this->objParam->getParametro('estado'),0,1,'C');
 
         $this->SetFont('','B',6);
-        $this->Ln(14);
+        $this->Ln(6);
         //primera linea
-        $this->Cell(7,3,'NUM','TRL',0,'C');
+        $this->Cell(10,3,'NUM','TRL',0,'C');
         $this->Cell(18,3,'CODIGO','TRL',0,'C');
         $this->Cell(57,3,'DESCRIPCIÓN','TRL',0,'C');
         $this->Cell(13,3,'FECHA','TRL',0,'C');
-        $this->Cell(15,3,'NUM','TRL',0,'C');
+        $this->Cell(13,3,'NUM','TRL',0,'C');
         $this->Cell(13,3,'FECHA','TRL',0,'C');
-        $this->Cell(16,3,'FECHA INI','TRL',0,'C');
-        $this->Cell(16,3,'VIDA UTIL','TRL',0,'C');
-        $this->Cell(16,3,'VIDA UTIL','TRL',0,'C');
-        $this->Cell(15,3,'IMPORTE','TRL',0,'C');
-        $this->Cell(15,3,'MONTO','TRL',1,'C');
+        $this->Cell(15,3,'FECHA INI','TRL',0,'C');
+        $this->Cell(14,3,'VIDA UTIL','TRL',0,'C');
+        $this->Cell(14,3,'VIDA UTIL','TRL',0,'C');
+        $this->Cell(17,3,'IMPORTE','TRL',0,'C');
+        $this->Cell(17,3,'MONTO','TRL',1,'C');
 
         //segunda linea
-        $this->Cell(7,3,'','BRL',0,'C');
+        $this->Cell(10,3,'','BRL',0,'C');
         $this->Cell(18,3,'','BRL',0,'C');
         $this->Cell(57,3,'','BRL',0,'C');
         $this->Cell(13,3,'COMPRA','BRL',0,'C');
-        $this->Cell(15,3,'COMP.','BRL',0,'C');
+        $this->Cell(13,3,'COMP.','BRL',0,'C');
         $this->Cell(13,3,'COMP C31','BRL',0,'C');
-        $this->Cell(16,3,'DEPRE.','BRL',0,'C');
-        $this->Cell(16,3,'ORIGINAL','BRL',0,'C');
-        $this->Cell(16,3,'RESTANTE','BRL',0,'C');
-        $this->Cell(15,3,'100%','BRL',0,'C');
-        $this->Cell(15,3,'87%','BRL',0,'C');
+        $this->Cell(15,3,'DEPRE.','BRL',0,'C');
+        $this->Cell(14,3,'ORIGINAL','BRL',0,'C');
+        $this->Cell(14,3,'RESTANTE','BRL',0,'C');
+        $this->Cell(17,3,'100%','BRL',0,'C');
+        $this->Cell(17,3,'87%','BRL',0,'C');
 
     }
 
@@ -77,7 +79,7 @@ class RCompraGestionPDF extends  ReportePDF{
 
         $i=1;
 
-        $this->tablewidths=array(7,18,57,13,15,13,16,16,16,15,15);
+        $this->tablewidths=array(10,18,57,13,13,13,15,14,14,17,17);
         $this->tablealigns=array('C','L','L','C','C','C','C','C','C','R','R');
 
 
@@ -86,10 +88,10 @@ class RCompraGestionPDF extends  ReportePDF{
             $this->SetFont('','B',6);
             if($record['nivel'] == 0 || $record['nivel'] == 1){
 
-                if($codigo != '' && $record['nivel'] == 0){
+                if($codigo != '' && ($record['nivel'] == 0 || $record['nivel'] == 1) && $cont_87>0){
                     $total_general_87 = $total_general_87 + $cont_87;
                     $total_general_100 = $total_general_100 + $cont_100;
-                    $this->SetFillColor(21, 66, 199);
+                    $this->SetFillColor(79, 91, 147);
 
                     $this->SetTextColor(0);
                     $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
@@ -109,6 +111,8 @@ class RCompraGestionPDF extends  ReportePDF{
                     );
 
                     $this->MultiRow($RowArray,true,1);
+                    $cont_100 = 0;
+                    $cont_87 = 0;
                 }
 
                 $this->SetFillColor(224, 235, 255);
@@ -141,7 +145,7 @@ class RCompraGestionPDF extends  ReportePDF{
                     's0'  => $record['nivel']==2?$i:'',
                     's1' => $record['nivel']==2?$record['codigo_af']:$record['camino'],
                     's2' => $record['nivel']==2?$record['denominacion']:$record['nombre'],
-                    's3' => $record['fecha_cbte_asociado'] == '-'?'-':date("d/m/Y",strtotime($record['fecha_compra'])),
+                    's3' => $record['fecha_compra'] == '-'?'-':date("d/m/Y",strtotime($record['fecha_compra'])),
                     's4' => $record['nro_cbte_asociado'],
                     's5' => $record['fecha_cbte_asociado'] == '-'?'-':date("d/m/Y",strtotime($record['fecha_cbte_asociado'])),
                     's6' => $record['fecha_ini_dep'] == '-'?'-':date("d/m/Y",strtotime($record['fecha_ini_dep'])),
@@ -163,7 +167,7 @@ class RCompraGestionPDF extends  ReportePDF{
 
         $total_general_87 = $total_general_87 + $cont_87;
         $total_general_100 = $total_general_100 + $cont_100;
-        $this->SetFillColor(21, 66, 199);
+        $this->SetFillColor(79, 91, 147);
 
         $this->SetTextColor(0);
         $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
@@ -184,7 +188,7 @@ class RCompraGestionPDF extends  ReportePDF{
 
         $this->MultiRow($RowArray,true,1);
 
-        $this->SetFillColor(21, 66, 199);
+        $this->SetFillColor(79, 91, 147);
         $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
         $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2);
         $RowArray = array(

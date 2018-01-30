@@ -1,17 +1,18 @@
 <?php
 /**
-*@package pXP
-*@file gen-ACTActivoFijo.php
-*@author  (admin)
-*@date 29-10-2015 03:18:45
-*@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
-*/
+ *@package pXP
+ *@file gen-ACTActivoFijo.php
+ *@author  (admin)
+ *@date 29-10-2015 03:18:45
+ *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
+ */
 require_once(dirname(__FILE__).'/../reportes/RCodigoQRAF.php');
 require_once(dirname(__FILE__).'/../reportes/RCodigoQRAF_v1.php');
 require_once(dirname(__FILE__).'/../reportes/RCompraGestionPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RCompraGestionXls.php');
 
-class ACTActivoFijo extends ACTbase{    
-			
+class ACTActivoFijo extends ACTbase{
+
 	function listarActivoFijo(){
 		$this->objParam->defecto('ordenacion','id_activo_fijo');
 		$this->objParam->defecto('dir_ordenacion','asc');
@@ -65,11 +66,11 @@ class ACTActivoFijo extends ACTbase{
 		if($this->objParam->getParametro('estado')!=''){
 			$this->objParam->addFiltro("afij.estado = ''".$this->objParam->getParametro('estado')."''");
 		}
-		
+
 		if($this->objParam->getParametro('depreciable')!=''){
 			$this->objParam->addFiltro("cla.depreciable = ''".$this->objParam->getParametro('depreciable')."''");
 		}
-		
+
 		if($this->objParam->getParametro('en_deposito')!=''){
 			$this->objParam->addFiltro("afij.en_deposito = ''".$this->objParam->getParametro('en_deposito')."''");
 		}
@@ -90,7 +91,7 @@ class ACTActivoFijo extends ACTbase{
 		//Filtro por movimientos
 		//Transferencia, Devolucion
 		if($this->objParam->getParametro('codMov')=='transf'||$this->objParam->getParametro('codMov')=='devol'){
-			$this->objParam->addFiltro("afij.id_funcionario = ".$this->objParam->getParametro('id_funcionario_mov'));	
+			$this->objParam->addFiltro("afij.id_funcionario = ".$this->objParam->getParametro('id_funcionario_mov'));
 		}
 		//Alta
 		if($this->objParam->getParametro('codMov')=='alta'|| $this->objParam->getParametro('codMov')=='baja'|| $this->objParam->getParametro('codMov')=='reval'|| $this->objParam->getParametro('codMov')=='deprec'|| $this->objParam->getParametro('codMov')=='actua'||$this->objParam->getParametro('codMov')=='desuso'||$this->objParam->getParametro('codMov')=='incdec'||$this->objParam->getParametro('codMov')=='tranfdep'){
@@ -109,30 +110,30 @@ class ACTActivoFijo extends ACTbase{
 			$this->res = $this->objReporte->generarReporteListado('MODActivoFijo','listarActivoFijo');
 		} else{
 			$this->objFunc=$this->create('MODActivoFijo');
-			
+
 			$this->res=$this->objFunc->listarActivoFijo($this->objParam);
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
-				
+
 	function insertarActivoFijo(){
-		$this->objFunc=$this->create('MODActivoFijo');	
+		$this->objFunc=$this->create('MODActivoFijo');
 		if($this->objParam->insertar('id_activo_fijo')){
-			$this->res=$this->objFunc->insertarActivoFijo($this->objParam);			
-		} else{			
+			$this->res=$this->objFunc->insertarActivoFijo($this->objParam);
+		} else{
 			$this->res=$this->objFunc->modificarActivoFijo($this->objParam);
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
-						
+
 	function eliminarActivoFijo(){
-		$this->objFunc=$this->create('MODActivoFijo');	
+		$this->objFunc=$this->create('MODActivoFijo');
 		$this->res=$this->objFunc->eliminarActivoFijo($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
 	function codificarActivoFijo(){
-		$this->objFunc=$this->create('MODActivoFijo');	
+		$this->objFunc=$this->create('MODActivoFijo');
 		$this->res=$this->objFunc->codificarActivoFijo($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
@@ -171,170 +172,170 @@ class ACTActivoFijo extends ACTbase{
 	}
 
 	function subirFoto(){
-        $this->objFunc=$this->create('MODActivoFijo');
-        $this->res=$this->objFunc->SubirFoto();
-        $this->res->imprimirRespuesta($this->res->generarJson());
-    }
-    
-    /*
-	 * 
-	 * Autor: RAC
-	 * Fecha: 16/03/2017
-	 * Descrip:  Imprime codigo de activo fijos de  uno en uno
-	 * 
-	 * 
-	 * */
-    
-    function recuperarCodigoQR(){    	
+		$this->objFunc=$this->create('MODActivoFijo');
+		$this->res=$this->objFunc->SubirFoto();
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+	/*
+     *
+     * Autor: RAC
+     * Fecha: 16/03/2017
+     * Descrip:  Imprime codigo de activo fijos de  uno en uno
+     *
+     *
+     * */
+
+	function recuperarCodigoQR(){
 		$this->objFunc = $this->create('MODActivoFijo');
 		$cbteHeader = $this->objFunc->recuperarCodigoQR($this->objParam);
-		if($cbteHeader->getTipo() == 'EXITO'){				
+		if($cbteHeader->getTipo() == 'EXITO'){
 			return $cbteHeader;
 		}
-        else{
-		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+		else{
+			$cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
 			exit;
-		}              
-		
-    }
-    
-    
-    
-    function impCodigoActivoFijo(){
-		
-			    $nombreArchivo = 'CodigoAF'.uniqid(md5(session_id())).'.pdf'; 				
-				$dataSource = $this->recuperarCodigoQR();
-				
-				
-				
-				//parametros basicos
-				
-				$orientacion = 'L';
-				$titulo = 'Códigos Activos Fijos';				
-				
-				//$width = 40;  
-		        //$height = 20;
-		        
-		        $width = 160;  
-		        $height = 80;
-		
-		
-				
-				$this->objParam->addParametro('orientacion',$orientacion);
-				$this->objParam->addParametro('tamano',array($width, $height));		
-				$this->objParam->addParametro('titulo_archivo',$titulo);        
-				$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
-				//var_dump($dataSource->getDatos());
-				//exit;
-				$clsRep = $dataSource->getDatos();
-				
-				//$reporte = new RCodigoQRAF($this->objParam);
-				
-				eval('$reporte = new '.$clsRep['v_clase_reporte'].'($this->objParam);');
-				
-				
-				
-				$reporte->datosHeader( 'unico', $dataSource->getDatos());
-				$reporte->generarReporte();
-				$reporte->output($reporte->url_archivo,'F');  
-				
-		         
-				$this->mensajeExito=new Mensaje();
-				$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
-				$this->mensajeExito->setArchivoGenerado($nombreArchivo);
-				$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
-		
+		}
+
 	}
 
-    /*
-	 * 
-	 * Autor: RAC
-	 * Fecha: 16/03/2017
-	 * Descrip:  Imprime codigos de activo fijos dsegun elc riterio de filtro, varios a la vez
-	 * 
-	 * 
-	 * */
 
-     function recuperarListadoCodigosQR(){    	
-		$this->objFunc = $this->create('MODActivoFijo');
-		$cbteHeader = $this->objFunc->recuperarListadoCodigosQR($this->objParam);
-		if($cbteHeader->getTipo() == 'EXITO'){				
-			return $cbteHeader;
-		}
-        else{
-		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
-			exit;
-		}              
-		
-    }
-	 
-	 function obtenerClaseReporteCodigoQRAF(){		
-		//crea el objetoFunSeguridad que contiene todos los metodos del sistema de seguridad
-		
-		$this->objParam->addParametro('codigo','kaf_clase_reporte_codigo');
-		$this->objFunSeguridad=$this->create('sis_seguridad/MODSubsistema');
-			
-		
-		
-		$cbteHeader=$this->objFunSeguridad->obtenerVariableGlobal($this->objParam);
-		
-		if($cbteHeader->getTipo() == 'EXITO'){				
-			return $cbteHeader;
-		}
-        else{
-		    $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
-			exit;
-		} 
-		
-	}
-	 
-	
-    function impVariosCodigoActivoFijo(){
-		
-	    $nombreArchivo = 'CodigoAF'.uniqid(md5(session_id())).'.pdf'; 				
-		$dataSource = $this->recuperarListadoCodigosQR();
-		
-		//recuperar variable global kaf_clase_reporte_codigo
-		$clsQr = $this->obtenerClaseReporteCodigoQRAF();
+
+	function impCodigoActivoFijo(){
+
+		$nombreArchivo = 'CodigoAF'.uniqid(md5(session_id())).'.pdf';
+		$dataSource = $this->recuperarCodigoQR();
+
+
+
 		//parametros basicos
-		
+
 		$orientacion = 'L';
-		$titulo = 'Código';				
-		
-		//$width = 40;  
-        //$height = 20;
-        
-        $width = 160;  
-        $height = 80;
+		$titulo = 'Códigos Activos Fijos';
+
+		//$width = 40;
+		//$height = 20;
+
+		$width = 160;
+		$height = 80;
+
+
 
 		$this->objParam->addParametro('orientacion',$orientacion);
-		$this->objParam->addParametro('tamano',array($width, $height));		
-		$this->objParam->addParametro('titulo_archivo',$titulo);        
+		$this->objParam->addParametro('tamano',array($width, $height));
+		$this->objParam->addParametro('titulo_archivo',$titulo);
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 		//var_dump($dataSource->getDatos());
 		//exit;
-		$cls = $clsQr->getDatos();
-		
+		$clsRep = $dataSource->getDatos();
+
 		//$reporte = new RCodigoQRAF($this->objParam);
-		
-		eval('$reporte = new '.$cls['valor'].'($this->objParam);');
-		
-		
-		
-		$reporte->datosHeader( 'varios', $dataSource->getDatos());
+
+		eval('$reporte = new '.$clsRep['v_clase_reporte'].'($this->objParam);');
+
+
+
+		$reporte->datosHeader( 'unico', $dataSource->getDatos());
 		$reporte->generarReporte();
-		$reporte->output($reporte->url_archivo,'F');  
-		
-         
+		$reporte->output($reporte->url_archivo,'F');
+
+
 		$this->mensajeExito=new Mensaje();
 		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
 		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
 		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
-		
+
+	}
+
+	/*
+     *
+     * Autor: RAC
+     * Fecha: 16/03/2017
+     * Descrip:  Imprime codigos de activo fijos dsegun elc riterio de filtro, varios a la vez
+     *
+     *
+     * */
+
+	function recuperarListadoCodigosQR(){
+		$this->objFunc = $this->create('MODActivoFijo');
+		$cbteHeader = $this->objFunc->recuperarListadoCodigosQR($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){
+			return $cbteHeader;
+		}
+		else{
+			$cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}
+
+	}
+
+	function obtenerClaseReporteCodigoQRAF(){
+		//crea el objetoFunSeguridad que contiene todos los metodos del sistema de seguridad
+
+		$this->objParam->addParametro('codigo','kaf_clase_reporte_codigo');
+		$this->objFunSeguridad=$this->create('sis_seguridad/MODSubsistema');
+
+
+
+		$cbteHeader=$this->objFunSeguridad->obtenerVariableGlobal($this->objParam);
+
+		if($cbteHeader->getTipo() == 'EXITO'){
+			return $cbteHeader;
+		}
+		else{
+			$cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}
+
+	}
+
+
+	function impVariosCodigoActivoFijo(){
+
+		$nombreArchivo = 'CodigoAF'.uniqid(md5(session_id())).'.pdf';
+		$dataSource = $this->recuperarListadoCodigosQR();
+
+		//recuperar variable global kaf_clase_reporte_codigo
+		$clsQr = $this->obtenerClaseReporteCodigoQRAF();
+		//parametros basicos
+
+		$orientacion = 'L';
+		$titulo = 'Código';
+
+		//$width = 40;  
+		//$height = 20;
+
+		$width = 160;
+		$height = 80;
+
+		$this->objParam->addParametro('orientacion',$orientacion);
+		$this->objParam->addParametro('tamano',array($width, $height));
+		$this->objParam->addParametro('titulo_archivo',$titulo);
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		//var_dump($dataSource->getDatos());
+		//exit;
+		$cls = $clsQr->getDatos();
+
+		//$reporte = new RCodigoQRAF($this->objParam);
+
+		eval('$reporte = new '.$cls['valor'].'($this->objParam);');
+
+
+
+		$reporte->datosHeader( 'varios', $dataSource->getDatos());
+		$reporte->generarReporte();
+		$reporte->output($reporte->url_archivo,'F');
+
+
+		$this->mensajeExito=new Mensaje();
+		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+
 	}
 
 	function clonarActivoFijo(){
-		$this->objFunc=$this->create('MODActivoFijo');	
+		$this->objFunc=$this->create('MODActivoFijo');
 		$this->res=$this->objFunc->clonarActivoFijo($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
@@ -378,11 +379,11 @@ class ACTActivoFijo extends ACTbase{
 		if($this->objParam->getParametro('estado')!=''){
 			$this->objParam->addFiltro("afij.estado = ''".$this->objParam->getParametro('estado')."''");
 		}
-		
+
 		if($this->objParam->getParametro('depreciable')!=''){
 			$this->objParam->addFiltro("cla.depreciable = ''".$this->objParam->getParametro('depreciable')."''");
 		}
-		
+
 		if($this->objParam->getParametro('en_deposito')!=''){
 			$this->objParam->addFiltro("afij.en_deposito = ''".$this->objParam->getParametro('en_deposito')."''");
 		}
@@ -398,7 +399,7 @@ class ACTActivoFijo extends ACTbase{
 		//Filtro por movimientos
 		//Transferencia, Devolucion
 		if($this->objParam->getParametro('codMov')=='transf'||$this->objParam->getParametro('codMov')=='devol'){
-			$this->objParam->addFiltro("afij.id_funcionario = ".$this->objParam->getParametro('id_funcionario_mov'));	
+			$this->objParam->addFiltro("afij.id_funcionario = ".$this->objParam->getParametro('id_funcionario_mov'));
 		}
 		//Alta
 		if($this->objParam->getParametro('codMov')=='alta'|| $this->objParam->getParametro('codMov')=='baja'|| $this->objParam->getParametro('codMov')=='reval'|| $this->objParam->getParametro('codMov')=='deprec'|| $this->objParam->getParametro('codMov')=='actua'||$this->objParam->getParametro('codMov')=='desuso'||$this->objParam->getParametro('codMov')=='incdec'||$this->objParam->getParametro('codMov')=='tranfdep'){
@@ -417,29 +418,29 @@ class ACTActivoFijo extends ACTbase{
 			$this->res = $this->objReporte->generarReporteListado('MODActivoFijo','listarActivoFijoFecha');
 		} else{
 			$this->objFunc=$this->create('MODActivoFijo');
-			
+
 			$this->res=$this->objFunc->listarActivoFijoFecha($this->objParam);
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
 	function consultaQR(){
-		$this->objFunc=$this->create('MODActivoFijo');	
+		$this->objFunc=$this->create('MODActivoFijo');
 		$this->res=$this->objFunc->consultaQR($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
-    function listarActivosNoAsignados(){
-        $this->objFunc=$this->create('MODActivoFijo');
-        $this->res=$this->objFunc->listarActivosNoAsignados($this->objParam);
-        $this->res->imprimirRespuesta($this->res->generarJson());
-    }
+	function listarActivosNoAsignados(){
+		$this->objFunc=$this->create('MODActivoFijo');
+		$this->res=$this->objFunc->listarActivosNoAsignados($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
 
-	function repCodigoQRVarios(){    	
+	function repCodigoQRVarios(){
 		$nombreArchivo = 'CodigoAF'.uniqid(md5(session_id())).'.pdf';
 
 		if($this->objParam->getParametro('id_activo_fijo')!=''){
-			$this->objParam->addFiltro("kaf.id_activo_fijo in (".$this->objParam->getParametro('id_activo_fijo').")");	
+			$this->objParam->addFiltro("kaf.id_activo_fijo in (".$this->objParam->getParametro('id_activo_fijo').")");
 		}
 
 		if($this->objParam->getParametro('id_clasificacion')!=''){
@@ -454,67 +455,64 @@ class ACTActivoFijo extends ACTbase{
     				WHERE l.id_clasificacion_fk = t.id
 					)
 					SELECT id
-					FROM t)");	
+					FROM t)");
 		}
 
 		$dataSource = $this->listarCodigoQRVarios();
 
 		//parametros basicos
 		$orientacion = 'L';
-		$titulo = 'Códigos Activos Fijos';				
-		
+		$titulo = 'Códigos Activos Fijos';
+
 		//$width = 40;  
-        //$height = 20;
-        
-        $width = 160;  
-        $height = 80;
+		//$height = 20;
+
+		$width = 160;
+		$height = 80;
 
 		$this->objParam->addParametro('orientacion',$orientacion);
-		$this->objParam->addParametro('tamano',array($width, $height));		
-		$this->objParam->addParametro('titulo_archivo',$titulo);        
+		$this->objParam->addParametro('tamano',array($width, $height));
+		$this->objParam->addParametro('titulo_archivo',$titulo);
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 		//var_dump($dataSource->getDatos());
 		//exit;
 		$clsRep = $dataSource->getDatos();
-		
+
 		$reporte = new RCodigoQRAF_v1($this->objParam);
 
-		
+
 		//eval('$reporte = new '.$clsRep[0]['v_clase_reporte'].'($this->objParam);');
-		
+
 		$reporte->datosHeader( 'varios', $dataSource->getDatos());
 		$reporte->generarReporte();
-		$reporte->output($reporte->url_archivo,'F');  
-         
+		$reporte->output($reporte->url_archivo,'F');
+
 		$this->mensajeExito=new Mensaje();
 		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
 		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
 		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 
-    }
+	}
 
-    function listarCodigoQRVarios(){
+	function listarCodigoQRVarios(){
 		$this->objFunc = $this->create('MODActivoFijo');
 
 		$datos = $this->objFunc->listarCodigoQRVarios($this->objParam);
 
-		if($datos->getTipo() == 'EXITO'){				
+		if($datos->getTipo() == 'EXITO'){
 			return $datos;
 		} else
 		{
-		    $datos->imprimirRespuesta($datos->generarJson());
+			$datos->imprimirRespuesta($datos->generarJson());
 			exit;
 		}
 	}
 
 	function comprasXgestion(){
 
-		if($this->objParam->getParametro('fecha_ini')!='' &&  $this->objParam->getParametro('fecha_fin')!=''){
-			$this->objParam->addFiltro("taf.fecha_compra between ''".$this->objParam->getParametro('fecha_ini')."''::date and ''".$this->objParam->getParametro('fecha_fin')."''::date");
-		}
 
 		if($this->objParam->getParametro('estado')!= ''){
-			$this->objParam->addFiltro("taf.estado = ''".$this->objParam->getParametro('estado')."''");
+			$this->objParam->addFiltro("(taf.estado = ''".$this->objParam->getParametro('estado')."'' OR taf.estado is null)");
 		}
 
 		if($this->objParam->getParametro('tipo_activo')== 1){
@@ -525,34 +523,43 @@ class ACTActivoFijo extends ACTbase{
 			$this->objParam->addFiltro("niv.tipo_activo in  (''tangible'', ''intangible'')");
 		}
 
-
-
 		$this->objFunc = $this->create('MODActivoFijo');
-
-        $this->res = $this->objFunc->comprasXgestion($this->objParam);
-
-
-        //Genera el nombre del archivo (aleatorio + titulo)
-        $nombreArchivo = uniqid(md5(session_id()).'[Reporte-Compras x Gestion]').'.pdf';
-
-        $this->objParam->addParametro('orientacion','P');
-        $this->objParam->addParametro('tamano','LETTER');
-        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
-        //Instancia la clase de pdf
-        $this->objReporteFormato=new RCompraGestionPDF ($this->objParam);
-        $this->objReporteFormato->setDatos($this->res->datos);
-        $this->objReporteFormato->generarReporte();
-        $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+		$this->res = $this->objFunc->comprasXgestion($this->objParam);
 
 
-        $this->mensajeExito=new Mensaje();
-        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
-            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
-        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
-        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+		//Genera el nombre del archivo (aleatorio + titulo)
+		if($this->objParam->getParametro('formato_reporte')=='pdf'){
+			$nombreArchivo = uniqid(md5(session_id()).'[Reporte-Compras x Gestion]').'.pdf';
+		}
+		else{
+			$nombreArchivo = uniqid(md5(session_id()).'[Reporte-Compras x Gestion]').'.xls';
+		}
+		
+		$this->objParam->addParametro('orientacion','P');
+		$this->objParam->addParametro('tamano','LETTER');
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		$this->objParam->addParametro('titulo_archivo','ComprasGestión');
+		if($this->objParam->getParametro('formato_reporte')=='pdf'){
+			//Instancia la clase de pdf
+			$this->objReporteFormato=new RCompraGestionPDF ($this->objParam);
+			$this->objReporteFormato->setDatos($this->res->datos);
+			$this->objReporteFormato->generarReporte();
+			$this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+		}
+		else{
+			$reporte = new RCompraGestionXls($this->objParam);
+			$reporte->setDatos($this->res->datos);
+			$reporte->generarReporte();
+		}
+
+		$this->mensajeExito=new Mensaje();
+		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+			'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 
 	}
-		
+
 
 }
 ?>
