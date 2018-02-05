@@ -521,8 +521,10 @@ Ext.define('Phx.vista.ParametrosBase', {
             	items: [this.cmbReporte]
             },*/this.fieldSetGeneral, this.fieldSetIncluir, this.fieldSetCompra],
             tbar: [
-                {xtype:'button', text:'<i class="fa fa-print" aria-hidden="true"></i> Generar', tooltip: 'Generar el reporte', handler: this.onSubmit, scope: this},
+                {xtype:'button', text:'<i class="fa fa-print" aria-hidden="true"></i> Generar en Pantalla', tooltip: 'Generar el reporte', handler: this.onSubmit, scope: this},
+				{xtype:'button', text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Generar Xls', tooltip: 'Resetear los parámetros', handler: this.onReporteDep, scope: this},
                 {xtype:'button', text:'<i class="fa fa-undo" aria-hidden="true"></i> Reset', tooltip: 'Resetear los parámetros', handler: this.onReset, scope: this}
+
             ]
         });
 
@@ -544,6 +546,18 @@ Ext.define('Phx.vista.ParametrosBase', {
             	id: this.idContenedor+'_centerPanelAF'
             }]
         });
+	},
+
+	onReporteDep: function () {
+		Phx.CP.loadingShow();
+		Ext.Ajax.request({
+			url:'../../sis_kactivos_fijos/control/Reportes/reporteDepreciacionXls',
+			params: this.getParams(),
+			success: this.successExport,
+			failure: this.conexionFailure,
+			timeout:this.timeout,
+			scope:this
+		});
 	},
 	render: function(){
 		this.panel.add(this.viewPort);
