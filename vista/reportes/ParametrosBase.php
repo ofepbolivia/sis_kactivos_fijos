@@ -511,6 +511,7 @@ Ext.define('Phx.vista.ParametrosBase', {
         	items: [this.cmbUnidSolic,this.cmbResponsableCompra]
         });
 
+		me = this;
 		//Formulario
 		this.formParam = new Ext.form.FormPanel({
             layout: 'form',
@@ -521,9 +522,42 @@ Ext.define('Phx.vista.ParametrosBase', {
             	items: [this.cmbReporte]
             },*/this.fieldSetGeneral, this.fieldSetIncluir, this.fieldSetCompra],
             tbar: [
-                {xtype:'button', text:'<i class="fa fa-print" aria-hidden="true"></i> Generar en Pantalla', tooltip: 'Generar el reporte', handler: this.onSubmit, scope: this},
-				{xtype:'button', text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Generar Xls', tooltip: 'Resetear los parámetros', handler: this.onReporteDep, scope: this},
-                {xtype:'button', text:'<i class="fa fa-undo" aria-hidden="true"></i> Reset', tooltip: 'Resetear los parámetros', handler: this.onReset, scope: this}
+                {xtype:'button', text:'<i class="fa fa-print" aria-hidden="true"></i> Generar en Pantalla', tooltip: 'Generar el reporte', handler: this.onSubmit, scope: this},'-',
+				{
+					//iconCls: 'bexcel',
+					xtype: 'splitbutton',
+					grupo: [0,4],
+					tooltip: '<b>Reporte Depreciacion A.F.</b><br>Podemos generar reporte de depreciacion de formato PDF y EXCEL.',
+					text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Reporte Depreciacion',
+					//handler: this.onButtonExcel,
+					argument: {
+						'news': true,
+						def: 'reset'
+					},
+					scope: me,
+					menu: [{
+						text: 'Reporte XLS',
+						iconCls: 'bexcel',
+						argument: {
+							'news': true,
+							def: 'csv'
+						},
+						handler: me.onReporteDep,
+						scope: me
+					}, {
+						text: 'Reporte PDF',
+						iconCls: 'bpdf',
+						argument: {
+							'news': true,
+							def: 'pdf'
+						},
+						handler: me.onReporteDep,
+						scope: me
+					}]
+				},'-',
+				//{xtype:'button', text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Generar Xls', tooltip: 'Resetear los parámetros', handler: this.onReporteDep, scope: this},
+                {xtype:'button', text:'<i class="fa fa-undo" aria-hidden="true"></i> Reset', tooltip: 'Resetear los parámetros', handler: this.onReset, scope: this},
+
 
             ]
         });
@@ -548,11 +582,15 @@ Ext.define('Phx.vista.ParametrosBase', {
         });
 	},
 
-	onReporteDep: function () {
+	onReporteDep: function (cmp, event) {
+		console.log('a',cmp.argument.def, 'b',event);
+
+		var parametros = this.getParams();
+		parametros.tipo = cmp.argument.def;
 		Phx.CP.loadingShow();
 		Ext.Ajax.request({
-			url:'../../sis_kactivos_fijos/control/Reportes/reporteDepreciacionXls',
-			params: this.getParams(),
+			url:'../../sis_kactivos_fijos/control/Reportes/reporteDepreciacion',
+			params: parametros,
 			success: this.successExport,
 			failure: this.conexionFailure,
 			timeout:this.timeout,

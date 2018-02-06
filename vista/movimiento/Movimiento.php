@@ -839,7 +839,27 @@ Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
 				id_grupo:0,
 				grid:true,
 				form:false
-		}
+		},
+		{
+			config : {
+				name : 'subtipo:',
+				fieldLabel : 'Subtipo Revalorización',
+				allowBlank : false,
+				triggerAction : 'all',
+				lazyRender : true,
+				mode : 'local',
+				store : new Ext.data.ArrayStore({
+					fields : ['tipo', 'valor'],
+					data : [['renovacion', 'Renovacion']]
+				}),
+				anchor : '100%',
+				valueField : 'tipo',
+				displayField : 'valor'
+			},
+			type : 'ComboBox',
+			id_grupo : 0,
+			form : true
+		},
 	],
 	tam_pag:50,	
 	title:'Movimiento de Activos Fijos',

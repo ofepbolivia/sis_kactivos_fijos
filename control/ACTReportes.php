@@ -4,6 +4,7 @@ require_once(dirname(__FILE__).'/../reportes/RKardexAFxls.php');
 require_once(dirname(__FILE__).'/../reportes/RReporteGralAFXls.php');
 require_once(dirname(__FILE__).'/../reportes/RRespInventario.php');
 require_once(dirname(__FILE__).'/../reportes/RDepreciacionXls.php');
+require_once(dirname(__FILE__).'/../reportes/RDepreciacionPDF.php');
 
 class ACTReportes extends ACTbase {
 
@@ -147,41 +148,39 @@ class ACTReportes extends ACTbase {
 	}
 
 	//FEA
-	function reporteDepreciacionXls(){
-
+	function reporteDepreciacion(){
 		$this->definirFiltros();
-
 		$this->objFunc = $this->create('MODReportes');
 		$this->res = $this->objFunc->listarRepDepreciacion($this->objParam);
 
 
 		//Genera el nombre del archivo (aleatorio + titulo)
-		/*if($this->objParam->getParametro('formato_reporte')=='pdf'){
+		if($this->objParam->getParametro('tipo')=='pdf'){
 			$nombreArchivo = uniqid(md5(session_id()).'[Reporte-Compras x Gestion]').'.pdf';
 		}
-		else{*/
-		$nombreArchivo = uniqid(md5(session_id()).'Depreciación AF]').'.xls';
-		//}
+		else{
+			$nombreArchivo = uniqid(md5(session_id()).'Depreciación AF]').'.xls';
+		}
 
-		$this->objParam->addParametro('orientacion','P');
+		$this->objParam->addParametro('orientacion','L');
 		$this->objParam->addParametro('tamano','LETTER');
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 		$this->objParam->addParametro('titulo_archivo','Depreciación AF');
 
 
-		/*if($this->objParam->getParametro('formato_reporte')=='pdf'){
+		if($this->objParam->getParametro('tipo')=='pdf'){
 			//Instancia la clase de pdf
-			$this->objReporteFormato=new RCompraGestionPDF ($this->objParam);
+			$this->objReporteFormato=new RDepreciacionPDF ($this->objParam);
 			$this->objReporteFormato->setDatos($this->res->datos);
 			$this->objReporteFormato->generarReporte();
 			$this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
 		}
-		else{*/
+		else{
 
 			$reporte = new RDepreciacionXls($this->objParam);
 			$reporte->setDatos($this->res->datos);
 			$reporte->generarReporte();
-		//}
+		}
 
 		$this->mensajeExito=new Mensaje();
 		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',

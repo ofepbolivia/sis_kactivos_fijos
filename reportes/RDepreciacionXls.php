@@ -93,7 +93,7 @@ class RDepreciacionXls
         $columnas = 0;
 
 
-        $numberFormat = '#,#0.##;[Red]-#,#0.##';
+        $numberFormat = '#,#0.##;[Red]-#,#0.##; #,#0.##;';
 
         $this->docexcel->setActiveSheetIndex(0);
         $sheet0 = $this->docexcel->getActiveSheet();
@@ -128,11 +128,11 @@ class RDepreciacionXls
 
         //$this->docexcel->getActiveSheet()->mergeCells('A1:A3');
         $sheet0->mergeCells('B1:P1');
-        $sheet0->setCellValue('B1', 'DEPARTAMENTO ACTIVOS FIJOS');
+        $sheet0->setCellValue('B1', 'BOLIVIANA DE AVIACIÓN');
         $sheet0->mergeCells('B2:P2');
-        $sheet0->setCellValue('B2', 'DEPRECIACIÓN DE ACTIVOS FIJOS');
+        $sheet0->setCellValue('B2', 'DETALLE DE DEPRECIACION DE ACTIVOS FIJOS AJUSTES Y REVALORIZACIONES');
         $sheet0->mergeCells('B3:P3');
-        $sheet0->setCellValue('B3', 'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin'));
+        $sheet0->setCellValue('B3', ' Al: '.date_format(date_create($this->objParam->getParametro('fecha_hasta')), 'd/m/Y'));
 
 
         $styleTitulos = array(
@@ -267,6 +267,27 @@ class RDepreciacionXls
                     $sheet0->getStyle('B'.$fila.':P'.$fila)->getAlignment()->setWrapText(true);
                     $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
                     $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                    $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                    $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                    $sheet0->getStyle('E'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                    $sheet0->getStyle('F'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                    $sheet0->getStyle('G'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                    $sheet0->getStyle('H'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                    $sheet0->getStyle('I'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                    $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                    $sheet0->getStyle('M'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                    $sheet0->getStyle('N'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                    $sheet0->getStyle('O'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                    $sheet0->getStyle('P'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                    $sheet0->getStyle('F'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                    $sheet0->getStyle('G'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                    $sheet0->getStyle('H'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                    $sheet0->getStyle('I'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                    $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                    $sheet0->getStyle('M'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                    $sheet0->getStyle('N'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                    $sheet0->getStyle('O'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                    $sheet0->getStyle('P'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, '');
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, $value['codigo']);
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, $value['denominacion']);
@@ -285,15 +306,38 @@ class RDepreciacionXls
 
 
             }else if($value['tipo'] == 'detalle'){
+                $fecha_dep =  $value['fecha_ini_dep'] != '' ?date_format(date_create($value['fecha_ini_dep']), 'd/m/Y'):'';
+
                 $styleTitulos['fill']['color']['rgb'] = 'e6e8f4';
                 $sheet0->getStyle('B'.$fila.':P'.$fila)->applyFromArray($styleTitulos);
                 $sheet0->getStyle('B'.$fila.':P'.$fila)->getAlignment()->setWrapText(true);
                 $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
                 $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                $sheet0->getStyle('E'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $sheet0->getStyle('F'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('G'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('H'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('I'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('M'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('N'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('O'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('P'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+                $sheet0->getStyle('F'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('G'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('H'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('I'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('M'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('N'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('O'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('P'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, $contador);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, $value['codigo']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, $value['denominacion']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, $value['fecha_ini_dep']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, $fecha_dep);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, $value['monto_vigente_orig_100']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, $value['monto_vigente_orig']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['inc_actualiz']);
@@ -313,8 +357,30 @@ class RDepreciacionXls
                 $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
                 $sheet0->getStyle('B'.$fila.':P'.$fila)->applyFromArray($styleTitulos);
                 $sheet0->getStyle('B'.$fila.':P'.$fila)->getAlignment()->setWrapText(true);
+
                 $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
                 $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                $sheet0->getStyle('E'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $sheet0->getStyle('F'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('G'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('H'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('I'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('M'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('N'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('O'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                $sheet0->getStyle('P'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+                $sheet0->getStyle('F'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('G'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('H'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('I'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('M'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('N'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('O'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                $sheet0->getStyle('P'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, '');
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, 'TOTAL FINAL');
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, '');

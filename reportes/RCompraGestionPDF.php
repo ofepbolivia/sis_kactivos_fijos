@@ -27,7 +27,13 @@ class RCompraGestionPDF extends  ReportePDF{
         //primera linea
         $this->Cell(10,3,'NUM','TRL',0,'C');
         $this->Cell(18,3,'CODIGO','TRL',0,'C');
-        $this->Cell(57,3,'DESCRIPCIÓN','TRL',0,'C');
+        //var_dump($this->objParam->getParametro('desc_nombre'));exit;
+        if($this->objParam->getParametro('desc_nombre') == 'desc'){
+            $this->Cell(57,3,'DESCRIPCIÓN','TRL',0,'C');
+        }else{
+            $this->Cell(57,3,'DENOMINACIÓN','TRL',0,'C');
+        }
+
         $this->Cell(13,3,'FECHA','TRL',0,'C');
         $this->Cell(13,3,'NUM','TRL',0,'C');
         $this->Cell(13,3,'FECHA','TRL',0,'C');
@@ -82,7 +88,7 @@ class RCompraGestionPDF extends  ReportePDF{
         $this->tablewidths=array(10,18,57,13,13,13,15,14,14,17,17);
         $this->tablealigns=array('C','L','L','C','C','C','C','C','C','R','R');
 
-
+        $tipo = $this->objParam->getParametro('tipo_reporte');
         foreach($this->datos as $record){
 
             $this->SetFont('','B',6);

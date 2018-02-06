@@ -629,6 +629,7 @@ class MODActivoFijo extends MODbase{
 
 		$this->setParametro('fecha_ini','fecha_ini','date');
 		$this->setParametro('fecha_fin','fecha_fin','date');
+		$this->setParametro('desc_nombre','desc_nombre','varchar');
 
 
         //Definicion de la lista del resultado del query

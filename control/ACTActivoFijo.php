@@ -510,7 +510,6 @@ class ACTActivoFijo extends ACTbase{
 
 	function comprasXgestion(){
 
-
 		if($this->objParam->getParametro('estado')!= ''){
 			$this->objParam->addFiltro("(taf.estado = ''".$this->objParam->getParametro('estado')."'' OR taf.estado is null)");
 		}
@@ -539,6 +538,9 @@ class ACTActivoFijo extends ACTbase{
 		$this->objParam->addParametro('tamano','LETTER');
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 		$this->objParam->addParametro('titulo_archivo','ComprasGestión');
+		$this->objParam->addParametro('desc_nombre',$this->objParam->getParametro('desc_nombre'));
+
+
 		if($this->objParam->getParametro('formato_reporte')=='pdf'){
 			//Instancia la clase de pdf
 			$this->objReporteFormato=new RCompraGestionPDF ($this->objParam);

@@ -14,6 +14,28 @@ header("content-type: text/javascript; charset=UTF-8");
         Atributos : [
 
             {
+                config : {
+                    name : 'configuracion_reporte',
+                    fieldLabel : 'Configuración Reporte',
+                    allowBlank : false,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    disabled: true,
+                    mode : 'local',
+                    store : new Ext.data.ArrayStore({
+                        fields : ['tipo', 'valor'],
+                        data : [['gestion', 'Compras de Gestion'], ['detalle', 'Detalle Activos Fijos']]
+                    }),
+                    anchor : '100%',
+                    valueField : 'tipo',
+                    displayField : 'valor'
+                },
+                type : 'ComboBox',
+                id_grupo : 0,
+                form : true
+            },
+
+            {
                 config:{
                     name: 'fecha_ini',
                     fieldLabel: 'Fecha Inicio',
@@ -63,7 +85,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     displayField : 'valor'
                 },
                 type : 'ComboBox',
-                id_grupo : 0,
+                id_grupo : 1,
                 form : true
             },
 
@@ -109,7 +131,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     }
                 },
                 type : 'ComboBox',
-                id_grupo : 0,
+                id_grupo : 1,
                 grid : true,
                 form : true
             },
@@ -131,7 +153,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     displayField : 'valor'
                 },
                 type : 'ComboBox',
-                id_grupo : 0,
+                id_grupo : 1,
                 form : true
             },
 
@@ -153,9 +175,215 @@ header("content-type: text/javascript; charset=UTF-8");
                     displayField : 'valor'
                 },
                 type : 'ComboBox',
-                id_grupo : 0,
+                id_grupo : 1,
                 form : true
-            }
+            },
+            {
+                config : {
+                    name : 'desc_nombre',
+                    fieldLabel : 'Descripcion / Nombre',
+                    allowBlank : false,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'local',
+                    store : new Ext.data.ArrayStore({
+                        fields : ['tipo', 'valor'],
+                        data : [['desc', 'Descripción'], ['nombre', 'Nombre']]
+                    }),
+                    anchor : '50%',
+                    valueField : 'tipo',
+                    displayField : 'valor'
+                },
+                type : 'ComboBox',
+                id_grupo : 1,
+                form : true
+            },
+            {
+                config : {
+                    name : 'financiador',
+                    fieldLabel : 'Financiador',
+                    allowBlank : false,
+                    emptyText : 'Financiador...',
+                    disabled: true,
+                    store : new Ext.data.JsonStore({
+                        url : '../../sis_parametros/control/Financiador/listarFinanciador',
+                        id : 'id_financiador',
+                        root : 'datos',
+                        sortInfo : {
+                            field : 'codigo_financiador',
+                            direction : 'ASC'
+                        },
+                        totalProperty : 'total',
+                        fields : ['id_financiador', 'codigo_financiador', 'nombre_financiador', 'descripcion_financiador'],
+                        remoteSort : true,
+                        baseParams : {
+                            par_filtro : 'codigo_financiador#descripcion_financiador',
+                            cod_subsistema:'KAF'
+                        }
+                    }),
+                    valueField : 'id_financiador',
+                    displayField : 'nombre_financiador',
+                    gdisplayField : 'nombre_financiador',
+                    hiddenName : 'id_financiador',
+                    forceSelection : true,
+                    typeAhead : false,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'remote',
+                    pageSize : 10,
+                    queryDelay : 1000,
+                    anchor : '50%',
+                    gwidth : 150,
+                    minChars : 2,
+                    renderer : function(value, p, record) {
+                        return String.format('{0}', record.data['descripcion']);
+                    }
+                },
+                type : 'ComboBox',
+                id_grupo : 2,
+                grid : true,
+                form : true
+            },
+            {
+                config : {
+                    name : 'programa',
+                    fieldLabel : 'Programa',
+                    allowBlank : false,
+                    emptyText : 'Programa...',
+                    disabled: true,
+                    store : new Ext.data.JsonStore({
+                        url : '../../sis_parametros/control/Programa/listarPrograma',
+                        id : 'id_programa',
+                        root : 'datos',
+                        sortInfo : {
+                            field : 'codigo_programa',
+                            direction : 'ASC'
+                        },
+                        totalProperty : 'total',
+                        fields : ['id_programa', 'codigo_programa', 'nombre_programa', 'descripcion_programa'],
+                        remoteSort : true,
+                        baseParams : {
+                            par_filtro : 'descripcion',
+                            cod_subsistema:'KAF'
+                        }
+                    }),
+                    valueField : 'id_programa',
+                    displayField : 'nombre_programa',
+                    gdisplayField : 'nombre_programa',
+                    hiddenName : 'id_programa',
+                    forceSelection : true,
+                    typeAhead : false,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'remote',
+                    pageSize : 10,
+                    queryDelay : 1000,
+                    anchor : '50%',
+                    gwidth : 150,
+                    minChars : 2,
+                    renderer : function(value, p, record) {
+                        return String.format('{0}', record.data['descripcion']);
+                    }
+                },
+                type : 'ComboBox',
+                id_grupo : 2,
+                grid : true,
+                form : true
+            },
+            {
+                config : {
+                    name : 'proyecto',
+                    fieldLabel : 'Proyecto',
+                    allowBlank : false,
+                    emptyText : 'Proyecto...',
+                    disabled: true,
+                    store : new Ext.data.JsonStore({
+                        url : '../../sis_parametros/control/Proyecto/listarProyecto',
+                        id : 'id_proyecto',
+                        root : 'datos',
+                        sortInfo : {
+                            field : 'codigo_proyecto',
+                            direction : 'ASC'
+                        },
+                        totalProperty : 'total',
+                        fields : ['id_proyecto', 'codigo_proyecto', 'nombre_proyecto', 'descripcion_proyecto'],
+                        remoteSort : true,
+                        baseParams : {
+                            par_filtro : 'codigo_proyecto#nombre_proyecto',
+                            cod_subsistema:'KAF'
+                        }
+                    }),
+                    valueField : 'id_proyecto',
+                    displayField : 'nombre_proyecto',
+                    gdisplayField : 'nombre_proyecto',
+                    hiddenName : 'id_proyecto',
+                    forceSelection : true,
+                    typeAhead : false,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'remote',
+                    pageSize : 10,
+                    queryDelay : 1000,
+                    anchor : '50%',
+                    gwidth : 150,
+                    minChars : 2,
+                    renderer : function(value, p, record) {
+                        return String.format('{0}', record.data['descripcion']);
+                    }
+                },
+                type : 'ComboBox',
+                id_grupo : 2,
+                grid : true,
+                form : true
+            },
+            {
+                config : {
+                    name : 'actividad',
+                    fieldLabel : 'Actividad',
+                    allowBlank : false,
+                    emptyText : 'Actividad...',
+                    disabled: true,
+                    store : new Ext.data.JsonStore({
+                        url : '../../sis_parametros/control/Actividad/listarActividad',
+                        id : 'id_actividad',
+                        root : 'datos',
+                        sortInfo : {
+                            field : 'codigo_actividad',
+                            direction : 'ASC'
+                        },
+                        totalProperty : 'total',
+                        fields : ['id_actividad', 'codigo_actividad', 'nombre_actividad', 'descripcion_actividad'],
+                        remoteSort : true,
+                        baseParams : {
+                            par_filtro : 'descripcion',
+                            cod_subsistema:'KAF',
+                            catalogo_tipo:'tactivo_fijo__estado'
+                        }
+                    }),
+                    valueField : 'codigo_actividad',
+                    displayField : 'descripcion_actividad',
+                    gdisplayField : 'descripcion_actividad',
+                    hiddenName : 'id_actividad',
+                    forceSelection : true,
+                    typeAhead : false,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'remote',
+                    pageSize : 10,
+                    queryDelay : 1000,
+                    anchor : '50%',
+                    gwidth : 150,
+                    minChars : 2,
+                    renderer : function(value, p, record) {
+                        return String.format('{0}', record.data['descripcion']);
+                    }
+                },
+                type : 'ComboBox',
+                id_grupo : 2,
+                grid : true,
+                form : true
+            },
+
         ],
         title : 'Reporte General Activos',
         ActSave : '../../sis_kactivos_fijos/control/ActivoFijo/comprasXgestion',
@@ -223,17 +451,108 @@ header("content-type: text/javascript; charset=UTF-8");
             layout : 'column',
             labelAlign: 'top',
             border : false,
-            items : [{
-                xtype : 'fieldset',
-                layout : 'form',
-                border : true,
-                title : 'Reporte Compras x Gestión',
-                bodyStyle : 'padding:0 10px 0;',
-                columnWidth : .40,
-                items : [],
-                id_grupo : 0/*,
-                collapsible : true*/
-            }]
+            autoScroll: true,
+            //frame:true,
+            //bodyStyle: 'padding-right:5px;',
+            items : [
+                {
+                    columnWidth: .22,
+                    border: false,
+                    //split: true,
+                    layout: 'anchor',
+                    autoScroll: true,
+                    autoHeight: true,
+                    collapseFirst : false,
+                    collapsible: false,
+                    anchor: '100%',
+                    //bodyStyle: 'padding-right:20px;',
+                    items:[
+                        {
+                            anchor: '100%',
+                            //bodyStyle: 'padding-right:10px;padding-left:10px;',
+                            autoHeight: true,
+                            border: false,
+                            items:[
+                                {
+                                    xtype: 'fieldset',
+                                    layout: 'form',
+                                    border: true,
+                                    title: 'Eliga un tipo de Reporte',
+                                    bodyStyle: 'padding: 5px 10px 10px 10px;',
+
+                                    items: [],
+                                    id_grupo: 0
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    columnWidth: .39,
+                    border: false,
+                    //split: true,
+                    layout: 'anchor',
+                    autoScroll: true,
+                    autoHeight: true,
+                    collapseFirst : false,
+                    collapsible: false,
+                    anchor: '100%',
+
+                    items:[
+                        {
+                            anchor: '100%',
+                            bodyStyle: 'padding-right:5px;padding-left:10px;',
+                            autoHeight: true,
+                            border: false,
+                            items:[
+                                {
+                                    xtype: 'fieldset',
+                                    layout: 'form',
+                                    border: true,
+                                    title: 'Reporte Compras x Gestión',
+                                    bodyStyle: 'padding: 5px 10px 10px 10px;',
+
+                                    items: [],
+                                    id_grupo: 1
+                                }
+                            ]
+                        }
+                    ]
+                },
+
+                {
+                    columnWidth: .39,
+                    border: false,
+                    //split: true,
+                    layout: 'anchor',
+                    autoScroll: true,
+                    autoHeight: true,
+                    collapseFirst : false,
+                    collapsible: false,
+                    anchor: '100%',
+
+                    items:[
+                        {
+                            anchor: '100%',
+                            bodyStyle: 'padding-right:10px;padding-left:5px;',
+                            autoHeight: true,
+                            border: false,
+                            items:[
+                                {
+                                    xtype: 'fieldset',
+                                    layout: 'form',
+                                    border: true,
+                                    title: 'Datos Estructura Programatica',
+                                    bodyStyle: 'padding: 5px 10px 10px 10px;',
+
+                                    items: [],
+                                    id_grupo: 2
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
         }]
     })
 </script>

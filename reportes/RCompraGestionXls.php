@@ -98,7 +98,7 @@ class RCompraGestionXls
         $this->docexcel->setActiveSheetIndex(0);
         $sheet0 = $this->docexcel->getActiveSheet();
 
-        $sheet0->setTitle('Reporte Activos Depreciación');
+        $sheet0->setTitle('Compras x Gestión');
 
         //$datos = $this->objParam->getParametro('datos');
 
@@ -211,8 +211,11 @@ class RCompraGestionXls
         $sheet0->setCellValue('B5', 'Nº');
 
         $sheet0->setCellValue('C5', 'CODIGO');
-
-        $sheet0->setCellValue('D5', 'DESCRIPCIÓN');
+        if($this->objParam->getParametro('desc_nombre') == 'desc') {
+            $sheet0->setCellValue('D5', 'DESCRIPCIÓN');
+        }else{
+            $sheet0->setCellValue('D5', 'DENOMINACIÓN');
+        }
 
         $sheet0->setCellValue('E5', 'FECHA COMPRA');
 
