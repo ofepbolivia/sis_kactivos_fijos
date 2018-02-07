@@ -83,18 +83,20 @@ class RCompraGestionPDF extends  ReportePDF{
         $total_general_87 = 0;
         $total_general_100 = 0;
 
-        $i=1;
+        $total_grupo_87 = 0;
+        $total_grupo_100 = 0;
 
+        $i=1;
         $this->tablewidths=array(10,18,57,13,13,13,15,14,14,17,17);
         $this->tablealigns=array('C','L','L','C','C','C','C','C','C','R','R');
 
         $tipo = $this->objParam->getParametro('tipo_reporte');
         foreach($this->datos as $record){
-
-            $this->SetFont('','B',6);
+            
             if($record['nivel'] == 0 || $record['nivel'] == 1){
-
+                $this->SetFont('','B',6);
                 if($codigo != '' && ($record['nivel'] == 0 || $record['nivel'] == 1) && $cont_87>0){
+
                     $total_general_87 = $total_general_87 + $cont_87;
                     $total_general_100 = $total_general_100 + $cont_100;
                     $this->SetFillColor(79, 91, 147);
@@ -105,7 +107,7 @@ class RCompraGestionPDF extends  ReportePDF{
                     $RowArray = array(
                         's0'  => '',
                         's1' => '',
-                        's2' => 'Total Parcial',
+                        's2' => 'Total Parcial Grupo',
                         's3' => '',
                         's4' => '',
                         's5' => '',
@@ -117,9 +119,31 @@ class RCompraGestionPDF extends  ReportePDF{
                     );
 
                     $this->MultiRow($RowArray,true,1);
+                    $total_grupo_100 += $cont_100;
+                    $total_grupo_87 += $cont_87;
                     $cont_100 = 0;
                     $cont_87 = 0;
+                    if($record['nivel'] == 0 && $codigo != $record['codigo_completo']){
+                        $RowArray = array(
+                            's0'  => '',
+                            's1' => '',
+                            's2' => 'Total Final Grupo ('.$codigo.')',
+                            's3' => '',
+                            's4' => '',
+                            's5' => '',
+                            's6' => '',
+                            's7' => '',
+                            's8' => '',
+                            's9' => $total_grupo_100,
+                            's10' => $total_grupo_87
+                        );
+                        $this->MultiRow($RowArray,true,1);
+                        $total_grupo_100 = 0;
+                        $total_grupo_87 = 0;
+
+                    }
                 }
+
 
                 $this->SetFillColor(224, 235, 255);
 
@@ -141,10 +165,12 @@ class RCompraGestionPDF extends  ReportePDF{
                 );
 
                 $this->MultiRow($RowArray,true,1);
-
+                if($record['nivel'] == 0){
+                    $codigo = $record['codigo_completo'];
+                }
             }else{
 
-
+                $this->SetFont('','',6);
                 $this->tableborders=array('RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB');
                 $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2);
                 $RowArray = array(
@@ -166,22 +192,22 @@ class RCompraGestionPDF extends  ReportePDF{
                 $i++;
                 $cont_100 = $cont_100 + $record['monto_compra_orig_100'];
                 $cont_87  = $cont_87+ $record['monto_compra_orig'];
-                $codigo = $record['codigo_completo'];
+                //$codigo = $record['codigo_completo'];
             }
 
         }
 
-        $total_general_87 = $total_general_87 + $cont_87;
-        $total_general_100 = $total_general_100 + $cont_100;
-        $this->SetFillColor(79, 91, 147);
+        $total_general_87 += $cont_87;
+        $total_general_100 += $cont_100;
 
+        $this->SetFillColor(79, 91, 147);
         $this->SetTextColor(0);
         $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
         $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2);
         $RowArray = array(
             's0'  => '',
             's1' => '',
-            's2' => 'Total Parcial',
+            's2' => 'Total Parcial Grupo',
             's3' => '',
             's4' => '',
             's5' => '',
@@ -191,7 +217,22 @@ class RCompraGestionPDF extends  ReportePDF{
             's9' => $cont_100,
             's10' => $cont_87
         );
+        $this->MultiRow($RowArray,true,1);
 
+        //Final Grupo
+        $RowArray = array(
+            's0'  => '',
+            's1' => '',
+            's2' => 'Total Final Grupo ('.$codigo.')',
+            's3' => '',
+            's4' => '',
+            's5' => '',
+            's6' => '',
+            's7' => '',
+            's8' => '',
+            's9' => $total_grupo_100+$cont_100,
+            's10' => $total_grupo_87+$cont_87
+        );
         $this->MultiRow($RowArray,true,1);
 
         $this->SetFillColor(79, 91, 147);
@@ -200,7 +241,7 @@ class RCompraGestionPDF extends  ReportePDF{
         $RowArray = array(
             's0'  => '',
             's1' => '',
-            's2' => 'Totales',
+            's2' => 'Total',
             's3' => '',
             's4' => '',
             's5' => '',
@@ -215,99 +256,5 @@ class RCompraGestionPDF extends  ReportePDF{
 
 
     }
-
-    function basico($numero) {
-        $valor = array ('Uno','Dos','Tres','Cuatro','Cinco','Seis','Siete','Ocho',
-            'Nueve','Diez','Once','Doce','Trece','Catorce','Quince','Dieciséis','Diecisiete',
-            'Dieciocho','Diecinueve','Veinte','Veintiuno','Veintidós','Veintitrés','Veinticuatro','Veinticinco',
-            'Veintiséis','Veintisiete','Veintiocho','Veintinueve');
-        return $valor[$numero - 1];
-    }
-
-    function decenas($n) {
-        $decenas = array (30=>'Treinta',40=>'Cuarenta',50=>'Cincuenta',60=>'Sesenta',
-            70=>'Setenta',80=>'Ochenta',90=>'Noventa');
-        if( $n <= 29) return $this->basico($n);
-        $x = $n % 10;
-        if ( $x == 0 ) {
-            return $decenas[$n];
-        } else
-            return $decenas[$n - $x].' y '. $this->basico($x);
-    }
-
-    function centenas($n) {
-        $cientos = array (100 =>'Cien',200 =>'Doscientos',300=>'Trecientos',
-            400=>'Cuatrocientos', 500=>'Quinientos',600=>'Seiscientos',
-            700=>'Setecientos',800=>'Ochocientos', 900 =>'Novecientos');
-        if( $n >= 100) {
-            if ( $n % 100 == 0 ) {
-                return $cientos[$n];
-            } else {
-                $u = (int) substr($n,0,1);
-                $d = (int) substr($n,1,2);
-                return
-                    (($u == 1)?'Ciento':$cientos[$u*100]).' '.$this->decenas($d);
-            }
-        } else
-            return $this->decenas($n);
-    }
-
-    function miles($n) {
-        if($n > 999) {
-            if( $n == 1000) {return 'Mil';}
-            else {
-                $l = strlen($n);
-                $c = (int)substr($n,0,$l-3);
-                $x = (int)substr($n,-3);
-                if($c == 1) {$cadena = 'Mil '.$this->centenas($x);}
-                else if($x != 0) {$cadena = $this->centenas($c).' Mil '.$this->centenas($x);}
-                else $cadena = $this->centenas($c). ' Mil';
-                return $cadena;
-            }
-        } else return $this->centenas($n);
-    }
-
-    function millones($n) {
-        if($n == 1000000) {return 'Un Millón';}
-        else {
-            $l = strlen($n);
-            $c = (int)substr($n,0,$l-6);
-            $x = (int)substr($n,-6);
-            if($c == 1) {
-                $cadena = ' Millón ';
-            } else {
-                $cadena = ' Millones ';
-            }
-            return $this->miles($c).$cadena.(($x > 0)?$this->miles($x):'');
-        }
-    }
-    function convertir($n) {
-        switch (true) {
-            case ( $n >= 1 && $n <= 29) : return $this->basico($n); break;
-            case ( $n >= 30 && $n < 100) : return $this->decenas($n); break;
-            case ( $n >= 100 && $n < 1000) : return $this->centenas($n); break;
-            case ($n >= 1000 && $n <= 999999): return $this->miles($n); break;
-            case ($n >= 1000000): return $this->millones($n);
-        }
-    }
-
-    function generarImagen($nom, $car, $ofi){
-        $cadena_qr = 'Nombre: '.$nom. "\n" . 'Cargo: '.$car."\n".'Oficina: '.$ofi ;
-        $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
-        $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
-        $im = imagecreatefromstring($png);
-        if ($im !== false) {
-            header('Content-Type: image/png');
-            imagepng($im, dirname(__FILE__) . "/../../reportes_generados/" . $nom . ".png");
-            imagedestroy($im);
-
-        } else {
-            echo 'A ocurrido un Error.';
-        }
-        $url_archivo = dirname(__FILE__) . "/../../reportes_generados/" . $nom . ".png";
-
-        return $url_archivo;
-    }
-
 }
 ?>

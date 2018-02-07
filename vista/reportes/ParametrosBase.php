@@ -129,6 +129,8 @@ Ext.define('Phx.vista.ParametrosBase', {
             tpl:'<tpl for="."><div class="x-combo-list-item"><p><b>Código:</b> {codigo}</p><p>{denominacion}</p> </div></tpl>',
             style: this.setBackgroundColor('cmbActivo')
 		});
+
+
 		this.txtDenominacion = new Ext.form.TextField({
 			fieldLabel: 'Denominación',
 			width: '100%',
@@ -392,6 +394,24 @@ Ext.define('Phx.vista.ParametrosBase', {
 			minChars: 2,
 			style: this.setBackgroundColor('cmbDepto')
 		});
+
+		//(F.E.A)
+		this.descNombre = new Ext.form.ComboBox({
+			name : 'desc_nombre',
+			fieldLabel : 'Desc. / Nombre',
+			triggerAction : 'all',
+			lazyRender : true,
+			mode : 'local',
+			store : new Ext.data.ArrayStore({
+				fields : ['tipo', 'valor'],
+				data : [['desc', 'Descripción'], ['nombre', 'Nombre']]
+			}),
+			anchor : '50%',
+			valueField : 'tipo',
+			displayField : 'valor',
+			style: this.setBackgroundColor('cmbClasificacion')
+		});
+
 		this.cmbDeposito = new Ext.form.ComboBox({
 			fieldLabel: 'Deposito',
 			anchor: '100%',
@@ -495,7 +515,7 @@ Ext.define('Phx.vista.ParametrosBase', {
         	title: 'General',
         	items: [this.cmpFechas,this.cmbClasificacion,this.cmbActivo,this.txtDenominacion,this.cmbMoneda,this.cmpFechaCompra,this.cmpMontos,this.cmbTipo,this.cmbLugar,this.txtNroCbteAsociado,
         		this.dteFechaIniDep,this.cmbEstado,this.cmbCentroCosto,this.txtUbicacionFisica,
-				this.cmbOficina,this.cmbResponsable,this.cmbDepto,this.cmbDeposito,this.radGroupDeprec]
+				this.cmbOficina,this.cmbResponsable,this.cmbDepto, this.descNombre, this.cmbDeposito,this.radGroupDeprec]
         });
 
         this.fieldSetIncluir = new Ext.form.FieldSet({
@@ -622,6 +642,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.radGroupTangible.setValue('ambos');
 		this.radGroupEstadoMov.setValue('todos');
 		this.cmbDepto.setValue('');
+		this.descNombre.setValue('');
 		this.cmbDeposito.setValue('');
 		this.cmbMoneda.setValue('');
 		this.moneda='';
@@ -699,6 +720,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			af_tangible: this.radGroupTangible.getValue().inputValue,
 			af_estado_mov: this.radGroupEstadoMov.getValue().inputValue,
 			id_depto: this.cmbDepto.getValue(),
+			desc_nombre: this.descNombre.getValue(),
 			id_deposito: this.cmbDeposito.getValue(),
 			id_moneda: this.cmbMoneda.getValue(),
 			desc_moneda: this.moneda,
@@ -795,6 +817,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.configElement(this.radGroupTransito,false,true);
 		this.configElement(this.radGroupTangible,false,true);
 		this.configElement(this.cmbDepto,false,true);
+		this.configElement(this.descNombre,false,true);
 		this.configElement(this.cmbDeposito,false,true);
 		this.configElement(this.lblDesde,false,true);
 		this.configElement(this.lblHasta,false,true);

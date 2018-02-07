@@ -66,6 +66,7 @@ Phx.vista.ParametrosRepDepreciacion = {
 		this.configElement(this.radGroupTransito,false,true);
 		this.configElement(this.radGroupTangible,true,true);
 		this.configElement(this.cmbDepto,true,true);
+		this.configElement(this.descNombre,true,true);
 		this.configElement(this.cmbDeposito,false,true);
 		this.configElement(this.lblDesde,false,true);
 		this.configElement(this.lblHasta,true,true);

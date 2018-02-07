@@ -245,15 +245,15 @@ class RCompraGestionXls
         $total_general_87 = 0;
         $total_general_100 = 0;
 
+        $total_grupo_87 = 0;
+        $total_grupo_100 = 0;
+
         //************************************************Detalle***********************************************
 
 
 
         $sheet0->getRowDimension('5')->setRowHeight(35);
-        /*$sheet0->getStyle('B5:L5')->applyFromArray($styleTitulos);
-        $sheet0->getStyle('C5:L5')->getAlignment()->setWrapText(true);*/
         foreach($datos as $value) {
-
 
             if($value['nivel'] == 0 || $value['nivel'] == 1) {
 
@@ -277,9 +277,30 @@ class RCompraGestionXls
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,$cont_100);
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,$cont_87);
 
+
+                    $fila ++;
+
+                    $total_grupo_100 += $cont_100;
+                    $total_grupo_87 += $cont_87;
                     $cont_100 = 0;
                     $cont_87 = 0;
-                    $fila ++;
+                    if($value['nivel'] == 0 && $codigo != $value['codigo_completo']){
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,$fila,'');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,$fila,'');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila,'Total Final Grupo ('.$codigo.')');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4,$fila,'');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5,$fila,'');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,$fila,'');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7,$fila,'');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8,$fila,'');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$fila,'');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,$total_grupo_100);
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,$total_grupo_87);
+
+                        $total_grupo_100 = 0;
+                        $total_grupo_87 = 0;
+                        $fila ++;
+                    }
                 }
 
 
@@ -299,7 +320,9 @@ class RCompraGestionXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,'');
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,'');
 
-                //$fila ++;
+                if($value['nivel'] == 0){
+                    $codigo = $value['codigo_completo'];
+                }
             }else {
                 $styleTitulos['fill']['color']['rgb'] = 'e6e8f4';
                 $sheet0->getStyle('B'.$fila.':L'.$fila)->applyFromArray($styleTitulos);
@@ -320,7 +343,7 @@ class RCompraGestionXls
                 $contador++;
                 $cont_100 = $cont_100 + $value['monto_compra_orig_100'];
                 $cont_87  = $cont_87 + $value['monto_compra_orig'];
-                $codigo = $value['codigo_completo'];
+                //$codigo = $value['codigo_completo'];
             }
 
             $fila++;
@@ -345,6 +368,20 @@ class RCompraGestionXls
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$fila,'');
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,$cont_100);
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,$cont_87);
+
+        $fila ++;
+
+        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,$fila,'');
+        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,$fila,'');
+        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila,'Total Final Grupo ('.$codigo.')');
+        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4,$fila,'');
+        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5,$fila,'');
+        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,$fila,'');
+        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7,$fila,'');
+        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8,$fila,'');
+        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$fila,'');
+        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,$total_grupo_100+$cont_100);
+        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,$total_grupo_87+$cont_87);
 
         $fila ++;
 

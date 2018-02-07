@@ -8,7 +8,7 @@ class RDepreciacionPDF extends  ReportePDF{
     var $numeracion;
     var $ancho_sin_totales;
     var $cantidad_columnas_estaticas;
-    
+
     function Header() {
         $this->Ln(3);
 
@@ -117,62 +117,64 @@ class RDepreciacionPDF extends  ReportePDF{
             if($record['tipo'] == 'clasif') {
 
 
-                    $this->SetFont('','B',6);
-                    $this->SetFillColor(224, 235, 255);
+                $this->SetFont('','B',6);
+                $this->SetFillColor(224, 235, 255);
 
-                    $this->SetTextColor(0);
+                $this->SetTextColor(0);
 
-                    $this->tableborders=array('LB','B','B','B','BLR','BLR','BLR','BLR','B','B','BLR','BLR','BLR','BLR','RB');
-                    $this->tablenumbers=array(0,0,0,0,2,2,2,2,0,0,2,2,2,2,2);
-                    $RowArray = array(
-                        's0'  => '',
-                        's1' => $record['codigo'],
-                        's2' => $record['denominacion'],
-                        's3' => '',
-                        's4' => $record['monto_vigente_orig_100'],
-                        's5' => $record['monto_vigente_orig'],
-                        's6' => $record['inc_actualiz'],
-                        's7' => $record['monto_actualiz'],
-                        's8' => '',
-                        's9' => '',
-                        's10' => $record['depreciacion_acum_gest_ant'],
-                        's11' => $record['depreciacion_acum_actualiz_gest_ant'],
-                        's12' => $record['depreciacion_per'],
-                        's13' => $record['depreciacion_acum'],
-                        's14' => $record['monto_vigente']
-                    );
+                $this->tableborders=array('LB','B','B','B','BLR','BLR','BLR','BLR','B','B','BLR','BLR','BLR','BLR','RB');
+                $this->tablenumbers=array(0,0,0,0,2,2,2,2,0,0,2,2,2,2,2);
+                $RowArray = array(
+                    's0'  => '',
+                    's1' => $record['codigo'],
+                    's2' => $record['denominacion'],
+                    's3' => '',
+                    's4' => $record['monto_vigente_orig_100']!=''?$record['monto_vigente_orig_100']:0,
+                    's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
+                    's6' => $record['inc_actualiz']!=''?$record['inc_actualiz']:0,
+                    's7' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
+                    's8' => '',
+                    's9' => '',
+                    's10' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
+                    's11' => $record['depreciacion_acum_actualiz_gest_ant']!=''?$record['depreciacion_acum_actualiz_gest_ant']:0,
+                    's12' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,
+                    's13' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
+                    's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0
+                );
 
-                    $this->MultiRow($RowArray,true,1);
+                $this->MultiRow($RowArray,true,1);
 
             }else if($record['tipo'] == 'detalle'){
                 $this->SetFont('','',6);
                 $this->SetFillColor(255, 255, 255);
                 $this->SetTextColor(0);
-                $fecha_dep =  $record['fecha_ini_dep'] != '' ?date_format(date_create($record['fecha_ini_dep']), 'd/m/Y'):'';
+                //$fecha_dep =  $record['fecha_ini_dep'] != '' ?date_format(date_create($record['fecha_ini_dep']), 'd/m/Y'):'';
                 $this->tableborders=array('LB','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','RB');
                 $this->tablenumbers=array(0,0,0,0,2,2,2,2,0,0,2,2,2,2,2);
                 $RowArray = array(
                     's0'  => $contador,
-                    's1' => trim($record['codigo'],''),
-                    's2' => trim($record['denominacion'],''),
-                    's3' => $fecha_dep,
-                    's4' => $record['monto_vigente_orig_100'],
-                    's5' => $record['monto_vigente_orig'],
-                    's6' => $record['inc_actualiz'],
-                    's7' => $record['monto_actualiz'],
+                    's1' => $record['codigo'],
+                    's2' => $record['denominacion'],
+                    's3' => $record['fecha_ini_dep'],
+                    's4' => $record['monto_vigente_orig_100']!=''?$record['monto_vigente_orig_100']:0,
+                    's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
+                    's6' => $record['inc_actualiz']!=''?$record['inc_actualiz']:0,
+                    's7' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
                     's8' => $record['vida_util_orig'],
                     's9' => $record['vida_util'],
-                    's10' => $record['depreciacion_acum_gest_ant'],
-                    's11' => $record['depreciacion_acum_actualiz_gest_ant'],
-                    's12' => $record['depreciacion_per'],
-                    's13' => $record['depreciacion_acum'],
-                    's14' => $record['monto_vigente']
+                    's10' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
+                    's11' => $record['depreciacion_acum_actualiz_gest_ant']!=''?$record['depreciacion_acum_actualiz_gest_ant']:0,
+                    's12' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,
+                    's13' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
+                    's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0
                 );
 
                 $this->MultiRow($RowArray,true,1);
                 $contador ++;
-            }else {
+            }else if($record['tipo'] == 'total') {
+
                 $this->tableborders=array('LB','B','B','B','BLR','BLR','BLR','BLR','B','B','BLR','BLR','BLR','BLR','RB');
+                $this->tablenumbers=array(0,0,0,0,2,2,2,2,0,0,2,2,2,2,2);
                 $this->SetFont('','B',6);
                 $this->SetFillColor(224, 235, 255);
 
@@ -182,17 +184,17 @@ class RDepreciacionPDF extends  ReportePDF{
                     's1' => 'TOTAL FINAL',
                     's2' => '',
                     's3' => '',
-                    's4' => $record['monto_vigente_orig_100'],
-                    's5' => $record['monto_vigente_orig'],
-                    's6' => $record['inc_actualiz'],
-                    's7' => $record['monto_actualiz'],
+                    's4' => $record['monto_vigente_orig_100']!=''?$record['monto_vigente_orig_100']:0,
+                    's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
+                    's6' => $record['inc_actualiz']!=''?$record['inc_actualiz']:0,
+                    's7' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
                     's8' => '',
                     's9' => '',
-                    's10' => $record['depreciacion_acum_gest_ant'],
-                    's11' => $record['depreciacion_acum_actualiz_gest_ant'],
-                    's12' => $record['depreciacion_per'],
-                    's13' => $record['depreciacion_acum'],
-                    's14' => $record['monto_vigente']
+                    's10' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
+                    's11' => $record['depreciacion_acum_actualiz_gest_ant']!=''?$record['depreciacion_acum_actualiz_gest_ant']:0,
+                    's12' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,
+                    's13' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
+                    's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0
                 );
 
                 $this->MultiRow($RowArray,true,1);

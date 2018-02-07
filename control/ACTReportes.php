@@ -147,7 +147,7 @@ class ACTReportes extends ACTbase {
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 
-	//FEA
+	//(FEA) 07/02/2018 Reporte de Depreciación de activos fijos 
 	function reporteDepreciacion(){
 		$this->definirFiltros();
 		$this->objFunc = $this->create('MODReportes');
@@ -156,10 +156,10 @@ class ACTReportes extends ACTbase {
 
 		//Genera el nombre del archivo (aleatorio + titulo)
 		if($this->objParam->getParametro('tipo')=='pdf'){
-			$nombreArchivo = uniqid(md5(session_id()).'[Reporte-Compras x Gestion]').'.pdf';
+			$nombreArchivo = uniqid(md5(session_id()).'[Depreciación AF]').'.pdf';
 		}
 		else{
-			$nombreArchivo = uniqid(md5(session_id()).'Depreciación AF]').'.xls';
+			$nombreArchivo = uniqid(md5(session_id()).'[Depreciación AF]').'.xls';
 		}
 
 		$this->objParam->addParametro('orientacion','L');
