@@ -405,8 +405,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Cmp.configuracion_reporte.on('select',function (cmb, rec, ind) {
                 console.log('tipo',that.Cmp.desc_nombre);
             });*/
-
-            
             /*this.cmpFormatoReporte = this.getComponente('formato_reporte');
             this.cmpFechaIni = this.getComponente('fecha_ini');
             this.cmpFechaFin = this.getComponente('fecha_fin');

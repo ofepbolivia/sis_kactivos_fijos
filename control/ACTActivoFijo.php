@@ -11,6 +11,7 @@ require_once(dirname(__FILE__).'/../reportes/RCodigoQRAF_v1.php');
 require_once(dirname(__FILE__).'/../reportes/RCompraGestionPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RCompraGestionXls.php');
 require_once(dirname(__FILE__).'/../reportes/RDetalleAFPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RDetalleAFXls.php');
 
 class ACTActivoFijo extends ACTbase{
 

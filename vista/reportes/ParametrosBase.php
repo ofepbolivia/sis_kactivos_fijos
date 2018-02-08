@@ -603,7 +603,6 @@ Ext.define('Phx.vista.ParametrosBase', {
 	},
 
 	onReporteDep: function (cmp, event) {
-		console.log('a',cmp.argument.def, 'b',event);
 
 		var parametros = this.getParams();
 		parametros.tipo = cmp.argument.def;

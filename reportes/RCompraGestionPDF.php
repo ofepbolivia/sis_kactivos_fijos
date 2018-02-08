@@ -219,7 +219,6 @@ class RCompraGestionPDF extends  ReportePDF{
                 $cont_100 = $cont_100 + $record['monto_compra_orig_100'];
                 $cont_87  = $cont_87+ $record['monto_compra_orig'];
             }
-
         }
 
         $total_general_87 += $cont_87;

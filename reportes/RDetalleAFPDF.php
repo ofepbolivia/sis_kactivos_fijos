@@ -27,7 +27,7 @@ class RDetalleAFPDF extends  ReportePDF{
         //primera linea
         $this->Cell(10,3,'NUM','TRL',0,'C');
         $this->Cell(23,3,'CODIGO','TRL',0,'C');
-        //var_dump($this->objParam->getParametro('desc_nombre'));exit;
+        
         if($this->objParam->getParametro('desc_nombre') == 'desc'){
             $this->Cell(50,3,'DESCRIPCIÓN','TRL',0,'C');
         }else{

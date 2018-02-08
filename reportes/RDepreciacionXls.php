@@ -337,7 +337,7 @@ class RDepreciacionXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, $contador);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, $value['codigo']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, $value['denominacion']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, $value['fecha_ini_dep']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, date("d/m/Y", strtotime($value['fecha_ini_dep'])));
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, $value['monto_vigente_orig_100']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, $value['monto_vigente_orig']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['inc_actualiz']);
@@ -402,43 +402,7 @@ class RDepreciacionXls
         }
         //************************************************Fin Detalle***********************************************
 
-        /*$total_general_87 = $total_general_87 + $cont_87;
-        $total_general_100 = $total_general_100 + $cont_100;
-
-        $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
-        $sheet0->getStyle('B'.$fila.':P'.$fila)->applyFromArray($styleTitulos);
-        $sheet0->getStyle('B'.$fila.':P'.$fila)->getAlignment()->setWrapText(true);
-
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila,'Total Parcial');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,$cont_100);
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,$cont_87);
-
-        $fila ++;
-
-        $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
-        $sheet0->getStyle('B'.$fila.':P'.$fila)->applyFromArray($styleTitulos);
-        $sheet0->getStyle('B'.$fila.':P'.$fila)->getAlignment()->setWrapText(true);
-
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila,'Totales');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,$total_general_100);
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,$total_general_87);*/
-
+        
     }
 }
 

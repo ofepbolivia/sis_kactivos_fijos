@@ -87,6 +87,8 @@ Phx.vista.ParametrosRepDepreciacion = {
 		this.configElement(this.fieldSetCompra,false,true);
 	},
 	onSubmit: function(){
+        var parametros = this.getParams();
+        parametros.desc_nombre =  this.descNombre.getValue();
 		if(this.formParam.getForm().isValid()){
 			var win = Phx.CP.loadWindows(
 				this.rutaReporte,
@@ -94,7 +96,7 @@ Phx.vista.ParametrosRepDepreciacion = {
                     width: 870,
                     height : 620
                 }, { 
-                    paramsRep: this.getParams()
+                    paramsRep: parametros
                 },
                 this.idContenedor,
                 this.claseReporte

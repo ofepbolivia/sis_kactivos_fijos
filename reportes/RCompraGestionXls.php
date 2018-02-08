@@ -113,17 +113,7 @@ class RCompraGestionXls
         $sheet0->getColumnDimension('J')->setWidth(10);
         $sheet0->getColumnDimension('K')->setWidth(15);
         $sheet0->getColumnDimension('L')->setWidth(15);
-        /*$sheet0->getColumnDimension('L')->setWidth(12);
-        $sheet0->getColumnDimension('M')->setWidth(10);
-        $sheet0->getColumnDimension('N')->setWidth(10);
-        $sheet0->getColumnDimension('O')->setWidth(10);
-        $sheet0->getColumnDimension('P')->setWidth(10);
-        $sheet0->getColumnDimension('Q')->setWidth(10);
-        $sheet0->getColumnDimension('R')->setWidth(10);
-        $sheet0->getColumnDimension('S')->setWidth(10);
-        $sheet0->getColumnDimension('T')->setWidth(10);
-        $sheet0->getColumnDimension('U')->setWidth(10);
-        $sheet0->getColumnDimension('V')->setWidth(10);*/
+
 
 
         //$this->docexcel->getActiveSheet()->mergeCells('A1:A3');
@@ -238,6 +228,7 @@ class RCompraGestionXls
 
         $fila = 6;
         $codigo = '';
+        $nombre = '';
 
         $cont_87 = 0;
         $cont_100 = 0;
@@ -251,8 +242,9 @@ class RCompraGestionXls
         //************************************************Detalle***********************************************
 
 
-
+        $tipo = $this->objParam->getParametro('tipo_reporte');
         $sheet0->getRowDimension('5')->setRowHeight(35);
+
         foreach($datos as $value) {
 
             if($value['nivel'] == 0 || $value['nivel'] == 1) {
@@ -260,93 +252,147 @@ class RCompraGestionXls
                 if ($codigo != '' && ($value['nivel'] == 0 || $value['nivel'] == 1 && $cont_87>0)) {
                     $total_general_87 = $total_general_87 + $cont_87;
                     $total_general_100 = $total_general_100 + $cont_100;
-
                     $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
-                    $sheet0->getStyle('B'.$fila.':L'.$fila)->applyFromArray($styleTitulos);
-                    $sheet0->getStyle('B'.$fila.':L'.$fila)->getAlignment()->setWrapText(true);
+                    $sheet0->getStyle('B' . $fila . ':L' . $fila)->applyFromArray($styleTitulos);
+                    $sheet0->getStyle('B' . $fila . ':L' . $fila)->getAlignment()->setWrapText(true);
+                    if($tipo == 1) {
+                        $sheet0->getStyle('K'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                        $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                        $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                        $sheet0->getStyle('K'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                        $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 
-                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,$fila,'');
-                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,$fila,'');
-                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila,'Total Parcial');
-                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4,$fila,'');
-                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5,$fila,'');
-                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,$fila,'');
-                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7,$fila,'');
-                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8,$fila,'');
-                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$fila,'');
-                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,$cont_100);
-                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,$cont_87);
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, '');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, '');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, 'Total Parcial');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, '');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, '');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, '');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, '');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, '');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, '');
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $cont_100);
+                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $cont_87);
 
-
-                    $fila ++;
+                        $fila++;
+                    }
 
                     $total_grupo_100 += $cont_100;
                     $total_grupo_87 += $cont_87;
                     $cont_100 = 0;
                     $cont_87 = 0;
                     if($value['nivel'] == 0 && $codigo != $value['codigo_completo']){
-                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,$fila,'');
-                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,$fila,'');
-                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila,'Total Final Grupo ('.$codigo.')');
-                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4,$fila,'');
-                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5,$fila,'');
-                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,$fila,'');
-                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7,$fila,'');
-                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8,$fila,'');
-                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$fila,'');
-                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,$total_grupo_100);
-                        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,$total_grupo_87);
+                        if($tipo == 1) {
+                            $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
+                            $sheet0->getStyle('B' . $fila . ':L' . $fila)->applyFromArray($styleTitulos);
+                            $sheet0->getStyle('B' . $fila . ':L' . $fila)->getAlignment()->setWrapText(true);
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, '');
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, '');
+                            $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, 'Total Final Grupo (' . $codigo . ')');
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, '');
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, '');
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, '');
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, '');
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, '');
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, '');
 
+                            $sheet0->getStyle('K'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                            $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                            $sheet0->getStyle('K'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                            $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $total_grupo_100);
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $total_grupo_87);
+                            $fila ++;
+                        }else{
+                            $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
+                            $sheet0->getStyle('B'.$fila.':L'.$fila)->applyFromArray($styleTitulos);
+                            $sheet0->getStyle('B'.$fila.':L'.$fila)->getAlignment()->setWrapText(true);
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, $contador);
+                            $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, $codigo);
+                            $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, $nombre);
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, '');
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, '');
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, '');
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, '');
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, '');
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, '');
+                            $sheet0->getStyle('K'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                            $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                            $sheet0->getStyle('K'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                            $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $total_grupo_100);
+                            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $total_grupo_87);
+                            $contador++;
+                            $fila ++;
+                        }
                         $total_grupo_100 = 0;
                         $total_grupo_87 = 0;
-                        $fila ++;
+
                     }
+
                 }
 
+                if($tipo == 1) {
+                    $styleTitulos['fill']['color']['rgb'] = 'e09e1a';
+                    $sheet0->getStyle('B' . $fila . ':L' . $fila)->applyFromArray($styleTitulos);
+                    $sheet0->getStyle('B' . $fila . ':L' . $fila)->getAlignment()->setWrapText(true);
 
-                $styleTitulos['fill']['color']['rgb'] = 'e09e1a';
-                $sheet0->getStyle('B'.$fila.':L'.$fila)->applyFromArray($styleTitulos);
-                $sheet0->getStyle('B'.$fila.':L'.$fila)->getAlignment()->setWrapText(true);
-
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,$fila,'');
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,$fila,$value['codigo_completo']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila,$value['nombre']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4,$fila,'');
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5,$fila,'');
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,$fila,'');
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7,$fila,'');
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8,$fila,'');
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$fila,'');
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,'');
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,'');
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, '');
+                    $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, $value['codigo_completo']);
+                    $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, $value['nombre']);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, '');
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, '');
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, '');
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, '');
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, '');
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, '');
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, '');
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, '');
+                    $fila ++;
+                }
 
                 if($value['nivel'] == 0){
                     $codigo = $value['codigo_completo'];
+                    $nombre = $value['nombre'];
                 }
             }else {
-                $styleTitulos['fill']['color']['rgb'] = 'e6e8f4';
-                $sheet0->getStyle('B'.$fila.':L'.$fila)->applyFromArray($styleTitulos);
-                $sheet0->getStyle('B'.$fila.':L'.$fila)->getAlignment()->setWrapText(true);
+                if($tipo == 1) {
+                    $styleTitulos['fill']['color']['rgb'] = 'e6e8f4';
+                    $sheet0->getStyle('B' . $fila . ':L' . $fila)->applyFromArray($styleTitulos);
+                    $sheet0->getStyle('B' . $fila . ':L' . $fila)->getAlignment()->setWrapText(true);
 
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, $contador);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, $value['codigo_af']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, $value['denominacion']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, $value['fecha_compra']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, $value['nro_cbte_asociado']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, $value['fecha_cbte_asociado']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['fecha_ini_dep']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['vida_util_original']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, $value['-']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $value['monto_compra_orig_100']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $value['monto_compra_orig']);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, $contador);
+                    $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, $value['codigo_af']);
+                    $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, $value['denominacion']);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, date("d/m/Y", strtotime($value['fecha_compra'])));
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, $value['nro_cbte_asociado']);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, date("d/m/Y", strtotime($value['fecha_cbte_asociado'])));
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['fecha_ini_dep']);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['vida_util_original']);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, $value['-']);
+                    $sheet0->getStyle('K'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                    $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                    $sheet0->getStyle('K'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                    $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $value['monto_compra_orig_100']);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $value['monto_compra_orig']);
 
-                $contador++;
+                    $contador++;
+                    $fila++;
+                }
                 $cont_100 = $cont_100 + $value['monto_compra_orig_100'];
                 $cont_87  = $cont_87 + $value['monto_compra_orig'];
-                //$codigo = $value['codigo_completo'];
             }
 
-            $fila++;
+
         }
         //************************************************Fin Detalle***********************************************
 
@@ -356,48 +402,87 @@ class RCompraGestionXls
         $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
         $sheet0->getStyle('B'.$fila.':L'.$fila)->applyFromArray($styleTitulos);
         $sheet0->getStyle('B'.$fila.':L'.$fila)->getAlignment()->setWrapText(true);
+        if($tipo == 1) {
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, '');
+            $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, 'Total Parcial');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, '');
+            $sheet0->getStyle('K'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+            $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+            $sheet0->getStyle('K'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+            $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $cont_100);
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $cont_87);
 
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila,'Total Parcial');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,$cont_100);
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,$cont_87);
+            $fila ++;
 
-        $fila ++;
+            $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+            $sheet0->getStyle('K'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+            $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+            $sheet0->getStyle('K'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+            $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, 'Total Final Grupo (' . $codigo . ')');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $total_grupo_100 + $cont_100);
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $total_grupo_87 + $cont_87);
+        }else{
 
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila,'Total Final Grupo ('.$codigo.')');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,$total_grupo_100+$cont_100);
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,$total_grupo_87+$cont_87);
-
+            $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+            $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, $contador);
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, $codigo);
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, $nombre);
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, '');
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, '');
+            $sheet0->getStyle('K'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+            $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+            $sheet0->getStyle('K'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+            $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $total_grupo_100 + $cont_100);
+            $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $total_grupo_87 + $cont_87);
+        }
         $fila ++;
 
         $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
         $sheet0->getStyle('B'.$fila.':L'.$fila)->applyFromArray($styleTitulos);
         $sheet0->getStyle('B'.$fila.':L'.$fila)->getAlignment()->setWrapText(true);
 
+        $sheet0->getStyle('K'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+        $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+        $sheet0->getStyle('K'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,$fila,'');
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,$fila,'');
-        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila,'Totales');
+        $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+        $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila,'TOTALES AF');
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4,$fila,'');
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5,$fila,'');
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,$fila,'');
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7,$fila,'');
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8,$fila,'');
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$fila,'');
+        $sheet0->getStyle('K'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+        $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+        $sheet0->getStyle('K'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,$total_general_100);
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,$total_general_87);
 
