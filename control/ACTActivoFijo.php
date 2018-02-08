@@ -10,6 +10,7 @@ require_once(dirname(__FILE__).'/../reportes/RCodigoQRAF.php');
 require_once(dirname(__FILE__).'/../reportes/RCodigoQRAF_v1.php');
 require_once(dirname(__FILE__).'/../reportes/RCompraGestionPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RCompraGestionXls.php');
+require_once(dirname(__FILE__).'/../reportes/RDetalleAFPDF.php');
 
 class ACTActivoFijo extends ACTbase{
 
@@ -508,12 +509,12 @@ class ACTActivoFijo extends ACTbase{
 		}
 	}
 
-	function comprasXgestion(){
+	function reportesAFGlobal(){
 
+	    //Filtros Reporte
 		if($this->objParam->getParametro('estado')!= ''){
 			$this->objParam->addFiltro("(taf.estado = ''".$this->objParam->getParametro('estado')."'' OR taf.estado is null)");
 		}
-
 		if($this->objParam->getParametro('tipo_activo')== 1){
 			$this->objParam->addFiltro("niv.tipo_activo  = ''tangible''");
 		}else if($this->objParam->getParametro('tipo_activo')== 2){
@@ -522,37 +523,66 @@ class ACTActivoFijo extends ACTbase{
 			$this->objParam->addFiltro("niv.tipo_activo in  (''tangible'', ''intangible'')");
 		}
 
+        //Llamada al Modelo, consulta BD
 		$this->objFunc = $this->create('MODActivoFijo');
-		$this->res = $this->objFunc->comprasXgestion($this->objParam);
+		$this->res = $this->objFunc->reportesAFGlobal($this->objParam);
 
 
-		//Genera el nombre del archivo (aleatorio + titulo)
-		if($this->objParam->getParametro('formato_reporte')=='pdf'){
-			$nombreArchivo = uniqid(md5(session_id()).'[Reporte-Compras x Gestion]').'.pdf';
-		}
-		else{
-			$nombreArchivo = uniqid(md5(session_id()).'[Reporte-Compras x Gestion]').'.xls';
-		}
-		
-		$this->objParam->addParametro('orientacion','P');
+		//Configuracion Reporte
+
+		if($this->objParam->getParametro('configuracion_reporte')  == 'compras_gestion'){
+
+            if($this->objParam->getParametro('formato_reporte')=='pdf'){
+                $nombreArchivo = uniqid(md5(session_id()).'[Reporte - Compras x Gestion]').'.pdf';
+            }
+            else{
+                $nombreArchivo = uniqid(md5(session_id()).'[Reporte - Compras x Gestion]').'.xls';
+            }
+
+        }else if($this->objParam->getParametro('configuracion_reporte') == 'detalle_af'){
+
+            if($this->objParam->getParametro('formato_reporte')=='pdf'){
+                $nombreArchivo = uniqid(md5(session_id()).'[Detalle - Activos Fijos]').'.pdf';
+            }
+            else{
+                $nombreArchivo = uniqid(md5(session_id()).'[Detalle - Activos Fijos]').'.xls';
+            }
+        }
+
+        //Definicion de parametros adicionales para el reporte.
 		$this->objParam->addParametro('tamano','LETTER');
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 		$this->objParam->addParametro('titulo_archivo','ComprasGestión');
 		$this->objParam->addParametro('desc_nombre',$this->objParam->getParametro('desc_nombre'));
 
-
-		if($this->objParam->getParametro('formato_reporte')=='pdf'){
-			//Instancia la clase de pdf
-			$this->objReporteFormato=new RCompraGestionPDF ($this->objParam);
-			$this->objReporteFormato->setDatos($this->res->datos);
-			$this->objReporteFormato->generarReporte();
-			$this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
-		}
-		else{
-			$reporte = new RCompraGestionXls($this->objParam);
-			$reporte->setDatos($this->res->datos);
-			$reporte->generarReporte();
-		}
+        if($this->objParam->getParametro('configuracion_reporte')  == 'compras_gestion') {
+            if ($this->objParam->getParametro('formato_reporte') == 'pdf') {
+                //Orientacion Hoja Documento.
+                $this->objParam->addParametro('orientacion','P');
+                //Instancia la clase de pdf
+                $this->objReporteFormato = new RCompraGestionPDF ($this->objParam);
+                $this->objReporteFormato->setDatos($this->res->datos);
+                $this->objReporteFormato->generarReporte();
+                $this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
+            } else {
+                $reporte = new RCompraGestionXls($this->objParam);
+                $reporte->setDatos($this->res->datos);
+                $reporte->generarReporte();
+            }
+        }else if($this->objParam->getParametro('configuracion_reporte') == 'detalle_af'){
+            if ($this->objParam->getParametro('formato_reporte') == 'pdf') {
+                //Orientacion Hoja Documento.
+                $this->objParam->addParametro('orientacion','L');
+                $this->objReporteFormato = new RDetalleAFPDF ($this->objParam);
+                $this->objReporteFormato->setDatos($this->res->datos);
+                $this->objReporteFormato->generarReporte();
+                $this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
+            } else {
+                $reporte = new RDetalleAFXls($this->objParam);
+                $reporte->setDatos($this->res->datos);
+                $reporte->generarReporte();
+            }
+        }
 
 		$this->mensajeExito=new Mensaje();
 		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',

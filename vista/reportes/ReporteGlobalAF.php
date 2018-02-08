@@ -1,7 +1,7 @@
 <?php
 /**
  *@package pXP
- *@file    ComprasGestion.php
+ *@file    ReporteGlobalAF.php
  *@author  Franklin Espinoza Alvarez
  *@date    23-01-2018
  *@description Archivo con la interfaz para generación de reporte
@@ -9,7 +9,7 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-    Phx.vista.ComprasGestion = Ext.extend(Phx.frmInterfaz, {
+    Phx.vista.ReporteGlobalAF = Ext.extend(Phx.frmInterfaz, {
 
         Atributos : [
 
@@ -20,11 +20,10 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank : false,
                     triggerAction : 'all',
                     lazyRender : true,
-                    disabled: true,
                     mode : 'local',
                     store : new Ext.data.ArrayStore({
                         fields : ['tipo', 'valor'],
-                        data : [['gestion', 'Compras de Gestion'], ['detalle', 'Detalle Activos Fijos']]
+                        data : [['compras_gestion', 'Compras de Gestion'], ['detalle_af', 'Detalle Activos Fijos']]
                     }),
                     anchor : '100%',
                     valueField : 'tipo',
@@ -86,6 +85,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
                 type : 'ComboBox',
                 id_grupo : 1,
+                grid:true,
                 form : true
             },
 
@@ -93,7 +93,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config : {
                     name : 'estado',
                     fieldLabel : 'Estado',
-                    allowBlank : false,
+                    allowBlank : true,
                     emptyText : 'Estado...',
                     store : new Ext.data.JsonStore({
                         url : '../../sis_parametros/control/Catalogo/listarCatalogoCombo',
@@ -197,7 +197,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type : 'ComboBox',
                 id_grupo : 1,
                 form : true
-            },
+            }/*,
             {
                 config : {
                     name : 'financiador',
@@ -382,25 +382,31 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo : 2,
                 grid : true,
                 form : true
-            },
+            },*/
 
         ],
-        title : 'Reporte General Activos',
-        ActSave : '../../sis_kactivos_fijos/control/ActivoFijo/comprasXgestion',
+        title : 'Reporte Global Activos Fijos',
+        ActSave : '../../sis_kactivos_fijos/control/ActivoFijo/reportesAFGlobal',
         timeout : 1500000,
 
         topBar : true,
         botones : false,
         labelSubmit : 'Imprimir',
-        tooltipSubmit : '<b>Generar Reporte Libro Bancos</b>',
+        tooltipSubmit : '<b>Estimado usuario</b><br>Eliga los campos necesario e imprima su reporte.',
 
         constructor : function(config) {
-            Phx.vista.ComprasGestion.superclass.constructor.call(this, config);
+            Phx.vista.ReporteGlobalAF.superclass.constructor.call(this, config);
             this.init();
             this.iniciarEventos();
         },
 
         iniciarEventos:function(){
+            /*var that = this;
+            this.Cmp.configuracion_reporte.on('select',function (cmb, rec, ind) {
+                console.log('tipo',that.Cmp.desc_nombre);
+            });*/
+
+            
             /*this.cmpFormatoReporte = this.getComponente('formato_reporte');
             this.cmpFechaIni = this.getComponente('fecha_ini');
             this.cmpFechaFin = this.getComponente('fecha_fin');
@@ -441,7 +447,7 @@ header("content-type: text/javascript; charset=UTF-8");
             }else{
                 Phx.vista.ReporteLibroBancos.superclass.onSubmit.call(this,o);
             }*/
-            Phx.vista.ComprasGestion.superclass.onSubmit.call(this,o);
+            Phx.vista.ReporteGlobalAF.superclass.onSubmit.call(this,o);
         },
 
         tipo : 'reporte',
@@ -456,7 +462,7 @@ header("content-type: text/javascript; charset=UTF-8");
             //bodyStyle: 'padding-right:5px;',
             items : [
                 {
-                    columnWidth: .22,
+                    columnWidth: .25,
                     border: false,
                     //split: true,
                     layout: 'anchor',
@@ -469,7 +475,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     items:[
                         {
                             anchor: '100%',
-                            //bodyStyle: 'padding-right:10px;padding-left:10px;',
+                            bodyStyle: 'padding-right:5px;',
                             autoHeight: true,
                             border: false,
                             items:[
@@ -478,7 +484,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                     layout: 'form',
                                     border: true,
                                     title: 'Eliga un tipo de Reporte',
-                                    bodyStyle: 'padding: 5px 10px 10px 10px;',
+                                    //bodyStyle: 'padding: 5px 10px 10px 10px;',
 
                                     items: [],
                                     id_grupo: 0
@@ -488,7 +494,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     ]
                 },
                 {
-                    columnWidth: .39,
+                    columnWidth: .40,
                     border: false,
                     //split: true,
                     layout: 'anchor',
@@ -518,7 +524,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             ]
                         }
                     ]
-                },
+                }/*,
 
                 {
                     columnWidth: .39,
@@ -551,7 +557,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             ]
                         }
                     ]
-                }
+                }*/
             ]
         }]
     })

@@ -77,9 +77,11 @@ class RCompraGestionPDF extends  ReportePDF{
 
         //variables para la tabla
         $codigo = '';
+        $nombre = '';
+
         $cont_87 = 0;
         $cont_100 = 0;
-        $contador = 0;
+
         $total_general_87 = 0;
         $total_general_100 = 0;
 
@@ -87,10 +89,12 @@ class RCompraGestionPDF extends  ReportePDF{
         $total_grupo_100 = 0;
 
         $i=1;
+        $contador = 1;
         $this->tablewidths=array(10,18,57,13,13,13,15,14,14,17,17);
         $this->tablealigns=array('C','L','L','C','C','C','C','C','C','R','R');
 
         $tipo = $this->objParam->getParametro('tipo_reporte');
+
         foreach($this->datos as $record){
             
             if($record['nivel'] == 0 || $record['nivel'] == 1){
@@ -99,100 +103,121 @@ class RCompraGestionPDF extends  ReportePDF{
 
                     $total_general_87 = $total_general_87 + $cont_87;
                     $total_general_100 = $total_general_100 + $cont_100;
-                    $this->SetFillColor(79, 91, 147);
-
-                    $this->SetTextColor(0);
-                    $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
-                    $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2);
-                    $RowArray = array(
-                        's0'  => '',
-                        's1' => '',
-                        's2' => 'Total Parcial Grupo',
-                        's3' => '',
-                        's4' => '',
-                        's5' => '',
-                        's6' => '',
-                        's7' => '',
-                        's8' => '',
-                        's9' => $cont_100,
-                        's10' => $cont_87
-                    );
-
-                    $this->MultiRow($RowArray,true,1);
-                    $total_grupo_100 += $cont_100;
-                    $total_grupo_87 += $cont_87;
-                    $cont_100 = 0;
-                    $cont_87 = 0;
-                    if($record['nivel'] == 0 && $codigo != $record['codigo_completo']){
+                    if($tipo == 1) {
+                        $this->SetFillColor(224, 235, 255);
+                        $this->SetTextColor(0);
+                        $this->tableborders = array('LB', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'RB');
+                        $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2);
                         $RowArray = array(
-                            's0'  => '',
+                            's0' => '',
                             's1' => '',
-                            's2' => 'Total Final Grupo ('.$codigo.')',
+                            's2' => 'Total Parcial Grupo',
                             's3' => '',
                             's4' => '',
                             's5' => '',
                             's6' => '',
                             's7' => '',
                             's8' => '',
-                            's9' => $total_grupo_100,
-                            's10' => $total_grupo_87
+                            's9' => $cont_100,
+                            's10' => $cont_87
                         );
-                        $this->MultiRow($RowArray,true,1);
+
+                        $this->MultiRow($RowArray, true, 1);
+                    }
+                    $total_grupo_100 += $cont_100;
+                    $total_grupo_87 += $cont_87;
+                    $cont_100 = 0;
+                    $cont_87 = 0;
+                    if($record['nivel'] == 0 && $codigo != $record['codigo_completo']){
+                        if($tipo == 1) {
+                            $RowArray = array(
+                                's0' => '',
+                                's1' => '',
+                                's2' => 'Total Final Grupo (' . $codigo . ')',
+                                's3' => '',
+                                's4' => '',
+                                's5' => '',
+                                's6' => '',
+                                's7' => '',
+                                's8' => '',
+                                's9' => $total_grupo_100,
+                                's10' => $total_grupo_87
+                            );
+                            $this->MultiRow($RowArray, true, 1);
+                        }else{
+                            $this->SetFillColor(224, 235, 255);
+                            $this->SetTextColor(0);
+                            $this->tableborders = array('LB', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'RB');
+                            $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2);
+                            $RowArray = array(
+                                's0' => '',
+                                's1' => $codigo,
+                                's2' => $nombre,
+                                's3' => '',
+                                's4' => '',
+                                's5' => '',
+                                's6' => '',
+                                's7' => '',
+                                's8' => '',
+                                's9' => $total_grupo_100,
+                                's10' => $total_grupo_87
+                            );
+                            $this->MultiRow($RowArray, true, 1);
+                            //$contador++;
+                        }
                         $total_grupo_100 = 0;
                         $total_grupo_87 = 0;
-
                     }
                 }
 
-
-                $this->SetFillColor(224, 235, 255);
-
-                $this->SetTextColor(0);
-                $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
-                $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,0,0);
-                $RowArray = array(
-                    's0'  => '',
-                    's1' => $record['codigo_completo'],
-                    's2' => $record['nombre'],
-                    's3' => '',
-                    's4' => '',
-                    's5' => '',
-                    's6' => '',
-                    's7' => '',
-                    's8' => '',
-                    's9' => '',
-                    's10' => ''
-                );
-
-                $this->MultiRow($RowArray,true,1);
+                if($tipo == 1) {
+                    $this->SetFillColor(79, 91, 147);
+                    $this->SetTextColor(0);
+                    $this->tableborders = array('LB', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'RB');
+                    $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                    $RowArray = array(
+                        's0' => '',
+                        's1' => $record['codigo_completo'],
+                        's2' => $record['nombre'],
+                        's3' => '',
+                        's4' => '',
+                        's5' => '',
+                        's6' => '',
+                        's7' => '',
+                        's8' => '',
+                        's9' => '',
+                        's10' => ''
+                    );
+                    $this->MultiRow($RowArray, true, 1);
+                }
                 if($record['nivel'] == 0){
                     $codigo = $record['codigo_completo'];
+                    $nombre = $record['nombre'];
                 }
             }else{
+                if($tipo == 1) {
+                    $this->SetFont('', '', 6);
+                    $this->tableborders = array('RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB');
+                    $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2);
+                    $RowArray = array(
+                        's0' => $record['nivel'] == 2 ? $i : '',
+                        's1' => $record['nivel'] == 2 ? $record['codigo_af'] : $record['camino'],
+                        's2' => $record['nivel'] == 2 ? $record['denominacion'] : $record['nombre'],
+                        's3' => $record['fecha_compra'] == '-' ? '-' : date("d/m/Y", strtotime($record['fecha_compra'])),
+                        's4' => $record['nro_cbte_asociado'],
+                        's5' => $record['fecha_cbte_asociado'] == '-' ? '-' : date("d/m/Y", strtotime($record['fecha_cbte_asociado'])),
+                        's6' => $record['fecha_ini_dep'] == '-' ? '-' : date("d/m/Y", strtotime($record['fecha_ini_dep'])),
+                        's7' => $record['vida_util_original'],
+                        's8' => '-',
+                        's9' => $record['monto_compra_orig_100'],
+                        's10' => $record['monto_compra_orig']
+                    );
 
-                $this->SetFont('','',6);
-                $this->tableborders=array('RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB');
-                $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2);
-                $RowArray = array(
-                    's0'  => $record['nivel']==2?$i:'',
-                    's1' => $record['nivel']==2?$record['codigo_af']:$record['camino'],
-                    's2' => $record['nivel']==2?$record['denominacion']:$record['nombre'],
-                    's3' => $record['fecha_compra'] == '-'?'-':date("d/m/Y",strtotime($record['fecha_compra'])),
-                    's4' => $record['nro_cbte_asociado'],
-                    's5' => $record['fecha_cbte_asociado'] == '-'?'-':date("d/m/Y",strtotime($record['fecha_cbte_asociado'])),
-                    's6' => $record['fecha_ini_dep'] == '-'?'-':date("d/m/Y",strtotime($record['fecha_ini_dep'])),
-                    's7' => $record['vida_util_original'],
-                    's8' => '-',
-                    's9' => $record['monto_compra_orig_100'],
-                    's10' => $record['monto_compra_orig']
-                );
-
-                $this->MultiRow($RowArray);
-
-                $i++;
+                    $this->MultiRow($RowArray);
+                    $i++;
+                }
                 $cont_100 = $cont_100 + $record['monto_compra_orig_100'];
                 $cont_87  = $cont_87+ $record['monto_compra_orig'];
-                //$codigo = $record['codigo_completo'];
             }
 
         }
@@ -200,48 +225,68 @@ class RCompraGestionPDF extends  ReportePDF{
         $total_general_87 += $cont_87;
         $total_general_100 += $cont_100;
 
-        $this->SetFillColor(79, 91, 147);
+        $this->SetFillColor(224, 235, 255);
+        $this->SetTextColor(0);
+        $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
+        $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2);
+        if($tipo == 1) {
+            $RowArray = array(
+                's0' => '',
+                's1' => '',
+                's2' => 'Total Parcial Grupo',
+                's3' => '',
+                's4' => '',
+                's5' => '',
+                's6' => '',
+                's7' => '',
+                's8' => '',
+                's9' => $cont_100,
+                's10' => $cont_87
+            );
+            $this->MultiRow($RowArray, true, 1);
+
+            //Final Grupo
+            $RowArray = array(
+                's0' => '',
+                's1' => '',
+                's2' => 'Total Final Grupo (' . $codigo . ')',
+                's3' => '',
+                's4' => '',
+                's5' => '',
+                's6' => '',
+                's7' => '',
+                's8' => '',
+                's9' => $total_grupo_100 + $cont_100,
+                's10' => $total_grupo_87 + $cont_87
+            );
+            $this->MultiRow($RowArray, true, 1);
+        }else{
+            $this->SetFillColor(224, 235, 255);
+            $this->SetTextColor(0);
+            $RowArray = array(
+                's0' => '',
+                's1' => $codigo,
+                's2' => $nombre,
+                's3' => '',
+                's4' => '',
+                's5' => '',
+                's6' => '',
+                's7' => '',
+                's8' => '',
+                's9' => $total_grupo_100 + $cont_100,
+                's10' => $total_grupo_87 + $cont_87
+            );
+            $this->MultiRow($RowArray, true, 1);
+        }
+
+        $this->SetFillColor(224, 235, 255);
         $this->SetTextColor(0);
         $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
         $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2);
         $RowArray = array(
             's0'  => '',
             's1' => '',
-            's2' => 'Total Parcial Grupo',
-            's3' => '',
-            's4' => '',
-            's5' => '',
-            's6' => '',
-            's7' => '',
-            's8' => '',
-            's9' => $cont_100,
-            's10' => $cont_87
-        );
-        $this->MultiRow($RowArray,true,1);
-
-        //Final Grupo
-        $RowArray = array(
-            's0'  => '',
-            's1' => '',
-            's2' => 'Total Final Grupo ('.$codigo.')',
-            's3' => '',
-            's4' => '',
-            's5' => '',
-            's6' => '',
-            's7' => '',
-            's8' => '',
-            's9' => $total_grupo_100+$cont_100,
-            's10' => $total_grupo_87+$cont_87
-        );
-        $this->MultiRow($RowArray,true,1);
-
-        $this->SetFillColor(79, 91, 147);
-        $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
-        $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2);
-        $RowArray = array(
-            's0'  => '',
-            's1' => '',
-            's2' => 'Total',
+            's2' => 'TOTALES AF',
             's3' => '',
             's4' => '',
             's5' => '',

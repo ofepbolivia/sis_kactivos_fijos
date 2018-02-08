@@ -620,7 +620,7 @@ class MODActivoFijo extends MODbase{
 		return $this->respuesta;
 	}
 
-    function comprasXgestion(){
+    function reportesAFGlobal(){
         //Definicion de variables para ejecucion del procedimientp
         $this->procedimiento='kaf.ft_activo_fijo_sel';
         $this->transaccion='SKA_COMPRAS_GEST_SEL';
@@ -650,6 +650,10 @@ class MODActivoFijo extends MODbase{
         $this->captura('monto_compra_orig_100','numeric');
         $this->captura('monto_compra_orig','numeric');
         $this->captura('tipo_activo','varchar');
+        $this->captura('ubicacion','varchar');
+        $this->captura('responsable','varchar');
+        $this->captura('monto_compra','numeric');
+        $this->captura('estado','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
