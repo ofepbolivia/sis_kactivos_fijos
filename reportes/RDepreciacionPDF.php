@@ -44,7 +44,7 @@ class RDepreciacionPDF extends  ReportePDF{
         /*if($this->objParam->getParametro('desc_nombre') == 'desc'){
             $this->Cell(57,3,'DESCRIPCIÓN','TRL',0,'C');
         }else{*/
-        $this->Cell(40,3,'','',0,'C');
+        $this->Cell(36,3,'','',0,'C');
         //}
         $this->Cell(15,3,'','',0,'C');
 
@@ -56,8 +56,8 @@ class RDepreciacionPDF extends  ReportePDF{
 
 
         $this->Cell(22,3,'VIDA','TRL',0,'C');
-        $this->Cell(15,3,'DEP. ACUM.','TRL',0,'C');
-        $this->Cell(15,3,'ACT. DEPREC.','TRL',0,'C');
+        $this->Cell(17,3,'DEP. ACUM.','TRL',0,'C');
+        $this->Cell(17,3,'ACT. DEPREC.','TRL',0,'C');
 
         $this->Cell(17,3,'','',0,'C');
         $this->Cell(17,3,'','',0,'C');
@@ -66,7 +66,7 @@ class RDepreciacionPDF extends  ReportePDF{
         //segunda linea
         $this->Cell(10,3,'NUM','TBRL',0,'C');
         $this->Cell(20,3,'CODIGO','TBRL',0,'C');
-        $this->Cell(40,3,'DESCRIPCIÓN','BTRL',0,'C');
+        $this->Cell(36,3,'DESCRIPCIÓN','BTRL',0,'C');
         $this->Cell(15,3,'INICIO DEP.','TBRL',0,'C');
 
         $this->Cell(18,3,'COMPRA (100%)','TBRL',0,'C');
@@ -77,8 +77,8 @@ class RDepreciacionPDF extends  ReportePDF{
 
         $this->Cell(11,3,'USADA','TBRL',0,'C');
         $this->Cell(11,3,'RESIDUAL','TBRL',0,'C');
-        $this->Cell(15,3,'GESTION ANT.','BRL',0,'C');
-        $this->Cell(15,3,'GESTION ANT.','BRL',0,'C');
+        $this->Cell(17,3,'GESTION ANT.','BRL',0,'C');
+        $this->Cell(17,3,'GESTION ANT.','BRL',0,'C');
 
         $this->Cell(17,3,'DEP. GESTION','TBRL',0,'C');
         $this->Cell(17,3,'DEP. ACUM.','TBRL',0,'C');
@@ -109,7 +109,7 @@ class RDepreciacionPDF extends  ReportePDF{
         $codigo = '';
         $contador=1;
 
-        $this->tablewidths=array(10,20,40,15,18,18,20,20,11,11,15,15,17,17,19);
+        $this->tablewidths=array(10,20,36,15,18,18,20,20,11,11,17,17,17,17,19);
         $this->tablealigns=array('C','L','L','C','R','R','R','R','R','R','R','R','R','R','R');
 
         foreach($this->datos as $record){

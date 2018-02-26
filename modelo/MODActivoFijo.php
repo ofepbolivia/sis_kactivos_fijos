@@ -630,6 +630,7 @@ class MODActivoFijo extends MODbase{
 		$this->setParametro('fecha_ini','fecha_ini','date');
 		$this->setParametro('fecha_fin','fecha_fin','date');
 		$this->setParametro('desc_nombre','desc_nombre','varchar');
+		$this->setParametro('id_clasificacion','id_clasificacion','INT4');
 
 
         //Definicion de la lista del resultado del query
@@ -657,7 +658,7 @@ class MODActivoFijo extends MODbase{
 
         //Ejecuta la instruccion
         $this->armarConsulta();
-        //echo $this->consulta;exit;
+        echo $this->consulta;exit;
         $this->ejecutarConsulta();
 
         //Devuelve la respuesta

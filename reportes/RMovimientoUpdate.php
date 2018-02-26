@@ -228,6 +228,7 @@ class RMovimientoUpdate extends  ReportePDF {
                        </tr>
                    </table>';
             $this->writeHTML ($tbl);
+
         }else if($tipo=='devol'){
             $destino_dev = '';
             if($this->dataMaster[0]['id_funcionario_dest']==null){
@@ -741,8 +742,14 @@ class RMovimientoUpdate extends  ReportePDF {
         $this->SetFontSize(7);
         $i = 0;
         if($tipo=='asig' || $tipo=='transf') {
+            if($this->dataMaster[0]['codigo_depto'] == 'DAF-CENTRAL'){
+                $this->Ln(7);
+            }
+            if($this->dataMaster[0]['codigo_depto'] == 'DAF-TI'){
+                $this->Ln(3);
+            }
             if($tipo=='transf'){
-                $this->Ln(12);
+                $this->Ln(9);//12
             }
             foreach ($this->getDataSource() as $datarow) {
                 $this->tablealigns = array('L', 'C', 'L', 'L', 'L', 'L');

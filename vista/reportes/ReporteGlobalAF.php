@@ -89,6 +89,48 @@ header("content-type: text/javascript; charset=UTF-8");
                 form : true
             },
 
+            /*{
+                config:{
+                    name : 'id_clasificacion',
+                    fieldLabel: 'Clasificación',
+                    anchor: '100%',
+                    emptyText: 'Elija una opción...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_kactivos_fijos/control/Clasificacion/ListarClasificacionTree',
+                        id: 'id_clasificacion',
+                        root: 'datos',
+                        sortInfo: {
+                            field: 'orden',
+                            direction: 'ASC'
+                        },
+                        totalProperty: 'total',
+                        fields: ['id_clasificacion', 'clasificacion', 'id_clasificacion_fk', 'nivel'],
+                        remoteSort: true,
+                        baseParams: {
+                            par_filtro: 'claf.clasificacion'
+                        }
+                    }),
+                    valueField: 'id_clasificacion',
+                    displayField: 'clasificacion',
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 15,
+                    queryDelay: 1000,
+                    minChars: 2,
+                    tpl:['<tpl for=".">',
+                            '<tpl if="{nivel} == 1">',
+                                '<div class="x-combo-list-item"><p>{clasificacion}</p></div>',
+                            '</tpl>',
+                        '</tpl>'],
+                },
+                type : 'ComboBox',
+                id_grupo : 1,
+                grid:true,
+                form : true
+            },*/
+
             {
                 config : {
                     name : 'estado',
@@ -197,7 +239,28 @@ header("content-type: text/javascript; charset=UTF-8");
                 type : 'ComboBox',
                 id_grupo : 1,
                 form : true
-            }/*,
+            },
+            {
+                config : {
+                    name : 'ubicacion',
+                    fieldLabel : 'Ubicación',
+                    allowBlank : true,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'local',
+                    store : new Ext.data.ArrayStore({
+                        fields : ['id', 'valor'],
+                        data : [['1', 'Nacional'], ['2', 'Internacional'],['3', 'Ambos']]
+                    }),
+                    anchor : '50%',
+                    valueField : 'id',
+                    displayField : 'valor'
+                },
+                type : 'ComboBox',
+                id_grupo : 1,
+                grid:true,
+                form : true
+            },/*,
             {
                 config : {
                     name : 'financiador',
