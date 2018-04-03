@@ -358,6 +358,14 @@ class RMovimientoUpdate extends  ReportePDF {
                                         <br> 
                                         <br> 
                                     </td>
+                                    <td align="center" rowspan="3">
+                                        <br>
+                                        <br>
+                                        <br> 
+                                        <br> 
+                                        <br> 
+                                        <br> 
+                                    </td>
                                 </tr>
                                  
                                 <tr>
@@ -376,6 +384,7 @@ class RMovimientoUpdate extends  ReportePDF {
                                     <td align="center" style="font-family: Calibri; font-size: 9px;"><b>RESPONSABLE</b></td>
                                     <td align="center" style="font-family: Calibri; font-size: 9px;"><b>'.$descripcion.'</b></td>
                                     <td align="center" style="font-family: Calibri; font-size: 9px;"><b>CUSTODIO</b></td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;"><b>ENCARGADO ALMACEN</b></td>
                                 </tr>
                             </table>
                         </td>
@@ -407,6 +416,14 @@ class RMovimientoUpdate extends  ReportePDF {
                                         <br> 
                                         <br> 
                                     </td>
+                                    <td align="center" rowspan="3" >
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <br> 
+                                        <br> 
+                                        <br> 
+                                    </td>
                                 </tr>
                                  
                                 <tr>
@@ -422,6 +439,7 @@ class RMovimientoUpdate extends  ReportePDF {
                                 <tr>
                                     <td align="center" style="font-family: Calibri; font-size: 9px;"><b>RESPONSABLE</b></td>
                                     <td align="center" style="font-family: Calibri; font-size: 9px;"><b>'.$descripcion.'</b></td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;"><b>ENCARGADO ALMACEN</b></td>
                                 </tr>
                             </table>
                         </td>

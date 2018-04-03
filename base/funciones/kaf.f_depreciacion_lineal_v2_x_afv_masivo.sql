@@ -1,12 +1,13 @@
-CREATE OR REPLACE FUNCTION kaf.f_depreciacion_lineal_v2 (
+CREATE OR REPLACE FUNCTION kaf.f_depreciacion_lineal_v2_x_afv_masivo (
   p_id_usuario integer,
-  p_id_movimiento integer
+  p_id_activo_fijo_valor varchar,
+  p_fecha_hasta date
 )
 RETURNS varchar AS
 $body$
 /*
 Autor: RCM
-Fecha: 24/10/2017
+Fecha: 21/12/2017
 Descripción: Depreciación lineal de activos fijos v2
 */
 DECLARE
@@ -38,107 +39,88 @@ DECLARE
     v_mes_dep               date;
     v_mensaje               varchar;
     v_sw_control_dep        boolean = false;
+    v_sql varchar;
     v_id_periodo_subsistema integer;
     v_id_subsistema			integer;
     v_res                   varchar;
 
 BEGIN
 
-    v_nombre_funcion = 'kaf.f_depreciacion_lineal_v2';
+    v_nombre_funcion = 'kaf.f_depreciacion_lineal_v2_x_afv_masivo';
 
-    --RAC 03/03/2017
-    --  TODO validar que no se valores dos veces dentro el mismo omvimeinto
-    -- talvez  eliminar la depreciacion del movimiento antes de empesar ...
-
-    delete from
-    kaf.tmovimiento_af_dep mafd
-    where mafd.id_movimiento_af in (select id_movimiento_af from kaf.tmovimiento_af
-                                    where id_movimiento = p_id_movimiento);
-
-    ---FIN RAC
+    --Obtención de la fecha tope de la depreciación
+    v_fecha_hasta = p_fecha_hasta;
 
     --Obtención del subsistema para posterior verificación de período abierto
     select id_subsistema into v_id_subsistema
     from segu.tsubsistema
     where codigo = 'KAF';
 
-    --Obtención de la fecha tope de la depreciación
-    select fecha_hasta
-    into v_fecha_hasta
-    from kaf.tmovimiento
-    where id_movimiento = p_id_movimiento;
+    v_sql = 'select
+        afv.id_activo_fijo,
+        afv.id_activo_fijo_valor,
+        afv.id_moneda_dep,
+        afv.fecha_ult_dep_real,
+        case
+            when afv.fecha_ult_dep_real >= afv.fecha_ini_dep and afv1.fecha_ult_dep is not null then (''01/''||date_part(''month''::text, afv.fecha_ult_dep_real + interval ''1'' month)::varchar||''/''||date_part(''year''::text, afv.fecha_ult_dep_real + interval ''1'' month)::varchar)::date
+        else
+            afv.fecha_ult_dep_real
+        end as mes_dep,
+        cla.depreciable,
+        case
+            when afv.fecha_ult_dep_real >= afv.fecha_ini_dep and afv1.fecha_ult_dep is not null then kaf.f_months_between((''01/''||date_part(''month''::text, afv.fecha_ult_dep_real + interval ''1'' month)::varchar||''/''||date_part(''year''::text, afv.fecha_ult_dep_real + interval ''1'' month)::varchar)::date, '''||v_fecha_hasta||''')
+        else
+            kaf.f_months_between(afv.fecha_ult_dep_real, '''||v_fecha_hasta||''')
+        end as meses_dep,
+
+        mon.id_moneda_dep,
+        mon.id_moneda,
+        mon.id_moneda_act,
+        mon.actualizar,
+        mon.contabilizar,
+
+        afv.id_activo_fijo_valor,
+        afv.fecha_ult_dep,
+        afv.fecha_ini_dep,
+        afv.depreciacion_acum,
+        afv.depreciacion_per,
+        afv.monto_vigente,
+        afv.vida_util,
+        afv.monto_rescate,
+        afv.vida_util_real,
+        afv.monto_vigente_real,
+        afv.fecha_ult_dep_real,
+        afv.depreciacion_acum_real,
+        afv.depreciacion_per_real,
+        afv.depreciacion_acum_ant_real,
+        afv.monto_actualiz_real,
+        cla.depreciable,
+        afv.vida_util_orig,
+        tipo_cambio_anterior,
+        afv1.fecha_fin,
+        afv1.id_activo_fijo_valor_original,
+        afv1.depreciacion_acum as depreciacion_acum_padre,
+        afv1.monto_vigente as monto_vigente_padre,
+        afv1.fecha_ult_dep as fecha_ult_dep_afv,
+        afv1.monto_vigente_actualiz_inicial,
+        af.codigo,
+        afv1.codigo as codigo_afv
+        from kaf.vactivo_fijo_valor afv
+        inner join kaf.tmoneda_dep mon
+        on mon.id_moneda_dep = afv.id_moneda_dep
+        inner join kaf.tactivo_fijo af
+        on af.id_activo_fijo = afv.id_activo_fijo
+        inner join kaf.tclasificacion cla
+        on cla.id_clasificacion = af.id_clasificacion
+        inner join kaf.tactivo_fijo_valores afv1
+        on afv1.id_activo_fijo_valor = afv.id_activo_fijo_valor
+        where afv.id_activo_fijo_valor in ('|| p_id_activo_fijo_valor||')
+        and afv.fecha_ult_dep_real < '''||v_fecha_hasta||'''';
+
+--        raise exception 'sql: %',v_sql;
 
     --Recorrido de todos los activos fijos a depreciar
-    for v_rec in select
-                maf.id_movimiento,
-                maf.id_movimiento_af,
-                afv.id_activo_fijo,
-                afv.id_activo_fijo_valor,
-                afv.id_moneda_dep,
-                afv.fecha_ult_dep_real,
-                case
-                    when afv.fecha_ult_dep_real >= afv.fecha_ini_dep and afv1.fecha_ult_dep is not null then ('01/'||date_part('month'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar||'/'||date_part('year'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar)::date
-                else
-                    afv.fecha_ult_dep_real
-                end as mes_dep,
-                cla.depreciable,
-                case
-                    when afv.fecha_ult_dep_real >= afv.fecha_ini_dep and afv1.fecha_ult_dep is not null then kaf.f_months_between(('01/'||date_part('month'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar||'/'||date_part('year'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar)::date, v_fecha_hasta)
-                else
-                    kaf.f_months_between(afv.fecha_ult_dep_real, v_fecha_hasta)
-                end as meses_dep,
-
-                mon.id_moneda_dep,
-                mon.id_moneda,
-                mon.id_moneda_act,
-                mon.actualizar,
-                mon.contabilizar,
-
-                afv.id_activo_fijo_valor,
-                afv.fecha_ult_dep,
-                afv.fecha_ini_dep,
-                afv.depreciacion_acum,
-                afv.depreciacion_per,
-                afv.monto_vigente,
-                afv.vida_util,
-                afv.monto_rescate,
-                afv.vida_util_real,
-                afv.monto_vigente_real,
-                afv.fecha_ult_dep_real,
-                afv.depreciacion_acum_real,
-                afv.depreciacion_per_real,
-                afv.depreciacion_acum_ant_real,
-                afv.monto_actualiz_real,
-                cla.depreciable,
-                afv.vida_util_orig,
-                tipo_cambio_anterior,
-                afv1.fecha_fin,
-                afv1.id_activo_fijo_valor_original,
-                afv1.depreciacion_acum as depreciacion_acum_padre,
-                afv1.monto_vigente as monto_vigente_padre,
-                afv1.fecha_ult_dep as fecha_ult_dep_afv,
-                afv1.monto_vigente_actualiz_inicial,
-                af.codigo,
-                afv1.codigo as codigo_afv
-                from kaf.tmovimiento_af maf
-                inner join kaf.vactivo_fijo_valor afv
-                on afv.id_activo_fijo = maf.id_activo_fijo
-                inner join kaf.tmoneda_dep mon
-                on mon.id_moneda_dep = afv.id_moneda_dep
-                inner join kaf.tactivo_fijo af
-                on af.id_activo_fijo = maf.id_activo_fijo
-                inner join kaf.tclasificacion cla
-                on cla.id_clasificacion = af.id_clasificacion
-                inner join kaf.tactivo_fijo_valores afv1
-                on afv1.id_activo_fijo_valor = afv.id_activo_fijo_valor
-                where maf.id_movimiento = p_id_movimiento
-                and afv.fecha_ult_dep_real < v_fecha_hasta --solo que tenga depreciacion menor a la fecha indicada en el movimiento
-                --and afv.estado = 'activo'
-                /*and (case  when cla.depreciable = 'si' then
-                        afv.vida_util_real > 0
-                    else
-                        0=0
-                    end)*/
+    for v_rec in execute (v_sql)
         loop
 
         --Bandera de control de depreciación
@@ -198,9 +180,6 @@ BEGIN
         for i in 1..v_rec.meses_dep loop
 
         	--Verifica que la fecha fin del afv sea menor o igual a la fecha en que se está depreciando
-            /*if v_rec.codigo_afv = '06.26.01.0046' THEN
-            	raise exception 'activo %  mes: %  fecha_fin: %',v_rec.codigo_afv,v_mes_dep, v_rec.fecha_fin;
-            end if;*/
             if v_rec.fecha_fin is not null then
                 if date_trunc('month',v_mes_dep::date) >= date_trunc('month',v_rec.fecha_fin::date) then
                     exit;
@@ -291,13 +270,13 @@ BEGIN
                 v_nuevo_vida_util     = v_ant_vida_util ;
             end if;
 
-			--Verifica que no exista el reg. id_monea_dep, id_activo_fijo_valor, fecha
+            --Verifica que no exista el reg. id_monea_dep, id_activo_fijo_valor, fecha
             if not exists(select 1 from kaf.tmovimiento_af_dep
             				where id_activo_fijo_valor = v_rec.id_activo_fijo_valor
                             and id_moneda_dep = v_rec.id_moneda_dep
                             and fecha = v_mes_dep) then
 
-            	--Inserción en base de datos
+                --Inserción en base de datos
                 INSERT INTO kaf.tmovimiento_af_dep (
                 id_usuario_reg,
                 id_usuario_mod,
@@ -306,7 +285,7 @@ BEGIN
                 estado_reg,
                 id_usuario_ai,
                 usuario_ai,
-                id_movimiento_af,
+                --id_movimiento_af,
                 depreciacion_acum_ant, --10
                 depreciacion_per_ant,
                 monto_vigente_ant,
@@ -335,7 +314,7 @@ BEGIN
                 'activo',
                 null,
                 null,
-                v_rec.id_movimiento_af,
+                --v_rec.id_movimiento_af,
                 v_ant_dep_acum, --10  depreciacion_acum_ant
                 v_ant_dep_per,   --depreciacion_per_ant
                 v_ant_monto_vigente,  --monto_vigente_ant
@@ -360,8 +339,6 @@ BEGIN
             else
             	raise exception 'El Activo Fijo % ya fue depreciado en  %',v_rec.codigo_afv,v_mes_dep;
             end if;
-
-
 
             v_gestion_previa =   extract(year from v_mes_dep::date);
             v_tipo_cambio_anterior = v_rec_tc.o_tc_final;
@@ -397,65 +374,25 @@ BEGIN
             v_mensaje = 'Depreciado hasta '||v_mes_dep::varchar;
         end if;
 
-        update kaf.tmovimiento_af set
-        respuesta = v_mensaje
-        where id_movimiento_af = v_rec.id_movimiento_af;
+        update kaf.tactivo_fijo_valores set
+        fecha_ult_dep = p_fecha_hasta
+        where id_activo_fijo_valor = v_rec.id_activo_fijo_valor;
+
 
     end loop;
 
-    --Verifica si entró al bucle al menos una vez. Caso contrario recorre bucle para registrar que no depreció
-    if v_sw_control_dep = false then
-
-        --Actualiza mensaje de que la vida util ya es cero
-        update kaf.tmovimiento_af set
-        respuesta = 'No Depreciado. Vida útil igual a cero'
-        from kaf.tmovimiento_af maf
-        inner join kaf.vactivo_fijo_valor afv
-        on afv.id_activo_fijo = maf.id_activo_fijo
-        inner join kaf.tmoneda_dep mon
-        on mon.id_moneda_dep = afv.id_moneda_dep
-        inner join kaf.tactivo_fijo af
-        on af.id_activo_fijo = maf.id_activo_fijo
-        inner join kaf.tclasificacion cla
-        on cla.id_clasificacion = af.id_clasificacion
-        inner join kaf.tactivo_fijo_valores afv1
-        on afv1.id_activo_fijo_valor = afv.id_activo_fijo_valor
-        where maf.id_movimiento = p_id_movimiento
-        and cla.depreciable = 'si'
-        and afv.vida_util_real = 0
-        and kaf.tmovimiento_af.id_movimiento_af = maf.id_movimiento_af;
-
-        --Actualiza mensaje de que la vida util ya es cero
-        update kaf.tmovimiento_af set
-        respuesta = 'No Depreciado. Fecha Últ.Dep/Ini.Dep ('||afv.fecha_ult_dep_real::varchar||') es posterior a la fecha Hasta'
-        from kaf.tmovimiento_af maf
-        inner join kaf.vactivo_fijo_valor afv
-        on afv.id_activo_fijo = maf.id_activo_fijo
-        inner join kaf.tmoneda_dep mon
-        on mon.id_moneda_dep = afv.id_moneda_dep
-        inner join kaf.tactivo_fijo af
-        on af.id_activo_fijo = maf.id_activo_fijo
-        inner join kaf.tclasificacion cla
-        on cla.id_clasificacion = af.id_clasificacion
-        inner join kaf.tactivo_fijo_valores afv1
-        on afv1.id_activo_fijo_valor = afv.id_activo_fijo_valor
-        where maf.id_movimiento = p_id_movimiento
-        and cla.depreciable = 'si'
-        and afv.fecha_ult_dep_real >= v_fecha_hasta
-        and kaf.tmovimiento_af.id_movimiento_af = maf.id_movimiento_af;
 
 
-    end if;
 
     return 'hecho';
 
-EXCEPTION
+/*EXCEPTION
   WHEN OTHERS THEN
       v_resp='';
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
       v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
       v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
-      raise exception '%',v_resp;
+      raise exception '%',v_resp;*/
 END;
 $body$
 LANGUAGE 'plpgsql'
