@@ -326,7 +326,7 @@ class RMovimientoUpdate extends  ReportePDF {
             }else{
                 $descripcion = 'RECIBÍ CONFORME';
             }
-            if($this->dataMaster[0]['custodio']!='') {
+            if($this->dataMaster[0]['custodio']!='' && $this->dataMaster[0]['codigo_depto'] == 'DAF-TI') {
                 $tbl = '<table>
                         <tr>
                         <td style="width: 15%"></td>
@@ -392,7 +392,7 @@ class RMovimientoUpdate extends  ReportePDF {
                         </tr>
                     </table>      
                     ';
-            }else{
+            }else if($this->dataMaster[0]['custodio']=='' && $this->dataMaster[0]['codigo_depto'] == 'DAF-TI'){
                 $tbl = '<table>
                         <tr>
                         <td style="width: 15%"></td>
@@ -440,6 +440,111 @@ class RMovimientoUpdate extends  ReportePDF {
                                     <td align="center" style="font-family: Calibri; font-size: 9px;"><b>RESPONSABLE</b></td>
                                     <td align="center" style="font-family: Calibri; font-size: 9px;"><b>'.$descripcion.'</b></td>
                                     <td align="center" style="font-family: Calibri; font-size: 9px;"><b>ENCARGADO ALMACEN</b></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="width:15%;"></td>
+                        </tr>
+                    </table>      
+                    ';
+            }else if($this->dataMaster[0]['custodio']!='' && $this->dataMaster[0]['codigo_depto'] == 'DAF-CENTRAL') {
+                $tbl = '<table>
+                        <tr>
+                        <td style="width: 15%"></td>
+                        <td style="width: 70%">
+                            <table cellspacing="0" cellpadding="1" border="1">
+                                
+                                <tr>
+                                    <td align="center" > 
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <br>
+                                    </td>
+                                    <td align="center" >
+                                        <br>
+                                        <br>
+                                        <br> 
+                                        <br> 
+                                        <br> 
+                                        <br> 
+                                    </td>
+                                    <td align="center" >
+                                        <br>
+                                        <br>
+                                        <br> 
+                                        <br> 
+                                        <br> 
+                                        <br> 
+                                    </td>
+                                    
+                                </tr>
+                                 
+                                <tr>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">' . $this->dataMaster[0]['responsable_depto'] . '</td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">' . $this->dataMaster[0]['responsable'] . '</td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">' . $this->dataMaster[0]['custodio'] . '</td>
+                                </tr>
+                                 
+                                <tr>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">' . strtoupper($this->dataMaster[0]['cargo_jefe']) . '</td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">' . strtoupper($this->dataMaster[0]['nombre_cargo']) . '</td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">' . 'CI. ' . strtoupper($this->dataMaster[0]['ci_custodio']) . '</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;"><b>RESPONSABLE</b></td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;"><b>'.$descripcion.'</b></td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;"><b>CUSTODIO</b></td>
+                                    
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="width:15%;"></td>
+                        </tr>
+                    </table>      
+                    ';
+            }else if($this->dataMaster[0]['custodio']=='' && $this->dataMaster[0]['codigo_depto'] == 'DAF-CENTRAL') {
+                $tbl = '<table>
+                        <tr>
+                        <td style="width: 15%"></td>
+                        <td style="width: 70%">
+                            <table cellspacing="0" cellpadding="1" border="1">
+                                
+                                <tr>
+                                    <td align="center" > 
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <br>
+                                    </td>
+                                    <td align="center" >
+                                        <br>
+                                        <br>
+                                        <br>
+                                        <br> 
+                                        <br> 
+                                        <br> 
+                                    </td>
+                                </tr>
+                                 
+                                <tr>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">'.$this->dataMaster[0]['responsable_depto'].'</td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">'.$this->dataMaster[0]['responsable'].'</td>
+                                </tr>
+                                 
+                                <tr>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">'.strtoupper($this->dataMaster[0]['cargo_jefe']).'</td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;">'.strtoupper($this->dataMaster[0]['nombre_cargo']).'</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;"><b>RESPONSABLE</b></td>
+                                    <td align="center" style="font-family: Calibri; font-size: 9px;"><b>'.$descripcion.'</b></td>
                                 </tr>
                             </table>
                         </td>
