@@ -122,30 +122,40 @@ class RCodigoQRAF_v1 extends  ReportePDF {
 		$this->SetXY(75,38);
 
 		//Descripcion
-		$maxLength=80;
-		$maxLengthLinea=60;
-		$x=75;
-		$y=38;
-		$codAux = substr($this->cod['desc'],0,$maxLength);
-		if(strlen($this->cod['desc'])>$maxLength){
 
-			$codAux = substr($this->cod['desc'],0,$maxLength-23).'...';
-			//$this->SetFont('','',20);
+        $maxLength=100;
+        $maxLengthLinea=80;
+        $x=75;
+        $y=35;
+        $codAux = substr($this->cod['desc'],0,$maxLength);
+        $cod = $this->cod['desc'];
+
+        if(strlen($cod)>$maxLength && strlen($cod) < 300){
+
+            $text = mb_strtoupper($cod,'UTF-8');
+            $this->SetXY(77,38);
+			$this->SetFont('','',10);
+            $html = '<table style="width: auto;height: auto;"><tr><td style="white-space: pre-line;text-align: justify;">'.$text.'</td></tr></table>';
+            $this->writeHTML($html);
+        }elseif (strlen($cod)>300){
+            $text = mb_strtoupper($cod,'UTF-8');
+            $this->SetXY(78,38);
+            $this->SetFont('','',8);
+            $html = '<table style="width: auto;height: auto;"><tr><td style="white-space: pre-line;text-align: justify;">'.$text.'</td></tr></table>';
+            $this->writeHTML($html);
 		}
-		while (strlen($codAux)>0) {
+        else{
+            while (strlen($codAux)>0) {
+                $tmp = substr($codAux, 0, $maxLengthLinea);
+                $text = mb_strtoupper($tmp,'UTF-8');
+                $this->MultiCell(0, 0, $text, 0,'L', false,0, $x, $y,true, 0, false,true, '',true);
+                $codAux = substr($codAux, $maxLengthLinea,$maxLength);
+                $y=$y+7;
+            }
 
-			$tmp = substr($codAux, 0, $maxLengthLinea);
-			$text =mb_strtoupper($tmp,'UTF-8');
-			$this->Multicell(0,0, $text, 0,'J', false, 0, $x, $y,true,0, false,true,0, '', true);
-			//$html = ' <p style="boder:2px solid black;">'.$codAux.'</p>';
-			//$this->writeHTMLCell(0, 0, $x, $y, $html, 0, 1, 0, false, 'J',true);
-			//$this->Text($x, $y, $text, false, false, true, 0, 5,'',false,'',3,false,'','',true);
-			//$this->Text($x, $y, strtoupper($tmp), false, false, true, 0, 5,'',false,'',3,false,'','',true);
-			$codAux = substr($codAux, $maxLengthLinea,$maxLength);
-			$y=$y+7;
 
-		}
-		//$html = '<p style="word-wrap: break-word;text-size-adjust: auto;">'.strtoupper($tmp).'</p>';
+        }
+        //$html = '<p style="word-wrap: break-word;text-size-adjust: auto;">'.strtoupper($tmp).'</p>';
 		//$this->writeHTMLCell(0, 0, $x, $y, $html, 0, 1, 0, false, 'J',true);
 		//$this->Text($x, $y, strtoupper($tmpp), false, false, true, 0, 5,'',false,'',0);
 
