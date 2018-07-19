@@ -593,6 +593,12 @@ class ACTActivoFijo extends ACTbase{
 
 	}
 
+    function getActivosFijosFuncionarioBoa(){
+        $this->objFunc=$this->create('MODActivoFijo');
+        $this->res=$this->objFunc->getActivosFijosFuncionarioBoa($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
 
 }
 ?>
