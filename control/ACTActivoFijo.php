@@ -11,7 +11,11 @@ require_once(dirname(__FILE__).'/../reportes/RCodigoQRAF_v1.php');
 require_once(dirname(__FILE__).'/../reportes/RCompraGestionPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RCompraGestionXls.php');
 require_once(dirname(__FILE__).'/../reportes/RDetalleAFPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RActivoDetallePDF.php');
 require_once(dirname(__FILE__).'/../reportes/RDetalleAFXls.php');
+require_once(dirname(__FILE__).'/../reportes/RActivoFijoPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RActivoFijoXls.php');
+require_once(dirname(__FILE__).'/../reportes/RActivoFijoDetalleXls.php');
 
 class ACTActivoFijo extends ACTbase{
 
@@ -203,6 +207,7 @@ class ACTActivoFijo extends ACTbase{
 
 
 
+
 	function impCodigoActivoFijo(){
 
 		$nombreArchivo = 'CodigoAF'.uniqid(md5(session_id())).'.pdf';
@@ -220,7 +225,6 @@ class ACTActivoFijo extends ACTbase{
 
 		$width = 160;
 		$height = 80;
-
 
 
 		$this->objParam->addParametro('orientacion',$orientacion);
@@ -304,7 +308,7 @@ class ACTActivoFijo extends ACTbase{
 		$orientacion = 'L';
 		$titulo = 'Código';
 
-		//$width = 40;  
+		//$width = 40;
 		//$height = 20;
 
 		$width = 160;
@@ -466,7 +470,7 @@ class ACTActivoFijo extends ACTbase{
 		$orientacion = 'L';
 		$titulo = 'Códigos Activos Fijos';
 
-		//$width = 40;  
+		//$width = 40;
 		//$height = 20;
 
 		$width = 160;
@@ -512,7 +516,7 @@ class ACTActivoFijo extends ACTbase{
 
 	function reportesAFGlobal(){
 
-	    //Filtros Reporte
+		//Filtros Reporte
 		if($this->objParam->getParametro('estado')!= ''){
 			$this->objParam->addFiltro("(taf.estado = ''".$this->objParam->getParametro('estado')."'' OR taf.estado is null)");
 		}
@@ -524,7 +528,7 @@ class ACTActivoFijo extends ACTbase{
 			$this->objParam->addFiltro("niv.tipo_activo in  (''tangible'', ''intangible'')");
 		}
 
-        //Llamada al Modelo, consulta BD
+		//Llamada al Modelo, consulta BD
 		$this->objFunc = $this->create('MODActivoFijo');
 		$this->res = $this->objFunc->reportesAFGlobal($this->objParam);
 
@@ -533,57 +537,57 @@ class ACTActivoFijo extends ACTbase{
 
 		if($this->objParam->getParametro('configuracion_reporte')  == 'compras_gestion'){
 
-            if($this->objParam->getParametro('formato_reporte')=='pdf'){
-                $nombreArchivo = uniqid(md5(session_id()).'[Reporte - Compras x Gestion]').'.pdf';
-            }
-            else{
-                $nombreArchivo = uniqid(md5(session_id()).'[Reporte - Compras x Gestion]').'.xls';
-            }
+			if($this->objParam->getParametro('formato_reporte')=='pdf'){
+				$nombreArchivo = uniqid(md5(session_id()).'[Reporte - Compras x Gestion]').'.pdf';
+			}
+			else{
+				$nombreArchivo = uniqid(md5(session_id()).'[Reporte - Compras x Gestion]').'.xls';
+			}
 
-        }else if($this->objParam->getParametro('configuracion_reporte') == 'detalle_af'){
+		}else if($this->objParam->getParametro('configuracion_reporte') == 'detalle_af'){
 
-            if($this->objParam->getParametro('formato_reporte')=='pdf'){
-                $nombreArchivo = uniqid(md5(session_id()).'[Detalle - Activos Fijos]').'.pdf';
-            }
-            else{
-                $nombreArchivo = uniqid(md5(session_id()).'[Detalle - Activos Fijos]').'.xls';
-            }
-        }
+			if($this->objParam->getParametro('formato_reporte')=='pdf'){
+				$nombreArchivo = uniqid(md5(session_id()).'[Detalle - Activos Fijos]').'.pdf';
+			}
+			else{
+				$nombreArchivo = uniqid(md5(session_id()).'[Detalle - Activos Fijos]').'.xls';
+			}
+		}
 
-        //Definicion de parametros adicionales para el reporte.
+		//Definicion de parametros adicionales para el reporte.
 		$this->objParam->addParametro('tamano','LETTER');
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 		$this->objParam->addParametro('titulo_archivo','ComprasGestión');
 		$this->objParam->addParametro('desc_nombre',$this->objParam->getParametro('desc_nombre'));
 
-        if($this->objParam->getParametro('configuracion_reporte')  == 'compras_gestion') {
-            if ($this->objParam->getParametro('formato_reporte') == 'pdf') {
-                //Orientacion Hoja Documento.
-                $this->objParam->addParametro('orientacion','P');
-                //Instancia la clase de pdf
-                $this->objReporteFormato = new RCompraGestionPDF ($this->objParam);
-                $this->objReporteFormato->setDatos($this->res->datos);
-                $this->objReporteFormato->generarReporte();
-                $this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
-            } else {
-                $reporte = new RCompraGestionXls($this->objParam);
-                $reporte->setDatos($this->res->datos);
-                $reporte->generarReporte();
-            }
-        }else if($this->objParam->getParametro('configuracion_reporte') == 'detalle_af'){
-            if ($this->objParam->getParametro('formato_reporte') == 'pdf') {
-                //Orientacion Hoja Documento.
-                $this->objParam->addParametro('orientacion','L');
-                $this->objReporteFormato = new RDetalleAFPDF ($this->objParam);
-                $this->objReporteFormato->setDatos($this->res->datos);
-                $this->objReporteFormato->generarReporte();
-                $this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
-            } else {
-                $reporte = new RDetalleAFXls($this->objParam);
-                $reporte->setDatos($this->res->datos);
-                $reporte->generarReporte();
-            }
-        }
+		if($this->objParam->getParametro('configuracion_reporte')  == 'compras_gestion') {
+			if ($this->objParam->getParametro('formato_reporte') == 'pdf') {
+				//Orientacion Hoja Documento.
+				$this->objParam->addParametro('orientacion','P');
+				//Instancia la clase de pdf
+				$this->objReporteFormato = new RCompraGestionPDF ($this->objParam);
+				$this->objReporteFormato->setDatos($this->res->datos);
+				$this->objReporteFormato->generarReporte();
+				$this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
+			} else {
+				$reporte = new RCompraGestionXls($this->objParam);
+				$reporte->setDatos($this->res->datos);
+				$reporte->generarReporte();
+			}
+		}else if($this->objParam->getParametro('configuracion_reporte') == 'detalle_af'){
+			if ($this->objParam->getParametro('formato_reporte') == 'pdf') {
+				//Orientacion Hoja Documento.
+				$this->objParam->addParametro('orientacion','L');
+				$this->objReporteFormato = new RDetalleAFPDF ($this->objParam);
+				$this->objReporteFormato->setDatos($this->res->datos);
+				$this->objReporteFormato->generarReporte();
+				$this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
+			} else {
+				$reporte = new RDetalleAFXls($this->objParam);
+				$reporte->setDatos($this->res->datos);
+				$reporte->generarReporte();
+			}
+		}
 
 		$this->mensajeExito=new Mensaje();
 		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
@@ -593,12 +597,102 @@ class ACTActivoFijo extends ACTbase{
 
 	}
 
+    //servicio que retorna los activos de un funcionario
     function getActivosFijosFuncionarioBoa(){
         $this->objFunc=$this->create('MODActivoFijo');
         $this->res=$this->objFunc->getActivosFijosFuncionarioBoa($this->objParam);
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
+
+	////////////////////////////////////////
+		function ListaDetActivo(){
+	        $this->objFunc=$this->create('MODActivoFijo');
+	        $this->res=$this->objFunc->ListaDetActivo($this->objParam);
+			$this->res->imprimirRespuesta($this->res->generarJson());
+			//var_dump($this->res);exit;
+		}
+		
+		function ReporteDetalleActivos(){
+			// var_dump($this->objParam);exit;
+		
+	      $this->objFunc=$this->create('MODActivoFijo');
+	      $this->res=$this->objFunc->ReporteDetalleActivos($this->objParam);
+		  	
+	
+		if($this->objParam->getParametro('formato_reporte') == 'pdf'){
+			$nombreArchivo = uniqid(md5(session_id()).'[Reporte Activo por Grupo]').'.pdf';
+		}
+		else{
+			$nombreArchivo = uniqid(md5(session_id()).'[Reporte Activo por Grupo]').'.xls';
+		}
+		//Definicion de parametros adicionales para el reporte.
+		$this->objParam->addParametro('tamano','LETTER');
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		$this->objParam->addParametro('titulo_archivo','Reporte Activos');
+		$this->objParam->addParametro('desc_nombre',$this->objParam->getParametro('desc_nombre'));	
+		
+	
+        
+			if ($this->objParam->getParametro('formato_reporte')=='pdf') {
+				//Orientacion Hoja Documento.
+				$this->objParam->addParametro('orientacion','P');
+				//Instancia la clase de pdf
+				
+				$this->objReporteFormato = new RActivoFijoPDF($this->objParam);
+				$this->objReporteFormato->setDatos($this->res->datos);
+				$this->objReporteFormato->generarReporte();
+				$this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
+			} else {
+				$reporte = new RActivoFijoXls($this->objParam);
+				$reporte->setDatos($this->res->datos);
+				$reporte->generarReporte();
+			}
+			
+	        $this->mensajeExito=new Mensaje();
+	        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+	            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+	        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+	        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+        }
+		
+		function ReporteActivoEnDetalle(){
+			
+			//var_dump('hoal');exit;
+	        $this->objFunc=$this->create('MODActivoFijo');
+	        $this->res=$this->objFunc->ReporteActivoEnDetalle($this->objParam);
+			
+		if($this->objParam->getParametro('formato_reporte') == 'pdf'){
+			$nombreArchivo = uniqid(md5(session_id()).'[Reporte Activo en Detalle]').'.pdf';
+		}else{
+			$nombreArchivo = uniqid(md5(session_id()).'[Reporte Activo en Detalle]').'.xls';
+		}
+			$this->objParam->addParametro('tamano','LETTER');
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		$this->objParam->addParametro('titulo_archivo','Reporte Activos');
+		$this->objParam->addParametro('desc_nombre',$this->objParam->getParametro('desc_nombre'));	
+
+	
+		if ($this->objParam->getParametro('formato_reporte')=='pdf') {
+				//Orientacion Hoja Documento.
+				$this->objParam->addParametro('orientacion','L');
+				//Instancia la clase de pdf
+				
+				$this->objReporteFormato = new RActivoDetallePDF($this->objParam);
+				$this->objReporteFormato->setDatos($this->res->datos);
+				$this->objReporteFormato->generarReporte();
+				$this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
+			}else{
+				$reporte = new RActivoFijoDetalleXls($this->objParam);
+				$reporte->setDatos($this->res->datos);
+				$reporte->generarReporte();
+			}
+	        $this->mensajeExito=new Mensaje();
+	        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+	            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+	        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+	        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+        }
 
 }
 ?>

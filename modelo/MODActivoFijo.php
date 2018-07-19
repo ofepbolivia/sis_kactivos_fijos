@@ -6,6 +6,7 @@
  *@date 29-10-2015 03:18:45
  *@description Clase que envia los parametros requeridos a la Base de datos para la ejecucion de las funciones, y que recibe la respuesta del resultado de la ejecucion de las mismas
  */
+
 class MODActivoFijo extends MODbase{
 
 	function __construct(CTParametro $pParam){
@@ -17,6 +18,7 @@ class MODActivoFijo extends MODbase{
 		$this->procedimiento='kaf.ft_activo_fijo_sel';
 		$this->transaccion='SKA_AFIJ_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
+
 		$this->setParametro('por_usuario','por_usuario','varchar');
 
 		//Definicion de la lista del resultado del query
@@ -169,7 +171,9 @@ class MODActivoFijo extends MODbase{
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
+
 		$this->ejecutarConsulta();
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
@@ -227,9 +231,11 @@ class MODActivoFijo extends MODbase{
 		$this->setParametro('nro_cbte_asociado','nro_cbte_asociado','varchar');
 		$this->setParametro('fecha_cbte_asociado','fecha_cbte_asociado','date');
 
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
@@ -242,12 +248,15 @@ class MODActivoFijo extends MODbase{
 
 		//Define los parametros para la funcion
 		$this->setParametro('id_activo_fijo','id_activo_fijo','int4');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
 	function codificarActivoFijo(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_activo_fijo_ime';
@@ -256,12 +265,15 @@ class MODActivoFijo extends MODbase{
 
 		//Define los parametros para la funcion
 		$this->setParametro('id_activo_fijo','id_activo_fijo','int4');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
 	function seleccionarActivosFijos(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='kaf.ft_activo_fijo_sel';
@@ -271,6 +283,7 @@ class MODActivoFijo extends MODbase{
 
 		//Definicion de la lista del resultado del query
 		$this->captura('ids','text');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -289,9 +302,11 @@ class MODActivoFijo extends MODbase{
 
 		//Define los parametros para la funcion
 		$this->setParametro('id_activo_fijo','id_activo_fijo','int4');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
@@ -317,12 +332,15 @@ class MODActivoFijo extends MODbase{
 
 
 
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
 
 
 
@@ -381,6 +399,7 @@ class MODActivoFijo extends MODbase{
 				throw new Exception("Error al ejecutar en la bd", 3);
 			}
 
+
 			if($resp_procedimiento['tipo_respuesta'] == 'EXITO'){
 
 				//revisamos si ya existe el archivo la verison anterior sera mayor a cero
@@ -421,6 +440,7 @@ class MODActivoFijo extends MODbase{
 		return $this->respuesta;
 
 	}
+
 	function clonarActivoFijo(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_activo_fijo_ime';
@@ -430,19 +450,24 @@ class MODActivoFijo extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('id_activo_fijo','id_activo_fijo','int4');
 		$this->setParametro('cantidad_clon','cantidad_clon','int4');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
 	function listarActivoFijoFecha(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='kaf.ft_activo_fijo_sel';
 		$this->transaccion='SKA_AFFECH_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
+
 		$this->setParametro('fecha_mov','fecha_mov','date');
 		$this->setParametro('no_asignado','no_asignado','varchar');
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_activo_fijo','int4');
 		$this->captura('id_persona','int4');
@@ -531,22 +556,27 @@ class MODActivoFijo extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
 	function listarActivosNoAsignados(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_activo_fijo_sel';
 		$this->transaccion='SKA_NO_ASIGNADO_SEL';
 		$this->tipo_procedimiento='SEL';
+
 		//Define los parametros para la funcion
 		$this->captura('id_activo_fijo','int4');
 		$this->captura('codigo','varchar');
 		$this->captura('descripcion','varchar');
 		$this->captura('denominacion','varchar');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
 	function consultaQR(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_activo_fijo_ime';
@@ -555,18 +585,22 @@ class MODActivoFijo extends MODbase{
 
 		//Define los parametros para la funcion
 		$this->setParametro('id_activo_fijo','id_activo_fijo','int4');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
 	function listarCodigoQRVarios(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='kaf.ft_activo_fijo_sel';
 		$this->transaccion='SKA_QRVARIOS_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 		$this->setCount(false);
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_activo_fijo','int4');
 		$this->captura('codigo','varchar');
@@ -576,24 +610,29 @@ class MODActivoFijo extends MODbase{
 		$this->captura('nombre_entidad','varchar');
 		$this->captura('descripcion','varchar');
 		$this->captura('clase_rep','varchar');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		//echo $this->consulta;exit;
 		$this->ejecutarConsulta();
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
 	function reportesAFGlobal(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='kaf.ft_activo_fijo_sel';
 		$this->transaccion='SKA_COMPRAS_GEST_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 		$this->setCount(false);
+
 		$this->setParametro('fecha_ini','fecha_ini','date');
 		$this->setParametro('fecha_fin','fecha_fin','date');
 		$this->setParametro('desc_nombre','desc_nombre','varchar');
 		$this->setParametro('id_clasificacion','id_clasificacion','INT4');
 		$this->setParametro('ubicacion','ubicacion','INT4');
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_clasificacion','int4');
 		$this->captura('id_clasificacion_fk','int4');
@@ -616,13 +655,17 @@ class MODActivoFijo extends MODbase{
 		$this->captura('responsable','varchar');
 		$this->captura('monto_compra','numeric');
 		$this->captura('estado','varchar');
-		//Ejecuta la instruccion
+
+		//Ejecuta la instruccion 
 		$this->armarConsulta();
-		//echo $this->consulta;exit;
+		//echo $this->consulta;exit; 
 		$this->ejecutarConsulta();
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+/////////////////////////////////////////////////
+
 
     function getActivosFijosFuncionarioBoa(){
         //Definicion de variables para ejecucion del procedimiento
@@ -649,6 +692,86 @@ class MODActivoFijo extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+
+
+	function ListaDetActivo(){
+		
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='kaf.ft_activo_fijo_sel';
+		$this->transaccion='SKA_LI_ACLIDE_SEL'; 
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);
+	
+		//Ejecuta la instruccion
+		$this->captura('id_clasificacion','int4');
+		$this->captura('codigo','varchar');
+		$this->captura('nombre','varchar');
+		$this->captura('nivel','int4');
+		
+		$this->armarConsulta();
+		//var_dump($this->consulta);exit; 
+		$this->ejecutarConsulta();
+		//Devuelve la respuesta
+		return $this->respuesta;
+		
+	}
+	function ReporteDetalleActivos(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='kaf.ft_activo_fijo_sel';
+		$this->transaccion='SKA_REP_DETAF_SEL'; // texto < 20 
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		//$this->setCount(false);
+		
+		$this->setParametro('id_clasificacion','id_clasificacion','varchar');
+		
+		//Definicion de la lista del resultado del query
+		$this->captura('id_clasificacion','int4');
+		$this->captura('id_clasificacion_fk','int4');
+		$this->captura('codigo_completo_tmp','varchar');
+		$this->captura('nombre','varchar');
+		$this->captura('nivel','int4');
+		$this->captura('hijos','varchar');
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		//var_dump($this->consulta);exit; 
+		$this->ejecutarConsulta();
+		//Devuelve la respuesta
+		return $this->respuesta;
+		
+	}
+	function ReporteActivoEnDetalle(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='kaf.ft_activo_fijo_sel';
+		$this->transaccion='SKA_REP_ACTEDET_SEL'; // texto < 20 
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		
+		$this->setParametro('id_clasificacion','id_clasificacion','varchar');
+		//$this->setParametro('id_clasificacion','id_clasificacion','int4'); cambio para seleccion multiple
+		
+		//Definicion de la lista del resultado del query
+		
+		$this->captura('tipo','varchar');
+		$this->captura('marca','varchar'); 
+		$this->captura('subtipo','varchar');
+		$this->captura('codigo','varchar');
+		$this->captura('descripcion','varchar');
+		$this->captura('clasificacion','varchar');
+		$this->captura('denominacion','varchar');
+		$this->captura('estado','varchar');
+		$this->captura('estado_funcional','varchar'); 
+		$this->captura('fecha_compra','varchar');
+		$this->captura('c31','varchar');
+		$this->captura('ubicacion','varchar');
+		$this->captura('responsable','varchar');
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		//var_dump($this->consulta);exit; 
+		$this->ejecutarConsulta();
+		//Devuelve la respuesta
+		return $this->respuesta;
+		
+	}
+	
 
 }
 ?>
