@@ -555,8 +555,9 @@ BEGIN
   
     elsif(p_transaccion='SKA_RASIG_SEL') then
 
+ 
         begin
-		    
+		    --RAISE EXCEPTION 'v_parametros: %', v_parametros.columna;
             select tl.nombre 
             into v_lugar
             from param.tlugar tl 
@@ -597,7 +598,10 @@ BEGIN
                             '''||v_lugar||'''::varchar as lugar,
                             cla.nombre as desc_clasificacion,
                             afij.denominacion,
-                            afij.descripcion,
+                            (case when '''||v_parametros.columna||''' = ''desc'' then afij.descripcion::varchar
+                            	  when '''||v_parametros.columna||''' = ''nombre'' then afij.denominacion::varchar
+                                  else  afij.descripcion::varchar
+                             	  end) as descripcion,
                             afij.estado,
                             afij.observaciones,
                             ''''::varchar as ubicacion,
@@ -605,7 +609,8 @@ BEGIN
                             ofi.nombre,
                             fun.desc_funcionario2 as responsable,
                             orga.f_get_cargo_x_funcionario_str(afij.id_funcionario,now()::date,''oficial'') as cargo,
-                            dep.codigo ||'' - ''||dep.nombre
+                            dep.codigo ||'' - ''||dep.nombre,
+                            case when '''||v_parametros.columna||''' = '''' then ''ambos''::varchar else '''||v_parametros.columna||'''::varchar end as tipo_columna
                             from kaf.tactivo_fijo afij
                             inner join kaf.tclasificacion cla on cla.id_clasificacion = afij.id_clasificacion
                             left join orga.vfuncionario fun on fun.id_funcionario = afij.id_funcionario
@@ -614,7 +619,7 @@ BEGIN
                             where '||v_filtro;
 			
             v_consulta:=v_consulta||' order by fun.desc_funcionario2, ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion;
-            --raise EXCEPTION 'v_consulta: %', v_consulta;
+            raise notice 'v_consulta: %', v_consulta;
             --Devuelve la respuesta
             return v_consulta;
 

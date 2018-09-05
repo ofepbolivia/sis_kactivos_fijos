@@ -1,6 +1,4 @@
---------------- SQL ---------------
-
-CREATE OR REPLACE FUNCTION kaf.ft_movimiento_sel ( 
+CREATE OR REPLACE FUNCTION kaf.ft_movimiento_sel (
   p_administrador integer,
   p_id_usuario integer,
   p_tabla varchar,
@@ -34,7 +32,9 @@ DECLARE
 	v_tipo_interfaz		varchar;
     v_depto_ids         varchar;
     v_aux               varchar;
-			    
+	v_tipo_movimiento	varchar;
+    v_inner				varchar;	
+    v_id_deposito		integer;	    
 BEGIN
 
 	v_nombre_funcion = 'kaf.ft_movimiento_sel';
@@ -313,7 +313,18 @@ BEGIN
 	elsif(p_transaccion='SKA_MOV_REP')then
 
 		begin
-
+        	select tmm.motivo, tm.id_deposito
+            into v_tipo_movimiento, v_id_deposito
+            from kaf.tmovimiento tm 
+            inner join kaf.tmovimiento_motivo tmm on tmm.id_movimiento_motivo = tm.id_movimiento_motivo
+            where tm.id_movimiento = v_parametros.id_movimiento;
+			
+            if(v_tipo_movimiento='Devolución' and v_id_deposito is not null)then
+            	v_inner = 'left join kaf.tdeposito tdep on tdep.id_deposito = mov.id_deposito
+                		   inner join orga.vfuncionario_cargo_lugar fun1 on fun1.id_funcionario = tdep.id_funcionario';
+            else 
+            	v_inner = 'inner join orga.vfuncionario_cargo_lugar fun1 on fun1.id_funcionario = mov.id_responsable_depto';	
+            end if;
 			--Consulta
 			v_consulta:=' select cat.descripcion as movimiento,
                                 cat.codigo as cod_movimiento,
@@ -355,18 +366,21 @@ BEGIN
                                 case when (length(fun1.oficina_direccion)>0 and position(''Tel'' in fun1.oficina_direccion) > 0) then
                                 		substring(fun1.oficina_direccion,1,position(''Tel'' in fun1.oficina_direccion)-1)::varchar
                                     else case when length(fun1.oficina_direccion)>0 then fun1.oficina_direccion else ''No tiene dirección''::varchar end end as direccion_responsable,
-                                mov.prestamo
-
+                                mov.prestamo,
+                                dpto.codigo as codigo_depto,
+							    fun_r.desc_funcionario2::varchar as func_resp_dep,
+                              fun_r.descripcion_cargo as func_cargo_dep
                          from kaf.tmovimiento mov 
                               inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
                               inner join param.tdepto dpto on dpto.id_depto = mov.id_depto
                               left join orga.vfuncionario_cargo_lugar fun on fun.id_funcionario =  mov.id_funcionario
-                              and ((mov.fecha_mov BETWEEN fun.fecha_asignacion and fun.fecha_finalizacion) or (mov.fecha_mov >= fun.fecha_asignacion or fun.fecha_finalizacion is NULL))
+                              and ((mov.fecha_mov BETWEEN fun.fecha_asignacion and fun.fecha_finalizacion) or (mov.fecha_mov >= fun.fecha_asignacion and fun.fecha_finalizacion is NULL))
      						              left join orga.vfuncionario_cargo_lugar fundes on fundes.id_funcionario = mov.id_funcionario_dest
-                              and ((mov.fecha_mov BETWEEN fundes.fecha_asignacion  and fundes.fecha_finalizacion) or (mov.fecha_mov >= fundes.fecha_asignacion or fundes.fecha_finalizacion is NULL))
+                              and ((mov.fecha_mov BETWEEN fundes.fecha_asignacion  and fundes.fecha_finalizacion) or (mov.fecha_mov >= fundes.fecha_asignacion and fundes.fecha_finalizacion is NULL))
                               left join orga.toficina ofi on ofi.id_oficina = mov.id_oficina
                               left join param.tlugar tlu on tlu.id_lugar = ofi.id_lugar
-                              inner join orga.vfuncionario_cargo_lugar fun1 on fun1.id_funcionario = mov.id_responsable_depto
+                              inner join orga.vfuncionario_cargo_lugar fun_r on fun_r.id_funcionario = mov.id_responsable_depto
+                              '||v_inner||'
                               left join segu.vpersona per on per.id_persona = mov.id_persona
                               left join param.tlugar lug on lug.id_lugar = ofi.id_lugar
                        WHERE  id_movimiento = '||v_parametros.id_movimiento;

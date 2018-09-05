@@ -364,7 +364,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					gwidth:200,
 					valueField: 'id_funcionario',
 					gdisplayField: 'desc_funcionario2',
-					baseParams: { fecha: new Date()},
+					baseParams: { fecha: new Date() },
 					hidden: true,
 					renderer:function(value, p, record){return String.format('{0}', record.data['desc_funcionario2']);},
 				},

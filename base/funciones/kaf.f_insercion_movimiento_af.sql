@@ -36,9 +36,9 @@ BEGIN
     where mov.id_movimiento = (p_parametros->'id_movimiento')::integer;
         
             
-    if not kaf.f_validar_ins_mov_af((p_parametros->'id_movimiento')::integer,(p_parametros->'id_activo_fijo')::integer) then
+    /*if not kaf.f_validar_ins_mov_af((p_parametros->'id_movimiento')::integer,(p_parametros->'id_activo_fijo')::integer) then
        raise exception 'Error al validar activo fijo';
-    end if;
+    end if;*/
     
     if v_registros.estado != 'borrador' THEN
        raise exception 'Solo puede insertar activos en movimientos en borrador';

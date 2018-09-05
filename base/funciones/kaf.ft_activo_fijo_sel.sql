@@ -731,13 +731,13 @@ BEGIN
                         niv.codigo_completo_tmp,
                         niv.nombre,
                         niv.nivel,
-                        case when claf.nivel = 2 then kaf.f_get_cantidad_hijos(claf.id_clasificacion,''CONT_NIETOS'') 
-                        when claf.nivel = 3 then kaf.f_get_cantidad_hijos(claf.id_clasificacion,''CONT_HIJOS'') end as hijos
+                        case when claf.nivel = 2 then kaf.f_get_cantidad_hijos(claf.id_clasificacion,''CONTA_NIETOS'') 
+                        when claf.nivel = 3 then kaf.f_get_cantidad_hijos(claf.id_clasificacion,''CONTA_HIJOS'') end as hijos
                         from niveles niv
                         inner join kaf.vclasificacion_arbol claf on claf.id_clasificacion = niv.id_clasificacion
                         inner join kaf.tclasificacion cla  on cla.id_clasificacion = claf.id_clasificacion
                         order by niv.codigo_completo_tmp';
-                  --raise notice 'v_consulta%',v_consulta;
+              raise notice 'v_consulta%',v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
         end;
@@ -811,8 +811,39 @@ BEGIN
                     order by cla.codigo';
                 --raise notice 'v_consulta%',v_consulta;
     		return v_consulta;
-     	end;        				
-	else					     
+     	end;
+    /*********************************    
+    #TRANSACCION:  'SKA_GET_AF_BOA_SEL'
+    #DESCRIPCION:   Servicio que retorna los activos asignados un funcionario BOA
+    #AUTOR:         FEA
+    #FECHA:         17/7/2018
+    ***********************************/
+
+    elsif(p_transaccion='SKA_GET_AF_BOA_SEL')then     
+    
+    	begin
+
+            --Sentencia de la consulta
+            v_consulta:='select vf.desc_funcionario1::varchar as responsable, 
+             			 taf.codigo, 
+                         taf.descripcion::varchar, 
+                         taf.fecha_asignacion, 
+                         (tl.codigo||''-''||tof.nombre)::varchar as oficina, 
+                         taf.ubicacion 
+                        from kaf.tactivo_fijo taf
+                        inner join orga.vfuncionario vf on vf.id_funcionario = taf.id_funcionario
+                        inner join orga.toficina tof on tof.id_oficina = taf.id_oficina
+                        inner join param.tlugar tl on tl.id_lugar = tof.id_lugar
+                        where taf.id_funcionario = '||v_parametros.id_funcionario||' and ';
+            
+            --Definicion de la respuesta
+            v_consulta = v_consulta||v_parametros.filtro;
+			raise notice 'v_consulta: %', v_consulta;
+            --Devuelve la respuesta
+            return v_consulta;
+        
+        end;
+	else
 		raise exception 'Transaccion inexistente';
 					         
 	end if;

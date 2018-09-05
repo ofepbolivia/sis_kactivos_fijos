@@ -428,61 +428,70 @@ Ext.define('Phx.vista.ParametrosBase', {
                 {boxLabel: 'Todos', name: 'rb-auto2', inputValue: 'todos', checked: true}
             ]
 		});
-		this.cmbDepto = new Ext.form.ComboBox({
-			fieldLabel: 'Dpto.',
-			emptyText: 'Seleccione un depto....',
-			anchor: '100%',
-			store: new Ext.data.JsonStore({
-				url: '../../sis_parametros/control/Depto/listarDepto',
-				id: 'id_depto',
-				root: 'datos',
-				sortInfo: {
-					field: 'nombre',
-					direction: 'ASC'
-				},
-				totalProperty: 'total',
-				fields: ['id_depto', 'nombre', 'codigo'],
-				remoteSort: true,
-				baseParams: {
-					start: 0,
+        this.cmbDepto = new Ext.form.AwesomeCombo({
+            fieldLabel: 'Dpto.',
+            emptyText: 'Seleccione un depto....',
+            anchor: '100%',
+            store: new Ext.data.JsonStore({
+                url: '../../sis_parametros/control/Depto/listarDepto',
+                id: 'id_depto',
+                root: 'datos',
+                sortInfo: {
+                    field: 'nombre',
+                    direction: 'ASC'
+                },
+                totalProperty: 'total',
+                fields: ['id_depto', 'nombre', 'codigo'],
+                remoteSort: true,
+                baseParams: {
+                    start: 0,
                     limit: 10,
                     sort: 'codigo',
                     dir: 'ASC',
                     codigo_subsistema: 'KAF',
-                    par_filtro:'DEPPTO.codigo#DEPPTO.nombre'
-				}
-			}),
-			valueField: 'id_depto',
-			displayField: 'nombre',
-			tpl: '<tpl for="."><div class="x-combo-list-item"><p>Nombre: {nombre}</p><p>Código: {codigo}</p></div></tpl>',
-			forceSelection: true,
-			typeAhead: false,
-			triggerAction: 'all',
-			lazyRender: true,
-			mode: 'remote',
-			pageSize: 10,
-			queryDelay: 1000,
-			gwidth: 250,
-			minChars: 2,
-			style: this.setBackgroundColor('cmbDepto')
-		});
+                    par_filtro:'DEPPTO.codigo#DEPPTO.nombre', deptos: 'todos'
+                }
+            }),
+            valueField: 'id_depto',
+            displayField: 'nombre',
+            //tpl: '<tpl for="."><div class="x-combo-list-item"><p style="color: green;">Nombre: {nombre}</p><p>Código: {codigo}</p></div></tpl>',
+            tpl: new Ext.XTemplate([
+                '<tpl for=".">',
+                '<div class="x-combo-list-item">',
+                '<div class="awesomecombo-item {checked}">',
+                '<p><b>Código: {codigo}</b></p>',
+                '</div><p><b>Nombre: </b> <span style="color: green;">{nombre}</span></p>',
+                '</div></tpl>'
+            ]),
+            forceSelection: true,
+            typeAhead: false,
+            triggerAction: 'all',
+            lazyRender: true,
+            mode: 'remote',
+            pageSize: 10,
+            queryDelay: 1000,
+            gwidth: 250,
+            minChars: 2,
+            style: this.setBackgroundColor('cmbDepto')
+        });
 
 		//(F.E.A)
-		this.descNombre = new Ext.form.ComboBox({
-			name : 'desc_nombre',
-			fieldLabel : 'Desc. / Nombre',
-			triggerAction : 'all',
-			lazyRender : true,
-			mode : 'local',
-			store : new Ext.data.ArrayStore({
-				fields : ['tipo', 'valor'],
-				data : [['desc', 'Descripción'], ['nombre', 'Nombre']]
-			}),
-			anchor : '50%',
-			valueField : 'tipo',
-			displayField : 'valor',
-			style: this.setBackgroundColor('cmbClasificacion')
-		});
+        this.descNombre = new Ext.form.ComboBox({
+            name : 'desc_nombre',
+            fieldLabel : 'Desc. / Nombre',
+            triggerAction : 'all',
+            lazyRender : true,
+            mode : 'local',
+            store : new Ext.data.ArrayStore({
+                fields : ['tipo', 'valor'],
+                data : [['desc', 'Descripción'], ['nombre', 'Nombre'], ['ambos','Nombre/Desc.']]
+            }),
+            anchor : '50%',
+            valueField : 'tipo',
+            displayField : 'valor',
+            msgTarget: 'side',
+            style: this.setBackgroundColor('cmbClasificacion')
+        });
 
 		this.cmbDeposito = new Ext.form.ComboBox({
 			fieldLabel: 'Deposito',
@@ -613,6 +622,7 @@ Ext.define('Phx.vista.ParametrosBase', {
             	title: 'Reporte',
             	items: [this.cmbReporte]
             },*/this.fieldSetGeneral, this.fieldSetIncluir, this.fieldSetCompra],
+
             tbar: [
                 {xtype:'button', text:'<i class="fa fa-print" aria-hidden="true"></i> Generar en Pantalla', tooltip: 'Generar el reporte', handler: this.onSubmit, scope: this},'-',
 				{
@@ -930,15 +940,15 @@ Ext.define('Phx.vista.ParametrosBase', {
         var nomRep = objRes.ROOT.detalle.archivo_generado;
         if(Phx.CP.config_ini.x==1){  			
         	nomRep = Phx.CP.CRIPT.Encriptar(nomRep);
+            }
+            window.open('../../../lib/lib_control/Intermediario.php?r='+nomRep+'&t='+new Date().toLocaleTimeString())
+        },
+        setBackgroundColor: function(elm){
+            return String.format('background-color: {0}; background-image: none;', this.setPersonalBackgroundColor(elm));
+        },
+        setPersonalBackgroundColor: function(elm){
+            //Para sobreescribir
+            return '#FFF';
         }
-        window.open('../../../lib/lib_control/Intermediario.php?r='+nomRep+'&t='+new Date().toLocaleTimeString())
-    },
-    setBackgroundColor: function(elm){
-    	return String.format('background-color: {0}; background-image: none;', this.setPersonalBackgroundColor(elm));
-    },
-    setPersonalBackgroundColor: function(elm){
-    	//Para sobreescribir
-    	return '#FFF';
-    }
-});
+    });
 </script>

@@ -136,6 +136,15 @@ Phx.vista.MovimientoPrincipal = {
             });
             //(f.e.a) deshabilitamos el deposito
             this.Cmp.id_deposito.setDisabled(true);
+            //(f.e.a) definimos funcionario activos para asignacion y transferencia e inactivos para devoluciones y transferencias de  inactivos a activos
+            if(rec.data.codigo == 'asig'){
+                this.Cmp.id_funcionario.store.baseParams.estado_func = 'activo';
+            }else if(rec.data.codigo == 'transf'){
+                this.Cmp.id_funcionario.store.baseParams.estado_func = 'act_desc';
+                this.Cmp.id_funcionario_dest.store.baseParams.estado_func = 'activo';
+            }else if(rec.data.codigo == 'devol'){
+                this.Cmp.id_funcionario.store.baseParams.estado_func = 'act_desc';
+            }
         }, this);
         //(f.e.a)Que el campo deposito dependa de depto.
         this.Cmp.id_depto.on('select', function(cmp,rec,el){
@@ -588,6 +597,7 @@ Phx.vista.MovimientoPrincipal = {
     	this.hideFields();
     	this.window.setSize(450,130);
     	Phx.vista.Movimiento.superclass.onButtonNew.call(this);
+
     },
 
     hideFields: function() {

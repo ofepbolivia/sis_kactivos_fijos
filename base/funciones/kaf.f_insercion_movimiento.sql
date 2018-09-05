@@ -216,10 +216,26 @@ BEGIN
                                 where afij.estado = 'alta'
                                 and afij.id_depto = (p_parametros->'id_depto')::integer
                                 and (
-                                        (afij.fecha_ult_dep is null and afij.fecha_ini_dep < (p_parametros->'fecha_hasta')::date)
+                                        (afij.fecha_ult_dep is null and afij.fecha_ini_dep <= (p_parametros->'fecha_hasta')::date)
                                      or 
-                                        (afij.fecha_ult_dep < (p_parametros->'fecha_hasta')::date)
+                                        (afij.fecha_ult_dep <= (p_parametros->'fecha_hasta')::date)
                                 )) loop
+            /*for v_registros_mov in (select distinct
+                                afij.id_activo_fijo,
+                                afij.id_cat_estado_fun
+                                from kaf.tactivo_fijo afij
+                                inner join kaf.tactivo_fijo_valores afv
+                                on afv.id_activo_fijo = afij.id_activo_fijo
+                                inner join kaf.tclasificacion cla
+                                on cla.id_clasificacion = afij.id_clasificacion
+                                where afij.estado = 'alta'
+                                and afij.id_depto = (p_parametros->'id_depto')::integer
+                                and (
+                                        (afv.fecha_ult_dep is null and afv.fecha_ini_dep < (p_parametros->'fecha_hasta')::date)
+                                     or 
+                                        (afv.fecha_ult_dep < (p_parametros->'fecha_hasta')::date)
+                                )) loop   */                 
+        
                    
             --RAC 29/03/2017: realiza validaciones sobre los activos que pueden relacionarse
             if kaf.f_validar_ins_mov_af(v_id_movimiento, v_registros_mov.id_activo_fijo, false)  then

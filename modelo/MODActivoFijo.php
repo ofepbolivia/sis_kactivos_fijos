@@ -666,6 +666,34 @@ class MODActivoFijo extends MODbase{
 	}
 /////////////////////////////////////////////////
 
+
+    function getActivosFijosFuncionarioBoa(){
+        //Definicion de variables para ejecucion del procedimiento
+        $this -> procedimiento='kaf.ft_activo_fijo_sel';
+        $this -> transaccion='SKA_GET_AF_BOA_SEL';
+        $this -> tipo_procedimiento='SEL';
+        $this -> setCount(false);
+
+        //Define los parametros para la funcion
+        $this->setParametro('id_funcionario','id_funcionario','int4');
+
+        $this->captura('responsable','varchar');
+        $this->captura('codigo','varchar');
+        $this->captura('descripcion','varchar');
+        $this->captura('fecha_asignacion','date');
+        $this->captura('oficina','varchar');
+        $this->captura('ubicacion','varchar');
+
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+
 	function ListaDetActivo(){
 		
 		//Definicion de variables para ejecucion del procedimiento
@@ -744,5 +772,6 @@ class MODActivoFijo extends MODbase{
 		
 	}
 	
+
 }
 ?>

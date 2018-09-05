@@ -11,6 +11,7 @@ Phx.vista.ParametrosRepRespInventario = {
 		this.definirParametros();
 		this.formParam.topToolbar.items.items[2].setVisible(false);
 		this.formParam.topToolbar.doLayout();
+
 		//Eventos
 		this.definirEventos();
 
@@ -122,6 +123,7 @@ Phx.vista.ParametrosRepRespInventario = {
 		this.configElement(this.fieldSetGeneral,true,true);
 		this.configElement(this.fieldSetIncluir,false,true);
 		this.configElement(this.fieldSetCompra,false,true);
+        this.configElement(this.descNombre,true,false);
 	},
 	onSubmit: function(){
 		if(this.formParam.getForm().isValid()){
@@ -141,7 +143,8 @@ Phx.vista.ParametrosRepRespInventario = {
 	                	dir: 'ASC',
 	                	limit: 5000,
 	                	start: 0,
-	                	tipo_salida: 'reporte'
+	                	tipo_salida: 'reporte',
+                        columna: this.descNombre.getValue()
 	                },
 	                success: this.successExport,
 	                failure: this.conexionFailure,
@@ -172,7 +175,8 @@ Phx.vista.ParametrosRepRespInventario = {
     		color = obligatorio;
     	}
     	return color;
-    }
+      }
 
-}
+
+    }
 </script>	

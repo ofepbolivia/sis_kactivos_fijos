@@ -646,6 +646,15 @@ class ACTActivoFijo extends ACTbase{
 		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 
 	}
+
+    //servicio que retorna los activos de un funcionario
+    function getActivosFijosFuncionarioBoa(){
+        $this->objFunc=$this->create('MODActivoFijo');
+        $this->res=$this->objFunc->getActivosFijosFuncionarioBoa($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+
+
 	////////////////////////////////////////
 		function ListaDetActivo(){
 	        $this->objFunc=$this->create('MODActivoFijo');

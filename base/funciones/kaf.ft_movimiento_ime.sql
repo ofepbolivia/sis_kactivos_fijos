@@ -409,19 +409,30 @@ BEGIN
             end if;
             
             --Obtiene los datos actuales del movimiento
-            select *
+            select mov.estado, cat.codigo
             into v_rec
-            from kaf.tmovimiento
-            where id_movimiento = v_parametros.id_movimiento;
+            from kaf.tmovimiento mov
+            inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
+            where mov.id_movimiento = v_parametros.id_movimiento;
 
             if v_rec.estado = 'borrador' then
-                if exists(select 1 from kaf.tmovimiento_af
-                    where id_movimiento = v_parametros.id_movimiento) then
-                  raise exception 'Elimine el detalle del Movimiento previamente y vuelva a intentarlo';
+            
+            	if v_rec.codigo in ('actua','deprec') then
+                	--Elimina el detalle 
+                    delete from kaf.tmovimiento_af where id_movimiento = v_parametros.id_movimiento;
+                
+                  	--Sentencia de la eliminacion
+                  	delete from kaf.tmovimiento
+                  	where id_movimiento=v_parametros.id_movimiento;
+                else
+                    if exists(select 1 from kaf.tmovimiento_af
+                        where id_movimiento = v_parametros.id_movimiento) then
+                      raise exception 'Elimine el detalle del Movimiento previamente y vuelva a intentarlo';
+                    end if;
+                    --Sentencia de la eliminacion
+                    delete from kaf.tmovimiento
+                    where id_movimiento=v_parametros.id_movimiento;
                 end if;
-                --Sentencia de la eliminacion
-                delete from kaf.tmovimiento
-                where id_movimiento=v_parametros.id_movimiento;
             else
                 raise exception 'Eliminacion no permitida, debe estar en Estado Borrador';
             end if;
@@ -883,20 +894,35 @@ BEGIN
                                               af.codigo,
                                               af.cantidad_revaloriz,
                                               av.monto_vigente_real_af,
-                                              av.vida_util_real_af
+                                              av.vida_util_real_af,
+                                              av.monto_actualiz_real,
+                                              av.depreciacion_acum_real_af
                                               from kaf.tmovimiento_af maf
                                               inner join kaf.tmovimiento mov
                                               on mov.id_movimiento = maf.id_movimiento
                                               inner join kaf.tactivo_fijo af
                                               on af.id_activo_fijo = maf.id_activo_fijo
-                                              inner join kaf.vactivo_fijo_vigente av
+                                              inner join kaf.vactivo_fijo_vigente1 av
                                               on av.id_activo_fijo = maf.id_activo_fijo
                                               and av.id_moneda = v_id_moneda_base
                                               where maf.id_movimiento = v_movimiento.id_movimiento) loop
 
                         --Obtener el valor real de la revalorización
-                        v_monto_inc_dec_real = v_registros_af_mov.importe - v_registros_af_mov.monto_vigente_real_af;
-                        v_vida_util_inc_dec_real = v_registros_af_mov.vida_util - v_registros_af_mov.vida_util_real_af;
+                        --RCM 12/12/2017: se coloca directo el importe del movaf para depreciación en boa
+                        
+                        
+                        
+                        
+                        --v_monto_inc_dec_real = v_registros_af_mov.importe - v_registros_af_mov.monto_vigente_real_af;
+                        --v_vida_util_inc_dec_real = v_registros_af_mov.vida_util - v_registros_af_mov.vida_util_real_af;
+                        
+                        v_monto_inc_dec_real = v_registros_af_mov.importe;  --100%
+                        v_vida_util_inc_dec_real = v_registros_af_mov.vida_util; --100%
+
+
+
+
+
 
                         if v_monto_inc_dec_real = 0  then
                           raise exception 'Inc/Dec de la revalorización es cero. Nada que hacer.';
@@ -940,7 +966,9 @@ BEGIN
                                                           v_registros_af_mov.id_activo_fijo,
                                                           v_registros_af_mov.id_movimiento_af,
                                                           v_registros_af_mov.vida_util,
-                                                          v_registros_af_mov.fecha_mov);
+                                                          v_registros_af_mov.fecha_mov,
+                                                          v_registros_af_mov.monto_actualiz_real,
+                                                          v_registros_af_mov.depreciacion_acum_real_af);
 
                                 --Creación de los nuevos AFV para la revalorización en todas las monedas
                                 v_fun = kaf.f_afv_crear(p_id_usuario,
@@ -1451,20 +1479,25 @@ BEGIN
                                               af.codigo,
                                               af.cantidad_revaloriz,
                                               av.monto_vigente_real_af,
-                                              av.vida_util_real_af
+                                              av.vida_util_real_af,
+                                              av.monto_actualiz_real,
+                                              av.depreciacion_acum_real_af
                                               from kaf.tmovimiento_af maf
                                               inner join kaf.tmovimiento mov
                                               on mov.id_movimiento = maf.id_movimiento
                                               inner join kaf.tactivo_fijo af
                                               on af.id_activo_fijo = maf.id_activo_fijo
-                                              inner join kaf.vactivo_fijo_vigente av
+                                              inner join kaf.vactivo_fijo_vigente1 av
                                               on av.id_activo_fijo = maf.id_activo_fijo
                                               and av.id_moneda = v_id_moneda_base
                                               where maf.id_movimiento = v_movimiento.id_movimiento) loop
 
                         --Obtener el valor real de la mejora
-                        v_monto_inc_dec_real = v_registros_af_mov.importe - v_registros_af_mov.monto_vigente_real_af;
-                        v_vida_util_inc_dec_real = v_registros_af_mov.vida_util - v_registros_af_mov.vida_util_real_af;
+                        --RCM 12/12/2017: se comenta temporalmente para poner el monto del movaf para cuadrar depre boa
+                        --v_monto_inc_dec_real = v_registros_af_mov.importe - v_registros_af_mov.monto_vigente_real_af;
+                        --v_vida_util_inc_dec_real = v_registros_af_mov.vida_util - v_registros_af_mov.vida_util_real_af;
+                        v_monto_inc_dec_real = v_registros_af_mov.importe;
+                        v_vida_util_inc_dec_real = v_registros_af_mov.vida_util;
 
                         if v_monto_inc_dec_real = 0  then
                           raise exception 'La mejora debe ser mayor a cero. Nada que hacer.';
@@ -1510,7 +1543,9 @@ BEGIN
                                                           v_registros_af_mov.id_activo_fijo,
                                                           v_registros_af_mov.id_movimiento_af,
                                                           v_registros_af_mov.vida_util,
-                                                          v_registros_af_mov.fecha_mov);
+                                                          v_registros_af_mov.fecha_mov,
+                                                          v_registros_af_mov.monto_actualiz_real,
+                                                          v_registros_af_mov.depreciacion_acum_real_af);
 
                                 --Creación de los nuevos AFV para la mejora en todas las monedas
                                 v_fun = kaf.f_afv_crear(p_id_usuario,
@@ -1591,8 +1626,11 @@ BEGIN
                                               where maf.id_movimiento = v_movimiento.id_movimiento) loop
 
                         --Obtener el valor real de la mejora
-                        v_monto_inc_dec_real = v_registros_af_mov.importe - v_registros_af_mov.monto_vigente_real_af;
-                        v_vida_util_inc_dec_real = v_registros_af_mov.vida_util - v_registros_af_mov.vida_util_real_af;
+                        --v_monto_inc_dec_real = v_registros_af_mov.importe - v_registros_af_mov.monto_vigente_real_af;
+                        --v_vida_util_inc_dec_real = v_registros_af_mov.vida_util - v_registros_af_mov.vida_util_real_af;
+                        
+                        v_monto_inc_dec_real = v_registros_af_mov.importe;
+                        v_vida_util_inc_dec_real = v_registros_af_mov.vida_util;
 
                         --Finalización de AFV(s) vigentes (seteando fecha_fin)
                         v_fun = kaf.f_afv_finalizar(p_id_usuario,
@@ -1831,6 +1869,15 @@ BEGIN
 
             --Obtener datos tipo estado
              if v_movimiento.cod_movimiento = 'deprec' then
+                if v_codigo_estado = 'borrador' then
+                    --Eliminar registros de la depreciacion
+                    delete from kaf.tmovimiento_af_dep
+                    where id_movimiento_af in (select id_movimiento_af
+                                            from kaf.tmovimiento_af
+                                            where id_movimiento = v_movimiento.id_movimiento);
+                end if;
+            elsif v_movimiento.cod_movimiento = 'actua' then
+            
                 if v_codigo_estado = 'borrador' then
                     --Eliminar registros de la depreciacion
                     delete from kaf.tmovimiento_af_dep

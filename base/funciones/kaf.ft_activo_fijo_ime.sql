@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION kaf.ft_activo_fijo_ime (
   p_administrador integer,
   p_id_usuario integer,
@@ -166,7 +164,7 @@ BEGIN
                 monto_compra_orig = v_parametros.monto_compra_orig,
                 monto_compra = v_monto_compra,
                 id_moneda = v_parametros.id_moneda_orig,
-                codigo = v_parametros.codigo,
+                --codigo = v_parametros.codigo,
                 descripcion = v_parametros.descripcion,
                 id_moneda_orig = v_parametros.id_moneda_orig,
                 fecha_ini_dep = v_parametros.fecha_ini_dep,
@@ -211,7 +209,7 @@ BEGIN
 
 	elsif(p_transaccion='SKA_AFIJ_ELI')then
 
-		begin
+		begin --RAISE EXCEPTION 'LLEGA %', v_parametros.id_activo_fijo;
 			--Sentencia de la eliminacion
 			delete from kaf.tactivo_fijo
             where id_activo_fijo=v_parametros.id_activo_fijo;

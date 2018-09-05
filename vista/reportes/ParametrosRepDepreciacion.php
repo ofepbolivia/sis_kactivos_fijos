@@ -2,13 +2,13 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.ParametrosRepDepreciacion = {
-	require: '../../../sis_kactivos_fijos/vista/reportes/ParametrosBase.php',
-	requireclase: 'Phx.vista.ParametrosBase',
-	constructor: function(config){
-		Phx.vista.ParametrosRepDepreciacion.superclass.constructor.call(this,config);
-		this.definicionRutareporte();
-		this.definirParametros();
+    Phx.vista.ParametrosRepDepreciacion = {
+        require: '../../../sis_kactivos_fijos/vista/reportes/ParametrosBase.php',
+        requireclase: 'Phx.vista.ParametrosBase',
+        constructor: function(config){
+            Phx.vista.ParametrosRepDepreciacion.superclass.constructor.call(this,config);
+            this.definicionRutareporte();
+            this.definirParametros();
 
 		//Eventos
 		this.definirEventos();
@@ -38,29 +38,30 @@ Phx.vista.ParametrosRepDepreciacion = {
 			this.repCargo = record.data['nombre_cargo'];
 		}, this);
 
-		//Depto
-		this.repDepto = '%'
-		this.cmbDepto.on('select',function(combo,record,index){
-			this.repDepto = record.data['nombre'];
-		}, this);
 
-		//Oficina
-		this.repOficina = '%'
-		this.cmbOficina.on('select',function(combo,record,index){
-			this.repOficina = record.data['nombre'];
-		}, this);
-	},
-	definicionRutareporte: function(report){
-		this.rutaReporte = '../../../sis_kactivos_fijos/vista/reportes/ReporteDepreciacion.php';
-		this.claseReporte = 'ReporteDepreciacion';
-		this.titleReporte = 'Reporte Detalle Depreciación';
-	},
-	definirParametros: function(report){
-		this.inicializarParametros();
+            //Depto
+            this.repDepto = '%'
+            this.cmbDepto.on('select',function(combo,record,index){
+                this.repDepto = record.data['nombre'];
+            }, this);
 
-		this.configElement(this.dteFechaDesde,false,true);
-		this.configElement(this.dteFechaHasta,true,false);
-		this.configElement(this.cmbActivo,false,true);
+            //Oficina
+            this.repOficina = '%'
+            this.cmbOficina.on('select',function(combo,record,index){
+                this.repOficina = record.data['nombre'];
+            }, this);
+        },
+        definicionRutareporte: function(report){
+            this.rutaReporte = '../../../sis_kactivos_fijos/vista/reportes/ReporteDepreciacion.php';
+            this.claseReporte = 'ReporteDepreciacion';
+            this.titleReporte = 'Reporte Detalle Depreciación';
+        },
+        definirParametros: function(report){
+            this.inicializarParametros();
+
+            this.configElement(this.dteFechaDesde,false,true);
+            this.configElement(this.dteFechaHasta,true,false);
+            this.configElement(this.cmbActivo,false,true);
 
 		this.configElement(this.cmbClasificacion,true,true);
 		this.configElement(this.cmbClasificacionMulti,true,true);		
@@ -96,46 +97,47 @@ Phx.vista.ParametrosRepDepreciacion = {
 		this.configElement(this.cmpFechaCompra,true,true);
 		this.configElement(this.radGroupDeprec,true,true);
 
-		this.configElement(this.fieldSetGeneral,true,true);
-		this.configElement(this.fieldSetIncluir,true,true);
-		this.configElement(this.fieldSetCompra,false,true);
-	},
-	onSubmit: function(){
-        var parametros = this.getParams();
-        parametros.desc_nombre =  this.descNombre.getValue();
-		if(this.formParam.getForm().isValid()){
-			var win = Phx.CP.loadWindows(
-				this.rutaReporte,
-                this.titleReporte, {
-                    width: 870,
-                    height : 620
-                }, { 
-                    paramsRep: parametros
-                },
-                this.idContenedor,
-                this.claseReporte
-            );
-		}
-	},
-	getExtraParams: function(){
-		var params = {
-			repResponsable: this.repResponsable,
-			repCargo: this.repCargo,
-			repDepto: this.repDepto,
-			repOficina: this.repOficina
-		}
-		return params;
-	},
-	setPersonalBackgroundColor: function(elm){
-    	//Para sobreescribir
-    	var color='#FFF',
-    		obligatorio='#ffffb3';
 
-    	if(elm=='dteFechaHasta'||elm=='cmbMoneda'){
-    		color = obligatorio;
-    	}
-    	return color;
+            this.configElement(this.fieldSetGeneral,true,true);
+            this.configElement(this.fieldSetIncluir,true,true);
+            this.configElement(this.fieldSetCompra,false,true);
+        },
+        onSubmit: function(){
+            var parametros = this.getParams();
+            parametros.desc_nombre =  this.descNombre.getValue();
+            if(this.formParam.getForm().isValid()){
+                var win = Phx.CP.loadWindows(
+                    this.rutaReporte,
+                    this.titleReporte, {
+                        width: 870,
+                        height : 620
+                    }, {
+                        paramsRep: parametros
+                    },
+                    this.idContenedor,
+                    this.claseReporte
+                );
+            }
+        },
+        getExtraParams: function(){
+            var params = {
+                repResponsable: this.repResponsable,
+                repCargo: this.repCargo,
+                repDepto: this.repDepto,
+                repOficina: this.repOficina
+            }
+            return params;
+        },
+        setPersonalBackgroundColor: function(elm){
+            //Para sobreescribir
+            var color='#FFF',
+                obligatorio='#ffffb3';
+
+            if(elm=='dteFechaHasta'||elm=='cmbMoneda'){
+                color = obligatorio;
+            }
+            return color;
+        }
+
     }
-
-}
 </script>
