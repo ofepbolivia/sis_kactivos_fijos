@@ -91,10 +91,10 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.configElement(this.lblMontoInf,true,true);
 		this.configElement(this.lblMontoSup,true,true);
 		this.configElement(this.txtNroCbteAsociado,false,true);
-		this.configElement(this.cmpMontos,false,true);
+		this.configElement(this.cmpMontos,true,true);
 		this.configElement(this.cmbMoneda,true,false);
 		this.configElement(this.radGroupEstadoMov,false,true);
-		this.configElement(this.cmpFechaCompra,true,true);
+		this.configElement(this.cmpFechaCompra,false,true);
 		this.configElement(this.radGroupDeprec,true,true);
 
 
