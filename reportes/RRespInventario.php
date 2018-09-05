@@ -30,6 +30,10 @@ class RRespInventario extends ReportePDF {
         $this->tipo = $val;
     }
 
+    function  setColumna($val){
+        $this->columna = $val;
+    }
+
     function datosHeader ($data) {
 
         $this->ancho_hoja = $this->getPageWidth()-PDF_MARGIN_LEFT-PDF_MARGIN_RIGHT-10;
@@ -183,38 +187,82 @@ class RRespInventario extends ReportePDF {
             $this->tabletextcolor=array();
 
             if($this->tipo=='lug' || $this->tipo=='lug_fun') {
-                $this->tablealigns=array('C','C','L','L','C','L','L','L','L','L');
-                $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,0);
-                $this->tableborders=array('RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB');
-                $this->tabletextcolor=array();
-                $RowArray = array(
-                    's0'  => $i+1,
-                    's1' => $datarow['codigo'],
-                    's2' => $datarow['descripcion'],
-                    's3' => date("d/m/Y",strtotime($datarow['fecha_asignacion'])),
-                    's4' => '',
-                    's5' => '',
-                    's6' => '',
-                    's7' => $datarow['responsable'],
-                    's8' => $datarow['desc_oficina'],
-                    's9' => ''
-                );
+                if($this->columna == 'desc' || $this->columna == 'nombre') {
+                    $valor_columna = $this->columna=='desc'?$datarow['descripcion']:$datarow['denominacion'];
+                    $this->tablealigns = array('C', 'C', 'L', 'L', 'C', 'L', 'L', 'L', 'L', 'L');
+                    $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                    $this->tableborders = array('RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB');
+                    $this->tabletextcolor = array();
+                    $RowArray = array(
+                        's0' => $i + 1,
+                        's1' => $datarow['codigo'],
+                        's2' => $valor_columna,
+                        's3' => date("d/m/Y", strtotime($datarow['fecha_asignacion'])),
+                        's4' => '',
+                        's5' => '',
+                        's6' => '',
+                        's7' => $datarow['responsable'],
+                        's8' => $datarow['desc_oficina'],
+                        's9' => ''
+                    );
+                }else if($this->columna == 'ambos'){
+                    $this->tablealigns = array('C', 'C','L','L', 'L', 'C', 'L', 'L', 'L', 'L', 'L');
+                    $this->tablenumbers = array(0,0,0, 0, 0, 0, 0, 0, 0, 0, 0);
+                    $this->tableborders = array('RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB');
+                    $this->tabletextcolor = array();
+                    $RowArray = array(
+                        's0' => $i + 1,
+                        's1' => $datarow['codigo'],
+                        's2' => $datarow['denominacion'],
+                        's3' => $datarow['descripcion'],
+                        's4' => date("d/m/Y", strtotime($datarow['fecha_asignacion'])),
+                        's5' => '',
+                        's6' => '',
+                        's7' => '',
+                        's8' => $datarow['responsable'],
+                        's9' => $datarow['desc_oficina'],
+                        's10' => ''
+                    );
+                }
             } else {
-                $this->tablealigns=array('R','C','L','L','C','L','L','L','L');
-                $this->tablenumbers=array(0,0,0,0,0,0,0,0,0);
-                $this->tableborders=array('RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB');
-                $this->tabletextcolor=array();
-                $RowArray = array(
-                    's0'  => $i+1,
-                    's1' => $datarow['codigo'],
-                    's2' => $datarow['descripcion'],
-                    's3' => date("d/m/Y",strtotime($datarow['fecha_asignacion'])),
-                    's4' => '',
-                    's5' => '',
-                    's6' => '',
-                    's7' => $datarow['desc_oficina'],
-                    's8' => ''
-                );
+                if($this->columna == 'desc' || $this->columna == 'nombre') {
+                    $this->tablealigns = array('R', 'C', 'L', 'L', 'L', 'C', 'L', 'L', 'L', 'L');
+                    $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                    $this->tableborders = array('RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB');
+                    $this->tabletextcolor = array();
+
+                    $valor_columna = $this->columna=='desc'?$datarow['descripcion']:$datarow['denominacion'];
+                    $RowArray = array(
+                        's0' => $i + 1,
+                        's1' => $datarow['codigo'],
+                        's2' => $valor_columna,
+                        's3' => date("d/m/Y", strtotime($datarow['fecha_asignacion'])),
+                        's4' => '',
+                        's5' => '',
+                        's6' => '',
+                        's7' => $datarow['desc_oficina'],
+                        's8' => ''
+                    );
+                }else if($this->columna == 'ambos'){
+                    $this->tablealigns = array('R', 'C', 'L', 'L', 'L', 'L', 'C', 'L', 'L', 'L', 'L');
+                    $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                    $this->tableborders = array('RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB');
+                    $this->tabletextcolor = array();
+
+                    $valor_columna = $this->columna=='desc'?$datarow['descripcion']:$datarow['denominacion'];
+                    $RowArray = array(
+                        's0' => $i + 1,
+                        's1' => $datarow['codigo'],
+                        's2' => $datarow['denominacion'],
+                        's3' => $datarow['descripcion'],
+                        's4' => date("d/m/Y", strtotime($datarow['fecha_asignacion'])),
+                        's5' => '',
+                        's6' => '',
+                        's7' => '',
+                        's8' => $datarow['desc_oficina'],
+                        's9' => ''
+                    );
+                }
             }
 
 
@@ -241,40 +289,100 @@ class RRespInventario extends ReportePDF {
 
 
         if($this->tipo=='lug' || $this->tipo=='lug_fun'){
-            $this->tablewidthsHD=array(8,20,51,23,21,21,30,40,28,40);
-            $this->tablealignsHD=array('C','C','C','C','C','C','C','C','C','C');
-            $this->tablenumbersHD=array(0,0,0,0,0,0,0,0,0,0);
-            $this->tablebordersHD=array('LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB');
-            $this->tabletextcolorHD=array();
-            $RowArray = array(
-                's0'  => 'Nro',
-                's1' => 'Código',
-                's2' => 'Descripción',
-                's3' => 'Fecha Asig.',
-                's4' => 'Estado '."\n".'del Activo (1)',
-                's5' => 'Verificación'."\n".' Física (2)',
-                's6' => 'Ubicación Física',
-                's7' => 'Responsable',
-                's8' => 'Oficina Asig.',
-                's9' => 'Observaciones'
-            );
+
+            $titulo_columna = '';
+            if($this->columna == 'desc' || $this->columna == 'nombre') {
+                $this->tablewidthsHD=array(8,20,51,23,21,21,30,40,28,40);
+                $this->tablealignsHD=array('C','C','C','C','C','C','C','C','C','C');
+                $this->tablenumbersHD=array(0,0,0,0,0,0,0,0,0,0);
+                $this->tablebordersHD=array('LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB');
+                $this->tabletextcolorHD=array();
+                if ($this->columna == 'desc') {
+                    $titulo_columna =  'Descripción';
+                }else{
+                    $titulo_columna = 'Denominación';
+                }
+                $RowArray = array(
+                    's0' => 'Nro',
+                    's1' => 'Código',
+                    's2' => $titulo_columna,
+                    's3' => 'Fecha Asig.',
+                    's4' => 'Estado ' . "\n" . 'del Activo (1)',
+                    's5' => 'Verificación' . "\n" . ' Física (2)',
+                    's6' => 'Ubicación Física',
+                    's7' => 'Responsable',
+                    's8' => 'Oficina Asig.',
+                    's9' => 'Observaciones'
+                );
+            }else if($this->columna == 'ambos'){
+                $this->tablewidthsHD=array(8,20,24,40,19,19,19,30,40,28,40);
+                $this->tablealignsHD=array('C','C','C','C','C','C','C','C','C','C','C');
+                $this->tablenumbersHD=array(0,0,0,0,0,0,0,0,0,0,0);
+                $this->tablebordersHD=array('LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB');
+                $this->tabletextcolorHD=array();
+
+                $RowArray = array(
+                    's0' => 'Nro',
+                    's1' => 'Código',
+                    's2' => 'Denominación',
+                    's3' => 'Descripción',
+                    's4' => 'Fecha Asig.',
+                    's5' => 'Estado ' . "\n" . 'del Activo (1)',
+                    's6' => 'Verificación' . "\n" . ' Física (2)',
+                    's7' => 'Ubicación Física',
+                    's8' => 'Responsable',
+                    's9' => 'Oficina Asig.',
+                    's10' => 'Observaciones'
+                );
+            }
         } else {
-            $this->tablewidthsHD=array(8,25,51,25,25,25,30,43,50);
-            $this->tablealignsHD=array('C','C','C','C','C','C','C','C','C');
-            $this->tablenumbersHD=array(0,0,0,0,0,0,0,0,0);
-            $this->tablebordersHD=array('LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB','LRTB');
-            $this->tabletextcolorHD=array();
-            $RowArray = array(
-                's0'  => 'Nro',
-                's1' => 'Código',
-                's2' => 'Descripción',
-                's3' => 'Fecha Asig.',
-                's4' => 'Estado '."\n".'del Activo (1)',
-                's5' => 'Verificación'."\n".' Física (2)',
-                's6' => 'Ubicación Física',
-                's7' => 'Oficina  Asignada',
-                's8' => 'Observaciones'
-            );
+            $titulo_columna = '';
+            if($this->columna == 'desc' || $this->columna == 'nombre') {
+                $this->tablewidthsHD = array(8, 25, 51, 25, 25, 25, 30, 43, 50);
+                $this->tablealignsHD = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
+                $this->tablenumbersHD = array(0, 0, 0, 0, 0, 0, 0, 0, 0);
+                $this->tablebordersHD = array('LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB');
+                $this->tabletextcolorHD = array();
+                if ($this->columna == 'desc') {
+                    $titulo_columna =  'Descripción';
+                }else{
+                    $titulo_columna = 'Denominación';
+                }
+                $RowArray = array(
+                    's0' => 'Nro',
+                    's1' => 'Código',
+                    's2' => $titulo_columna,
+                    's3' => 'Fecha Asig.',
+                    's4' => 'Estado ' . "\n" . 'del Activo (1)',
+                    's5' => 'Verificación' . "\n" . ' Física (2)',
+                    's6' => 'Ubicación Física',
+                    's7' => 'Oficina  Asignada',
+                    's8' => 'Observaciones'
+                );
+            }else{
+                $this->tablewidthsHD = array(8, 25, 24, 40, 20, 24, 24, 30, 37, 50);
+                $this->tablealignsHD = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
+                $this->tablenumbersHD = array(0, 0, 0,  0, 0, 0, 0, 0, 0, 0);
+                $this->tablebordersHD = array('LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB');
+                $this->tabletextcolorHD = array();
+                if ($this->columna == 'desc') {
+                    $titulo_columna =  'Descripción';
+                }else{
+                    $titulo_columna = 'Denominación';
+                }
+                $RowArray = array(
+                    's0' => 'Nro',
+                    's1' => 'Código',
+                    's2' => 'Denominación',
+                    's3' => 'Descripción',
+                    's4' => 'Fecha Asig.',
+                    's5' => 'Estado ' . "\n" . 'del Activo (1)',
+                    's6' => 'Verificación' . "\n" . ' Física (2)',
+                    's7' => 'Ubicación Física',
+                    's8' => 'Oficina  Asignada',
+                    's9' => 'Observaciones'
+                );
+            }
         }
 
         /////////////////////////////////
@@ -296,10 +404,5 @@ class RRespInventario extends ReportePDF {
             }
         }
     }
-
-
-
-
-
 }
 ?>

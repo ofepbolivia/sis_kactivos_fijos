@@ -3,7 +3,7 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-    Phx.vista.ParametrosRepResActivoFijo = Ext.extend(Phx.frmInterfaz, {
+    Phx.vista.ReporteGrupoActivo = Ext.extend(Phx.frmInterfaz, {
 
         Grupos : [{
             layout : 'column',
@@ -23,7 +23,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
         constructor : function(config) {
-            Phx.vista.ParametrosRepResActivoFijo.superclass.constructor.call(this, config);
+            Phx.vista.ReporteGrupoActivo.superclass.constructor.call(this, config);
 
             this.tbar.items.items.shift();
             //this.tooltipSubmit.destroy();

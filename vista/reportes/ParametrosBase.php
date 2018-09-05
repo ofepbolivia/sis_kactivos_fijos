@@ -356,7 +356,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     {boxLabel: 'Todos', name: 'rb-auto2', inputValue: 'todos', checked: true}
                 ]
             });
-            this.cmbDepto = new Ext.form.ComboBox({
+            this.cmbDepto = new Ext.form.AwesomeCombo({
                 fieldLabel: 'Dpto.',
                 emptyText: 'Seleccione un depto....',
                 anchor: '100%',
@@ -377,12 +377,20 @@ header("content-type: text/javascript; charset=UTF-8");
                         sort: 'codigo',
                         dir: 'ASC',
                         codigo_subsistema: 'KAF',
-                        par_filtro:'DEPPTO.codigo#DEPPTO.nombre'
+                        par_filtro:'DEPPTO.codigo#DEPPTO.nombre', deptos: 'todos'
                     }
                 }),
                 valueField: 'id_depto',
                 displayField: 'nombre',
-                tpl: '<tpl for="."><div class="x-combo-list-item"><p>Nombre: {nombre}</p><p>Código: {codigo}</p></div></tpl>',
+                //tpl: '<tpl for="."><div class="x-combo-list-item"><p style="color: green;">Nombre: {nombre}</p><p>Código: {codigo}</p></div></tpl>',
+                tpl: new Ext.XTemplate([
+                    '<tpl for=".">',
+                    '<div class="x-combo-list-item">',
+                    '<div class="awesomecombo-item {checked}">',
+                    '<p><b>Código: {codigo}</b></p>',
+                    '</div><p><b>Nombre: </b> <span style="color: green;">{nombre}</span></p>',
+                    '</div></tpl>'
+                ]),
                 forceSelection: true,
                 typeAhead: false,
                 triggerAction: 'all',
@@ -404,11 +412,12 @@ header("content-type: text/javascript; charset=UTF-8");
                 mode : 'local',
                 store : new Ext.data.ArrayStore({
                     fields : ['tipo', 'valor'],
-                    data : [['desc', 'Descripción'], ['nombre', 'Nombre']]
+                    data : [['desc', 'Descripción'], ['nombre', 'Nombre'], ['ambos','Nombre/Desc.']]
                 }),
                 anchor : '50%',
                 valueField : 'tipo',
                 displayField : 'valor',
+                msgTarget: 'side',
                 style: this.setBackgroundColor('cmbClasificacion')
             });
 
