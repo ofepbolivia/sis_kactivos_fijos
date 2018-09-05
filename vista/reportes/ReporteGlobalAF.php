@@ -39,7 +39,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     name: 'fecha_ini',
                     fieldLabel: 'Fecha Inicio',
                     allowBlank: true,
-                    anchor: '44.5%',
+                    anchor: '54.5%',
                     gwidth: 100,
                     format: 'd/m/Y',
                     renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
@@ -55,7 +55,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     name: 'fecha_fin',
                     fieldLabel: 'Fecha Fin',
                     allowBlank: true,
-                    anchor: '44.5%',
+                    anchor: '54.5%',
                     gwidth: 100,
                     format: 'd/m/Y',
                     renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
@@ -79,7 +79,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         fields : ['id', 'valor'],
                         data : [['1', 'Consolidado'], ['2', 'Totales']]
                     }),
-                    anchor : '50%',
+                    anchor : '70%',
                     valueField : 'id',
                     displayField : 'valor'
                 },
@@ -165,7 +165,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode : 'remote',
                     pageSize : 10,
                     queryDelay : 1000,
-                    anchor : '50%',
+                    anchor : '70%',
                     gwidth : 150,
                     minChars : 2,
                     renderer : function(value, p, record) {
@@ -190,7 +190,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         fields : ['tipo', 'valor'],
                         data : [['pdf', 'PDF'], ['excel', 'EXCEL']]
                     }),
-                    anchor : '50%',
+                    anchor : '70%',
                     valueField : 'tipo',
                     displayField : 'valor'
                 },
@@ -212,7 +212,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         fields : ['id', 'valor'],
                         data : [['1', 'Activos Fijos'], ['2', 'Activos Intangibles'], ['3', 'Todos']]
                     }),
-                    anchor : '50%',
+                    anchor : '70%',
                     valueField : 'id',
                     displayField : 'valor'
                 },
@@ -232,7 +232,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         fields : ['tipo', 'valor'],
                         data : [['desc', 'Descripción'], ['nombre', 'Nombre']]
                     }),
-                    anchor : '50%',
+                    anchor : '70%',
                     valueField : 'tipo',
                     displayField : 'valor'
                 },
@@ -252,7 +252,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         fields : ['id', 'valor'],
                         data : [['1', 'Nacional'], ['2', 'Internacional'],['3', 'Ambos']]
                     }),
-                    anchor : '50%',
+                    anchor : '70%',
                     valueField : 'id',
                     displayField : 'valor'
                 },
@@ -260,7 +260,263 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo : 1,
                 grid:true,
                 form : true
-            },/*,
+            },
+ 			{
+                config : {
+                    name : 'id_lugar',
+                    fieldLabel : 'Estación',
+                    allowBlank : true,
+                    emptyText : 'Estación...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_parametros/control/Lugar/listarLugar',
+                        id: 'id_lugar',
+                        root: 'datos',
+                        fields: ['id_lugar','codigo','nombre'],
+                        totalProperty: 'total',
+                        sortInfo: {
+                            field: 'codigo',
+                            direction: 'ASC'
+                        },
+                        baseParams:{par_filtro:'lug.codigo#lug.nombre', es_regional: 'si', _adicionar:'si'}
+                    }),                    
+                    tpl: new Ext.XTemplate([
+                        '<tpl for=".">',
+                        '<div class="x-combo-list-item">',
+                        '<div class="awesomecombo-item {checked}">',
+                        '<p><b>Código: {codigo}</b></p>',
+                        '</div><p><b>Nombre: </b> <span style="color: green;">{nombre}</span></p>',
+                        '</div></tpl>'
+                    ]),
+                    valueField: 'id_lugar',
+                    displayField: 'nombre',
+                    forceSelection: false,
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 15,
+                    queryDelay: 1000,
+                    minChars: 2,
+                    anchor : '70%',
+                    enableMultiSelect: true
+                },
+
+                type : 'AwesomeCombo',
+                id_grupo : 2,
+                grid : true,
+                form : true
+            },
+			{
+				config: {
+					name: 'id_oficina',
+					fieldLabel: 'Oficina',
+					allowBlank: true,
+					emptyText: 'Elija una opción...',					
+					store: new Ext.data.JsonStore({
+						url: '../../sis_organigrama/control/Oficina/listarOficina',
+						id: 'id_oficina',
+						root: 'datos',
+						fields: ['id_oficina','codigo','nombre'],
+						totalProperty: 'total',
+						sortInfo: {
+							field: 'codigo',
+							direction: 'ASC'
+						},
+						baseParams:{par_filtro:'ofi.codigo#ofi.nombre'}
+					}),
+					valueField: 'id_oficina',
+					displayField: 'nombre',
+	                tpl: new Ext.XTemplate([
+	                        '<tpl for=".">',
+	                        '<div class="x-combo-list-item">',
+	                        '<div class="awesomecombo-item {checked}">',
+	                        '<p><b>Código: {codigo}</b></p>',
+	                        '</div><p><b>Nombre: </b> <span style="color: green;">{nombre}</span></p>',
+	                        '</div></tpl>'
+	                    ]),					
+					gdisplayField: 'oficina',
+					hiddenName: 'id_oficina',
+					forceSelection: false,
+					typeAhead: false,
+					triggerAction: 'all',
+					lazyRender: true,
+					mode: 'remote',
+					pageSize: 15,
+					queryDelay: 1000,
+					anchor: '70%',
+					gwidth: 150,
+					minChars: 2,
+					enableMultiSelect:true
+				},
+				type: 'AwesomeCombo',
+				id_grupo: 2,
+				filters: {pfiltro: 'ofi.nombre',type: 'string'},
+				grid: true,
+				form: true
+			},            
+			{
+	            config:{
+	                name:'id_clasificacion',
+	                fieldLabel:'Clasificación Múltiple',
+	                allowBlank:true,
+	                emptyText:'Elija una opción...',
+	                store: new Ext.data.JsonStore({
+	                         url: '../../sis_kactivos_fijos/control/ActivoFijo/ListaDetActivo',
+	                         id: 'id_clasificacion', 
+	                         root: 'datos',
+	                         sortInfo:{
+	                            field: 'codigo',
+	                            direction: 'ASC'
+	                    },
+	                    totalProperty: 'total',
+	                    fields: ['id_clasificacion','codigo','nombre'],
+	                    remoteSort: true,
+	                    baseParams:{par_filtro:'cla.codigo#nombre'}
+	                    }),
+	                valueField: 'id_clasificacion',
+	                displayField: 'nombre',	                
+	                tpl: new Ext.XTemplate([
+	                        '<tpl for=".">',
+	                        '<div class="x-combo-list-item">',
+	                        '<div class="awesomecombo-item {checked}">',
+	                        '<p><b>Código: {codigo}</b></p>',
+	                        '</div><p><b>Nombre: </b> <span style="color: green;">{nombre}</span></p>',
+	                        '</div></tpl>'
+	                    ]),
+	                hiddenName: 'id_clasificacion',                
+	                typeAhead: false,
+	                triggerAction: 'all',
+	                lazyRender:true,                
+	                pageSize:15,
+	                queryDelay:1000,
+	                listWidth:400,
+	                resizable:true,
+	                anchor:'70%',
+	                minChars:2,
+	                gwidth : 150,
+	                enableMultiSelect:true,	            	               
+	            },
+				type:'AwesomeCombo',			
+				form:true,
+				id_grupo : 2
+	        },
+			{
+				config:{
+					name: 'nro_cbte_asociado',
+					fieldLabel: 'C31',
+					allowBlank: true,
+					anchor: '50%',
+					gwidth: 100					
+				},
+					type:'TextField',					
+					id_grupo:2,					
+					form:true
+			},
+			{	
+				config:{
+					name: 'txtMontoSup',
+					fieldLabel: 'Importe Compra >=',
+					allowBlank: true,
+					anchor: '50%',
+					gwidth: 100,
+					allowDecimals: true,
+					decimalPrecision: 2					
+					
+				},
+					type:'NumberField',					
+					id_grupo:2,					
+					form:true
+			},			
+			{	
+				config:{
+					name: 'txtMontoInf',					
+					fieldLabel: 'Importe Compra <=',
+					label:'dataaaa',					
+					allowBlank: true,
+					anchor: '50%',
+					gwidth: 100,					
+					allowDecimals: true,
+					decimalPrecision: 2						
+				},
+					type:'NumberField',					
+					id_grupo:2,					
+					form:true
+			},
+			 {
+					 config : {
+					 name : 'activo_multi',					 
+					 fieldLabel : 'Reporte Mult X Activo',
+					 allowBlank : true,
+					 triggerAction : 'all',
+					 lazyRender : true,
+					 mode : 'local',
+				     store: new Ext.data.ArrayStore({
+				        id: '',
+				        fields: [
+				            'key',
+				            'value'
+				        ],
+				        data: [
+				        ['acod','CODIGO'],
+				        ['ades','DESCRIPCIÓN'],
+				        ['aest','ESTADO'],
+				        ['aesf', 'ESTADO FUNCIONAL'],
+				        ['afec','FECHA COMPRA'],
+				        ['amon','MONTO (87%)'],
+				        ['aimp','IMPORTE (100%)'],
+				        ['aval','VALOR ACTUAL'],
+				        ['ac31','C-31'],
+				        ['af31','FECHA COMP C31'],
+				        ['aubi','UBICACION'],
+				        ['ares','RESPONSABLE']				        
+				        ]
+				     }),
+				     valueField: 'key',
+				     displayField: 'value',					 
+					 width : 200,
+					 enableMultiSelect:true					 
+			 	},
+			 	type : 'AwesomeCombo',
+			 	id_grupo : 0,
+			 	form : true
+			 },
+			 {
+					 config : {
+					 name : 'gestion_multi',					 
+					 fieldLabel : 'Reporte Mult X Gestion',
+					 allowBlank : true,
+					 triggerAction : 'all',
+					 lazyRender : true,
+					 mode : 'local',
+				     store: new Ext.data.ArrayStore({
+				        id: '',
+				        fields: [
+				            'key',
+				            'value'
+				        ],
+				        data: [
+				        ['gcod','CODIGO'],
+				        ['gdes','DESCRIPCIÓN'],		
+				        ['gfec','FECHA COMPRA'],		        				        				        				       
+				        ['gnum','NUMERO DE COMPRA'],	
+				        ['gf31','FECHA COMP C31'],
+				        ['gfei','FECHA INI DEPRE'],			        
+				        ['gvit','VIDA UTIL ORIGINAL'],
+				        ['gviu','VIDA UTIL RESTANTE'],
+				        ['gimp','IMPORTE 100%'],				        
+				        ['gmon','MONTO 80%']				        
+				        ]
+				     }),
+				     valueField: 'key',
+				     displayField: 'value',					 
+					 width : 200,
+					 enableMultiSelect:true					 
+			 	},
+			 	type : 'AwesomeCombo',
+			 	id_grupo : 0,
+			 	form : true
+			 }			 
+	        /*,
             {
                 config : {
                     name : 'financiador',
@@ -461,9 +717,20 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.ReporteGlobalAF.superclass.constructor.call(this, config);
             this.init();
             this.iniciarEventos();
+            this.getComponente('gestion_multi').setVisible(false);
+            this.getComponente('activo_multi').setVisible(false);            
         },
 
-        iniciarEventos:function(){
+        iniciarEventos:function(){        	
+        	this.Cmp.configuracion_reporte.on('select',function(cmb,rec,ind){        		        		        	
+        		if (rec.data.tipo == 'compras_gestion'){
+		            this.ocultarComponente(this.Cmp.activo_multi);      			
+		            this.mostrarComponente(this.Cmp.gestion_multi);		            								
+				}else{
+		            this.mostrarComponente(this.Cmp.activo_multi);		            			
+		            this.ocultarComponente(this.Cmp.gestion_multi);					
+				}        						       		        		        	
+        	},this);        	        	
             /*var that = this;
             this.Cmp.configuracion_reporte.on('select',function (cmb, rec, ind) {
                 console.log('tipo',that.Cmp.desc_nombre);
@@ -529,6 +796,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     layout: 'anchor',
                     autoScroll: true,
                     autoHeight: true,
+                    autoWidth:true,
                     collapseFirst : false,
                     collapsible: false,
                     anchor: '100%',
@@ -553,34 +821,53 @@ header("content-type: text/javascript; charset=UTF-8");
                             ]
                         }
                     ]
-                },
+                },               
                 {
-                    columnWidth: .40,
+                    columnWidth: .60,
                     border: false,
                     //split: true,
                     layout: 'anchor',
                     autoScroll: true,
-                    autoHeight: true,
+                    autoHeight: true,                    
                     collapseFirst : false,
                     collapsible: false,
                     anchor: '100%',
+                    bodyStyle: 'margin: 1% 1% 0 10%;',
 
                     items:[
-                        {
-                            anchor: '100%',
-                            bodyStyle: 'padding-right:5px;padding-left:10px;',
-                            autoHeight: true,
+                        {                        	        
+                            bodyStyle: 'padding-right:5px;',                            
                             border: false,
+                            layout: 'anchor',                                                      
                             items:[
                                 {
-                                    xtype: 'fieldset',
-                                    layout: 'form',
+                                    xtype: 'fieldset',                                    
+                                    layout: 'column',                                                                                                            
                                     border: true,
                                     title: 'Reporte Compras x Gestión',
-                                    bodyStyle: 'padding: 5px 10px 10px 10px;',
-
-                                    items: [],
-                                    id_grupo: 1
+                                    bodyStyle: 'padding: 5px 5px 0 5px;',
+                                    bodyStyle:'margin: 0 0 0 0',                                    
+                                    items: [
+						                {
+						                    xtype: 'fieldset',
+						                    border: false,                    						                    						                   						                     						                    
+						                    layout: 'form',							                    					                    
+						                    bodyStyle : 'padding : 0 0px 0 0;',
+                                            columnWidth : 0.40,
+						                    items: [],
+						                    id_grupo: 1
+						                },
+						                {
+						                    xtype: 'fieldset',
+						                    border: false,							                    					                   
+						                    bodyStyle : 'padding : 0 50px 0 0;',
+						                    //bodyStyle : 'margin: 0 60 0 0',
+                                            columnWidth : 0.60,                    						                    	                    						                    						                    						                   
+						                    layout: 'form',
+						                    items: [],
+						                    id_grupo: 2
+						                } 
+						             ],                                   
                                 }
                             ]
                         }

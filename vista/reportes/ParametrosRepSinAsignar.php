@@ -9,7 +9,8 @@ Phx.vista.ParametrosRepSinAsignar = {
 		Phx.vista.ParametrosRepSinAsignar.superclass.constructor.call(this,config);
 		this.definicionRutareporte();
 		this.definirParametros();
-
+		this.formParam.topToolbar.items.items[2].setVisible(false);
+		this.formParam.topToolbar.doLayout();
 		//Eventos
 		this.definirEventos();
 		
@@ -57,9 +58,12 @@ Phx.vista.ParametrosRepSinAsignar = {
 		this.configElement(this.cmbActivo,false,true);
 
 		this.configElement(this.cmbClasificacion,true,true);
+		this.configElement(this.cmbClasificacionMulti,false,true);
+		this.configElement(this.cmbTipoMov,false,true)		
 		this.configElement(this.txtDenominacion,true,true);
 		this.configElement(this.dteFechaCompra,true,true);
 		this.configElement(this.dteFechaIniDep,true,true);
+		this.configElement(this.cmbEstadoDepre,false,true);
 		this.configElement(this.cmbEstado,true,true);
 		this.configElement(this.cmbCentroCosto,false,true);
 		this.configElement(this.txtUbicacionFisica,true,true);

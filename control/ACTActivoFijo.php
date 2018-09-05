@@ -463,7 +463,21 @@ class ACTActivoFijo extends ACTbase{
 					SELECT id
 					FROM t)");
 		}
-
+		//BVP
+		if($this->objParam->getParametro('id_clasificacion_multi')!=''){
+			$this->objParam->addFiltro("kaf.id_clasificacion in (
+					WITH RECURSIVE t(id,id_fk,nombre,n) AS (
+    				SELECT l.id_clasificacion,l.id_clasificacion_fk, l.nombre,1
+    				FROM kaf.tclasificacion l
+    				WHERE l.id_clasificacion in (".$this->objParam->getParametro('id_clasificacion_multi').")
+    				UNION ALL
+    				SELECT l.id_clasificacion,l.id_clasificacion_fk, l.nombre,n+1
+    				FROM kaf.tclasificacion l, t
+    				WHERE l.id_clasificacion_fk = t.id
+					)
+					SELECT id
+					FROM t)");
+		}//
 		$dataSource = $this->listarCodigoQRVarios();
 
 		//parametros basicos
@@ -515,11 +529,45 @@ class ACTActivoFijo extends ACTbase{
 	}
 
 	function reportesAFGlobal(){
-
+	
 		//Filtros Reporte
 		if($this->objParam->getParametro('estado')!= ''){
 			$this->objParam->addFiltro("(taf.estado = ''".$this->objParam->getParametro('estado')."'' OR taf.estado is null)");
 		}
+		if($this->objParam->getParametro('id_oficina')!=''){			
+			$this->objParam->addFiltro("tof.id_oficina in (".$this->objParam->getParametro('id_oficina').")");
+		}
+		if($this->objParam->getParametro('id_clasificacion')!=''){
+			$this->objParam->addFiltro("niv.id_clasificacion in (
+			
+					WITH RECURSIVE t(id,id_fk,nombre,n) AS (
+    				SELECT l.id_clasificacion,l.id_clasificacion_fk, l.nombre,1
+    				FROM kaf.tclasificacion l
+    				WHERE l.id_clasificacion in (".$this->objParam->getParametro('id_clasificacion').")
+                    
+    				UNION ALL
+                    
+    				SELECT l.id_clasificacion,l.id_clasificacion_fk, l.nombre,n+1
+    				FROM kaf.tclasificacion l, t
+    				WHERE l.id_clasificacion_fk = t.id
+					)
+					SELECT id
+					FROM t)");
+		}
+		if($this->objParam->getParametro('id_lugar')!=''){
+			$this->objParam->addFiltro("tlug.id_lugar in (".$this->objParam->getParametro('id_lugar').")");
+		}
+		if($this->objParam->getParametro('nro_cbte_asociado')!=''){			
+			$this->objParam->addFiltro("taf.nro_cbte_asociado = "."''".$this->objParam->getParametro('nro_cbte_asociado')."''");			
+		}
+		/*para motos de monto_compra kaf.activo_fijo*/
+		if($this->objParam->getParametro('txtMontoSup')!=''){
+			$this->objParam->addFiltro("taf.monto_compra >= "."''".$this->objParam->getParametro('txtMontoSup')."''");
+		}
+		if($this->objParam->getParametro('txtMontoInf')!=''){
+			$this->objParam->addFiltro("taf.monto_compra <= "."''".$this->objParam->getParametro('txtMontoInf')."''");
+		}
+		///		
 		if($this->objParam->getParametro('tipo_activo')== 1){
 			$this->objParam->addFiltro("niv.tipo_activo  = ''tangible''");
 		}else if($this->objParam->getParametro('tipo_activo')== 2){
@@ -531,7 +579,7 @@ class ACTActivoFijo extends ACTbase{
 		//Llamada al Modelo, consulta BD
 		$this->objFunc = $this->create('MODActivoFijo');
 		$this->res = $this->objFunc->reportesAFGlobal($this->objParam);
-
+		//$this->res->imprimirRespuesta($this->res->generarJson());
 
 		//Configuracion Reporte
 
@@ -559,6 +607,8 @@ class ACTActivoFijo extends ACTbase{
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 		$this->objParam->addParametro('titulo_archivo','ComprasGestión');
 		$this->objParam->addParametro('desc_nombre',$this->objParam->getParametro('desc_nombre'));
+		$this->objParam->addParametro('gestion_multi',$this->objParam->getParametro('gestion_multi'));
+		$this->objParam->addParametro('activo_multi',$this->objParam->getParametro('activo_multi'));
 
 		if($this->objParam->getParametro('configuracion_reporte')  == 'compras_gestion') {
 			if ($this->objParam->getParametro('formato_reporte') == 'pdf') {

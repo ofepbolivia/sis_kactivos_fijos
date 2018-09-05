@@ -345,9 +345,12 @@ class MODReportes extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('tipo_salida','tipo_salida','varchar');
 		$this->setParametro('fecha_hasta','fecha_hasta','date');
+		$this->setParametro('estado','estado','varchar');
 		$this->setParametro('id_moneda','id_moneda','integer');
 		$this->setParametro('af_deprec','af_deprec','varchar');
 		$this->setParametro('desc_nombre','desc_nombre','varchar');
+		$this->setParametro('total_consol','total_consol','varchar');
+		$this->setParametro('estado_depre','estado_depre','varchar');
 
 		//Definicion de la lista del resultado del query
 		$this->captura('codigo','varchar(50)');

@@ -18,8 +18,19 @@ Phx.vista.ParametrosRepDepreciacion = {
 		this.cmbActivo.on('select',function(){
 			this.cmbClasificacion.setValue('');
 		},this);
-		this.cmbClasificacion.on('select',function(){
+		this.cmbClasificacion.on('select',function(){			
 			this.cmbActivo.setValue('');
+			this.configElement(this.cmbClasificacionMulti,false,true);									
+		},this);
+		this.cmbClasificacionMulti.on('select',function(){
+			this.configElement(this.cmbClasificacion,false,true);
+		},this);
+		this.cmbTipoMov.on('select',function(cmb,record,index){
+			if(record.data.tipo=='consoli'){						
+				this.cmbEstadoDepre.setVisible(false);
+			}else{
+				this.cmbEstadoDepre.setVisible(true);
+			}
 		},this);
 		//Responsable
 		this.cmbResponsable.on('select',function(combo,record,index){
@@ -52,20 +63,23 @@ Phx.vista.ParametrosRepDepreciacion = {
 		this.configElement(this.cmbActivo,false,true);
 
 		this.configElement(this.cmbClasificacion,true,true);
-		this.configElement(this.txtDenominacion,true,true);
+		this.configElement(this.cmbClasificacionMulti,true,true);		
+		this.configElement(this.cmbTipoMov,true,false)					
+		this.configElement(this.txtDenominacion,false,true);
 		this.configElement(this.dteFechaCompra,true,true);
 		this.configElement(this.dteFechaIniDep,true,true);
-		this.configElement(this.cmbEstado,true,true);
+		this.configElement(this.cmbEstadoDepre,true,true);
+		this.configElement(this.cmbEstado,false,true);
 		this.configElement(this.cmbCentroCosto,false,true);
 		this.configElement(this.txtUbicacionFisica,false,true);
-		this.configElement(this.cmbOficina,true,true);
+		this.configElement(this.cmbOficina,false,true);
 		this.configElement(this.cmbResponsable,false,true);
 		this.configElement(this.cmbUnidSolic,false,true);
 		this.configElement(this.cmbResponsableCompra,false,true);
 		this.configElement(this.cmbLugar,false,true);
 		this.configElement(this.radGroupTransito,false,true);
 		this.configElement(this.radGroupTangible,true,true);
-		this.configElement(this.cmbDepto,true,true);
+		this.configElement(this.cmbDepto,false,true);
 		this.configElement(this.descNombre,true,true);
 		this.configElement(this.cmbDeposito,false,true);
 		this.configElement(this.lblDesde,false,true);
@@ -75,8 +89,8 @@ Phx.vista.ParametrosRepDepreciacion = {
 		this.configElement(this.txtMontoSup,true,true);
 		this.configElement(this.lblMontoInf,true,true);
 		this.configElement(this.lblMontoSup,true,true);
-		this.configElement(this.txtNroCbteAsociado,true,true);
-		this.configElement(this.cmpMontos,true,true);
+		this.configElement(this.txtNroCbteAsociado,false,true);
+		this.configElement(this.cmpMontos,false,true);
 		this.configElement(this.cmbMoneda,true,false);
 		this.configElement(this.radGroupEstadoMov,false,true);
 		this.configElement(this.cmpFechaCompra,true,true);

@@ -9,7 +9,8 @@ Phx.vista.ParametrosRepKardex = {
 		Phx.vista.ParametrosRepKardex.superclass.constructor.call(this,config);
 		this.definicionRutareporte();
 		this.definirParametros();
-
+		this.formParam.topToolbar.items.items[2].setVisible(false);
+		this.formParam.topToolbar.doLayout();
 		//Eventos
 		this.definirEventos();
 	},
@@ -50,6 +51,9 @@ Phx.vista.ParametrosRepKardex = {
 		this.configElement(this.cmbActivo,true,false);
 
 		this.configElement(this.cmbClasificacion,false,true);
+		this.configElement(this.cmbClasificacionMulti,false,true);
+		this.configElement(this.cmbEstadoDepre,false,true);
+		this.configElement(this.cmbTipoMov,false,true)		
 		this.configElement(this.txtDenominacion,false,true);
 		this.configElement(this.dteFechaCompra,false,true);
 		this.configElement(this.dteFechaIniDep,false,true);

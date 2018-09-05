@@ -9,7 +9,8 @@ Phx.vista.ParametrosRepRespInventario = {
 		Phx.vista.ParametrosRepRespInventario.superclass.constructor.call(this,config);
 		this.definicionRutareporte();
 		this.definirParametros();
-
+		this.formParam.topToolbar.items.items[2].setVisible(false);
+		this.formParam.topToolbar.doLayout();
 		//Eventos
 		this.definirEventos();
 
@@ -89,7 +90,10 @@ Phx.vista.ParametrosRepRespInventario = {
 		this.configElement(this.txtDenominacion,false,true);
 		this.configElement(this.dteFechaCompra,false,true);
 		this.configElement(this.dteFechaIniDep,false,true);
+		this.configElement(this.cmbEstadoDepre,false,true);
 		this.configElement(this.cmbEstado,false,true);
+		this.configElement(this.cmbClasificacionMulti,false,true);
+		this.configElement(this.cmbTipoMov,false,true);
 		this.configElement(this.cmbCentroCosto,false,true);
 		this.configElement(this.txtUbicacionFisica,false,true);
 		this.configElement(this.cmbOficina,true,false);

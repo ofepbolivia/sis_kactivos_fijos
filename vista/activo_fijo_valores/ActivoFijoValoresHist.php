@@ -8,9 +8,33 @@
 */
 header("content-type: text/javascript; charset=UTF-8");
 ?>
+<style type="text/css" rel="stylesheet">
+    .boli {
+        background-color: #93E079 !important;
+        color: #090;
+
+    }
+
+    .doluf {
+        background-color: #E0E079 !important;
+        color: #090;
+    }
+</style>
 <script>
 Phx.vista.ActivoFijoValoresHist=Ext.extend(Phx.gridInterfaz,{
+	
+    viewConfig: {
+        stripeRows: false,
+        getRowClass: function(record) {
+        	var moned = record.data.id_moneda;                   
+            if(moned == 1){
+                return 'boli';
+            }else if(moned == 2 || moned == 3){
+                return 'doluf';
+            }
+        }
 
+    }, 
 	constructor:function(config){
 		this.maestro=config;
     	//llama al constructor de la clase padre
@@ -321,12 +345,22 @@ Phx.vista.ActivoFijoValoresHist=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'desc_moneda',
+				name: 'id_moneda',
 				fieldLabel: 'Moneda',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:15
+				maxLength:15,
+				renderer:function(value,p,record){
+					var mone = record.data.id_moneda;
+					if(mone == 1){
+						return String.format('{0}','Bs');
+					}else if(mone == 2){
+						return String.format('{0}','$us');
+					}else if(mone == 3){
+						return String.format('{0}','UFV');
+					}
+				}
 			},
 				type:'TextField',
 				filters:{pfiltro:'mon.codigo',type:'string'},
@@ -573,7 +607,8 @@ Phx.vista.ActivoFijoValoresHist=Ext.extend(Phx.gridInterfaz,{
         'depreciacion_acum_real',
         'depreciacion_per_real','tipo_reg','monto_actualiz_real','desc_moneda',
         {name:'fecha_fin', type: 'date',dateFormat:'Y-m-d'},
-        {name:'monto_vigente_orig_100', type: 'numeric'}
+        {name:'monto_vigente_orig_100', type: 'numeric'},
+        {name:'id_moneda',type:'numeric'}
 		
 	],
 	sortInfo:{

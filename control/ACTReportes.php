@@ -212,6 +212,20 @@ class ACTReportes extends ACTbase {
 					SELECT id
 					FROM t)");
 		}
+		if($this->objParam->getParametro('id_clasificacion_multi')!=''){
+			$this->objParam->addFiltro("afij.id_clasificacion in (
+					WITH RECURSIVE t(id,id_fk) AS (
+    				SELECT l.id_clasificacion,l.id_clasificacion_fk
+    				FROM kaf.tclasificacion l
+    				WHERE l.id_clasificacion in (".$this->objParam->getParametro('id_clasificacion_multi').")
+    				UNION ALL
+    				SELECT l.id_clasificacion,l.id_clasificacion_fk
+    				FROM kaf.tclasificacion l, t
+    				WHERE l.id_clasificacion_fk = t.id
+					)
+					SELECT id
+					FROM t)");
+		}		
 		if($this->objParam->getParametro('denominacion')!=''){
 			$this->objParam->addFiltro("afij.denominacion ilike ''%".$this->objParam->getParametro('denominacion')."%''");
 		}
@@ -221,8 +235,8 @@ class ACTReportes extends ACTbase {
 		if($this->objParam->getParametro('fecha_ini_dep')!=''){
 			$this->objParam->addFiltro("afij.fecha_ini_dep = ''".$this->objParam->getParametro('fecha_ini_dep')."''");
 		}
-		if($this->objParam->getParametro('estado')!=''){
-			$this->objParam->addFiltro("afij.estado = ''".$this->objParam->getParametro('estado')."''");
+		if($this->objParam->getParametro('estado')!=''){			
+				$this->objParam->addFiltro("afij.estado = ''".$this->objParam->getParametro('estado')."''");	
 		}
 		if($this->objParam->getParametro('id_centro_costo')!=''){
 			$this->objParam->addFiltro("afij.id_centro_costo in (

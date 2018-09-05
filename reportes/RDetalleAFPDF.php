@@ -25,7 +25,7 @@ class RDetalleAFPDF extends  ReportePDF{
         $this->SetFont('','B',6);
         $this->Ln(6);
         //primera linea
-        $this->Cell(10,3,'NUM','TRL',0,'C');
+      /*$this->Cell(10,3,'NUM','TRL',0,'C');
         $this->Cell(23,3,'CODIGO','TRL',0,'C');
         
         if($this->objParam->getParametro('desc_nombre') == 'desc'){
@@ -34,7 +34,7 @@ class RDetalleAFPDF extends  ReportePDF{
             $this->Cell(50,3,'DENOMINACIÓN','TRL',0,'C');
         }
 
-
+		
         $this->Cell(15,3,'ESTADO','TRL',0,'C');
         $this->Cell(15,3,'ESTADO ','TRL',0,'C');
         $this->Cell(15,3,'FECHA','TRL',0,'C');
@@ -59,24 +59,78 @@ class RDetalleAFPDF extends  ReportePDF{
         $this->Cell(15,3,'','BRL',0,'C');
         $this->Cell(15,3,'COMP C31','BRL',0,'C');
         $this->Cell(30,3,'','BRL',0,'C');
-        $this->Cell(30,3,'','BRL',0,'C');
+        $this->Cell(30,3,'','BRL',0,'C');*/
+        $control = $this->objParam->getParametro('activo_multi');		
+		$this->columnsGrid($control);
 
+    }
+    public function columnsGrid($tipo){
+		$hiddes = explode(',', $tipo);
+		$ascod = '';
+		$asdes = '';
+		$asest = '';
+		$asesf = '';
+		$asfec = '';
+		$asmon = '';
+		$asimp = '';
+		$asval = '';
+		$asc31 = '';
+		$asf31 = '';
+		$asubi = '';
+		$asres = '';		
+												
+		for ($i=0; $i <count($hiddes) ; $i++) {
+		switch ($hiddes[$i]) {
+			case 'acod': $ascod = 'cod'; break;
+			case 'ades': $asdes = 'des'; break;
+			case 'aest': $asest = 'est'; break;
+			case 'aesf': $asesf = 'esf'; break;
+			case 'afec': $asfec = 'fec'; break;
+			case 'amon': $asmon = 'mon'; break;
+			case 'aimp': $asimp = 'imp'; break;
+			case 'aval': $asval = 'val'; break;			
+			case 'ac31': $asc31 = 'c31'; break;
+			case 'af31': $asf31 = 'f31'; break;
+			case 'aubi': $asubi = 'ubi'; break;
+			case 'ares': $asres = 'res'; break;															
+			}									 			
+		}   				    
+			$hGlobal=6;
+			$wiTa = 188;		 		
+			$this->objParam->getParametro('desc_nombre')=='desc'?$desno='DESCRIPCIÓN':$desno='DENOMINACIÓN';          		 		        
+            $this->SetFontSize(6);
+            $this->SetFont('', 'B');						
+			$this->MultiCell(round((19/$wiTa)*100,2), $hGlobal,'NUM',1,'C',false,0,'','',true,0,false,true,0,'T',false);									
+			($ascod=='cod')?'':$this->MultiCell(round((43/$wiTa)*100,2), $hGlobal, 'CODIGO',1,'C',false,0,'','',true,0,false,true,0,'T',false);			
+			($asdes=='des')?'':$this->MultiCell(round((94/$wiTa)*100,2), $hGlobal, $desno, 1,'C',false,0,'','',true,0,false,true,0,'T',false);
+			($asest=='est')?'':$this->MultiCell(round((28/$wiTa)*100,2), $hGlobal, 'ESTADO', 1,'C',false,0,'','',true,0,false,true,0,'T',false);			
+			($asesf=='esf')?'':$this->MultiCell(round((28/$wiTa)*100,2), $hGlobal, 'ESTADO'."\x0A".'FUNCIONAL', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
+			($asfec=='fec')?'':$this->MultiCell(round((29/$wiTa)*100,2), $hGlobal, 'FECHA COMPRA', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
+			($asmon=='mon')?'':$this->MultiCell(round((28/$wiTa)*100,2), $hGlobal, 'MONTO'."\x0A".'(87%)', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
+			($asimp=='imp')?'':$this->MultiCell(round((28/$wiTa)*100,2), $hGlobal, 'IMPORTE (100%)', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
+			($asval=='val')?'':$this->MultiCell(round((28/$wiTa)*100,2), $hGlobal, 'VALOR ACTUAL', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
+			($asc31=='c31')?'':$this->MultiCell(round((28/$wiTa)*100,2), $hGlobal, 'C31', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
+			($asf31=='f31')?'':$this->MultiCell(round((28/$wiTa)*100,2),$hGlobal, 'FECHA'."\x0A".'COMP 31', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
+			($asubi=='ubi')?'':$this->MultiCell(round((57/$wiTa)*100,2),$hGlobal, 'UBICACION', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
+			($asres=='res')?'':$this->MultiCell(round((56.4/$wiTa)*100,2),$hGlobal, 'RESPONSABLE', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
+			
+        $this->posY = $this->GetY();
+		$this->posX = $this->GetX();
+		
+		
     }
 
     function setDatos($datos) {
 
         $this->datos = $datos;
         //var_dump( $this->datos);exit;
-    }
-
+    }			
     function  generarReporte()
-    {
-
+    {		
         $this->AddPage();
         $this->SetMargins(10, 40, 10);
-        $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-        $this->Ln();
-
+        $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);		
+        $this->Ln();		
 
 
 
@@ -95,13 +149,62 @@ class RDetalleAFPDF extends  ReportePDF{
         $total_grupo_87 = 0;
         $total_grupo_100 = 0;
         $total_grupo_actual = 0;
-
+		
         $i=1;
-        $this->tablewidths=array(10,23,50,15,15,15,15,15,15,15,15,30,30);
+        //$this->tablewidths=array(10,23,50,15,15,15,15,15,15,15,15,30,30);
         $this->tablealigns=array('C','L','L','C','C','C','R','R','R','C','L','L');
-
         $tipo = $this->objParam->getParametro('tipo_reporte');
-        foreach($this->datos as $record){
+		$control = $this->objParam->getParametro('activo_multi');
+			
+		$hiddes = explode(',', $control);
+		$ascod = '';
+		$asdes = '';
+		$asest = '';
+		$asesf = '';
+		$asfec = '';
+		$asmon = '';
+		$asimp = '';
+		$asval = '';
+		$asc31 = '';
+		$asf31 = '';
+		$asubi = '';
+		$asres = '';
+											
+		for ($a=0; $a <count($hiddes) ; $a++) {
+		switch ($hiddes[$a]) {
+			case 'acod': $ascod = 'cod'; break;
+			case 'ades': $asdes = 'des'; break;
+			case 'aest': $asest = 'est'; break;
+			case 'aesf': $asesf = 'esf'; break;
+			case 'afec': $asfec = 'fec'; break;
+			case 'amon': $asmon = 'mon'; break;
+			case 'aimp': $asimp = 'imp'; break;
+			case 'aval': $asval = 'val'; break;			
+			case 'ac31': $asc31 = 'c31'; break;
+			case 'af31': $asf31 = 'f31'; break;
+			case 'aubi': $asubi = 'ubi'; break;
+			case 'ares': $asres = 'res'; break;								
+			}									 			
+		}		
+
+		//arreglo para tablewidths estatica 	
+$tablewis=array('t1'=>10,'cod'=>23,'des'=>50,'est'=>15,'esf'=>15,'fec'=>15,'mon'=>15,'imp'=>15,'val'=>15,'c31'=>15,'f31'=>15,'ubi'=>30,'res'=>30);
+$tablenums0=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>2,'imp'=>2,'val'=>2,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0);  //1
+$tablenums1=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>0,'imp'=>0,'val'=>0,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0);  //2
+$tablenums2=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>2,'imp'=>2,'val'=>2,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0);  //3
+$tablenums3=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>2,'imp'=>2,'val'=>2,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0);  //4
+$tablenums4=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>2,'imp'=>2,'val'=>2,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0);  //5
+
+$tablewisReal = $this->filterArray($tablewis);
+$tablenums0Real = $this->filterArray($tablenums0);
+$tablenums1Real = $this->filterArray($tablenums1);
+$tablenums2Real = $this->filterArray($tablenums2);
+$tablenums3Real = $this->filterArray($tablenums3);
+$tablenums4Real = $this->filterArray($tablenums4);
+
+	
+		$this->tablewidths=$tablewisReal;			
+      foreach($this->datos as $record){
 
             if($record['nivel'] == 0 || $record['nivel'] == 1){
                 $this->SetFont('','B',6);
@@ -114,7 +217,7 @@ class RDetalleAFPDF extends  ReportePDF{
 
                     $this->SetTextColor(0);
                     $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','RB');
-                    $this->tablenumbers=array(0,0,0,0,0,0,2,2,2,0,0,0,0);
+                    $this->tablenumbers=$tablenums0Real;
                     $RowArray = array(
                         's0'  => '',
                         's1' => '',
@@ -130,7 +233,31 @@ class RDetalleAFPDF extends  ReportePDF{
                         's11' => '',
                         's12' => ''
                     );
-
+						if ($ascod=='cod'){							
+							unset($RowArray['s1']);
+						}if ($asdes=='des'){
+							unset($RowArray['s2']);
+						}if ($asest=='est') {
+							unset($RowArray['s3']);
+						}if ($asesf=='esf') {
+							unset($RowArray['s4']);
+						}if ($asfec=='fec') {
+							unset($RowArray['s5']);
+						}if ($asmon=='mon') {
+							unset($RowArray['s6']);
+						}if ($asimp=='imp') {							
+							unset($RowArray['s7']);
+						}if ($asval=='val') {
+							unset($RowArray['s8']);
+						}if ($asc31=='c31') {
+							unset($RowArray['s9']);
+						}if ($asf31=='f31'){
+							unset($RowArray['s10']);
+						}if ($asubi=='ubi'){
+							unset($RowArray['s11']);
+						}if ($asres=='res') {
+							unset($RowArray['s12']);
+						}								
                     $this->MultiRow($RowArray,true,1);
                     $total_grupo_100 += $cont_100;
                     $total_grupo_87 += $cont_87;
@@ -154,6 +281,31 @@ class RDetalleAFPDF extends  ReportePDF{
                             's11' => '',
                             's12' => ''
                         );
+						if ($ascod=='cod'){
+							unset($RowArray['s1']);
+						}if ($asdes=='des'){
+							unset($RowArray['s2']);
+						}if ($asest=='est') {
+							unset($RowArray['s3']);
+						}if ($asesf=='esf') {
+							unset($RowArray['s4']);
+						}if ($asfec=='fec') {
+							unset($RowArray['s5']);
+						}if ($asmon=='mon') {
+							unset($RowArray['s6']);
+						}if ($asimp=='imp') {
+							unset($RowArray['s7']);
+						}if ($asval=='val') {
+							unset($RowArray['s8']);
+						}if ($asc31=='c31') {
+							unset($RowArray['s9']);
+						}if ($asf31=='f31'){
+							unset($RowArray['s10']);
+						}if ($asubi=='ubi'){
+							unset($RowArray['s11']);
+						}if ($asres=='res') {
+							unset($RowArray['s12']);
+						}												
                         $this->MultiRow($RowArray,true,1);
                         $total_grupo_100 = 0;
                         $total_grupo_87 = 0;
@@ -161,12 +313,11 @@ class RDetalleAFPDF extends  ReportePDF{
                     }
                 }
 
-
                 $this->SetFillColor(79, 91, 147);
 
                 $this->SetTextColor(0);
                 $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','RB');
-                $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,0,0,0,0);
+                $this->tablenumbers=$tablenums1Real;
                 $RowArray = array(
                     's0'  => '',
                     's1' => $record['codigo_completo'],
@@ -182,7 +333,31 @@ class RDetalleAFPDF extends  ReportePDF{
                     's11' => '',
                     's12' => ''
                 );
-
+					if ($ascod=='cod'){						
+						unset($RowArray['s1']);
+					}if ($asdes=='des'){
+						unset($RowArray['s2']);
+					}if ($asest=='est') {
+						unset($RowArray['s3']);
+					}if ($asesf=='esf') {
+						unset($RowArray['s4']);
+					}if ($asfec=='fec') {
+						unset($RowArray['s5']);
+					}if ($asmon=='mon') {
+						unset($RowArray['s6']);
+					}if ($asimp=='imp') {
+						unset($RowArray['s7']);
+					}if ($asval=='val') {
+						unset($RowArray['s8']);
+					}if ($asc31=='c31') {
+						unset($RowArray['s9']);
+					}if ($asf31=='f31'){
+						unset($RowArray['s10']);
+					}if ($asubi=='ubi'){
+						unset($RowArray['s11']);
+					}if ($asres=='res') {
+						unset($RowArray['s12']);
+					}	
                 $this->MultiRow($RowArray,true,1);
                 if($record['nivel'] == 0){
                     $codigo = $record['codigo_completo'];
@@ -191,7 +366,7 @@ class RDetalleAFPDF extends  ReportePDF{
 
                 $this->SetFont('','',6);
                 $this->tableborders=array('RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB');
-                $this->tablenumbers=array(0,0,0,0,0,0,2,2,2,0,0,0,0);
+                $this->tablenumbers=$tablenums2Real;
                 $RowArray = array(
                     's0'  => $record['nivel']==2?$i:'',
                     's1' => $record['nivel']==2?$record['codigo_af']:$record['camino'],
@@ -207,7 +382,31 @@ class RDetalleAFPDF extends  ReportePDF{
                     's11' => $record['ubicacion'],
                     's12' => $record['responsable']
                 );
-
+			if ($ascod=='cod'){
+				unset($RowArray['s1']);
+			}if ($asdes=='des'){
+				unset($RowArray['s2']);
+			}if ($asest=='est') {
+				unset($RowArray['s3']);
+			}if ($asesf=='esf') {
+				unset($RowArray['s4']);
+			}if ($asfec=='fec') {
+				unset($RowArray['s5']);
+			}if ($asmon=='mon') {
+				unset($RowArray['s6']);
+			}if ($asimp=='imp') {
+				unset($RowArray['s7']);
+			}if ($asval=='val') {
+				unset($RowArray['s8']);
+			}if ($asc31=='c31') {
+				unset($RowArray['s9']);
+			}if ($asf31=='f31'){
+				unset($RowArray['s10']);
+			}if ($asubi=='ubi'){
+				unset($RowArray['s11']);
+			}if ($asres=='res') {
+				unset($RowArray['s12']);
+			}				
                 $this->MultiRow($RowArray);
 
                 $i++;
@@ -226,7 +425,7 @@ class RDetalleAFPDF extends  ReportePDF{
         $this->SetFillColor(224, 235, 255);
         $this->SetTextColor(0);
         $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','RB');
-        $this->tablenumbers=array(0,0,0,0,0,0,2,2,2,0,0,0,0);
+        $this->tablenumbers=$tablenums3Real;
         $RowArray = array(
             's0'  => '',
             's1' => '',
@@ -242,6 +441,31 @@ class RDetalleAFPDF extends  ReportePDF{
             's11' => '',
             's12' => ''
         );
+			if ($ascod=='cod'){
+				unset($RowArray['s1']);
+			}if ($asdes=='des'){
+				unset($RowArray['s2']);
+			}if ($asest=='est') {
+				unset($RowArray['s3']);
+			}if ($asesf=='esf') {
+				unset($RowArray['s4']);
+			}if ($asfec=='fec') {
+				unset($RowArray['s5']);
+			}if ($asmon=='mon') {
+				unset($RowArray['s6']);
+			}if ($asimp=='imp') {
+				unset($RowArray['s7']);
+			}if ($asval=='val') {
+				unset($RowArray['s8']);
+			}if ($asc31=='c31') {
+				unset($RowArray['s9']);
+			}if ($asf31=='f31'){
+				unset($RowArray['s10']);
+			}if ($asubi=='ubi'){
+				unset($RowArray['s11']);
+			}if ($asres=='res') {
+				unset($RowArray['s12']);
+			}					
         $this->MultiRow($RowArray,true,1);
 
         //Final Grupo
@@ -260,11 +484,36 @@ class RDetalleAFPDF extends  ReportePDF{
             's11' => '',
             's12' => ''
         );
+			if ($ascod=='cod'){
+				unset($RowArray['s1']);
+			}if ($asdes=='des'){
+				unset($RowArray['s2']);
+			}if ($asest=='est') {
+				unset($RowArray['s3']);
+			}if ($asesf=='esf') {
+				unset($RowArray['s4']);
+			}if ($asfec=='fec') {
+				unset($RowArray['s5']);
+			}if ($asmon=='mon') {
+				unset($RowArray['s6']);
+			}if ($asimp=='imp') {
+				unset($RowArray['s7']);
+			}if ($asval=='val') {
+				unset($RowArray['s8']);
+			}if ($asc31=='c31') {
+				unset($RowArray['s9']);
+			}if ($asf31=='f31'){
+				unset($RowArray['s10']);
+			}if ($asubi=='ubi'){
+				unset($RowArray['s11']);
+			}if ($asres=='res') {
+				unset($RowArray['s12']);
+			}			
         $this->MultiRow($RowArray,true,1);
 
         //$this->SetFillColor(79, 91, 147);
         $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','RB');
-        $this->tablenumbers=array(0,0,0,0,0,0,2,2,2,0,0,0,0);
+        $this->tablenumbers=$tablenums4Real;
         $RowArray = array(
             's0'  => '',
             's1' => '',
@@ -280,10 +529,117 @@ class RDetalleAFPDF extends  ReportePDF{
             's11' => '',
             's12' => '',
         );
-
+			if ($ascod=='cod'){
+				unset($RowArray['s1']);
+			}if ($asdes=='des'){
+				unset($RowArray['s2']);
+			}if ($asest=='est') {
+				unset($RowArray['s3']);
+			}if ($asesf=='esf') {
+				unset($RowArray['s4']);
+			}if ($asfec=='fec') {
+				unset($RowArray['s5']);
+			}if ($asmon=='mon') {
+				unset($RowArray['s6']);
+			}if ($asimp=='imp') {
+				unset($RowArray['s7']);
+			}if ($asval=='val') {
+				unset($RowArray['s8']);
+			}if ($asc31=='c31') {
+				unset($RowArray['s9']);
+			}if ($asf31=='f31'){
+				unset($RowArray['s10']);
+			}if ($asubi=='ubi'){
+				unset($RowArray['s11']);
+			}if ($asres=='res') {
+				unset($RowArray['s12']);
+			}			
         $this->MultiRow($RowArray,true,1);
 
 
     }
+function filterArray($table){
+
+$resp = array();
+		$control = $this->objParam->getParametro('activo_multi');
+			
+		$hiddes = explode(',', $control);
+		$ascod = '';
+		$asdes = '';
+		$asest = '';
+		$asesf = '';
+		$asfec = '';
+		$asmon = '';
+		$asimp = '';
+		$asval = '';
+		$asc31 = '';
+		$asf31 = '';
+		$asubi = '';
+		$asres = '';
+											
+		for ($i=0; $i <count($hiddes) ; $i++) {
+		switch ($hiddes[$i]) {
+			case 'acod': $ascod = 'cod'; break;
+			case 'ades': $asdes = 'des'; break;
+			case 'aest': $asest = 'est'; break;
+			case 'aesf': $asesf = 'esf'; break;
+			case 'afec': $asfec = 'fec'; break;
+			case 'amon': $asmon = 'mon'; break;
+			case 'aimp': $asimp = 'imp'; break;
+			case 'aval': $asval = 'val'; break;			
+			case 'ac31': $asc31 = 'c31'; break;
+			case 'af31': $asf31 = 'f31'; break;
+			case 'aubi': $asubi = 'ubi'; break;
+			case 'ares': $asres = 'res'; break;								
+			}									 			
+		}
+$proces = $table;
+
+		foreach ($proces as $key => $value) {	
+			switch ($key) {
+				case $ascod:
+					unset($proces['cod']);																			
+					break;
+				case $asdes:			
+					unset($proces['des']);
+					break;
+				case $asest:
+					unset($proces['est']);
+					break;
+				case $asesf:
+					unset($proces['esf']);
+					break;
+				case $asfec:
+					unset($proces['fec']);
+					break;	
+				case $asmon:
+					unset($proces['mon']);	
+					break;
+				case $asimp:
+					unset($proces['imp']);
+					break;
+				case $asval:
+					unset($proces['val']);
+					break;
+				case $asc31:
+					unset($proces['c31']);
+					break;
+				case $asf31:
+					unset($proces['f31']);
+					break;
+				case $asubi:
+					unset($proces['ubi']);					
+					break;
+				case $asres:
+					unset($proces['res']);
+					break;										
+			}	
+		}
+	$resp=array();
+	foreach ($proces as $value) {
+		array_push($resp,$value);
+		}
+	return  $resp;
+	}
 }
 ?>

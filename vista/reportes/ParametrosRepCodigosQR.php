@@ -9,17 +9,26 @@ Phx.vista.ParametrosRepCodigosQR = {
 		Phx.vista.ParametrosRepCodigosQR.superclass.constructor.call(this,config);
 		this.definicionRutareporte();
 		this.definirParametros();
-
+		this.formParam.topToolbar.items.items[2].setVisible(false);				
+		this.formParam.topToolbar.doLayout();
 		//Eventos
 		this.definirEventos();
 	},
 	definirEventos: function(){
 		this.cmbActivo.on('select',function(){
 			this.cmbClasificacion.setValue('');
+			this.cmbClasificacionMulti.reset();
 		},this);
 		this.cmbClasificacion.on('select',function(){
 			this.cmbActivo.setValue('');
+			this.cmbClasificacionMulti.reset();
+			this.cmbClasificacionMulti.setVisible(false);
 		},this);
+		//BVP
+		this.cmbClasificacionMulti.on('select',function(){						
+			this.cmbClasificacion.setVisible(false);					
+			this.cmbActivo.reset();			
+		},this);//
 	},
 	definicionRutareporte: function(report){
 		this.rutaReporte = '../../../sis_kactivos_fijos/vista/reportes/RCodigoQRAFVarios.php';
@@ -33,6 +42,8 @@ Phx.vista.ParametrosRepCodigosQR = {
 		this.configElement(this.dteFechaHasta,false,true);
 		this.configElement(this.cmbActivo,true,true);
 		this.configElement(this.cmbClasificacion,true,true);
+		this.configElement(this.cmbClasificacionMulti,false,true);
+		this.configElement(this.cmbTipoMov,false,true)
 		this.configElement(this.txtDenominacion,false,true);
 		this.configElement(this.dteFechaCompra,false,true);
 		this.configElement(this.dteFechaIniDep,false,true);
@@ -66,14 +77,15 @@ Phx.vista.ParametrosRepCodigosQR = {
 	onSubmit: function(){
 		console.log('aaa',Phx.CP.successExport);
 		if(this.formParam.getForm().isValid()){
-			if(this.cmbActivo.getValue()!=''||this.cmbClasificacion.getValue()!=''){
+			if(this.cmbActivo.getValue()!=''||this.cmbClasificacion.getValue()!=''||this.cmbClasificacionMulti.getValue()!=''){
 				Phx.CP.loadingShow();
 				//Generación del reporte
 		        Ext.Ajax.request({
 	                url: '../../sis_kactivos_fijos/control/ActivoFijo/repCodigoQRVarios',
 	                params: {
 	                	id_activo_fijo: this.cmbActivo.getValue(),
-	                	id_clasificacion: this.cmbClasificacion.getValue()
+	                	id_clasificacion: this.cmbClasificacion.getValue(),
+	                	id_clasificacion_multi:this.cmbClasificacionMulti.getValue()//
 	                },
 	                success: this.successExport,
 	                failure: this.conexionFailure,

@@ -62,11 +62,15 @@ Phx.vista.ReporteDepreciacion=Ext.extend(Phx.gridInterfaz,{
 			fecha_compra_max: this.maestro.paramsRep.fecha_compra_max,
 			af_deprec: this.maestro.paramsRep.af_deprec,
 			nro_cbte_asociado: this.maestro.paramsRep.nro_cbte_asociado,
-            desc_nombre : this.maestro.paramsRep.desc_nombre
+            desc_nombre : this.maestro.paramsRep.desc_nombre,
+            id_clasificacion_multi : this.maestro.paramsRep.id_clasificacion_multi,
+            total_consol : this.maestro.paramsRep.total_consol,
+            estado_depre : this.maestro.paramsRep.estado_depre         
 		};
 		this.load();
 
 		this.definirReporteCabecera();
+		console.log('daddd',this);
 	},
 
 	Atributos:[

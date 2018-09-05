@@ -101,7 +101,35 @@ class RCompraGestionXls
         $sheet0->setTitle('Compras x Gestión');
 
         //$datos = $this->objParam->getParametro('datos');
-
+		//capture datas of the view BVP
+		$selected = $this->objParam->getParametro('gestion_multi');        
+		$hiddes = explode(',', $selected);
+		$gscod = '';
+		$gsdes = '';				
+		$gsfec = '';		
+		$gsmun = '';
+		$gsf31 = '';
+		$gsfei = '';
+		$gsvit = '';
+		$gsviu = '';
+		$gsimp = '';
+		$gsgmon = '';		
+												
+		for ($i=0; $i <count($hiddes) ; $i++) {
+		switch ($hiddes[$i]) {
+			case 'gcod': $gscod = 'cod'; break;
+			case 'gdes': $gsdes = 'des'; break;
+			case 'gfec': $gsfec = 'fec'; break;			
+			case 'gnum': $gsmun = 'mun'; break;
+			case 'gf31': $gsf31 = 'f31'; break;
+			case 'gfei': $gsfei = 'fei'; break;
+			case 'gvit': $gsvit = 'vit'; break;
+			case 'gviu': $gsviu = 'viu'; break;			
+			case 'gimp': $gsimp = 'imp'; break;
+			case 'gmon': $gsgmon = 'mon'; break;														
+			}									 			
+		} 
+		/////BVP		
         $sheet0->getColumnDimension('B')->setWidth(7);
         $sheet0->getColumnDimension('C')->setWidth(20);
         $sheet0->getColumnDimension('D')->setWidth(40);
@@ -240,7 +268,18 @@ class RCompraGestionXls
         $total_grupo_100 = 0;
 
         //************************************************Detalle***********************************************
-
+	//delete columns selected BVP					
+	($gscod=='cod')?$this->docexcel->getActiveSheet()->getColumnDimension('C')->setVisible(0):'';
+	($gsdes=='des')?$this->docexcel->getActiveSheet()->getColumnDimension('D')->setVisible(0):'';
+	($gsfec=='fec')?$this->docexcel->getActiveSheet()->getColumnDimension('E')->setVisible(0):'';
+	($gsmun=='mun')?$this->docexcel->getActiveSheet()->getColumnDimension('F')->setVisible(0):'';
+	($gsf31=='f31')?$this->docexcel->getActiveSheet()->getColumnDimension('G')->setVisible(0):'';
+	($gsfei=='fei')?$this->docexcel->getActiveSheet()->getColumnDimension('H')->setVisible(0):'';
+	($gsvit=='vit')?$this->docexcel->getActiveSheet()->getColumnDimension('I')->setVisible(0):'';
+	($gsviu=='viu')?$this->docexcel->getActiveSheet()->getColumnDimension('J')->setVisible(0):'';
+	($gsimp=='imp')?$this->docexcel->getActiveSheet()->getColumnDimension('K')->setVisible(0):'';
+	($gsgmon=='mon')?$this->docexcel->getActiveSheet()->getColumnDimension('L')->setVisible(0):'';	
+	///		
 
         $tipo = $this->objParam->getParametro('tipo_reporte');
         $sheet0->getRowDimension('5')->setRowHeight(35);

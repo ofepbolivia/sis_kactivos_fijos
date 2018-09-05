@@ -11,13 +11,20 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 Phx.vista.Deposito=Ext.extend(Phx.gridInterfaz,{
-
+   viewConfig: {
+        stripeRows: false,               
+        getRowClass: function(record,v,i) {        	
+        	//console.log('aaa',record);
+        	        	        	        	
+          }               
+    },
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
 		Phx.vista.Deposito.superclass.constructor.call(this,config);
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag}});
+		console.log('aaa',this);
 	},
 
 	Atributos:[

@@ -90,18 +90,48 @@ class RDetalleAFXls
     function imprimeDatos(){
 
         $datos = $this->datos;
-        $columnas = 0;
-
-
+        $columnas = 0;		
+				
         $numberFormat = '#,#0.##;[Red]-#,#0.##';
 
         $this->docexcel->setActiveSheetIndex(0);
         $sheet0 = $this->docexcel->getActiveSheet();
 
         $sheet0->setTitle('DETALLE AF');
-
-        //$datos = $this->objParam->getParametro('datos');
-
+		
+		//capture datas of the view BVP
+		$selected = $this->objParam->getParametro('activo_multi');        
+		$hiddes = explode(',', $selected);
+		$ascod = '';
+		$asdes = '';
+		$asest = '';
+		$asesf = '';
+		$asfec = '';
+		$asmon = '';
+		$asimp = '';
+		$asval = '';
+		$asc31 = '';
+		$asf31 = '';
+		$asubi = '';
+		$asres = '';
+											
+		for ($i=0; $i <count($hiddes) ; $i++) {
+		switch ($hiddes[$i]) {
+			case 'acod': $ascod = 'cod'; break;
+			case 'ades': $asdes = 'des'; break;
+			case 'aest': $asest = 'est'; break;
+			case 'aesf': $asesf = 'esf'; break;
+			case 'afec': $asfec = 'fec'; break;
+			case 'amon': $asmon = 'mon'; break;
+			case 'aimp': $asimp = 'imp'; break;
+			case 'aval': $asval = 'val'; break;			
+			case 'ac31': $asc31 = 'c31'; break;
+			case 'af31': $asf31 = 'f31'; break;
+			case 'aubi': $asubi = 'ubi'; break;
+			case 'ares': $asres = 'res'; break;								
+			}									 			
+		}
+		/////BVP			
         $sheet0->getColumnDimension('B')->setWidth(7);
         $sheet0->getColumnDimension('C')->setWidth(20);
         $sheet0->getColumnDimension('D')->setWidth(40);
@@ -124,8 +154,7 @@ class RDetalleAFXls
         $sheet0->getColumnDimension('T')->setWidth(10);
         $sheet0->getColumnDimension('U')->setWidth(10);
         $sheet0->getColumnDimension('V')->setWidth(10);*/
-
-
+		
         //$this->docexcel->getActiveSheet()->mergeCells('A1:A3');
         $sheet0->mergeCells('B1:N1');
         $sheet0->setCellValue('B1', 'DEPARTAMENTO ACTIVOS FIJOS');
@@ -211,13 +240,13 @@ class RDetalleAFXls
         $sheet0->setCellValue('B5', 'Nº');
 
         $sheet0->setCellValue('C5', 'CODIGO');
-
+		
         if($this->objParam->getParametro('desc_nombre') == 'desc') {
             $sheet0->setCellValue('D5', 'DESCRIPCIÓN');
         }else{
             $sheet0->setCellValue('D5', 'DENOMINACIÓN');
         }
-
+		
         $sheet0->setCellValue('E5', 'ESTADO');
 
         $sheet0->setCellValue('F5', 'ESTADO FUNCIONAL');
@@ -255,13 +284,23 @@ class RDetalleAFXls
         $total_grupo_100 = 0;
         $total_grupo_actual = 0;
 
-        //************************************************Detalle***********************************************
-
-
-
+        //************************************************Detalle***********************************************		               
+	//delete columns selected BVP					
+	($ascod=='cod')?$this->docexcel->getActiveSheet()->getColumnDimension('C')->setVisible(0):'';
+	($asdes=='des')?$this->docexcel->getActiveSheet()->getColumnDimension('D')->setVisible(0):'';
+	($asest=='est')?$this->docexcel->getActiveSheet()->getColumnDimension('E')->setVisible(0):'';
+	($asesf=='esf')?$this->docexcel->getActiveSheet()->getColumnDimension('F')->setVisible(0):'';
+	($asfec=='fec')?$this->docexcel->getActiveSheet()->getColumnDimension('G')->setVisible(0):'';
+	($asmon=='mon')?$this->docexcel->getActiveSheet()->getColumnDimension('H')->setVisible(0):'';
+	($asimp=='imp')?$this->docexcel->getActiveSheet()->getColumnDimension('I')->setVisible(0):'';
+	($asval=='val')?$this->docexcel->getActiveSheet()->getColumnDimension('J')->setVisible(0):'';
+	($asc31=='c31')?$this->docexcel->getActiveSheet()->getColumnDimension('K')->setVisible(0):'';
+	($asf31=='f31')?$this->docexcel->getActiveSheet()->getColumnDimension('L')->setVisible(0):'';
+	($asubi=='ubi')?$this->docexcel->getActiveSheet()->getColumnDimension('M')->setVisible(0):'';
+	($asres=='res')?$this->docexcel->getActiveSheet()->getColumnDimension('N')->setVisible(0):'';
+	///
         $sheet0->getRowDimension('5')->setRowHeight(35);
-        foreach($datos as $value) {
-
+        foreach($datos as $value) {			
             if($value['nivel'] == 0 || $value['nivel'] == 1) {
 
                 if ($codigo != '' && ($value['nivel'] == 0 || $value['nivel'] == 1 && $cont_87>0)) {
@@ -280,8 +319,7 @@ class RDetalleAFXls
                     $sheet0->getStyle('H'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
                     $sheet0->getStyle('I'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
                     $sheet0->getStyle('J'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-
-
+					
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,$fila,'');
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,$fila,'');
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila,'Total Parcial Grupo');
