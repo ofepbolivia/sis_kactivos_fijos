@@ -771,6 +771,22 @@ class MODActivoFijo extends MODbase{
 		return $this->respuesta;
 		
 	}
+	function lecturaQRAP(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='kaf.ft_activo_fijo_ime';
+		$this->transaccion='SKA_AFQR_DET';
+		$this->tipo_procedimiento='IME';
+
+		//Define los parametros para la funcion
+		$this->setParametro('code','code','varchar');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();		
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 	
 
 }

@@ -36,6 +36,10 @@ DECLARE
     v_ids_clon				varchar;
     v_clase_reporte			varchar;
     v_monto_compra			numeric;
+    v_respuesta				varchar;
+    cont					integer;
+    cod						varchar;
+    codant					varchar;    
     
 			    
 BEGIN
@@ -562,11 +566,88 @@ BEGIN
             v_resp = pxp.f_agrega_clave(v_resp,'responsable',v_rec_af.responsable::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'cargo',v_rec_af.cargo::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'oficina_responsable',v_rec_af.oficina_responsable::varchar);
-              
+            
+
             --Devuelve la respuesta
             return v_resp;
 
 		end;
+    /*********************************    
+ 	#TRANSACCION:  'SKA_AFQR_DET'
+ 	#DESCRIPCION:	Servicio consulta de datos desde aplicacion lectura QR
+ 	#AUTOR:			BVP
+ 	#FECHA:			06/09/2018
+	***********************************/
+
+	elsif(p_transaccion='SKA_AFQR_DET')then 
+    
+    	begin
+
+		 cont = position(']' in v_parametros.code);         
+         if cont = 0 then
+         	cod = v_parametros.code;
+         else
+	        codant  = substr(v_parametros.code,2,cont-2);
+         	cod = codant;
+         end if;        
+        
+          if not exists(select 1 from kaf.tactivo_fijo
+                          where codigo = trim(cod)) then
+              raise exception 'Activo fijo no existente';
+          end if;        
+        
+          select
+          afij.codigo,
+          afij.denominacion,
+          afij.descripcion,
+          afij.estado,                    
+          pro.desc_proveedor as proveedor,
+          pxp.f_fecha_literal(afij.fecha_compra) as fecha_compra,
+          afij.marca,
+          afij.nro_serie,          
+          fun.desc_funcionario2 as responsable,            
+          ofi.codigo || ' ' || ofi.nombre as oficina,
+          afij.ubicacion
+          into v_rec_af
+          from kaf.tactivo_fijo afij
+          left join orga.vfuncionario fun on fun.id_funcionario = afij.id_funcionario
+          left join param.vproveedor pro on pro.id_proveedor = afij.id_proveedor
+          left join orga.toficina ofi on ofi.id_oficina = afij.id_oficina
+          where afij.codigo = trim(cod); 
+
+            --Definicion de la respuesta
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Consulta QR realizada'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'codigo',v_rec_af.codigo::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'denominacion',v_rec_af.denominacion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'descripcion',v_rec_af.descripcion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'estado',v_rec_af.estado::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'proveedor',v_rec_af.proveedor::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'fecha_compra',v_rec_af.fecha_compra::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'marca',v_rec_af.marca::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'nro_serie',v_rec_af.nro_serie::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'responsable',v_rec_af.responsable::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'oficina',v_rec_af.oficina::varchar);  
+            v_resp = pxp.f_agrega_clave(v_resp,'ubicacion',v_rec_af.ubicacion::varchar);            
+            
+            v_respuesta = '<div><br><b>Codigo: </b>'||coalesce(v_rec_af.codigo,'')||'<br>
+            			   <b>Denominacion: </b>'||coalesce(v_rec_af.denominacion,'')||'<br>
+                           <b>Descripcion: </b>'||coalesce(v_rec_af.descripcion,'')||'<br>
+            			   <b>Estado: </b>'||coalesce(v_rec_af.estado,'')||'<br><br>                           
+            			   <b>Proveedor: </b>'||coalesce(v_rec_af.proveedor,'')||'<br>
+            			   <b>Fecha_compra: </b>'||coalesce(v_rec_af.fecha_compra,'')||'<br>
+            			   <b>Marca: </b>'||coalesce(v_rec_af.marca,'')||'<br>
+                           <b>Serie: </b>'||coalesce(v_rec_af.nro_serie,'')||'<br><br>
+            			   <b>Responsable: </b>'||coalesce(v_rec_af.responsable,'')||'<br>
+						   <b>Oficina: </b>'||coalesce(v_rec_af.oficina,'')||'<br>
+                           <b>Ubicacion: </b>'||coalesce(v_rec_af.ubicacion,'')||'</div>'
+                           ;
+            v_respuesta= v_respuesta; 
+            --Devuelve la respuesta
+            
+            --Definicion de la respuesta            
+		v_resp = pxp.f_agrega_clave(v_resp,'mensaje_code',v_respuesta::varchar);
+            return v_resp;              
+        end;       
 
 	else
      

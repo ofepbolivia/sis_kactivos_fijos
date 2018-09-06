@@ -743,6 +743,12 @@ class ACTActivoFijo extends ACTbase{
 	        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
 	        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
         }
+		
+		function lecturaQRAP(){
+			$this->objFunc=$this->create('MODActivoFijo');
+			$this->res=$this->objFunc->lecturaQRAP($this->objParam);
+			$this->res->imprimirRespuesta($this->res->generarJson());			
+		}
 
 }
 ?>

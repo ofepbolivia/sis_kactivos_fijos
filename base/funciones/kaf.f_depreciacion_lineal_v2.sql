@@ -336,24 +336,24 @@ BEGIN
                 null,
                 null,
                 v_rec.id_movimiento_af,
-                v_ant_dep_acum, --10  depreciacion_acum_ant
-                v_ant_dep_per,   --depreciacion_per_ant
-                v_ant_monto_vigente,  --monto_vigente_ant
+                round(v_ant_dep_acum,2), --10  depreciacion_acum_ant
+                round(v_ant_dep_per,2),   --depreciacion_per_ant
+                round(v_ant_monto_vigente,2),  --monto_vigente_ant
                 v_ant_vida_util,   --  vida_util_ant
-                v_dep_acum_actualiz,  --  depreciacion_acum_actualiz
-                v_dep_per_actualiz,  --  depreciacion_per_actualiz
-                v_monto_actualiz,    --monto_actualiz
-                v_nuevo_dep_mes,   -- depreciacion
-                v_nuevo_dep_acum,  -- depreciacion_acum
-                v_nuevo_dep_per,   -- depreciacion_per
-                v_nuevo_monto_vigente, -- 20   monto_vigente
+                round(v_dep_acum_actualiz,2),  --  depreciacion_acum_actualiz
+                round(v_dep_per_actualiz,2),  --  depreciacion_per_actualiz
+                round(v_monto_actualiz,2),    --monto_actualiz
+                round(v_nuevo_dep_mes,2),   -- depreciacion
+                round(v_nuevo_dep_acum,2),  -- depreciacion_acum
+                round(v_nuevo_dep_per,2),   -- depreciacion_per
+                round(v_nuevo_monto_vigente,2), -- 20   monto_vigente
                 v_nuevo_vida_util,  -- vida_util
                 v_rec_tc.o_tc_inicial,
                 v_rec_tc.o_tc_final,
                 v_rec_tc.o_tc_factor,
                 v_rec.id_activo_fijo_valor, --25
                 v_mes_dep,
-                v_ant_monto_actualiz,
+                round(v_ant_monto_actualiz,2),
                 v_rec.id_moneda,
                 v_rec.id_moneda_dep
                 ) RETURNING id_movimiento_af_dep into v_id_movimiento_af_dep;
