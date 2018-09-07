@@ -1630,8 +1630,8 @@ BEGIN
             'total'
             from tt_detalle_depreciacion_rev
             where codigo is not null and tipo like '%'||v_parametros.estado_depre||'%';        
-       end if;                         
-	 elsif(extract(year from v_parametros.fecha_hasta)=extract(year from now()::date)-1)then
+       end if;                          
+	 elsif(extract(year from v_parametros.fecha_hasta)<=extract(year from now()::date)-1)then
      		if(v_parametros.estado_depre='')then
             --Inserta los totales por clasificacióm
             insert into tt_detalle_depreciacion_totales

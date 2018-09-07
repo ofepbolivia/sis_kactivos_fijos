@@ -825,9 +825,10 @@ BEGIN
 
             --Sentencia de la consulta
             v_consulta:='select vf.desc_funcionario1::varchar as responsable, 
-             			 taf.codigo, 
+             			 taf.codigo,
+                         taf.denominacion,
                          taf.descripcion::varchar, 
-                         taf.fecha_asignacion, 
+                         pxp.f_fecha_literal(taf.fecha_asignacion), 
                          (tl.codigo||''-''||tof.nombre)::varchar as oficina, 
                          taf.ubicacion 
                         from kaf.tactivo_fijo taf
