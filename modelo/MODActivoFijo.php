@@ -676,11 +676,14 @@ class MODActivoFijo extends MODbase{
 
         //Define los parametros para la funcion
         $this->setParametro('id_funcionario','id_funcionario','int4');
+		$this->setParametro('busca','busca','text');
+		$this->setParametro('orden','orden','varchar');
 
         $this->captura('responsable','varchar');
         $this->captura('codigo','varchar');
+        $this->captura('denominacion','varchar');
         $this->captura('descripcion','varchar');
-        $this->captura('fecha_asignacion','date');
+        $this->captura('fecha_asignacion','text');
         $this->captura('oficina','varchar');
         $this->captura('ubicacion','varchar');
 
