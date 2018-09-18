@@ -19,7 +19,8 @@ Ext.define('Phx.vista.ParametrosBase', {
 
 		//Eventos
 		var date = new Date();
-		this.cmbResponsable.store.baseParams.fecha = date.dateFormat('d/m/Y');
+		//this.cmbResponsable.store.baseParams.fecha = date.dateFormat('d/m/Y');
+		this.cmbResponsable.store.baseParams.estado_func = 'act_desc';
 	},
 	createComponents: function(){
 		this.cmbReporte = new Ext.form.ComboBox({

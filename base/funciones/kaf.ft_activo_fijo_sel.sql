@@ -30,7 +30,8 @@ DECLARE
     v_lista_af			varchar;
     v_criterio_filtro	varchar;
     v_clase_reporte		varchar;
-	v_condicion 		varchar = '';		    
+	v_condicion 		varchar = '';
+	ord					text;		    
 BEGIN
 
 	v_nombre_funcion = 'kaf.ft_activo_fijo_sel';
@@ -821,29 +822,33 @@ BEGIN
 
     elsif(p_transaccion='SKA_GET_AF_BOA_SEL')then     
     
-    	begin
-
-            --Sentencia de la consulta
-            v_consulta:='select vf.desc_funcionario1::varchar as responsable, 
-             			 taf.codigo,
-                         taf.denominacion,
-                         taf.descripcion::varchar, 
-                         pxp.f_fecha_literal(taf.fecha_asignacion), 
-                         (tl.codigo||''-''||tof.nombre)::varchar as oficina, 
-                         taf.ubicacion 
-                        from kaf.tactivo_fijo taf
-                        inner join orga.vfuncionario vf on vf.id_funcionario = taf.id_funcionario
-                        inner join orga.toficina tof on tof.id_oficina = taf.id_oficina
-                        inner join param.tlugar tl on tl.id_lugar = tof.id_lugar
-                        where taf.id_funcionario = '||v_parametros.id_funcionario||' and ';
-            
-            --Definicion de la respuesta
-            v_consulta = v_consulta||v_parametros.filtro;
-			raise notice 'v_consulta: %', v_consulta;
-            --Devuelve la respuesta
-            return v_consulta;
-        
-        end;
+      begin
+                if v_parametros.orden='1' then
+                 ord= 'order by taf.fecha_asignacion desc';
+                 else
+                 ord = 'order by taf.fecha_asignacion asc';
+                 end if;
+                  --Sentencia de la consulta
+                  v_consulta:='select vf.desc_funcionario1::varchar as responsable, 
+                               taf.codigo,
+                               taf.denominacion::varchar as denominacion,
+                               taf.descripcion::varchar as descripcion, 
+                               pxp.f_fecha_literal(taf.fecha_asignacion)::text as fecha_asignacion, 
+                               (tl.codigo||''-''||tof.nombre)::varchar as oficina, 
+                               taf.ubicacion::varchar as  ubicacion
+                              from kaf.tactivo_fijo taf
+                              inner join orga.vfuncionario vf on vf.id_funcionario = taf.id_funcionario
+                              inner join orga.toficina tof on tof.id_oficina = taf.id_oficina
+                              inner join param.tlugar tl on tl.id_lugar = tof.id_lugar
+                where taf.id_funcionario = '||v_parametros.id_funcionario||' and taf.denominacion like ''%'||upper(v_parametros.busca)||'%'' and ';
+                  
+                  --Definicion de la respuesta
+                  v_consulta = v_consulta||v_parametros.filtro;
+				  v_consulta = v_consulta||''||ord||'';
+                  --Devuelve la respuesta
+                  return v_consulta;
+              
+              end;
 	else
 		raise exception 'Transaccion inexistente';
 					         

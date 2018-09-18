@@ -17,6 +17,7 @@ require_once(dirname(__FILE__).'/../reportes/RActivoFijoPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RActivoFijoXls.php');
 require_once(dirname(__FILE__).'/../reportes/RActivoFijoDetalleXls.php');
 
+
 class ACTActivoFijo extends ACTbase{
 
 	function listarActivoFijo(){
