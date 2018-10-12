@@ -531,7 +531,7 @@ class ACTActivoFijo extends ACTbase{
 
 	function reportesAFGlobal(){
 	
-		//Filtros Reporte
+		//Filtros Reporte		
 		if($this->objParam->getParametro('estado')!= ''){
 			$this->objParam->addFiltro("(taf.estado = ''".$this->objParam->getParametro('estado')."'' OR taf.estado is null)");
 		}
@@ -556,18 +556,50 @@ class ACTActivoFijo extends ACTbase{
 					FROM t)");
 		}
 		if($this->objParam->getParametro('id_lugar')!=''){
-			$this->objParam->addFiltro("tlug.id_lugar in (".$this->objParam->getParametro('id_lugar').")");
+			$this->objParam->addFiltro("tlug.id_lugar =".$this->objParam->getParametro('id_lugar'));			
 		}
 		if($this->objParam->getParametro('nro_cbte_asociado')!=''){			
 			$this->objParam->addFiltro("taf.nro_cbte_asociado = "."''".$this->objParam->getParametro('nro_cbte_asociado')."''");			
 		}
 		/*para motos de monto_compra kaf.activo_fijo*/
-		if($this->objParam->getParametro('txtMontoSup')!=''){
-			$this->objParam->addFiltro("taf.monto_compra >= "."''".$this->objParam->getParametro('txtMontoSup')."''");
+		if($this->objParam->getParametro('column_busque')!=''){
+			if($this->objParam->getParametro('column_busque')=='1'){
+				if($this->objParam->getParametro('txtMontoSup')!=''){
+					$this->objParam->addFiltro("taf.monto_compra_orig >= "."''".$this->objParam->getParametro('txtMontoSup')."''");
+				}			
+				if($this->objParam->getParametro('txtMontoInf')!=''){
+					$this->objParam->addFiltro("taf.monto_compra_orig <= "."''".$this->objParam->getParametro('txtMontoInf')."''");
+				}
+			}elseif($this->objParam->getParametro('column_busque')=='2'){
+				if($this->objParam->getParametro('txtMontoSup')!=''){
+					$this->objParam->addFiltro("taf.monto_compra_orig_100 >= "."''".$this->objParam->getParametro('txtMontoSup')."''");
+				}			
+				if($this->objParam->getParametro('txtMontoInf')!=''){
+					$this->objParam->addFiltro("taf.monto_compra_orig_100 <= "."''".$this->objParam->getParametro('txtMontoInf')."''");
+				}				
+			}else{
+				if($this->objParam->getParametro('txtMontoSup')!=''){
+					$this->objParam->addFiltro("taf.monto_compra >= "."''".$this->objParam->getParametro('txtMontoSup')."''");
+				}			
+				if($this->objParam->getParametro('txtMontoInf')!=''){
+					$this->objParam->addFiltro("taf.monto_compra <= "."''".$this->objParam->getParametro('txtMontoInf')."''");
+				}				
+			}	
+		}		
+		if($this->objParam->getParametro('id_depto')!=''){
+			if($this->objParam->getParametro('id_depto')==3){
+				$this->objParam->addFiltro("taf.id_depto in (7,47)");
+			}else{			
+				$this->objParam->addFiltro("taf.id_depto = ".$this->objParam->getParametro('id_depto'));
+			}			
 		}
-		if($this->objParam->getParametro('txtMontoInf')!=''){
-			$this->objParam->addFiltro("taf.monto_compra <= "."''".$this->objParam->getParametro('txtMontoInf')."''");
+		if($this->objParam->getParametro('nr_factura')!=''){			
+			$this->objParam->addFiltro("taf.documento = ''".$this->objParam->getParametro('nr_factura')."''");			
+		}		
+		if($this->objParam->getParametro('id_proveedor')!=''){
+			$this->objParam->addFiltro("taf.id_proveedor = ".$this->objParam->getParametro('id_proveedor'));
 		}
+		
 		///		
 		if($this->objParam->getParametro('tipo_activo')== 1){
 			$this->objParam->addFiltro("niv.tipo_activo  = ''tangible''");
@@ -580,6 +612,10 @@ class ACTActivoFijo extends ACTbase{
 		//Llamada al Modelo, consulta BD
 		$this->objFunc = $this->create('MODActivoFijo');
 		$this->res = $this->objFunc->reportesAFGlobal($this->objParam);
+        $this->objFunc=$this->create('MODActivoFijo');
+        $this->res2=$this->objFunc->listaLug($this->objParam);
+        $this->objFunc=$this->create('MODActivoFijo');
+        $this->res3=$this->objFunc->proveedorActivoRep($this->objParam);		
 		//$this->res->imprimirRespuesta($this->res->generarJson());
 
 		//Configuracion Reporte
@@ -614,15 +650,15 @@ class ACTActivoFijo extends ACTbase{
 		if($this->objParam->getParametro('configuracion_reporte')  == 'compras_gestion') {
 			if ($this->objParam->getParametro('formato_reporte') == 'pdf') {
 				//Orientacion Hoja Documento.
-				$this->objParam->addParametro('orientacion','P');
+				$this->objParam->addParametro('orientacion','P');				
 				//Instancia la clase de pdf
 				$this->objReporteFormato = new RCompraGestionPDF ($this->objParam);
-				$this->objReporteFormato->setDatos($this->res->datos);
+				$this->objReporteFormato->setDatos($this->res->datos,$this->res2->datos,$this->res3->datos);
 				$this->objReporteFormato->generarReporte();
 				$this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
 			} else {
 				$reporte = new RCompraGestionXls($this->objParam);
-				$reporte->setDatos($this->res->datos);
+				$reporte->setDatos($this->res->datos,$this->res2->datos,$this->res3->datos);
 				$reporte->generarReporte();
 			}
 		}else if($this->objParam->getParametro('configuracion_reporte') == 'detalle_af'){
@@ -630,12 +666,12 @@ class ACTActivoFijo extends ACTbase{
 				//Orientacion Hoja Documento.
 				$this->objParam->addParametro('orientacion','L');
 				$this->objReporteFormato = new RDetalleAFPDF ($this->objParam);
-				$this->objReporteFormato->setDatos($this->res->datos);
+				$this->objReporteFormato->setDatos($this->res->datos,$this->res2->datos,$this->res3->datos);
 				$this->objReporteFormato->generarReporte();
 				$this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
 			} else {
 				$reporte = new RDetalleAFXls($this->objParam);
-				$reporte->setDatos($this->res->datos);
+				$reporte->setDatos($this->res->datos,$this->res2->datos,$this->res3->datos);
 				$reporte->generarReporte();
 			}
 		}
@@ -750,6 +786,34 @@ class ACTActivoFijo extends ACTbase{
 			$this->res=$this->objFunc->lecturaQRAP($this->objParam);
 			$this->res->imprimirRespuesta($this->res->generarJson());			
 		}
+		
+		function proveedorActivo(){
+			$this->objParam->defecto('ordenacion','id_proveedor');
+			$this->objParam->defecto('dir_ordenacion','asc');
+			$this->objFunc=$this->create('MODActivoFijo');
+			$this->res=$this->objFunc->proveedorActivo($this->objParam);
+			$this->res->imprimirRespuesta($this->res->generarJson());			
+		}
+		function proveedorActivoRep(){
+			$this->objParam->defecto('ordenacion','id_proveedor');
+			$this->objParam->defecto('dir_ordenacion','asc');
+			$this->objFunc=$this->create('MODActivoFijo');
+			$this->res=$this->objFunc->proveedorActivoRep($this->objParam);
+			$this->res->imprimirRespuesta($this->res->generarJson());			
+		}
+	    function listarAF(){
+        $this->objParam->defecto('ordenacion', 'id_activo_fijo');
+        $this->objParam->defecto('dir_ordenacion', 'asc');
+		    if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
+		        $this->objReporte = new Reporte($this->objParam, $this);
+		        $this->res = $this->objReporte->generarReporteListado('MODActivoFijo', 'listarActivoFijo');
+		    } else {
+		        $this->objFunc = $this->create('MODActivoFijo');
+		
+		        $this->res = $this->objFunc->listarAF($this->objParam);
+		    }
+		    $this->res->imprimirRespuesta($this->res->generarJson());
+    	}
 
 }
 ?>

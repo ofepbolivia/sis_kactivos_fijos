@@ -72,8 +72,10 @@ class RCompraGestionXls
 
     }
 
-    function setDatos ($param) {
+    function setDatos ($param,$param2,$param3) {
         $this->datos = $param;
+		$this->datos2 = $param2;
+		$this->datos3 = $param3;
     }
 
     function generarReporte(){
@@ -113,7 +115,8 @@ class RCompraGestionXls
 		$gsvit = '';
 		$gsviu = '';
 		$gsimp = '';
-		$gsgmon = '';		
+		$gsgmon = '';
+		$gsuco = '';		
 												
 		for ($i=0; $i <count($hiddes) ; $i++) {
 		switch ($hiddes[$i]) {
@@ -126,7 +129,8 @@ class RCompraGestionXls
 			case 'gvit': $gsvit = 'vit'; break;
 			case 'gviu': $gsviu = 'viu'; break;			
 			case 'gimp': $gsimp = 'imp'; break;
-			case 'gmon': $gsgmon = 'mon'; break;														
+			case 'gmon': $gsgmon= 'mon'; break;
+			case 'guco': $gsuco = 'uco'; break;														
 			}									 			
 		} 
 		/////BVP		
@@ -141,17 +145,37 @@ class RCompraGestionXls
         $sheet0->getColumnDimension('J')->setWidth(10);
         $sheet0->getColumnDimension('K')->setWidth(15);
         $sheet0->getColumnDimension('L')->setWidth(15);
+		$sheet0->getColumnDimension('M')->setWidth(20);
 
 
 
         //$this->docexcel->getActiveSheet()->mergeCells('A1:A3');
-        $sheet0->mergeCells('B1:L1');
+        $sheet0->mergeCells('B1:M1');
         $sheet0->setCellValue('B1', 'DEPARTAMENTO ACTIVOS FIJOS');
-        $sheet0->mergeCells('B2:L2');
+        $sheet0->mergeCells('B2:M2');
         $sheet0->setCellValue('B2', 'COMPRAS DE GESTIÓN');
-        $sheet0->mergeCells('B3:L3');
+        $sheet0->mergeCells('B3:M3');
         $sheet0->setCellValue('B3', 'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: '.$this->objParam->getParametro('estado'));
 
+		$styleExtras=array(
+			'font' => array(
+				'bold' => true,
+				'size' => 8,
+				'name' => 'Arial'
+			)
+		);
+		$city=$this->datos2[0]['nombre'];
+		$fact=$this->objParam->getParametro('nr_factura');
+		$dept=$this->objParam->getParametro('id_depto');
+		$prove=$this->datos3[0]['desc_proveedor'];
+		$pro='';		
+		($dept==7)?$pro='Unidad de Activos Fijos':($dept=47)?$pro='Unidad de Activos Fijos TI':$pro;
+		if(count($city)!=0 || $fact!='' || $dept!='' || $prove!=''){
+			$sheet0->getRowDimension('8')->setRowHeight(55);
+			$sheet0->getStyle('B4:C4')->applyFromArray($styleExtras);
+			$sheet0->mergeCells('B4:C4');
+			$sheet0->setCellValue('B4','LUGAR: '.$city."\x0A".' Factura: '.$fact."\x0A".' DEPTO: '.$pro."\x0A".' PROVEEDOR: '.$prove);
+		}
 
         $styleTitulos = array(
             'font' => array(
@@ -212,16 +236,16 @@ class RCompraGestionXls
         );
 
 
-        $sheet0->getStyle('B1:L3')->applyFromArray($styleCabeza);
+        $sheet0->getStyle('B1:M3')->applyFromArray($styleCabeza);
         /*$sheet0->getStyle('B2:L2')->applyFromArray($styleTitulos);
         $sheet0->getStyle('B3:L3')->applyFromArray($styleTitulos);*/
 
         $styleTitulos['fill']['color']['rgb'] = '8DB4E2';
         $styleTitulos['fill']['color']['rgb'] = 'CCBBAA';
 
-        $sheet0->getRowDimension('5')->setRowHeight(35);
-        $sheet0->getStyle('B5:L5')->applyFromArray($styleTitulos);
-        $sheet0->getStyle('C5:L5')->getAlignment()->setWrapText(true);
+        $sheet0->getRowDimension('4')->setRowHeight(35);
+        $sheet0->getStyle('B5:M5')->applyFromArray($styleTitulos);
+        $sheet0->getStyle('C5:M5')->getAlignment()->setWrapText(true);
 
 
         //*************************************Cabecera*****************************************
@@ -250,6 +274,8 @@ class RCompraGestionXls
         $sheet0->setCellValue('K5', 'IMPORTE 100%');
 
         $sheet0->setCellValue('L5', 'MONTO 87%');
+		
+		$sheet0->setCellValue('M5', 'UNIDAD SOLICITANTE');
 
 
         //*************************************Fin Cabecera*****************************************
@@ -269,16 +295,17 @@ class RCompraGestionXls
 
         //************************************************Detalle***********************************************
 	//delete columns selected BVP					
-	($gscod=='cod')?$this->docexcel->getActiveSheet()->getColumnDimension('C')->setVisible(0):'';
-	($gsdes=='des')?$this->docexcel->getActiveSheet()->getColumnDimension('D')->setVisible(0):'';
-	($gsfec=='fec')?$this->docexcel->getActiveSheet()->getColumnDimension('E')->setVisible(0):'';
-	($gsmun=='mun')?$this->docexcel->getActiveSheet()->getColumnDimension('F')->setVisible(0):'';
-	($gsf31=='f31')?$this->docexcel->getActiveSheet()->getColumnDimension('G')->setVisible(0):'';
-	($gsfei=='fei')?$this->docexcel->getActiveSheet()->getColumnDimension('H')->setVisible(0):'';
-	($gsvit=='vit')?$this->docexcel->getActiveSheet()->getColumnDimension('I')->setVisible(0):'';
-	($gsviu=='viu')?$this->docexcel->getActiveSheet()->getColumnDimension('J')->setVisible(0):'';
-	($gsimp=='imp')?$this->docexcel->getActiveSheet()->getColumnDimension('K')->setVisible(0):'';
-	($gsgmon=='mon')?$this->docexcel->getActiveSheet()->getColumnDimension('L')->setVisible(0):'';	
+		($gscod=='cod')?'':$this->docexcel->getActiveSheet()->getColumnDimension('C')->setVisible(0);
+		($gsdes=='des')?'':$this->docexcel->getActiveSheet()->getColumnDimension('D')->setVisible(0);
+		($gsfec=='fec')?'':$this->docexcel->getActiveSheet()->getColumnDimension('E')->setVisible(0);
+		($gsmun=='mun')?'':$this->docexcel->getActiveSheet()->getColumnDimension('F')->setVisible(0);
+		($gsf31=='f31')?'':$this->docexcel->getActiveSheet()->getColumnDimension('G')->setVisible(0);
+		($gsfei=='fei')?'':$this->docexcel->getActiveSheet()->getColumnDimension('H')->setVisible(0);
+		($gsvit=='vit')?'':$this->docexcel->getActiveSheet()->getColumnDimension('I')->setVisible(0);
+		($gsviu=='viu')?'':$this->docexcel->getActiveSheet()->getColumnDimension('J')->setVisible(0);
+		($gsimp=='imp')?'':$this->docexcel->getActiveSheet()->getColumnDimension('K')->setVisible(0);
+		($gsgmon=='mon')?'':$this->docexcel->getActiveSheet()->getColumnDimension('L')->setVisible(0);
+		($gsuco=='uco')?'':$this->docexcel->getActiveSheet()->getColumnDimension('M')->setVisible(0);	
 	///		
 
         $tipo = $this->objParam->getParametro('tipo_reporte');
@@ -292,8 +319,8 @@ class RCompraGestionXls
                     $total_general_87 = $total_general_87 + $cont_87;
                     $total_general_100 = $total_general_100 + $cont_100;
                     $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
-                    $sheet0->getStyle('B' . $fila . ':L' . $fila)->applyFromArray($styleTitulos);
-                    $sheet0->getStyle('B' . $fila . ':L' . $fila)->getAlignment()->setWrapText(true);
+                    $sheet0->getStyle('B' . $fila . ':M' . $fila)->applyFromArray($styleTitulos);
+                    $sheet0->getStyle('B' . $fila . ':M' . $fila)->getAlignment()->setWrapText(true);
                     if($tipo == 1) {
                         $sheet0->getStyle('K'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
                         $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
@@ -312,6 +339,7 @@ class RCompraGestionXls
                         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, '');
                         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $cont_100);
                         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $cont_87);
+						$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, '');
 
                         $fila++;
                     }
@@ -323,8 +351,8 @@ class RCompraGestionXls
                     if($value['nivel'] == 0 && $codigo != $value['codigo_completo']){
                         if($tipo == 1) {
                             $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
-                            $sheet0->getStyle('B' . $fila . ':L' . $fila)->applyFromArray($styleTitulos);
-                            $sheet0->getStyle('B' . $fila . ':L' . $fila)->getAlignment()->setWrapText(true);
+                            $sheet0->getStyle('B' . $fila . ':M' . $fila)->applyFromArray($styleTitulos);
+                            $sheet0->getStyle('B' . $fila . ':M' . $fila)->getAlignment()->setWrapText(true);
                             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, '');
                             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, '');
                             $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
@@ -343,11 +371,12 @@ class RCompraGestionXls
 
                             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $total_grupo_100);
                             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $total_grupo_87);
+							$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, '');
                             $fila ++;
                         }else{
                             $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
-                            $sheet0->getStyle('B'.$fila.':L'.$fila)->applyFromArray($styleTitulos);
-                            $sheet0->getStyle('B'.$fila.':L'.$fila)->getAlignment()->setWrapText(true);
+                            $sheet0->getStyle('B'.$fila.':M'.$fila)->applyFromArray($styleTitulos);
+                            $sheet0->getStyle('B'.$fila.':M'.$fila)->getAlignment()->setWrapText(true);
                             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, $contador);
                             $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
                             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, $codigo);
@@ -365,6 +394,7 @@ class RCompraGestionXls
                             $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
                             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $total_grupo_100);
                             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $total_grupo_87);
+							$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila,'');
                             $contador++;
                             $fila ++;
                         }
@@ -377,8 +407,8 @@ class RCompraGestionXls
 
                 if($tipo == 1) {
                     $styleTitulos['fill']['color']['rgb'] = 'e09e1a';
-                    $sheet0->getStyle('B' . $fila . ':L' . $fila)->applyFromArray($styleTitulos);
-                    $sheet0->getStyle('B' . $fila . ':L' . $fila)->getAlignment()->setWrapText(true);
+                    $sheet0->getStyle('B' . $fila . ':M' . $fila)->applyFromArray($styleTitulos);
+                    $sheet0->getStyle('B' . $fila . ':M' . $fila)->getAlignment()->setWrapText(true);
 
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, '');
                     $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
@@ -393,6 +423,7 @@ class RCompraGestionXls
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, '');
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, '');
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, '');
+					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, '');
                     $fila ++;
                 }
 
@@ -403,8 +434,8 @@ class RCompraGestionXls
             }else {
                 if($tipo == 1) {
                     $styleTitulos['fill']['color']['rgb'] = 'e6e8f4';
-                    $sheet0->getStyle('B' . $fila . ':L' . $fila)->applyFromArray($styleTitulos);
-                    $sheet0->getStyle('B' . $fila . ':L' . $fila)->getAlignment()->setWrapText(true);
+                    $sheet0->getStyle('B' . $fila . ':M' . $fila)->applyFromArray($styleTitulos);
+                    $sheet0->getStyle('B' . $fila . ':M' . $fila)->getAlignment()->setWrapText(true);
 
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, $contador);
                     $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
@@ -423,6 +454,7 @@ class RCompraGestionXls
                     $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $value['monto_compra_orig_100']);
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $value['monto_compra_orig']);
+					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, $value['nombre_unidad']);
 
                     $contador++;
                     $fila++;
@@ -439,8 +471,8 @@ class RCompraGestionXls
         $total_general_100 = $total_general_100 + $cont_100;
 
         $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
-        $sheet0->getStyle('B'.$fila.':L'.$fila)->applyFromArray($styleTitulos);
-        $sheet0->getStyle('B'.$fila.':L'.$fila)->getAlignment()->setWrapText(true);
+        $sheet0->getStyle('B'.$fila.':M'.$fila)->applyFromArray($styleTitulos);
+        $sheet0->getStyle('B'.$fila.':M'.$fila)->getAlignment()->setWrapText(true);
         if($tipo == 1) {
             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, '');
             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, '');
@@ -458,6 +490,7 @@ class RCompraGestionXls
             $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $cont_100);
             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $cont_87);
+			$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, '');
 
             $fila ++;
 
@@ -477,6 +510,7 @@ class RCompraGestionXls
             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, '');
             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $total_grupo_100 + $cont_100);
             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $total_grupo_87 + $cont_87);
+			$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, '');
         }else{
 
             $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
@@ -496,12 +530,13 @@ class RCompraGestionXls
             $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $total_grupo_100 + $cont_100);
             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $total_grupo_87 + $cont_87);
+			$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, '');
         }
         $fila ++;
 
         $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
-        $sheet0->getStyle('B'.$fila.':L'.$fila)->applyFromArray($styleTitulos);
-        $sheet0->getStyle('B'.$fila.':L'.$fila)->getAlignment()->setWrapText(true);
+        $sheet0->getStyle('B'.$fila.':M'.$fila)->applyFromArray($styleTitulos);
+        $sheet0->getStyle('B'.$fila.':M'.$fila)->getAlignment()->setWrapText(true);
 
         $sheet0->getStyle('K'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
         $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
@@ -524,6 +559,7 @@ class RCompraGestionXls
         $sheet0->getStyle('L'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$fila,$total_general_100);
         $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$fila,$total_general_87);
+		$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila,'');
 
     }
 }

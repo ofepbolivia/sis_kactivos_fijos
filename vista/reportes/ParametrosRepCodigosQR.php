@@ -9,7 +9,8 @@ Phx.vista.ParametrosRepCodigosQR = {
 		Phx.vista.ParametrosRepCodigosQR.superclass.constructor.call(this,config);
 		this.definicionRutareporte();
 		this.definirParametros();
-		this.formParam.topToolbar.items.items[2].setVisible(false);				
+		this.formParam.topToolbar.items.items[2].setVisible(false);
+		this.formParam.topToolbar.items.items[6].setVisible(false);				
 		this.formParam.topToolbar.doLayout();
 		//Eventos
 		this.definirEventos();

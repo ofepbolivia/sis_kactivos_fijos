@@ -104,6 +104,9 @@ class MODActivoFijo extends MODbase{
 		$this->captura('fecha_asignacion','date');
 		$this->captura('prestamo','varchar');
 		$this->captura('fecha_dev_prestamo','date');
+		$this->captura('tramite_compra','varchar');
+		$this->captura('id_proceso_wf','int4');
+		$this->captura('subtipo','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -630,7 +633,7 @@ class MODActivoFijo extends MODbase{
 		$this->setParametro('fecha_ini','fecha_ini','date');
 		$this->setParametro('fecha_fin','fecha_fin','date');
 		$this->setParametro('desc_nombre','desc_nombre','varchar');
-		$this->setParametro('id_clasificacion','id_clasificacion','INT4');
+		$this->setParametro('id_clasificacion','id_clasificacion','varchar');
 		$this->setParametro('ubicacion','ubicacion','INT4');
 
 		//Definicion de la lista del resultado del query
@@ -655,6 +658,8 @@ class MODActivoFijo extends MODbase{
 		$this->captura('responsable','varchar');
 		$this->captura('monto_compra','numeric');
 		$this->captura('estado','varchar');
+		$this->captura('nombre_unidad','varchar');
+		$this->captura('estado_fun','varchar');
 
 		//Ejecuta la instruccion 
 		$this->armarConsulta();
@@ -790,7 +795,73 @@ class MODActivoFijo extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-	
+	function proveedorActivo(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='kaf.ft_activo_fijo_sel';
+		$this->transaccion='SKA_PROV_AC_SEL';
+		$this->tipo_procedimiento='SEL';		
+		
+		$this->captura('provee','varchar');
+		$this->captura('id_proveedor','int4'); 
+		//Ejecuta la instruccion
+		$this->armarConsulta();		
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+	function proveedorActivoRep(){
+		$this->procedimiento='kaf.ft_activo_fijo_sel';
+		$this->setCount(false);
+		$this->transaccion='SKA_PROV_REP_SEL';
+		$this->tipo_procedimiento='SEL';		
+		
+		$this->setParametro('id_proveedor','id_proveedor','int4');				
+		$this->captura('desc_proveedor','varchar'); 
+		//Ejecuta la instruccion
+		$this->armarConsulta();		
+		$this->ejecutarConsulta();
+		//Devuelve la respuesta
+		return $this->respuesta;		
+		
+	}
+	function listaLug(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='kaf.ft_activo_fijo_sel';
+		$this-> setCount(false);
+		$this->transaccion='SKA_ACTLUG_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		
+		$this->setParametro('id_lugar','id_lugar','int4');		
+		//Definicion de la lista del resultado del query
+		$this->captura('id_lugar','int4');
+		$this->captura('codigo','varchar');
+		$this->captura('nombre','varchar');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+    function listarAF(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='kaf.ft_activo_fijo_sel';
+        $this->transaccion='KA_AFIJOS_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        //Definicion de la lista del resultado del query
+        $this->captura('id_activo_fijo','int4');
+        $this->captura('denominacion','varchar');
+        $this->captura('codigo','varchar');
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //echo $this->consulta;exit;
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }	
 
 }
 ?>

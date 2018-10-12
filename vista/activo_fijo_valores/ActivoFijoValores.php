@@ -8,9 +8,32 @@
 */
 header("content-type: text/javascript; charset=UTF-8");
 ?>
+<style type="text/css" rel="stylesheet">
+    .boli {
+        background-color: #93E079 !important;
+        color: #090;
+
+    }
+
+    .doluf {
+        background-color: #E0E079 !important;
+        color: #090;
+    }
+</style>
 <script>
 Phx.vista.ActivoFijoValores=Ext.extend(Phx.gridInterfaz,{
+    viewConfig: {
+        stripeRows: false,
+        getRowClass: function(record) {
+        	var moned = record.data.desc_moneda;                   
+            if(moned == 'Bs'){
+                return 'boli';
+            }else if(moned == 'UFV' || moned == '$us'){
+                return 'doluf';
+            }           
+        }
 
+    },
 	constructor:function(config){
 		this.maestro=config;
 		this.initButtons = [this.cmbMonedaDep];

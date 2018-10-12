@@ -8,6 +8,7 @@ class RCompraGestionPDF extends  ReportePDF{
     var $numeracion;
     var $ancho_sin_totales;
     var $cantidad_columnas_estaticas;
+	var $sum=0;
 
     function Header() {
         $this->Ln(3);
@@ -15,51 +16,57 @@ class RCompraGestionPDF extends  ReportePDF{
         //cabecera del reporte
         $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 16,5,40,20);
         $this->ln(5);
-        $this->SetMargins(10, 40, 10);
-
+        $this->SetMargins(2, 40, 2);		
         $this->SetFont('','B',10);
         $this->Cell(0,5,"DEPARTAMENTO ACTIVOS FIJOS",0,1,'C');
         $this->Cell(0,5,"COMPRAS DE GESTIÓN",0,1,'C');
-        $this->Cell(0,5,'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: '.$this->objParam->getParametro('estado'),0,1,'C');
+        $this->Cell(0,5,'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: '.$this->objParam->getParametro('estado'),0,1,'C');		
+		if(count($this->datos2)!=0){
+				$nombre='<b>&nbsp;LUGAR:</b>'.$this->datos2[0]['nombre'].'<br>';
+				$one=0.5;						            										
+			}
+		if($this->objParam->getParametro('nr_factura')!=''){
+				$factura='<b>FACTURA: </b>'.$this->objParam->getParametro('nr_factura').'<br>';
+				$two=0.5;																					
+		}		
+		if($this->objParam->getParametro('id_depto')==7){			
+				$txt = '<b>DEPTO: </b>Unidad de Activos Fijos<br>';
+				$three=0.5;
+		}if($this->objParam->getParametro('id_depto')==47){
+				$txt = '<b>DEPTO: </b>Unidad de Activos Fijos TI<br>';
+				$three=0.5;		
+		}
+		if($this->objParam->getParametro('id_proveedor')!=''){			
+				$provee='<b>PROVEEDOR: </b>'.$this->datos3['0']['desc_proveedor'];
+				$four=0.5;							
+		}
+		$sol = $one+$two+$three+$four;				
+        $html = <<<EOF
+		<style>
+		table {
+   			font-family: "Calibri";
+   			font-size:5pt;
+   			width: 120px;
+   			height:10px;
+   			align=:center;
+		}
+		</style>
+		<body>
+		<table>
+        	<tr><td>$nombre $factura $txt $provee</td></tr>        	        	
+        </table>
+EOF;
 
-        $this->SetFont('','B',6);
-        $this->Ln(6);		
-        //primera linea
-      /*  $this->Cell(10,3,'NUM','TRL',0,'C');
-        $this->Cell(18,3,'CODIGO','TRL',0,'C');
-        //var_dump($this->objParam->getParametro('desc_nombre'));exit;
-        if($this->objParam->getParametro('desc_nombre') == 'desc'){
-            $this->Cell(57,3,'DESCRIPCIÓN','TRL',0,'C');
-        }else{
-            $this->Cell(57,3,'DENOMINACIÓN','TRL',0,'C');
-        }
-
-        $this->Cell(13,3,'FECHA','TRL',0,'C');
-        $this->Cell(13,3,'NUM','TRL',0,'C');
-        $this->Cell(13,3,'FECHA','TRL',0,'C');
-        $this->Cell(15,3,'FECHA INI','TRL',0,'C');
-        $this->Cell(14,3,'VIDA UTIL','TRL',0,'C');
-        $this->Cell(14,3,'VIDA UTIL','TRL',0,'C');
-        $this->Cell(17,3,'IMPORTE','TRL',0,'C');
-        $this->Cell(17,3,'MONTO','TRL',1,'C');
-
-        //segunda linea
-        $this->Cell(10,3,'','BRL',0,'C');
-        $this->Cell(18,3,'','BRL',0,'C');
-        $this->Cell(57,3,'','BRL',0,'C');
-        $this->Cell(13,3,'COMPRA','BRL',0,'C');
-        $this->Cell(13,3,'COMP.','BRL',0,'C');
-        $this->Cell(13,3,'COMP C31','BRL',0,'C');
-        $this->Cell(15,3,'DEPRE.','BRL',0,'C');
-        $this->Cell(14,3,'ORIGINAL','BRL',0,'C');
-        $this->Cell(14,3,'RESTANTE','BRL',0,'C');
-        $this->Cell(17,3,'100%','BRL',0,'C');
-        $this->Cell(17,3,'87%','BRL',0,'C');*/        				
-
-        $control = $this->objParam->getParametro('gestion_multi');		
+        $this->writeHTML($html);
+		
+        $this->SetFont('','B',6);		
+        $this->Ln(1+$sol);		       				
+		
+        $control = $this->objParam->getParametro('gestion_multi');				
 		$this->columnsGrid($control);		
     }	
-    public function columnsGrid($tipo){
+	//start BVP
+    public function columnsGrid($tipo){    	
 		$hiddes = explode(',', $tipo);
 		$gscod = '';
 		$gsdes = '';				
@@ -70,8 +77,25 @@ class RCompraGestionPDF extends  ReportePDF{
 		$gsvit = '';
 		$gsviu = '';
 		$gsimp = '';
-		$gsgmon = '';		
-												
+		$gsgmon= '';
+		$gsuco ='';
+			
+		//widths
+		$tam1=18;
+		$tam2=51;
+		$tam3=13;
+		$tam4=13;
+		$tam5=13;
+		$tam6=15;
+		$tam7=14; 
+		$tam8=14;
+		$tam9=17;
+		$tam10=17;
+		$tam11=17;
+				
+		$num = 0;
+		$total = 0;
+
 		for ($i=0; $i <count($hiddes) ; $i++) {
 		switch ($hiddes[$i]) {
 			case 'gcod': $gscod = 'cod'; break;
@@ -83,46 +107,137 @@ class RCompraGestionPDF extends  ReportePDF{
 			case 'gvit': $gsvit = 'vit'; break;
 			case 'gviu': $gsviu = 'viu'; break;			
 			case 'gimp': $gsimp = 'imp'; break;
-			case 'gmon': $gsgmon = 'mon'; break;														
+			case 'gmon': $gsgmon = 'mon'; break;
+			case 'guco': $gsuco = 'uco'; break;														
 			}									 			
-		}   
-				    
-			$hGlobal=6;		 		
-			$this->objParam->getParametro('desc_nombre')=='desc'?$desno='DESCRIPCIÓN':$desno='DENOMINACIÓN';          		 		        
-            $this->SetFontSize(6);
-            $this->SetFont('', 'B');						
-			$this->MultiCell(round((19/188)*100,2), $hGlobal,'NUM',1,'C',false,0,'','',true,0,false,true,0,'T',false);									
-			($gscod=='cod')?'':$this->MultiCell(round((34/188)*100,2), $hGlobal, 'CODIGO',1,'C',false,0,'','',true,0,false,true,0,'T',false);			
-			($gsdes=='des')?'':$this->MultiCell(round((107/188)*100,2), $hGlobal, $desno, 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($gsfec=='fec')?'':$this->MultiCell(round((25/188)*100,2), $hGlobal, 'FECHA COMPRA', 1,'C',false,0,'','',true,0,false,true,0,'T',false);			
-			($gsmun=='mun')?'':$this->MultiCell(round((24/188)*100,2), $hGlobal, 'NUM'."\x0A".'COMP', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($gsf31=='f31')?'':$this->MultiCell(round((24/188)*100,2), $hGlobal, 'FECHA COMP 31', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($gsfei=='fei')?'':$this->MultiCell(round((28/188)*100,2), $hGlobal, 'FECHA INI DEPRE', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($gsvit=='vit')?'':$this->MultiCell(round((27/188)*100,2), $hGlobal, 'VIDA UTIL ORIGINAL', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($gsviu=='viu')?'':$this->MultiCell(round((26/188)*100,2), $hGlobal, 'VIDA UTIL RESTANTE', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($gsimp=='imp')?'':$this->MultiCell(round((32/188)*100,2), $hGlobal, 'IMPORTE'."\x0A".'100%', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($gsgmon=='mon')?'':$this->MultiCell(round((31.6/188)*100,2),$hGlobal, 'MONTO'."\x0A".'87%', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			
-        $this->posY = $this->GetY();
+		}
+		  	
+		if ($gscod=='') {
+			$tam1 = 0;
+		}if ($gsdes=='') {
+			$tam2 = 0;
+		}if ($gsfec=='') {
+			$tam3 = 0;
+		}if ($gsmun=='') {
+			$tam4 = 0;
+		}if ($gsf31=='') {
+			$tam5 = 0;
+		}if ($gsfei=='') {
+			$tam6 = 0;
+		}if ($gsvit=='') {
+			$tam7 = 0;
+		}if ($gsviu=='') {
+			$tam8 = 0;
+		}if ($gsimp=='') {
+			$tam9 = 0;
+		}if ($gsgmon=='') {
+			$tam10 = 0;
+		}if ($gsuco=='') {
+			$tam11 = 0;
+		}
+		//tomamos los tamanios de las columnas no mostradas y las distribuimos a las otras presentes
+		$xpage = 202;//∑ tam^n ai = an
+		$cont = 0;		 
+		$resul = $tam1+$tam2+$tam3+$tam4+$tam5+$tam6+$tam7+$tam8+$tam9+$tam10+$tam11;
+		$alca = $xpage - $resul;
+		$n = count($hiddes);
+		//distribucion de tamanios 
+		if($alca>0){					 
+			$total = $alca/$n;	 
+			while ($resul<$xpage) {
+				$cont += 0.001;
+				$resul += 1;
+			}
+			$total += $cont;					 
+		}else{				
+		 	$total= 0;		 
+		}							
+		$hGlobal=6;		 		
+		$this->objParam->getParametro('desc_nombre')=='desc'?$desno='DESCRIPCIÓN':$desno='DENOMINACIÓN';          		 		        
+	    $this->SetFontSize(6);
+	    $this->SetFont('', 'B');
+		if(count($this->datos2)>0){				
+				$one=0.5;						            										
+			}
+		if($this->objParam->getParametro('nr_factura')!==''){							
+				$two=0.5;																					
+		}		
+		if($this->objParam->getParametro('id_depto')==7){							
+				$three=0.5;
+		}if($this->objParam->getParametro('id_depto')==47){				
+				$three=0.5;		
+		}
+		if($this->objParam->getParametro('id_proveedor')!=''){							
+				$four=0.5;							
+		}
+		$sol = $one+$two+$three+$four;						
+		$r=1.5;
+		($sol==0.5)?$r=2:$r=-4;				
+		$this->Ln($r+$sol);								
+		$this->MultiCell(10, $hGlobal,'NUM',1,'C',false,0,'','',true,0,false,true,0,'T',false);									
+		($gscod=='cod')?$this->MultiCell($tam1+$total, $hGlobal, 'CODIGO',1,'C',false,0,'','',true,0,false,true,0,'T',false):'';			
+		($gsdes=='des')?$this->MultiCell($tam2+$total, $hGlobal, $desno, 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+		($gsfec=='fec')?$this->MultiCell($tam3+$total, $hGlobal, 'FECHA COMPRA', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';			
+		($gsmun=='mun')?$this->MultiCell($tam4+$total, $hGlobal, 'NUM'."\x0A".'COMP', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+		($gsf31=='f31')?$this->MultiCell($tam5+$total, $hGlobal, 'FECHA COMP 31', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+		($gsfei=='fei')?$this->MultiCell($tam6+$total, $hGlobal, 'FECHA INI DEPRE', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+		($gsvit=='vit')?$this->MultiCell($tam7+$total, $hGlobal, 'VIDA UTIL ORIGINAL', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+		($gsviu=='viu')?$this->MultiCell($tam8+$total, $hGlobal, 'VIDA UTIL RESTANTE', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+		($gsimp=='imp')?$this->MultiCell($tam9+$total, $hGlobal, 'IMPORTE'."\x0A".'100%', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+		($gsgmon=='mon')?$this->MultiCell($tam10+$total,$hGlobal, 'MONTO'."\x0A".'87%', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+		($gsuco=='uco')?$this->MultiCell($tam11+$total,$hGlobal, 'UNIDAD SOLICITANTE',1,'C',false,0,'','',true,0,false,true,0,'T',false):'';					        			
     }
-  /*
-	function celHeader($wi, $he, $tx, $bo, $al, $fi, $ln, $fx, $fy, $re, $st, $ish, $au, $fl, $ca, $fit){		
-	  	$this->MultiCell($wi, $he, $tx, $bo, $al, $fi, $ln, $fx, $fy, $re, $st, $ish, $au, $fl, $ca, $fit);		
-	}	 */
-
-    function setDatos($datos) {
+ 
+    function setDatos($datos,$datos2,$datos3) {
 
         $this->datos = $datos;
-        //var_dump( $this->datos);exit;
+		$this->datos2 = $datos2;
+		$this->datos3 = $datos3;
+        //var_dump($this->datos3);exit;
     }
 
     function  generarReporte()
-    {
-
+    {		
         $this->AddPage();
-        $this->SetMargins(10, 40, 10);
+        $this->SetMargins(2, 40, 2);
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-        $this->Ln();
+		if(count($this->datos2)!=0){							
+				$one=0.5;						            										
+			}
+		if($this->objParam->getParametro('nr_factura')!=''){							
+				$two=0.5;																					
+		}if(count($this->datos2)!=0 && $this->objParam->getParametro('nr_factura')!='' ){			
+				$five=4;
+		}
+		if(count($this->datos2)!=0 && $this->objParam->getParametro('id_depto')!='' ){			
+				$six=8;
+		}		
+		if($this->objParam->getParametro('id_depto')==7){										
+				$three=0.5;
+		}if($this->objParam->getParametro('id_depto')==47){				
+				$three=0.5;		
+		}
+		if($this->objParam->getParametro('id_proveedor')!=''){										
+				$four=0.5;							
+		}
+		$sol = $one+$two+$three+$four;		
+		($five>0)?$sol+=$five:$a=0;
+		($six>0)?$sol+=$six:$a=0;
+		//var_dump($sol);exit;					
+		$r=3.5;	
+		switch ($sol) {
+			case 2:$r=6.5;break;
+			case 1.5:$r=4;break;
+			case 1:$r=1;break;
+			case 0.5:$r=6.5;break;
+			case 5:$r=-0.5;break;
+			case 9:$r=-5;break;
+			case 5.5:$r=0;break;
+			case 14:$r=-5.5;break;
+			case 13.5:$r=-6;break;
+		}
+		
+		($sol==0)?$this->Ln(-2.5):$this->Ln($r+$sol);				   
         //variables para la tabla
         $codigo = '';
         $nombre = '';
@@ -141,6 +256,7 @@ class RCompraGestionPDF extends  ReportePDF{
         $tipo = $this->objParam->getParametro('tipo_reporte');
 		$select = $this->objParam->getParametro('gestion_multi');
 		$hiddes = explode(',', $select);
+
 		$gscod = '';
 		$gsdes = '';				
 		$gsfec = '';		
@@ -150,7 +266,21 @@ class RCompraGestionPDF extends  ReportePDF{
 		$gsvit = '';
 		$gsviu = '';
 		$gsimp = '';
-		$gsgmon = '';		
+		$gsgmon = '';
+		$gsuco = '';
+		
+		$tam1=18;
+		$tam2=51;
+		$tam3=13;
+		$tam4=13;
+		$tam5=13;
+		$tam6=15;
+		$tam7=14; 
+		$tam8=14;
+		$tam9=17;
+		$tam10=17;
+		$tam11=17;
+							
 		//asigna a cada variable su valor recibido desde la vista										
 		for ($j=0; $j <count($hiddes) ; $j++) {
 		switch ($hiddes[$j]) {
@@ -163,64 +293,71 @@ class RCompraGestionPDF extends  ReportePDF{
 			case 'gvit': $gsvit = 'vit'; break;
 			case 'gviu': $gsviu = 'viu'; break;			
 			case 'gimp': $gsimp = 'imp'; break;
-			case 'gmon': $gsgmon = 'mon'; break;														
+			case 'gmon': $gsgmon = 'mon'; break;
+			case 'guco': $gsuco = 'uco' ; break;																	
 			}									 			
 		}
+		if ($gscod=='') {
+			$tam1 = 0;
+		}if ($gsdes=='') {
+			$tam2 = 0;
+		}if ($gsfec=='') {
+			$tam3 = 0;
+		}if ($gsmun=='') {
+			$tam4 = 0;
+		}if ($gsf31=='') {
+			$tam5 = 0;
+		}if ($gsfei=='') {
+			$tam6 = 0;
+		}if ($gsvit=='') {
+			$tam7 = 0;
+		}if ($gsviu=='') {
+			$tam8 = 0;
+		}if ($gsimp=='') {
+			$tam9 = 0;
+		}if ($gsgmon=='') {
+			$tam10 = 0;
+		}if ($gsuco=='') {
+			$tam11 = 0;
+		}		
+		
+		$xpage = 202;//∑ tam^n ai = an
+		$cont = 0;		 
+		$resul = $tam1+$tam2+$tam3+$tam4+$tam5+$tam6+$tam7+$tam8+$tam9+$tam10+$tam11;
+		$alca = $xpage - $resul;
+		$n = count($hiddes);
+				
+		if($alca>0){					 
+			$total = $alca/$n;	 
+			while ($resul<$xpage) {
+				$cont += 0.001;
+				$resul += 1;
+			}
+			$total += $cont;					 
+		}else{				
+		 	$total= 0;		 
+		}
+						
 		//arreglo para tablewidths estatica 	
 		$datos = array('t1'=>10,
-					   'cod'=>18,
-					   'des'=>57,
-					   'fec'=>13,
-					   'mun'=>13,
-					   'f31'=>13,
-					   'fei'=>15,
-					   'vit'=>14,
-					   'viu'=>14,
-					   'imp'=>17,
-					   'mon'=>17);
-		//modificacion del array $datos, elimina los campos seleccinados de la vista para ser dinamico
-		foreach ($datos as $key => $value) {	
-			switch ($key) {
-				case $gscod:
-					unset($datos['cod']);																			
-					break;
-				case $gsdes:			
-					unset($datos['des']);
-					break;
-				case $gsfec:
-					unset($datos['fec']);
-					break;
-				case $gsmun:
-					unset($datos['mun']);
-					break;
-				case $gsf31:
-					unset($datos['f31']);
-					break;	
-				case $gsfei:
-					unset($datos['fei']);	
-					break;
-				case $gsvit:
-					unset($datos['vit']);
-					break;
-				case $gsviu:
-					unset($datos['viu']);
-					break;
-				case $gsimp:
-					unset($datos['imp']);
-					break;
-				case $gsgmon:
-					unset($datos['mon']);
-					break;				
-			}	
-		}
-		//volvemos el arreglo de arreglo aun array simple que si recibe tablewidths
-		$real=array();
-		foreach ($datos as $value) {
-			array_push($real,$value);
-		}
-		$this->tablewidths=$real;
- 	
-        $this->tablealigns=array('C','L','L','C','C','C','C','C','C','R','R');					
+					   'cod'=>$tam1+$total,
+					   'des'=>$tam2+$total,
+					   'fec'=>$tam3+$total,
+					   'mun'=>$tam4+$total,
+					   'f31'=>$tam5+$total,
+					   'fei'=>$tam6+$total,
+					   'vit'=>$tam7+$total,
+					   'viu'=>$tam8+$total,
+					   'imp'=>$tam9+$total,
+					   'mon'=>$tam10+$total,
+					   'uco'=>$tam11+$total);					   
+				
+		$this->tablewidths=$this->filterArray($datos);
+		$tablenums0=array('t1'=>0,'cod'=>0,'des'=>0,'fec'=>0,'num'=>0,'f31'=>0,'fei'=>0,'vit'=>0,'viu'=>0,'imp'=>2,'mon'=>2,'uco'=>0);  //1
+		$tablenums1=array('t1'=>0,'cod'=>0,'des'=>0,'fec'=>0,'num'=>0,'f31'=>0,'fei'=>0,'vit'=>0,'viu'=>0,'imp'=>0,'mon'=>0,'uco'=>0);  //2		
+		$tablenums0Real = $this->filterArray($tablenums0);
+		$tablenums1Real = $this->filterArray($tablenums1); 	
+        $this->tablealigns=array('C','L','L','C','C','C','C','C','C','R','R','R');					
        foreach($this->datos as $record){
             
             if($record['nivel'] == 0 || $record['nivel'] == 1){
@@ -232,8 +369,9 @@ class RCompraGestionPDF extends  ReportePDF{
                     if($tipo == 1) {
                         $this->SetFillColor(224, 235, 255);
                         $this->SetTextColor(0);
-                        $this->tableborders = array('LB', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'RB');
-                        $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2);
+                        $this->tableborders = array('LB', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B','RB');
+                        //$this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,0);
+                        $this->tablenumbers =$tablenums0Real; 
                         $RowArray = array(
                             's0' => '',
                             's1' => '',
@@ -245,28 +383,31 @@ class RCompraGestionPDF extends  ReportePDF{
                             's7' => '',
                             's8' => '',
                             's9' => $cont_100,
-                            's10' => $cont_87
+                            's10' => $cont_87,
+                            's11' => ''
                         );
-						if ($gscod=='cod'){
+						if ($gscod==''){
 							unset($RowArray['s1']);
-						}if ($gsdes=='des'){
+						}if ($gsdes==''){
 							unset($RowArray['s2']);
-						}if ($gsfec=='fec') {
+						}if ($gsfec=='') {
 							unset($RowArray['s3']);
-						}if ($gsmun=='mun') {
+						}if ($gsmun=='') {
 							unset($RowArray['s4']);
-						}if ($gsf31=='f31') {
+						}if ($gsf31=='') {
 							unset($RowArray['s5']);
-						}if ($gsfei=='fei') {
+						}if ($gsfei=='') {
 							unset($RowArray['s6']);
-						}if ($gsvit=='vit') {
+						}if ($gsvit=='') {
 							unset($RowArray['s7']);
-						}if ($gsviu=='viu'){
+						}if ($gsviu==''){
 							unset($RowArray['s8']);
-						}if ($gsimp=='imp'){
+						}if ($gsimp==''){
 							unset($RowArray['s9']);
-						}if ($gsgmon=='mon') {
+						}if ($gsgmon=='') {
 							unset($RowArray['s10']);
+						}if ($gsuco==''){
+							unset($RowArray['s11']);
 						}																										
                         $this->MultiRow($RowArray, true, 1);
                     }
@@ -287,35 +428,39 @@ class RCompraGestionPDF extends  ReportePDF{
                                 's7' => '',
                                 's8' => '',
                                 's9' => $total_grupo_100,
-                                's10' => $total_grupo_87
+                                's10' => $total_grupo_87,
+                                's11' => ''
                             );
-						if ($gscod=='cod'){
+						if ($gscod==''){
 							unset($RowArray['s1']);
-						}if ($gsdes=='des'){
+						}if ($gsdes==''){
 							unset($RowArray['s2']);
-						}if ($gsfec=='fec') {
+						}if ($gsfec=='') {
 							unset($RowArray['s3']);
-						}if ($gsmun=='mun') {
+						}if ($gsmun=='') {
 							unset($RowArray['s4']);
-						}if ($gsf31=='f31') {
+						}if ($gsf31=='') {
 							unset($RowArray['s5']);
-						}if ($gsfei=='fei') {
+						}if ($gsfei=='') {
 							unset($RowArray['s6']);
-						}if ($gsvit=='vit') {
+						}if ($gsvit=='') {
 							unset($RowArray['s7']);
-						}if ($gsviu=='viu'){
+						}if ($gsviu==''){
 							unset($RowArray['s8']);
-						}if ($gsimp=='imp'){
+						}if ($gsimp==''){
 							unset($RowArray['s9']);
-						}if ($gsgmon=='mon') {
+						}if ($gsgmon=='') {
 							unset($RowArray['s10']);
+						}if ($gsuco==''){
+							unset($RowArray['s11']);
 						}		
                             $this->MultiRow($RowArray, true, 1);
                         }else{
                             $this->SetFillColor(224, 235, 255);
                             $this->SetTextColor(0);
-                            $this->tableborders = array('LB', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'RB');
-                            $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2);
+                            $this->tableborders = array('LB', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B','RB');
+                            //$this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,0);
+                            $this->tablenumbers =$tablenums0Real; 
                             $RowArray = array(
                                 's0' => '',
                                 's1' => $codigo,
@@ -327,28 +472,31 @@ class RCompraGestionPDF extends  ReportePDF{
                                 's7' => '',
                                 's8' => '',
                                 's9' => $total_grupo_100,
-                                's10' => $total_grupo_87
+                                's10' => $total_grupo_87,
+                                's11' => ''
                             );
-						if ($gscod=='cod'){
+						if ($gscod==''){
 							unset($RowArray['s1']);
-						}if ($gsdes=='des'){
+						}if ($gsdes==''){
 							unset($RowArray['s2']);
-						}if ($gsfec=='fec') {
+						}if ($gsfec=='') {
 							unset($RowArray['s3']);
-						}if ($gsmun=='mun') {
+						}if ($gsmun=='') {
 							unset($RowArray['s4']);
-						}if ($gsf31=='f31') {
+						}if ($gsf31=='') {
 							unset($RowArray['s5']);
-						}if ($gsfei=='fei') {
+						}if ($gsfei=='') {
 							unset($RowArray['s6']);
-						}if ($gsvit=='vit') {
+						}if ($gsvit=='') {
 							unset($RowArray['s7']);
-						}if ($gsviu=='viu'){
+						}if ($gsviu==''){
 							unset($RowArray['s8']);
-						}if ($gsimp=='imp'){
+						}if ($gsimp==''){
 							unset($RowArray['s9']);
-						}if ($gsgmon=='mon') {
+						}if ($gsgmon=='') {
 							unset($RowArray['s10']);
+						}if ($gsuco==''){
+							unset($RowArray['s11']);
 						}							
                             $this->MultiRow($RowArray, true, 1);
                             //$contador++;
@@ -361,8 +509,9 @@ class RCompraGestionPDF extends  ReportePDF{
                 if($tipo == 1) {
                     $this->SetFillColor(79, 91, 147);
                     $this->SetTextColor(0);
-                    $this->tableborders = array('LB', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'RB');
-                    $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                    $this->tableborders = array('LB', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B','RB');
+                    //$this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0);
+					$this->tablenumbers =$tablenums1Real; 
                     $RowArray = array(
                         's0' => '',
                         's1' => $record['codigo_completo'],
@@ -374,28 +523,31 @@ class RCompraGestionPDF extends  ReportePDF{
                         's7' => '',
                         's8' => '',
                         's9' => '',
-                        's10' => ''
+                        's10' => '',
+                        's11' => ''
                     );
-						if ($gscod=='cod'){
+						if ($gscod==''){
 							unset($RowArray['s1']);
-						}if ($gsdes=='des'){
+						}if ($gsdes==''){
 							unset($RowArray['s2']);
-						}if ($gsfec=='fec') {
+						}if ($gsfec=='') {
 							unset($RowArray['s3']);
-						}if ($gsmun=='mun') {
+						}if ($gsmun=='') {
 							unset($RowArray['s4']);
-						}if ($gsf31=='f31') {
+						}if ($gsf31=='') {
 							unset($RowArray['s5']);
-						}if ($gsfei=='fei') {
+						}if ($gsfei=='') {
 							unset($RowArray['s6']);
-						}if ($gsvit=='vit') {
+						}if ($gsvit=='') {
 							unset($RowArray['s7']);
-						}if ($gsviu=='viu'){
+						}if ($gsviu==''){
 							unset($RowArray['s8']);
-						}if ($gsimp=='imp'){
+						}if ($gsimp==''){
 							unset($RowArray['s9']);
-						}if ($gsgmon=='mon') {
+						}if ($gsgmon=='') {
 							unset($RowArray['s10']);
+						}if ($gsuco==''){
+							unset($RowArray['s11']);
 						}							
                     $this->MultiRow($RowArray, true, 1);
                 }
@@ -406,8 +558,9 @@ class RCompraGestionPDF extends  ReportePDF{
             }else{
                 if($tipo == 1) {
                     $this->SetFont('', '', 6);
-                    $this->tableborders = array('RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB');
-                    $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2);
+                    $this->tableborders = array('RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB','RLTB');
+                    //$this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,0);
+                    $this->tablenumbers =$tablenums0Real; 
                     $RowArray = array(
                         's0' => $record['nivel'] == 2 ? $i : '',
                         's1' => $record['nivel'] == 2 ? $record['codigo_af'] : $record['camino'],
@@ -419,28 +572,31 @@ class RCompraGestionPDF extends  ReportePDF{
                         's7' => $record['vida_util_original'],
                         's8' => '-',
                         's9' => $record['monto_compra_orig_100'],
-                        's10' => $record['monto_compra_orig']
+                        's10' => $record['monto_compra_orig'],
+                        's11' => $record['nombre_unidad']
                     );
-						if ($gscod=='cod'){
+						if ($gscod==''){
 							unset($RowArray['s1']);
-						}if ($gsdes=='des'){
+						}if ($gsdes==''){
 							unset($RowArray['s2']);
-						}if ($gsfec=='fec') {
+						}if ($gsfec=='') {
 							unset($RowArray['s3']);
-						}if ($gsmun=='mun') {
+						}if ($gsmun=='') {
 							unset($RowArray['s4']);
-						}if ($gsf31=='f31') {
+						}if ($gsf31=='') {
 							unset($RowArray['s5']);
-						}if ($gsfei=='fei') {
+						}if ($gsfei=='') {
 							unset($RowArray['s6']);
-						}if ($gsvit=='vit') {
+						}if ($gsvit=='') {
 							unset($RowArray['s7']);
-						}if ($gsviu=='viu'){
+						}if ($gsviu==''){
 							unset($RowArray['s8']);
-						}if ($gsimp=='imp'){
+						}if ($gsimp==''){
 							unset($RowArray['s9']);
-						}if ($gsgmon=='mon') {
+						}if ($gsgmon=='') {
 							unset($RowArray['s10']);
+						}if ($gsuco==''){
+							unset($RowArray['s11']);
 						}																	
                     $this->MultiRow($RowArray);
                     $i++;
@@ -455,8 +611,9 @@ class RCompraGestionPDF extends  ReportePDF{
 
         $this->SetFillColor(224, 235, 255);
         $this->SetTextColor(0);
-        $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
-        $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2);
+        $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','RB');
+        //$this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2,0);
+        $this->tablenumbers =$tablenums0Real; 
         if($tipo == 1) {
             $RowArray = array(
                 's0' => '',
@@ -469,28 +626,31 @@ class RCompraGestionPDF extends  ReportePDF{
                 's7' => '',
                 's8' => '',
                 's9' => $cont_100,
-                's10' => $cont_87
+                's10' => $cont_87,
+                's11' => ''
             );
-						if ($gscod=='cod'){
+						if ($gscod==''){
 							unset($RowArray['s1']);
-						}if ($gsdes=='des'){
+						}if ($gsdes==''){
 							unset($RowArray['s2']);
-						}if ($gsfec=='fec') {
+						}if ($gsfec=='') {
 							unset($RowArray['s3']);
-						}if ($gsmun=='mun') {
+						}if ($gsmun=='') {
 							unset($RowArray['s4']);
-						}if ($gsf31=='f31') {
+						}if ($gsf31=='') {
 							unset($RowArray['s5']);
-						}if ($gsfei=='fei') {
+						}if ($gsfei=='') {
 							unset($RowArray['s6']);
-						}if ($gsvit=='vit') {
+						}if ($gsvit=='') {
 							unset($RowArray['s7']);
-						}if ($gsviu=='viu'){
+						}if ($gsviu==''){
 							unset($RowArray['s8']);
-						}if ($gsimp=='imp'){
+						}if ($gsimp==''){
 							unset($RowArray['s9']);
-						}if ($gsgmon=='mon') {
+						}if ($gsgmon=='') {
 							unset($RowArray['s10']);
+						}if ($gsuco==''){
+							unset($RowArray['s11']);
 						}					
             $this->MultiRow($RowArray, true, 1);
 
@@ -506,28 +666,31 @@ class RCompraGestionPDF extends  ReportePDF{
                 's7' => '',
                 's8' => '',
                 's9' => $total_grupo_100 + $cont_100,
-                's10' => $total_grupo_87 + $cont_87
+                's10' => $total_grupo_87 + $cont_87,
+                's11' => ''
             );
-						if ($gscod=='cod'){
+						if ($gscod==''){
 							unset($RowArray['s1']);
-						}if ($gsdes=='des'){
+						}if ($gsdes==''){
 							unset($RowArray['s2']);
-						}if ($gsfec=='fec') {
+						}if ($gsfec=='') {
 							unset($RowArray['s3']);
-						}if ($gsmun=='mun') {
+						}if ($gsmun=='') {
 							unset($RowArray['s4']);
-						}if ($gsf31=='f31') {
+						}if ($gsf31=='') {
 							unset($RowArray['s5']);
-						}if ($gsfei=='fei') {
+						}if ($gsfei=='') {
 							unset($RowArray['s6']);
-						}if ($gsvit=='vit') {
+						}if ($gsvit=='') {
 							unset($RowArray['s7']);
-						}if ($gsviu=='viu'){
+						}if ($gsviu==''){
 							unset($RowArray['s8']);
-						}if ($gsimp=='imp'){
+						}if ($gsimp==''){
 							unset($RowArray['s9']);
-						}if ($gsgmon=='mon') {
+						}if ($gsgmon=='') {
 							unset($RowArray['s10']);
+						}if ($gsuco==''){
+							unset($RowArray['s11']);
 						}											
             $this->MultiRow($RowArray, true, 1);
         }else{
@@ -544,36 +707,40 @@ class RCompraGestionPDF extends  ReportePDF{
                 's7' => '',
                 's8' => '',
                 's9' => $total_grupo_100 + $cont_100,
-                's10' => $total_grupo_87 + $cont_87
+                's10' => $total_grupo_87 + $cont_87,
+                's11' => ''
             );
-						if ($gscod=='cod'){
+						if ($gscod==''){
 							unset($RowArray['s1']);
-						}if ($gsdes=='des'){
+						}if ($gsdes==''){
 							unset($RowArray['s2']);
-						}if ($gsfec=='fec') {
+						}if ($gsfec=='') {
 							unset($RowArray['s3']);
-						}if ($gsmun=='mun') {
+						}if ($gsmun=='') {
 							unset($RowArray['s4']);
-						}if ($gsf31=='f31') {
+						}if ($gsf31=='') {
 							unset($RowArray['s5']);
-						}if ($gsfei=='fei') {
+						}if ($gsfei=='') {
 							unset($RowArray['s6']);
-						}if ($gsvit=='vit') {
+						}if ($gsvit=='') {
 							unset($RowArray['s7']);
-						}if ($gsviu=='viu'){
+						}if ($gsviu==''){
 							unset($RowArray['s8']);
-						}if ($gsimp=='imp'){
+						}if ($gsimp==''){
 							unset($RowArray['s9']);
-						}if ($gsgmon=='mon') {
+						}if ($gsgmon=='') {
 							unset($RowArray['s10']);
+						}if ($gsuco==''){
+							unset($RowArray['s11']);
 						}			
             $this->MultiRow($RowArray, true, 1);
         }
 
         $this->SetFillColor(224, 235, 255);
         $this->SetTextColor(0);
-        $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','RB');
-        $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2);
+        $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','RB');
+        //$this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2,0);
+        $this->tablenumbers =$tablenums0Real; 
         $RowArray = array(
             's0'  => '',
             's1' => '',
@@ -585,32 +752,112 @@ class RCompraGestionPDF extends  ReportePDF{
             's7' => '',
             's8' => '',
             's9' => $total_general_100,
-            's10' => $total_general_87
+            's10' => $total_general_87,
+            's11' => ''
         );
-						if ($gscod=='cod'){
+						if ($gscod==''){
 							unset($RowArray['s1']);
-						}if ($gsdes=='des'){
+						}if ($gsdes==''){
 							unset($RowArray['s2']);
-						}if ($gsfec=='fec') {
+						}if ($gsfec=='') {
 							unset($RowArray['s3']);
-						}if ($gsmun=='mun') {
+						}if ($gsmun=='') {
 							unset($RowArray['s4']);
-						}if ($gsf31=='f31') {
+						}if ($gsf31=='') {
 							unset($RowArray['s5']);
-						}if ($gsfei=='fei') {
+						}if ($gsfei=='') {
 							unset($RowArray['s6']);
-						}if ($gsvit=='vit') {
+						}if ($gsvit=='') {
 							unset($RowArray['s7']);
-						}if ($gsviu=='viu'){
+						}if ($gsviu==''){
 							unset($RowArray['s8']);
-						}if ($gsimp=='imp'){
+						}if ($gsimp==''){
 							unset($RowArray['s9']);
-						}if ($gsgmon=='mon') {
+						}if ($gsgmon=='') {
 							unset($RowArray['s10']);
+						} if($gsuco==''){
+							unset($RowArray['s11']);
 						}	
         $this->MultiRow($RowArray,true,1);
 
 
     }
+function filterArray($table){
+
+$resp = array();
+		$control = $this->objParam->getParametro('gestion_multi');
+		$hiddes = explode(',', $control);	
+		$gscod = '';
+		$gsdes = '';				
+		$gsfec = '';		
+		$gsmun = '';
+		$gsf31 = '';
+		$gsfei = '';
+		$gsvit = '';
+		$gsviu = '';
+		$gsimp = '';
+		$gsgmon = '';
+		$gsuco = '';
+							
+		//asigna a cada variable su valor recibido desde la vista										
+		for ($j=0; $j <count($hiddes) ; $j++) {
+		switch ($hiddes[$j]) {
+			case 'gcod': $gscod = 'cod'; break;
+			case 'gdes': $gsdes = 'des'; break;
+			case 'gfec': $gsfec = 'fec'; break;			
+			case 'gnum': $gsmun = 'mun'; break;
+			case 'gf31': $gsf31 = 'f31'; break;
+			case 'gfei': $gsfei = 'fei'; break;
+			case 'gvit': $gsvit = 'vit'; break;
+			case 'gviu': $gsviu = 'viu'; break;			
+			case 'gimp': $gsimp = 'imp'; break;
+			case 'gmon': $gsgmon = 'mon'; break;
+			case 'guco': $gsuco = 'uco' ; break;																	
+			}									 			
+		}
+
+$proces = $table;
+
+		foreach ($proces as $key => $value) {	
+		    if($gscod==''){
+		        unset($proces['cod']);      
+		    }   
+		    if($gsdes==''){            
+		        unset($proces['des']);
+		    }   
+		    if($gsfec==''){
+		        unset($proces['fec']);
+		    }   
+		    if($gsmun==''){
+		        unset($proces['mun']);
+		    }   
+		    if($gsf31==''){
+		        unset($proces['f31']);
+		    }    
+		    if($gsfei==''){
+		        unset($proces['fei']);  
+		    }   
+		    if($gsvit==''){
+		        unset($proces['vit']);
+		    }   
+		    if($gsviu==''){
+		        unset($proces['viu']);
+		    }   
+		    if($gsimp==''){
+		        unset($proces['imp']);
+		    }   
+		    if($gsgmon==''){
+		        unset($proces['mon']);
+		    }   
+		    if($gsuco==''){
+		        unset($proces['uco']);
+		    }   	
+		}
+	$resp=array();
+	foreach ($proces as $value) {
+		array_push($resp,$value);
+		}
+	return  $resp;
+	} //endBVP
 }
 ?>

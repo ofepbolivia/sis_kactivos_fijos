@@ -29,10 +29,12 @@ DECLARE
     v_sql             varchar;
     v_aux             varchar;
     
-    v_lugar			  varchar = '';
-    v_filtro		  varchar;
-    v_record		  record;
-    v_desc_nombre	  varchar;
+    v_lugar           varchar = '';
+    v_filtro          varchar;
+    v_record          record;
+    v_desc_nombre     varchar;
+    v_fecha_actu      date;
+    v_campos          record;
 
 BEGIN
  
@@ -555,23 +557,22 @@ BEGIN
   
     elsif(p_transaccion='SKA_RASIG_SEL') then
 
- 
         begin
-		    --RAISE EXCEPTION 'v_parametros: %', v_parametros.columna;
+            
             select tl.nombre 
             into v_lugar
             from param.tlugar tl 
             where id_lugar = v_parametros.id_lugar::integer;
-            
+        
             if (v_lugar is null) then
-            	v_lugar = '';
+                v_lugar = '';
             end if;
-    		--raise exception 'v_parametros.filtro: %',v_parametros.filtro;
+            --raise exception 'v_parametros.filtro: %',v_parametros.filtro;
             --Creacion de tabla temporal de los actios fijos a filtrar
             create temp table tt_af_filtro (
                 id_activo_fijo integer
             ) on commit drop;
-			
+            
             v_consulta = 'insert into tt_af_filtro
                         select afij.id_activo_fijo
                         from kaf.tactivo_fijo afij
@@ -582,16 +583,16 @@ BEGIN
             execute(v_consulta);
             
             if(v_parametros.tipo = 'lug_fun')then
-				v_filtro = ' afij.id_funcionario in (SELECT tf.id_funcionario
-                									 FROM orga.vfuncionario_cargo_lugar tf
+                v_filtro = ' afij.id_funcionario in (SELECT tf.id_funcionario
+                                                     FROM orga.vfuncionario_cargo_lugar tf
                                                      where  (tf.fecha_finalizacion > now()::date or tf.fecha_finalizacion is null) and tf.id_oficina in (select id_oficina from orga.toficina where id_lugar = '||v_parametros.id_lugar||'))
-                            and afij.en_deposito = ''no'' and afij.id_depto = '||v_parametros.id_depto;	
+                            and afij.en_deposito = ''no'' and afij.id_depto = '||v_parametros.id_depto; 
             else
-            	v_filtro = ' afij.id_activo_fijo in (select id_activo_fijo
+                v_filtro = ' afij.id_activo_fijo in (select id_activo_fijo
                                                         from tt_af_filtro)
                             and afij.en_deposito = ''no''';
             end if;
-			
+            
             --Consulta
             v_consulta = 'select
                             afij.codigo,
@@ -599,9 +600,9 @@ BEGIN
                             cla.nombre as desc_clasificacion,
                             afij.denominacion,
                             (case when '''||v_parametros.columna||''' = ''desc'' then afij.descripcion::varchar
-                            	  when '''||v_parametros.columna||''' = ''nombre'' then afij.denominacion::varchar
+                                  when '''||v_parametros.columna||''' = ''nombre'' then afij.denominacion::varchar
                                   else  afij.descripcion::varchar
-                             	  end) as descripcion,
+                                  end) as descripcion,
                             afij.estado,
                             afij.observaciones,
                             ''''::varchar as ubicacion,
@@ -610,16 +611,19 @@ BEGIN
                             fun.desc_funcionario2 as responsable,
                             orga.f_get_cargo_x_funcionario_str(afij.id_funcionario,now()::date,''oficial'') as cargo,
                             dep.codigo ||'' - ''||dep.nombre,
-                            case when '''||v_parametros.columna||''' = '''' then ''ambos''::varchar else '''||v_parametros.columna||'''::varchar end as tipo_columna
+                            case when '''||v_parametros.columna||''' = '''' then ''ambos''::varchar else '''||v_parametros.columna||'''::varchar end as tipo_columna,
+                            cat.descripcion as cat_desc,
+                            afij.ubicacion as ubi_fisica_ante                         
                             from kaf.tactivo_fijo afij
                             inner join kaf.tclasificacion cla on cla.id_clasificacion = afij.id_clasificacion
                             left join orga.vfuncionario fun on fun.id_funcionario = afij.id_funcionario
                             inner join orga.toficina ofi on ofi.id_oficina = afij.id_oficina
                             inner join param.tdepto dep on dep.id_depto = afij.id_depto
+                            inner join param.tcatalogo cat on cat.id_catalogo=afij.id_cat_estado_fun
                             where '||v_filtro;
-			
+            
             v_consulta:=v_consulta||' order by fun.desc_funcionario2, ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion;
-            raise notice 'v_consulta: %', v_consulta;
+            --raise EXCEPTION 'v_consulta: %', v_consulta;
             --Devuelve la respuesta
             return v_consulta;
 
@@ -636,13 +640,13 @@ BEGIN
 
         begin
         
-        	select tl.nombre 
+            select tl.nombre 
             into v_lugar
             from param.tlugar tl 
             where id_lugar = v_parametros.id_lugar::integer;
             
             if (v_lugar is null) then
-            	v_lugar = '';
+                v_lugar = '';
             end if;
 
             --Creacion de tabla temporal de los actios fijos a filtrar
@@ -660,12 +664,12 @@ BEGIN
             execute(v_consulta);
             
             if(v_parametros.tipo = 'lug_fun')then
-				v_filtro = ' afij.id_funcionario in (SELECT tf.id_funcionario
-                									 FROM orga.vfuncionario_cargo_lugar tf
+                v_filtro = ' afij.id_funcionario in (SELECT tf.id_funcionario
+                                                     FROM orga.vfuncionario_cargo_lugar tf
                                                      where (tf.fecha_finalizacion > now()::date or tf.fecha_finalizacion is null) and tf.id_oficina in (select id_oficina from orga.toficina where id_lugar = '||v_parametros.id_lugar||'))
-                            and afij.en_deposito = ''no''and afij.id_depto = '||v_parametros.id_depto;		
+                            and afij.en_deposito = ''no''and afij.id_depto = '||v_parametros.id_depto;      
             else
-            	v_filtro = ' afij.id_activo_fijo in (select id_activo_fijo
+                v_filtro = ' afij.id_activo_fijo in (select id_activo_fijo
                                                         from tt_af_filtro)
                             and afij.en_deposito = ''no''';
             end if;
@@ -1023,7 +1027,7 @@ BEGIN
 
         begin 
 
-        	--raise exception 'v_parametros.filtro: %', v_parametros.filtro;                       
+            --raise exception 'v_parametros.filtro: %', v_parametros.filtro;                       
             --Creacion de tabla temporal de los actios fijos a filtrar
             create temp table tt_af_filtro (
                 id_activo_fijo integer
@@ -1039,7 +1043,7 @@ BEGIN
               --Grover activos del exterior
                /*afij.id_activo_fijo in (
                         
-			Select af.id_activo_fijo
+            Select af.id_activo_fijo
             --,af.codigo, af.denominacion, af.descripcion, 
             --of.nombre, param.f_get_id_lugar_pais(of.id_lugar)
             from kaf.tactivo_fijo af
@@ -1053,7 +1057,7 @@ BEGIN
                         
             
             execute(v_consulta);
-			
+            
             
             --Creación de la tabla con los datos de la depreciación
             create temp table tt_detalle_depreciacion (
@@ -1094,21 +1098,21 @@ BEGIN
                 upper(af.descripcion)
                 when v_parametros.desc_nombre='nombre' or v_parametros.desc_nombre = '' then
                 af.denominacion
-            end,        	
+            end,            
             --af.descripcion,
             --afv.fecha_ini_dep,
             case coalesce(afv.id_activo_fijo_valor_original,0)
-            	when 0 then afv.fecha_ini_dep
+                when 0 then afv.fecha_ini_dep
                 else (select fecha_ini_dep from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original)
             end as fecha_ini_dep,
             --coalesce(afv.monto_vigente_orig_100,afv.monto_vigente_orig),
             case coalesce(afv.id_activo_fijo_valor_original,0)
-            	when 0 then afv.monto_vigente_orig_100
+                when 0 then afv.monto_vigente_orig_100
                 else (select monto_vigente_orig_100 from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original)
             end as monto_vigente_orig_100,
 --            afv.monto_vigente_orig,
-			case coalesce(afv.id_activo_fijo_valor_original,0)
-            	when 0 then afv.monto_vigente_orig
+            case coalesce(afv.id_activo_fijo_valor_original,0)
+                when 0 then afv.monto_vigente_orig
                 else (select monto_vigente_orig from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original)
             end as monto_vigente_orig,
             --(coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0)) as inc_actualiz,
@@ -1118,7 +1122,7 @@ BEGIN
             end as inc_actualiz,
             mdep.monto_actualiz,
             /*case coalesce(afv.id_activo_fijo_valor_original,0)
-            	when 0 then afv.monto_vigente_orig * mdep.factor
+                when 0 then afv.monto_vigente_orig * mdep.factor
                 else (select monto_vigente_orig from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original) * mdep.factor
             end as monto_actualiz,*/
             afv.vida_util_orig, mdep.vida_util,
@@ -1145,7 +1149,7 @@ BEGIN
             and af.estado <> 'eliminado';
             
         
-			insert into tt_detalle_depreciacion(
+            insert into tt_detalle_depreciacion(
             id_activo_fijo_valor,codigo, denominacion ,fecha_ini_dep,monto_vigente_orig_100,monto_vigente_orig,inc_actualiz,
             monto_actualiz,vida_util_orig,vida_util,
             depreciacion_per,depreciacion_acum,monto_vigente,codigo_padre,denominacion_padre,tipo,tipo_cambio_fin,id_moneda_act,
@@ -1169,7 +1173,7 @@ BEGIN
             end as inc_actualiz,
             mdep.monto_actualiz,
             /*case coalesce(afv.id_activo_fijo_valor_original,0)
-            	when 0 then afv.monto_vigente_orig * mdep.factor
+                when 0 then afv.monto_vigente_orig * mdep.factor
                 else (select monto_vigente_orig from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original) * mdep.factor
             end as monto_actualiz,*/
             afv.vida_util_orig, mdep.vida_util,
@@ -1228,17 +1232,17 @@ BEGIN
             end,
             --afv.fecha_ini_dep,
             case coalesce(afv.id_activo_fijo_valor_original,0)
-            	when 0 then afv.fecha_ini_dep
+                when 0 then afv.fecha_ini_dep
                 else (select fecha_ini_dep from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original)
             end as fecha_ini_dep,
             --coalesce(afv.monto_vigente_orig_100,afv.monto_vigente_orig),
             case coalesce(afv.id_activo_fijo_valor_original,0)
-            	when 0 then afv.monto_vigente_orig_100
+                when 0 then afv.monto_vigente_orig_100
                 else (select monto_vigente_orig_100 from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original)
             end as monto_vigente_orig_100,
 --            afv.monto_vigente_orig,
-			case coalesce(afv.id_activo_fijo_valor_original,0)
-            	when 0 then afv.monto_vigente_orig
+            case coalesce(afv.id_activo_fijo_valor_original,0)
+                when 0 then afv.monto_vigente_orig
                 else (select monto_vigente_orig from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original)
             end as monto_vigente_orig,
             --(coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0)) as inc_actualiz,
@@ -1248,7 +1252,7 @@ BEGIN
             end as inc_actualiz,
             mdep.monto_actualiz,
             /*case coalesce(afv.id_activo_fijo_valor_original,0)
-            	when 0 then afv.monto_vigente_orig * mdep.factor
+                when 0 then afv.monto_vigente_orig * mdep.factor
                 else (select monto_vigente_orig from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original) * mdep.factor
             end as monto_actualiz,*/
             afv.vida_util_orig, mdep.vida_util,
@@ -1271,7 +1275,7 @@ BEGIN
             where af.estado in ('baja','retiro')
             and mdep.fecha >= '01-01-2017'
             and mdep.fecha = (select max(fecha) from kaf.tmovimiento_af_dep mdep1
-            					where mdep1.id_activo_fijo_valor = afv.id_activo_fijo_valor
+                                where mdep1.id_activo_fijo_valor = afv.id_activo_fijo_valor
                                 and fecha between ('01-01-'||extract(year from mdep.fecha))::date and v_parametros.fecha_hasta::date)
             
             and mdep.id_moneda_dep = v_parametros.id_moneda
@@ -1373,7 +1377,7 @@ BEGIN
             --Si la depreciación anterior es cero, busca la depreciación de su activo fijo valor original si es que tuviese
             update tt_detalle_depreciacion set
             depreciacion_acum_gest_ant = coalesce((
-            	select depreciacion_acum
+                select depreciacion_acum
                 from kaf.tmovimiento_af_dep
                 where id_activo_fijo_valor = tt_detalle_depreciacion.id_activo_fijo_valor_original
                 and tipo = tt_detalle_depreciacion.tipo
@@ -1436,12 +1440,17 @@ BEGIN
                 monto_vigente numeric(24,2),
                 nivel integer,
                 orden bigint,
-                tipo varchar(10)
+                tipo varchar(10),
+                reval numeric(24,2),
+                ajust numeric(24,2),
+                baja  numeric(24,2),
+                transito numeric(24,2),
+                leasing numeric(24,2)
             ) on commit drop;
 
             --Inserta los totales por clasificacióm
-	if(v_parametros.total_consol = 'deta') then  
-		if( extract(year from v_parametros.fecha_hasta)=extract(year from now()::date))THEN
+    if(v_parametros.total_consol = 'deta' and (v_parametros.tipo_repo='' or v_parametros.tipo_repo='gepa')) then  
+        if( extract(year from v_parametros.fecha_hasta)=extract(year from now()::date))THEN
         
           CREATE temp TABLE tt_detalle_depreciacion_rev (
             id_activo_fijo_valor INTEGER,
@@ -1469,31 +1478,31 @@ BEGIN
           
             insert into tt_detalle_depreciacion_rev
             select
-			id_activo_fijo_valor,                     
-			kaf.f_activo_rev(id_activo_fijo_valor,fecha_ini_dep),            
+            id_activo_fijo_valor,                     
+            kaf.f_activo_rev(id_activo_fijo_valor,fecha_ini_dep),            
             denominacion,          
-			fecha_ini_dep,
+            fecha_ini_dep,
             monto_vigente_orig_100,
-			monto_vigente_orig,            
-			inc_actualiz,
-			monto_actualiz,                              
+            monto_vigente_orig,            
+            inc_actualiz,
+            monto_actualiz,                              
             vida_util_orig,
             vida_util,
-			depreciacion_acum_gest_ant,                            
-			depreciacion_acum_actualiz_gest_ant,                                                                
-			depreciacion_per,                            
-			depreciacion_acum,                            
-			monto_vigente,                            
+            depreciacion_acum_gest_ant,                            
+            depreciacion_acum_actualiz_gest_ant,                                                                
+            depreciacion_per,                            
+            depreciacion_acum,                            
+            monto_vigente,                            
             codigo_padre,
             denominacion_padre,
             tipo,
-			tipo_cambio_fin,
+            tipo_cambio_fin,
             id_moneda_act,
             id_activo_fijo_valor_original
             from tt_detalle_depreciacion
             order by codigo; 
             
-  		if(v_parametros.estado_depre='')then                
+        if(v_parametros.estado_depre='')then                
             insert into tt_detalle_depreciacion_totales
             select
             codigo_padre,
@@ -1561,7 +1570,7 @@ BEGIN
             'total'
             from tt_detalle_depreciacion_rev
             where codigo is not null;
-		else
+        else
             insert into tt_detalle_depreciacion_totales
             select
             codigo_padre,
@@ -1630,9 +1639,9 @@ BEGIN
             'total'
             from tt_detalle_depreciacion_rev
             where codigo is not null and tipo like '%'||v_parametros.estado_depre||'%';        
-       end if;                          
-	 elsif(extract(year from v_parametros.fecha_hasta)<=extract(year from now()::date)-1)then
-     		if(v_parametros.estado_depre='')then
+       end if;                         
+     elsif(extract(year from v_parametros.fecha_hasta)<=extract(year from now()::date)-1)then
+            if(v_parametros.estado_depre='')then
             --Inserta los totales por clasificacióm
             insert into tt_detalle_depreciacion_totales
             select
@@ -1673,7 +1682,7 @@ BEGIN
             depreciacion_per,
             depreciacion_acum,
             monto_vigente,
-            codigo_padre::integer,
+            codigo_padre::integer,            
             replace(replace(replace(replace(replace(replace(codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
             'detalle'
             from tt_detalle_depreciacion;
@@ -1699,7 +1708,7 @@ BEGIN
             0,
             'total'
             from tt_detalle_depreciacion;
-		else 
+        else 
             insert into tt_detalle_depreciacion_totales
             select
             codigo_padre,
@@ -1767,12 +1776,11 @@ BEGIN
             0,
             'total'
             from tt_detalle_depreciacion
-            where tipo like '%'||v_parametros.estado_depre||'%';		        
+            where tipo like '%'||v_parametros.estado_depre||'%';                
           end if;   
         end if;
            
-	elsif(v_parametros.total_consol ='consoli')then
-    
+    elsif(v_parametros.total_consol ='consoli')then
       CREATE temp TABLE tt_detalle_depreciacion_consol (
         id_activo_fijo_valor INTEGER,
         codigo VARCHAR(50),
@@ -1797,7 +1805,7 @@ BEGIN
         id_activo_fijo_valor_original INTEGER
       )on commit drop;
                         
-	        insert into tt_detalle_depreciacion_totales
+            insert into tt_detalle_depreciacion_totales
             select
             codigo_padre,
             denominacion_padre,
@@ -1818,36 +1826,35 @@ BEGIN
             'clasif'
             from tt_detalle_depreciacion
             where  (
-			codigo not like '%RE%' and codigo not  like '%G%')            
+            codigo not like '%RE%' and codigo not  like '%G%')            
             group by codigo_padre, denominacion_padre;
 
-	insert into tt_detalle_depreciacion_consol
+    insert into tt_detalle_depreciacion_consol
             select
-			id_activo_fijo_valor,     
-		    --substr(codigo,0,14),                  
-			kaf.f_range(id_activo_fijo_valor),            
+            id_activo_fijo_valor,                     
+            kaf.f_tam_codigo(codigo),            
             denominacion,          
-			fecha_ini_dep,
+            fecha_ini_dep,
             monto_vigente_orig_100,
-			monto_vigente_orig,            
-			inc_actualiz,
-			monto_actualiz,                              
+            monto_vigente_orig,            
+            inc_actualiz,
+            monto_actualiz,                              
             vida_util_orig,
             vida_util,
-			depreciacion_acum_gest_ant,                            
-			depreciacion_acum_actualiz_gest_ant,                                                                
-			depreciacion_per,                            
-			depreciacion_acum,                            
-			monto_vigente,                            
+            depreciacion_acum_gest_ant,                            
+            depreciacion_acum_actualiz_gest_ant,                                                                
+            depreciacion_per,                            
+            depreciacion_acum,                            
+            monto_vigente,                            
             codigo_padre,
             denominacion_padre,
             tipo,
-			tipo_cambio_fin,
+            tipo_cambio_fin,
             id_moneda_act,
             id_activo_fijo_valor_original
             from tt_detalle_depreciacion
             where  (
-			codigo not like '%RE%' and codigo not  like '%G%') 
+            codigo not like '%RE%' and codigo not  like '%G%') 
             order by codigo;     
                                            
             --Inserta el detalle
@@ -1872,8 +1879,8 @@ BEGIN
             'detalle'
             from tt_detalle_depreciacion_consol de
             inner join kaf.tactivo_fijo ac on ac.codigo=de.codigo
-          	group by de.codigo,de.denominacion,ac.fecha_ini_dep,
-          	de.codigo_padre;
+            group by de.codigo,de.denominacion,ac.fecha_ini_dep,
+            de.codigo_padre;
 
             --Inserta los totales finales
             insert into tt_detalle_depreciacion_totales
@@ -1897,19 +1904,271 @@ BEGIN
             'total'
             from tt_detalle_depreciacion
             where  (
-			codigo not like '%RE%' and codigo not  like '%G%');                
-	end if;		
-			
-	        v_where = '(''total'',''detalle'',''clasif'')';
-    	    if v_parametros.af_deprec = 'clasif' then
-        		v_where = '(''total'',''clasif'')';
-            end if;   
+            codigo not like '%RE%' and codigo not  like '%G%');                
+     elsif(v_parametros.total_consol='')then
+            --Inserta los totales por clasificacióm
+            insert into tt_detalle_depreciacion_totales
+            select
+            codigo_padre,
+            denominacion_padre,
+            null,
+            sum(monto_vigente_orig_100),
+            sum(monto_vigente_orig),
+            sum(inc_actualiz),
+            sum(monto_actualiz),
+            null,
+            null,
+            sum(depreciacion_acum_gest_ant),
+            sum(depreciacion_acum_actualiz_gest_ant),
+            sum(depreciacion_per),
+            sum(depreciacion_acum),
+            sum(monto_vigente),
+            replace(codigo_padre,'RE','')::integer,
+            0,
+            'clasif'
+            from tt_detalle_depreciacion
+            group by codigo_padre, denominacion_padre;
 
+            --Inserta el detalle
+            insert into tt_detalle_depreciacion_totales
+            select
+            codigo,
+            denominacion,
+            fecha_ini_dep,
+            monto_vigente_orig_100,
+            monto_vigente_orig,
+            inc_actualiz,
+            monto_actualiz,
+            vida_util_orig,
+            vida_util,
+            depreciacion_acum_gest_ant,
+            depreciacion_acum_actualiz_gest_ant,
+            depreciacion_per,
+            depreciacion_acum,
+            monto_vigente,
+            codigo_padre::integer,            
+            replace(replace(replace(replace(replace(replace(codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
+            'detalle',
+            kaf.f_activo_tipo(id_activo_fijo_valor,'reval'),
+            kaf.f_activo_tipo(id_activo_fijo_valor,'ajuste'),
+            kaf.f_activo_tipo(id_activo_fijo_valor,'baja'),
+            kaf.f_activo_tipo(id_activo_fijo_valor,'transito'),   
+            kaf.f_activo_tipo(id_activo_fijo_valor,'leasing')    
+            from tt_detalle_depreciacion
+            where tipo='alta';
+
+            --Inserta los totales finales
+            insert into tt_detalle_depreciacion_totales
+            select
+            'TOTAL FINAL',
+            null,
+            null,
+            sum(monto_vigente_orig_100),
+            sum(monto_vigente_orig),
+            sum(inc_actualiz),
+            sum(monto_actualiz),
+            null,
+            null,
+            sum(depreciacion_acum_gest_ant),
+            sum(depreciacion_acum_actualiz_gest_ant),
+            sum(depreciacion_per),
+            sum(depreciacion_acum),
+            sum(monto_vigente),
+            999,
+            0,
+            'total',
+            sum(kaf.f_activo_tipo(id_activo_fijo_valor,'reval')),
+            sum(kaf.f_activo_tipo(id_activo_fijo_valor,'ajuste')),
+            sum(kaf.f_activo_tipo(id_activo_fijo_valor,'baja')),
+            sum(kaf.f_activo_tipo(id_activo_fijo_valor,'transito')), 
+            sum(kaf.f_activo_tipo(id_activo_fijo_valor,'leasing')) 
+            from tt_detalle_depreciacion;
+            
+    elsif(v_parametros.total_consol='deta' and v_parametros.tipo_repo='geac')then 
+
+      CREATE temp TABLE tt_detalle_depreciacion_consol (
+        id_activo_fijo_valor INTEGER,
+        codigo VARCHAR(50),
+        denominacion VARCHAR(500),
+        fecha_ini_dep DATE,
+        monto_vigente_orig_100 NUMERIC(18,2),
+        monto_vigente_orig NUMERIC(18,2),
+        inc_actualiz NUMERIC(18,2),
+        monto_actualiz NUMERIC(18,2),
+        vida_util_orig INTEGER,
+        vida_util INTEGER,
+        depreciacion_acum_gest_ant NUMERIC(18,2),
+        depreciacion_acum_actualiz_gest_ant NUMERIC(18,2),
+        depreciacion_per NUMERIC(18,2),
+        depreciacion_acum NUMERIC(18,2),
+        monto_vigente NUMERIC(18,2),
+        codigo_padre VARCHAR(15),
+        denominacion_padre VARCHAR(100),
+        tipo VARCHAR(50),
+        tipo_cambio_fin NUMERIC,
+        id_moneda_act INTEGER,
+        id_activo_fijo_valor_original INTEGER
+      )on commit drop;
+                        
+            insert into tt_detalle_depreciacion_totales
+            select
+            codigo_padre,
+            denominacion_padre,
+            null,
+            sum(monto_vigente_orig_100),
+            sum(monto_vigente_orig),
+            sum(inc_actualiz),
+            sum(monto_actualiz),
+            null,
+            null,
+            sum(depreciacion_acum_gest_ant),
+            sum(depreciacion_acum_actualiz_gest_ant),
+            sum(depreciacion_per),
+            sum(depreciacion_acum),
+            sum(monto_vigente),
+            replace(codigo_padre,'RE','')::integer,
+            0,
+            'clasif'
+            from tt_detalle_depreciacion
+            group by codigo_padre, denominacion_padre;
+
+    insert into tt_detalle_depreciacion_consol
+            select
+            id_activo_fijo_valor,                     
+            kaf.f_range(id_activo_fijo_valor),            
+            denominacion,          
+            fecha_ini_dep,
+            monto_vigente_orig_100,
+            monto_vigente_orig,            
+            inc_actualiz,
+            monto_actualiz,                              
+            vida_util_orig,
+            vida_util,
+            depreciacion_acum_gest_ant,                            
+            depreciacion_acum_actualiz_gest_ant,                                                                
+            depreciacion_per,                            
+            depreciacion_acum,                            
+            monto_vigente,                            
+            codigo_padre,
+            denominacion_padre,
+            tipo,
+            tipo_cambio_fin,
+            id_moneda_act,
+            id_activo_fijo_valor_original
+            from tt_detalle_depreciacion
+            order by codigo;     
+                                           
+            --Inserta el detalle
+            insert into tt_detalle_depreciacion_totales            
+            select     
+            de.codigo,                  
+            de.denominacion,
+            kaf.f_activo_ajuste(de.codigo),                      
+            sum(de.monto_vigente_orig_100),
+            sum(de.monto_vigente_orig),            
+            sum(de.inc_actualiz),
+            sum(de.monto_actualiz),
+            null,
+            null,        
+            sum(de.depreciacion_acum_gest_ant),                            
+            sum(de.depreciacion_acum_actualiz_gest_ant),                                                                                                          
+            sum(de.depreciacion_per),                            
+            sum(de.depreciacion_acum),                            
+            sum(de.monto_vigente),
+            de.codigo_padre::integer,                            
+            replace(de.codigo,'.','')::bigint,
+            'detalle'
+            from tt_detalle_depreciacion_consol de
+            inner join kaf.tactivo_fijo ac on ac.codigo=de.codigo
+            group by de.codigo,de.denominacion,
+            de.codigo_padre;
+
+            --Inserta los totales finales
+            insert into tt_detalle_depreciacion_totales
+            select
+            'TOTAL FINAL',
+            null,
+            null,
+            sum(monto_vigente_orig_100),
+            sum(monto_vigente_orig),
+            sum(inc_actualiz),
+            sum(monto_actualiz),
+            null,
+            null,
+            sum(depreciacion_acum_gest_ant),
+            sum(depreciacion_acum_actualiz_gest_ant),
+            sum(depreciacion_per),
+            sum(depreciacion_acum),
+            sum(monto_vigente),
+            999,
+            0,
+            'total'
+            from tt_detalle_depreciacion;
+            
+            v_fecha_actu = kaf.f_mes_anterior(v_parametros.fecha_hasta);                         
+
+            create temp table tt_actuli_acumulado (
+                code    VARCHAR(100),
+                inc_ac  numeric(18,2),
+                color   varchar(2)
+            ) on commit drop;
+            
+            insert into tt_actuli_acumulado
+            select 
+            cod,
+            inc_act,
+            col
+            from kaf.f_depre_ges_ant(v_parametros.filtro,v_parametros.id_moneda,v_fecha_actu);
+                      
+           v_where = '(''total'',''detalle'',''clasif'')';
+           if v_parametros.af_deprec = 'clasif' then
+            v_where = '(''total'',''clasif'')';
+           end if; 
+
+                v_consulta = 'select
+                        de.codigo,
+                        de.denominacion,
+                        de.fecha_ini_dep,                       
+                        de.monto_vigente_orig_100,                      
+                        de.monto_vigente_orig,
+                        (de.monto_actualiz - de.monto_vigente_orig)::numeric(18,2) as inc_actualiz,
+                        de.monto_actualiz,
+                        de.vida_util_orig,
+                        de.vida_util,
+                        de.depreciacion_acum_gest_ant,
+                        de.depreciacion_acum_actualiz_gest_ant,
+                        de.depreciacion_acum - de.depreciacion_acum_gest_ant - de.depreciacion_acum_actualiz_gest_ant,--depreciacion_per,
+                        de.depreciacion_acum,
+                        de.monto_vigente,
+                        de.nivel,
+                        de.orden,
+                        de.tipo,
+                        de.reval,
+                        de.ajust,
+                        de.baja,
+                        de.transito,
+                        de.leasing,
+                        ac.inc_ac as inc_ac_acum,
+                        ac.color    
+                        from tt_detalle_depreciacion_totales de 
+                        inner join tt_actuli_acumulado ac on ac.code=de.codigo
+                        where tipo in '||v_where||'                       
+                        order by codigo, orden';
+            --Devuelve la respuesta
+            return v_consulta;
+
+    end if;     
+            
+            v_where = '(''total'',''detalle'',''clasif'')';
+            if v_parametros.af_deprec = 'clasif' then
+                v_where = '(''total'',''clasif'')';
+            end if;   
+ 
             v_consulta = 'select
                         codigo,
                         denominacion,
-                        fecha_ini_dep,						
-                        monto_vigente_orig_100,						
+                        fecha_ini_dep,                      
+                        monto_vigente_orig_100,                     
                         monto_vigente_orig,
                         (monto_actualiz - monto_vigente_orig)::numeric(18,2) as inc_actualiz,
                         monto_actualiz,
@@ -1922,15 +2181,21 @@ BEGIN
                         monto_vigente,
                         nivel,
                         orden,
-                        tipo
+                        tipo,
+                        reval,
+                        ajust,
+                        baja,
+                        transito,
+                        leasing,
+                        0.00 as inc_ac_acum, --para completar el modelo no valido
+                        ''-''::varchar as color
                         from tt_detalle_depreciacion_totales
                         where tipo in '||v_where||'                       
                         order by codigo, orden';
-			raise notice 'v_consulta: %', v_consulta;
+            raise notice 'v_consulta: %', v_consulta;
             --Devuelve la respuesta
            
-            return v_consulta;    
-        
+            return v_consulta;      
 
         end;
     else

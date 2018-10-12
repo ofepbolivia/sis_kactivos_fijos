@@ -15,55 +15,59 @@ class RDetalleAFPDF extends  ReportePDF{
         //cabecera del reporte
         $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 16,5,40,20);
         $this->ln(5);
-        $this->SetMargins(10, 40, 10);
+        $this->SetMargins(2, 40, 2);
 
         $this->SetFont('','B',10);
         $this->Cell(0,5,"DEPARTAMENTO ACTIVOS FIJOS",0,1,'C');
         $this->Cell(0,5,"DETALLE DE ACTIVOS FIJOS",0,1,'C');
         $this->Cell(0,5,'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: '.$this->objParam->getParametro('estado'),0,1,'C');
+		if(count($this->datos2)!=0){
+				$nombre='<b>&nbsp;LUGAR:</b>'.$this->datos2[0]['nombre'].'<br>';
+				$one=0.5;						            										
+			}
+		if($this->objParam->getParametro('nr_factura')!=''){
+				$factura='<b>FACTURA: </b>'.$this->objParam->getParametro('nr_factura').'<br>';
+				$two=0.5;																					
+		}		
+		if($this->objParam->getParametro('id_depto')==7){			
+				$txt = '<b>DEPTO: </b>Unidad de Activos Fijos<br>';
+				$three=0.5;
+		}if($this->objParam->getParametro('id_depto')==47){
+				$txt = '<b>DEPTO: </b>Unidad de Activos Fijos TI<br>';
+				$three=0.5;		
+		}
+		if($this->objParam->getParametro('id_proveedor')!=''){			
+				$provee='<b>PROVEEDOR: </b>'.$this->datos3[0]['desc_proveedor'];
+				$four=0.5;							
+		}
+		$sol = $one+$two+$three+$four;				
+        $html = <<<EOF
+		<style>
+		table {
+   			font-family: "Calibri";
+   			font-size:5pt;
+   			width: 120px;
+   			height:10px;
+   			align=:center;
+		}
+		</style>
+		<body>
+		<table>
+        	<tr><td>$nombre $factura $txt $provee</td></tr>        	        	
+        </table>
+EOF;
 
+        $this->writeHTML($html);
         $this->SetFont('','B',6);
-        $this->Ln(6);
+        //$this->Ln(2);
+        $this->Ln(1+$sol);
         //primera linea
-      /*$this->Cell(10,3,'NUM','TRL',0,'C');
-        $this->Cell(23,3,'CODIGO','TRL',0,'C');
-        
-        if($this->objParam->getParametro('desc_nombre') == 'desc'){
-            $this->Cell(50,3,'DESCRIPCIÓN','TRL',0,'C');
-        }else{
-            $this->Cell(50,3,'DENOMINACIÓN','TRL',0,'C');
-        }
 
-		
-        $this->Cell(15,3,'ESTADO','TRL',0,'C');
-        $this->Cell(15,3,'ESTADO ','TRL',0,'C');
-        $this->Cell(15,3,'FECHA','TRL',0,'C');
-        $this->Cell(15,3,'MONTO','TRL',0,'C');
-        $this->Cell(15,3,'IMPORTE','TRL',0,'C');
-        $this->Cell(15,3,'VALOR','TRL',0,'C');
-        $this->Cell(15,3,'C31','TRL',0,'C');
-        $this->Cell(15,3,'FECHA','TRL',0,'C');
-        $this->Cell(30,3,'UBICACIÓN','TRL',0,'C');
-        $this->Cell(30,3,'RESPONSABLE','TRL',1,'C');
-
-        //segunda linea
-        $this->Cell(10,3,'','BRL',0,'C');
-        $this->Cell(23,3,'','BRL',0,'C');
-        $this->Cell(50,3,'','BRL',0,'C');
-        $this->Cell(15,3,'','BRL',0,'C');
-        $this->Cell(15,3,'FUNCIONAL','BRL',0,'C');
-        $this->Cell(15,3,'COMPRA','BRL',0,'C');
-        $this->Cell(15,3,'(87%)','BRL',0,'C');
-        $this->Cell(15,3,'(100%)','BRL',0,'C');
-        $this->Cell(15,3,'ACTUAL','BRL',0,'C');
-        $this->Cell(15,3,'','BRL',0,'C');
-        $this->Cell(15,3,'COMP C31','BRL',0,'C');
-        $this->Cell(30,3,'','BRL',0,'C');
-        $this->Cell(30,3,'','BRL',0,'C');*/
         $control = $this->objParam->getParametro('activo_multi');		
 		$this->columnsGrid($control);
 
     }
+	//startBVP
     public function columnsGrid($tipo){
 		$hiddes = explode(',', $tipo);
 		$ascod = '';
@@ -77,7 +81,8 @@ class RDetalleAFPDF extends  ReportePDF{
 		$asc31 = '';
 		$asf31 = '';
 		$asubi = '';
-		$asres = '';		
+		$asres = '';
+		$asuco = '';		
 												
 		for ($i=0; $i <count($hiddes) ; $i++) {
 		switch ($hiddes[$i]) {
@@ -92,45 +97,169 @@ class RDetalleAFPDF extends  ReportePDF{
 			case 'ac31': $asc31 = 'c31'; break;
 			case 'af31': $asf31 = 'f31'; break;
 			case 'aubi': $asubi = 'ubi'; break;
-			case 'ares': $asres = 'res'; break;															
+			case 'ares': $asres = 'res'; break;
+			case 'auco': $asuco = 'uco'; break;														
 			}									 			
-		}   				    
+		} 
+		$tam1=23;
+		$tam2=50;
+		$tam3=15;
+		$tam4=15;
+		$tam5=15;
+		$tam6=15;
+		$tam7=15; 
+		$tam8=18;		
+		$tam9=15;
+		$tam10=15;
+		$tam11=24;
+		$tam12=24;
+		$tam13=21;
+
+		if($ascod==''){
+			$tam1=0;
+		} 
+		if($asdes==''){
+			$tam2=0;
+		} 
+		if($asest==''){
+			$tam3=0;
+		} 
+		if($asesf==''){
+			$tam4=0;
+		} 
+		if($asfec==''){
+			$tam5=0;
+		} 
+		if($asmon==''){
+			$tam6=0;
+		} 
+		if($asimp==''){
+			$tam7=0;
+		} 
+		if($asval==''){
+			$tam8=0;
+		} 
+		if($asc31==''){
+			$tam9=0;
+		} 
+		if($asf31==''){
+			$tam10=0;
+		} 
+		if($asubi==''){
+			$tam11=0;
+		} 
+		if($asres==''){
+			$tam12=0;
+		} 
+		if($asuco==''){
+			$tam13=0;
+		}  
+		//tomamos los tamanios de las columnas no mostradas y las distribuimos a las otras presentes 						 
+		$xpage = 265;//∑ tam^n ai = an
+		$cont = 0;			
+		$resul = $tam1+$tam2+$tam3+$tam4+$tam5+$tam6+$tam7+$tam8+$tam9+$tam10+$tam11+$tam12+$tam13;
+		$alca = $xpage - $resul;
+		$n = count($hiddes);
+		//distribucion de tamanios 
+		if($alca>0){					 
+			$total = $alca/$n;	 
+			while ($resul<$xpage) {
+				$cont += 0.001;
+				$resul += 1;
+			}
+			$total += $cont;					 
+		}else{				
+		 	$total= 0;		 
+		}
+		
 			$hGlobal=6;
 			$wiTa = 188;		 		
 			$this->objParam->getParametro('desc_nombre')=='desc'?$desno='DESCRIPCIÓN':$desno='DENOMINACIÓN';          		 		        
             $this->SetFontSize(6);
-            $this->SetFont('', 'B');						
-			$this->MultiCell(round((19/$wiTa)*100,2), $hGlobal,'NUM',1,'C',false,0,'','',true,0,false,true,0,'T',false);									
-			($ascod=='cod')?'':$this->MultiCell(round((43/$wiTa)*100,2), $hGlobal, 'CODIGO',1,'C',false,0,'','',true,0,false,true,0,'T',false);			
-			($asdes=='des')?'':$this->MultiCell(round((94/$wiTa)*100,2), $hGlobal, $desno, 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($asest=='est')?'':$this->MultiCell(round((28/$wiTa)*100,2), $hGlobal, 'ESTADO', 1,'C',false,0,'','',true,0,false,true,0,'T',false);			
-			($asesf=='esf')?'':$this->MultiCell(round((28/$wiTa)*100,2), $hGlobal, 'ESTADO'."\x0A".'FUNCIONAL', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($asfec=='fec')?'':$this->MultiCell(round((29/$wiTa)*100,2), $hGlobal, 'FECHA COMPRA', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($asmon=='mon')?'':$this->MultiCell(round((28/$wiTa)*100,2), $hGlobal, 'MONTO'."\x0A".'(87%)', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($asimp=='imp')?'':$this->MultiCell(round((28/$wiTa)*100,2), $hGlobal, 'IMPORTE (100%)', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($asval=='val')?'':$this->MultiCell(round((28/$wiTa)*100,2), $hGlobal, 'VALOR ACTUAL', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($asc31=='c31')?'':$this->MultiCell(round((28/$wiTa)*100,2), $hGlobal, 'C31', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($asf31=='f31')?'':$this->MultiCell(round((28/$wiTa)*100,2),$hGlobal, 'FECHA'."\x0A".'COMP 31', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($asubi=='ubi')?'':$this->MultiCell(round((57/$wiTa)*100,2),$hGlobal, 'UBICACION', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			($asres=='res')?'':$this->MultiCell(round((56.4/$wiTa)*100,2),$hGlobal, 'RESPONSABLE', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-			
-        $this->posY = $this->GetY();
-		$this->posX = $this->GetX();
-		
-		
+            $this->SetFont('', 'B');
+		if(count($this->datos2)>0){				
+				$one=0.5;						            										
+			}
+		if($this->objParam->getParametro('nr_factura')!==''){							
+				$two=0.5;																					
+		}		
+		if($this->objParam->getParametro('id_depto')==7){							
+				$three=0.5;
+		}if($this->objParam->getParametro('id_depto')==47){				
+				$three=0.5;		
+		}
+		if($this->objParam->getParametro('id_proveedor')!=''){							
+				$four=0.5;							
+		}
+		$sol = $one+$two+$three+$four;						
+		$r=1.5;
+		($sol==0.5)?$r=2:$r=-4;				
+		($sol==0)?$this->Ln(2):$this->Ln($r+$sol);												
+			$this->MultiCell(10, $hGlobal,'NUM',1,'C',false,0,'','',true,0,false,true,0,'T',false);									
+			($ascod=='cod')?$this->MultiCell($tam1+$total, $hGlobal, 'CODIGO',1,'C',false,0,'','',true,0,false,true,0,'T',false):'';			
+			($asdes=='des')?$this->MultiCell($tam2+$total, $hGlobal, $desno, 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+			($asest=='est')?$this->MultiCell($tam3+$total, $hGlobal, 'ESTADO', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';			
+			($asesf=='esf')?$this->MultiCell($tam4+$total, $hGlobal, 'ESTADO'."\x0A".'FUNCIONAL', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+			($asfec=='fec')?$this->MultiCell($tam5+$total, $hGlobal, 'FECHA COMPRA', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+			($asmon=='mon')?$this->MultiCell($tam6+$total, $hGlobal, 'MONTO'."\x0A".'(87%)', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+			($asimp=='imp')?$this->MultiCell($tam7+$total, $hGlobal, 'IMPORTE (100%)', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+			($asval=='val')?$this->MultiCell($tam8+$total, $hGlobal, 'VALOR ACTUAL', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+			($asc31=='c31')?$this->MultiCell($tam9+$total, $hGlobal, 'C31', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+			($asf31=='f31')?$this->MultiCell($tam10+$total,$hGlobal, 'FECHA'."\x0A".'COMP 31', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+			($asubi=='ubi')?$this->MultiCell($tam11+$total,$hGlobal, 'UBICACION', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+			($asres=='res')?$this->MultiCell($tam12+$total,$hGlobal, 'RESPONSABLE', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+			($asuco=='uco')?$this->MultiCell($tam13+$total,$hGlobal, 'UNIDAD SOLICITANTE',1,'C',false,0,'','',true,0,false,true,0,'T',false):'';						
     }
 
-    function setDatos($datos) {
+    function setDatos($datos,$datos2,$datos3) {
 
         $this->datos = $datos;
+		$this->datos2 = $datos2;
+		$this->datos3 = $datos3;
         //var_dump( $this->datos);exit;
     }			
     function  generarReporte()
     {		
         $this->AddPage();
-        $this->SetMargins(10, 40, 10);
+        $this->SetMargins(2, 40, 2);
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);		
-        $this->Ln();		
+        //$this->Ln(13);
+		if(count($this->datos2)!=0){							
+				$one=0.5;						            										
+			}
+		if($this->objParam->getParametro('nr_factura')!=''){							
+				$two=0.5;																					
+		}if(count($this->datos2)!=0 && $this->objParam->getParametro('nr_factura')!='' ){			
+				$five=4;
+		}
+		if(count($this->datos2)!=0 && $this->objParam->getParametro('id_depto')!='' ){			
+				$six=8;
+		}		
+		if($this->objParam->getParametro('id_depto')==7){										
+				$three=0.5;
+		}if($this->objParam->getParametro('id_depto')==47){				
+				$three=0.5;		
+		}
+		if($this->objParam->getParametro('id_proveedor')!=''){										
+				$four=0.5;							
+		}
+		$sol = $one+$two+$three+$four;		
+		($five>0)?$sol+=$five:$a=0;
+		($six>0)?$sol+=$six:$a=0;
+		//var_dump($sol);exit;					
+		$r=3.5;	
+		switch ($sol) {
+			case 2:$r=6.5;break;
+			case 1.5:$r=4;break;
+			case 1:$r=1;break;
+			case 0.5:$r=6.5;break;
+			case 5:$r=-0.5;break;
+			case 9:$r=-5;break;
+			case 5.5:$r=0;break;
+			case 14:$r=-5.5;break;
+			case 13.5:$r=-6;break;
+		}						
+		$this->Ln($r+$sol);	        		
 
 
 
@@ -152,7 +281,7 @@ class RDetalleAFPDF extends  ReportePDF{
 		
         $i=1;
         //$this->tablewidths=array(10,23,50,15,15,15,15,15,15,15,15,30,30);
-        $this->tablealigns=array('C','L','L','C','C','C','R','R','R','C','L','L');
+        $this->tablealigns=array('C','L','L','C','C','C','R','R','R','C','L','L','L','L');
         $tipo = $this->objParam->getParametro('tipo_reporte');
 		$control = $this->objParam->getParametro('activo_multi');
 			
@@ -169,6 +298,7 @@ class RDetalleAFPDF extends  ReportePDF{
 		$asf31 = '';
 		$asubi = '';
 		$asres = '';
+		$asuco = '';
 											
 		for ($a=0; $a <count($hiddes) ; $a++) {
 		switch ($hiddes[$a]) {
@@ -179,28 +309,100 @@ class RDetalleAFPDF extends  ReportePDF{
 			case 'afec': $asfec = 'fec'; break;
 			case 'amon': $asmon = 'mon'; break;
 			case 'aimp': $asimp = 'imp'; break;
-			case 'aval': $asval = 'val'; break;			
+			case 'aval': $asval = 'val'; break;
 			case 'ac31': $asc31 = 'c31'; break;
 			case 'af31': $asf31 = 'f31'; break;
 			case 'aubi': $asubi = 'ubi'; break;
-			case 'ares': $asres = 'res'; break;								
+			case 'ares': $asres = 'res'; break;
+			case 'auco': $asuco = 'uco'; break;								
 			}									 			
-		}		
+		}
 
-		//arreglo para tablewidths estatica 	
-$tablewis=array('t1'=>10,'cod'=>23,'des'=>50,'est'=>15,'esf'=>15,'fec'=>15,'mon'=>15,'imp'=>15,'val'=>15,'c31'=>15,'f31'=>15,'ubi'=>30,'res'=>30);
-$tablenums0=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>2,'imp'=>2,'val'=>2,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0);  //1
-$tablenums1=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>0,'imp'=>0,'val'=>0,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0);  //2
-$tablenums2=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>2,'imp'=>2,'val'=>2,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0);  //3
-$tablenums3=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>2,'imp'=>2,'val'=>2,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0);  //4
-$tablenums4=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>2,'imp'=>2,'val'=>2,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0);  //5
+		$tam1=23;
+		$tam2=50;
+		$tam3=15;
+		$tam4=15;
+		$tam5=15;
+		$tam6=15;
+		$tam7=15; 
+		$tam8=18;		
+		$tam9=15;
+		$tam10=15;
+		$tam11=24;
+		$tam12=24;
+		$tam13=21;
 
-$tablewisReal = $this->filterArray($tablewis);
-$tablenums0Real = $this->filterArray($tablenums0);
-$tablenums1Real = $this->filterArray($tablenums1);
-$tablenums2Real = $this->filterArray($tablenums2);
-$tablenums3Real = $this->filterArray($tablenums3);
-$tablenums4Real = $this->filterArray($tablenums4);
+		if($ascod==''){
+			$tam1=0;
+		} 
+		if($asdes==''){
+			$tam2=0;
+		} 
+		if($asest==''){
+			$tam3=0;
+		} 
+		if($asesf==''){
+			$tam4=0;
+		} 
+		if($asfec==''){
+			$tam5=0;
+		} 
+		if($asmon==''){
+			$tam6=0;
+		} 
+		if($asimp==''){
+			$tam7=0;
+		} 
+		if($asval==''){
+			$tam8=0;
+		} 
+		if($asc31==''){
+			$tam9=0;
+		} 
+		if($asf31==''){
+			$tam10=0;
+		} 
+		if($asubi==''){
+			$tam11=0;
+		} 
+		if($asres==''){
+			$tam12=0;
+		} 
+		if($asuco==''){
+			$tam13=0;
+		}  
+								 
+		$xpage = 265;//∑ tam^n ai = an
+		$cont = 0;			
+		$resul = $tam1+$tam2+$tam3+$tam4+$tam5+$tam6+$tam7+$tam8+$tam9+$tam10+$tam11+$tam12+$tam13;
+		$alca = $xpage - $resul;
+		$n = count($hiddes);
+		
+		if($alca>0){					 
+			$total = $alca/$n;	 
+			while ($resul<$xpage) {
+				$cont += 0.001;
+				$resul += 1;
+			}
+			$total += $cont;					 
+		}else{				
+		 	$total= 0;		 
+		}				
+
+			//arreglo para tablewidths estatica 	
+	$tablewis=array('t1'=>10,'cod'=>$tam1+$total,'des'=>$tam2+$total,'est'=>$tam3+$total,'esf'=>$tam4+$total,'fec'=>$tam5+$total,'mon'=>$tam6+$total,'imp'=>$tam7+$total,'val'=>$tam8+$total,'c31'=>$tam9+$total,'f31'=>$tam10+$total,'ubi'=>$tam11+$total,'res'=>$tam12+$total,'uco'=>$tam13+$total);
+	$tablenums0=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>2,'imp'=>2,'val'=>2,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0,'uco'=>0);  //1
+	$tablenums1=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>0,'imp'=>0,'val'=>0,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0,'uco'=>0);  //2
+	$tablenums2=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>2,'imp'=>2,'val'=>2,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0,'uco'=>0);  //3
+	$tablenums3=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>2,'imp'=>2,'val'=>2,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0,'uco'=>0);  //4
+	$tablenums4=array('t1'=>0,'cod'=>0,'des'=>0,'est'=>0,'esf'=>0,'fec'=>0,'mon'=>2,'imp'=>2,'val'=>2,'c31'=>0,'f31'=>0,'ubi'=>0,'res'=>0,'uco'=>0);  //5
+	
+	$tablewisReal = $this->filterArray($tablewis);
+	$tablenums0Real = $this->filterArray($tablenums0);
+	$tablenums1Real = $this->filterArray($tablenums1);
+	$tablenums2Real = $this->filterArray($tablenums2);
+	$tablenums3Real = $this->filterArray($tablenums3);
+	$tablenums4Real = $this->filterArray($tablenums4);
 
 	
 		$this->tablewidths=$tablewisReal;			
@@ -216,7 +418,7 @@ $tablenums4Real = $this->filterArray($tablenums4);
                     $this->SetFillColor(224, 235, 255);
 
                     $this->SetTextColor(0);
-                    $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','RB');
+                    $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','B','RB');
                     $this->tablenumbers=$tablenums0Real;
                     $RowArray = array(
                         's0'  => '',
@@ -231,32 +433,35 @@ $tablenums4Real = $this->filterArray($tablenums4);
                         's9' => '',
                         's10' => '',
                         's11' => '',
-                        's12' => ''
+                        's12' => '',
+                        's13' => ''
                     );
-						if ($ascod=='cod'){							
+						if ($ascod==''){							
 							unset($RowArray['s1']);
-						}if ($asdes=='des'){
+						}if ($asdes==''){
 							unset($RowArray['s2']);
-						}if ($asest=='est') {
+						}if ($asest=='') {
 							unset($RowArray['s3']);
-						}if ($asesf=='esf') {
+						}if ($asesf=='') {
 							unset($RowArray['s4']);
-						}if ($asfec=='fec') {
+						}if ($asfec=='') {
 							unset($RowArray['s5']);
-						}if ($asmon=='mon') {
+						}if ($asmon=='') {
 							unset($RowArray['s6']);
-						}if ($asimp=='imp') {							
+						}if ($asimp=='') {							
 							unset($RowArray['s7']);
-						}if ($asval=='val') {
+						}if ($asval=='') {
 							unset($RowArray['s8']);
-						}if ($asc31=='c31') {
+						}if ($asc31=='') {
 							unset($RowArray['s9']);
-						}if ($asf31=='f31'){
+						}if ($asf31==''){
 							unset($RowArray['s10']);
-						}if ($asubi=='ubi'){
+						}if ($asubi==''){
 							unset($RowArray['s11']);
-						}if ($asres=='res') {
+						}if ($asres=='') {
 							unset($RowArray['s12']);
+						}if ($asuco==''){
+							unset($RowArray['s13']);
 						}								
                     $this->MultiRow($RowArray,true,1);
                     $total_grupo_100 += $cont_100;
@@ -279,32 +484,35 @@ $tablenums4Real = $this->filterArray($tablenums4);
                             's9' => '',
                             's10' => '',
                             's11' => '',
-                            's12' => ''
+                            's12' => '',
+                            's13' => ''
                         );
-						if ($ascod=='cod'){
+						if ($ascod==''){
 							unset($RowArray['s1']);
-						}if ($asdes=='des'){
+						}if ($asdes==''){
 							unset($RowArray['s2']);
-						}if ($asest=='est') {
+						}if ($asest=='') {
 							unset($RowArray['s3']);
-						}if ($asesf=='esf') {
+						}if ($asesf=='') {
 							unset($RowArray['s4']);
-						}if ($asfec=='fec') {
+						}if ($asfec=='') {
 							unset($RowArray['s5']);
-						}if ($asmon=='mon') {
+						}if ($asmon=='') {
 							unset($RowArray['s6']);
-						}if ($asimp=='imp') {
+						}if ($asimp=='') {
 							unset($RowArray['s7']);
-						}if ($asval=='val') {
+						}if ($asval=='') {
 							unset($RowArray['s8']);
-						}if ($asc31=='c31') {
+						}if ($asc31=='') {
 							unset($RowArray['s9']);
-						}if ($asf31=='f31'){
+						}if ($asf31==''){
 							unset($RowArray['s10']);
-						}if ($asubi=='ubi'){
+						}if ($asubi==''){
 							unset($RowArray['s11']);
-						}if ($asres=='res') {
+						}if ($asres=='') {
 							unset($RowArray['s12']);
+						}if ($asuco==''){
+							unset($RowArray['s13']);
 						}												
                         $this->MultiRow($RowArray,true,1);
                         $total_grupo_100 = 0;
@@ -316,7 +524,7 @@ $tablenums4Real = $this->filterArray($tablenums4);
                 $this->SetFillColor(79, 91, 147);
 
                 $this->SetTextColor(0);
-                $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','RB');
+                $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','B','RB');
                 $this->tablenumbers=$tablenums1Real;
                 $RowArray = array(
                     's0'  => '',
@@ -331,32 +539,35 @@ $tablenums4Real = $this->filterArray($tablenums4);
                     's9' => '',
                     's10' => '',
                     's11' => '',
-                    's12' => ''
+                    's12' => '',
+                    's13' => ''
                 );
-					if ($ascod=='cod'){						
+					if ($ascod==''){						
 						unset($RowArray['s1']);
-					}if ($asdes=='des'){
+					}if ($asdes==''){
 						unset($RowArray['s2']);
-					}if ($asest=='est') {
+					}if ($asest=='') {
 						unset($RowArray['s3']);
-					}if ($asesf=='esf') {
+					}if ($asesf=='') {
 						unset($RowArray['s4']);
-					}if ($asfec=='fec') {
+					}if ($asfec=='') {
 						unset($RowArray['s5']);
-					}if ($asmon=='mon') {
+					}if ($asmon=='') {
 						unset($RowArray['s6']);
-					}if ($asimp=='imp') {
+					}if ($asimp=='') {
 						unset($RowArray['s7']);
-					}if ($asval=='val') {
+					}if ($asval=='') {
 						unset($RowArray['s8']);
-					}if ($asc31=='c31') {
+					}if ($asc31=='') {
 						unset($RowArray['s9']);
-					}if ($asf31=='f31'){
+					}if ($asf31==''){
 						unset($RowArray['s10']);
-					}if ($asubi=='ubi'){
+					}if ($asubi==''){
 						unset($RowArray['s11']);
-					}if ($asres=='res') {
+					}if ($asres=='') {
 						unset($RowArray['s12']);
+					}if ($asuco==''){
+						unset($RowArray['s13']);
 					}	
                 $this->MultiRow($RowArray,true,1);
                 if($record['nivel'] == 0){
@@ -365,14 +576,14 @@ $tablenums4Real = $this->filterArray($tablenums4);
             }else{
 
                 $this->SetFont('','',6);
-                $this->tableborders=array('RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB');
+                $this->tableborders=array('RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB');
                 $this->tablenumbers=$tablenums2Real;
                 $RowArray = array(
                     's0'  => $record['nivel']==2?$i:'',
                     's1' => $record['nivel']==2?$record['codigo_af']:$record['camino'],
                     's2' => $record['nivel']==2?$record['denominacion']:$record['nombre'],
                     's3' => $record['estado'],
-                    's4' => '-',
+                    's4' => $record['estado_fun'],
                     's5' => $record['fecha_compra'] == '-'?'-':date("d/m/Y",strtotime($record['fecha_compra'])),
                     's6' => $record['monto_compra_orig'],
                     's7' => $record['monto_compra_orig_100'] ,
@@ -380,32 +591,35 @@ $tablenums4Real = $this->filterArray($tablenums4);
                     's9' => $record['nro_cbte_asociado'],
                     's10' => $record['fecha_cbte_asociado'] == '-'?'-':date("d/m/Y",strtotime($record['fecha_cbte_asociado'])),
                     's11' => $record['ubicacion'],
-                    's12' => $record['responsable']
+                    's12' => $record['responsable'],
+                    's13' => $record['nombre_unidad'] == '-'?'-':$record['nombre_unidad']
                 );
-			if ($ascod=='cod'){
+			if ($ascod==''){
 				unset($RowArray['s1']);
-			}if ($asdes=='des'){
+			}if ($asdes==''){
 				unset($RowArray['s2']);
-			}if ($asest=='est') {
+			}if ($asest=='') {
 				unset($RowArray['s3']);
-			}if ($asesf=='esf') {
+			}if ($asesf=='') {
 				unset($RowArray['s4']);
-			}if ($asfec=='fec') {
+			}if ($asfec=='') {
 				unset($RowArray['s5']);
-			}if ($asmon=='mon') {
+			}if ($asmon=='') {
 				unset($RowArray['s6']);
-			}if ($asimp=='imp') {
+			}if ($asimp=='') {
 				unset($RowArray['s7']);
-			}if ($asval=='val') {
+			}if ($asval=='') {
 				unset($RowArray['s8']);
-			}if ($asc31=='c31') {
+			}if ($asc31=='') {
 				unset($RowArray['s9']);
-			}if ($asf31=='f31'){
+			}if ($asf31==''){
 				unset($RowArray['s10']);
-			}if ($asubi=='ubi'){
+			}if ($asubi==''){
 				unset($RowArray['s11']);
-			}if ($asres=='res') {
+			}if ($asres=='') {
 				unset($RowArray['s12']);
+			}if ($asuco==''){
+				unset($RowArray['s13']);
 			}				
                 $this->MultiRow($RowArray);
 
@@ -424,7 +638,7 @@ $tablenums4Real = $this->filterArray($tablenums4);
 
         $this->SetFillColor(224, 235, 255);
         $this->SetTextColor(0);
-        $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','RB');
+        $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','B','RB');
         $this->tablenumbers=$tablenums3Real;
         $RowArray = array(
             's0'  => '',
@@ -439,32 +653,35 @@ $tablenums4Real = $this->filterArray($tablenums4);
             's9' => '',
             's10' => '',
             's11' => '',
-            's12' => ''
+            's12' => '',
+            's13' => ''
         );
-			if ($ascod=='cod'){
+			if ($ascod==''){
 				unset($RowArray['s1']);
-			}if ($asdes=='des'){
+			}if ($asdes==''){
 				unset($RowArray['s2']);
-			}if ($asest=='est') {
+			}if ($asest=='') {
 				unset($RowArray['s3']);
-			}if ($asesf=='esf') {
+			}if ($asesf=='') {
 				unset($RowArray['s4']);
-			}if ($asfec=='fec') {
+			}if ($asfec=='') {
 				unset($RowArray['s5']);
-			}if ($asmon=='mon') {
+			}if ($asmon=='') {
 				unset($RowArray['s6']);
-			}if ($asimp=='imp') {
+			}if ($asimp=='') {
 				unset($RowArray['s7']);
-			}if ($asval=='val') {
+			}if ($asval=='') {
 				unset($RowArray['s8']);
-			}if ($asc31=='c31') {
+			}if ($asc31=='') {
 				unset($RowArray['s9']);
-			}if ($asf31=='f31'){
+			}if ($asf31==''){
 				unset($RowArray['s10']);
-			}if ($asubi=='ubi'){
+			}if ($asubi==''){
 				unset($RowArray['s11']);
-			}if ($asres=='res') {
+			}if ($asres=='') {
 				unset($RowArray['s12']);
+			}if ($asuco==''){
+				unset($RowArray['s13']);
 			}					
         $this->MultiRow($RowArray,true,1);
 
@@ -482,37 +699,40 @@ $tablenums4Real = $this->filterArray($tablenums4);
             's9' => '',
             's10' => '',
             's11' => '',
-            's12' => ''
+            's12' => '',
+            's13' => ''
         );
-			if ($ascod=='cod'){
+			if ($ascod==''){
 				unset($RowArray['s1']);
-			}if ($asdes=='des'){
+			}if ($asdes==''){
 				unset($RowArray['s2']);
-			}if ($asest=='est') {
+			}if ($asest=='') {
 				unset($RowArray['s3']);
-			}if ($asesf=='esf') {
+			}if ($asesf=='') {
 				unset($RowArray['s4']);
-			}if ($asfec=='fec') {
+			}if ($asfec=='') {
 				unset($RowArray['s5']);
-			}if ($asmon=='mon') {
+			}if ($asmon=='') {
 				unset($RowArray['s6']);
-			}if ($asimp=='imp') {
+			}if ($asimp=='') {
 				unset($RowArray['s7']);
-			}if ($asval=='val') {
+			}if ($asval=='') {
 				unset($RowArray['s8']);
-			}if ($asc31=='c31') {
+			}if ($asc31=='') {
 				unset($RowArray['s9']);
-			}if ($asf31=='f31'){
+			}if ($asf31==''){
 				unset($RowArray['s10']);
-			}if ($asubi=='ubi'){
+			}if ($asubi==''){
 				unset($RowArray['s11']);
-			}if ($asres=='res') {
+			}if ($asres=='') {
 				unset($RowArray['s12']);
+			}if ($asuco==''){
+				unset($RowArray['s13']);
 			}			
         $this->MultiRow($RowArray,true,1);
 
         //$this->SetFillColor(79, 91, 147);
-        $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','RB');
+        $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','B','RB');
         $this->tablenumbers=$tablenums4Real;
         $RowArray = array(
             's0'  => '',
@@ -528,31 +748,34 @@ $tablenums4Real = $this->filterArray($tablenums4);
             's10' => '',
             's11' => '',
             's12' => '',
+            's13' => ''
         );
-			if ($ascod=='cod'){
+			if ($ascod==''){
 				unset($RowArray['s1']);
-			}if ($asdes=='des'){
+			}if ($asdes==''){
 				unset($RowArray['s2']);
-			}if ($asest=='est') {
+			}if ($asest=='') {
 				unset($RowArray['s3']);
-			}if ($asesf=='esf') {
+			}if ($asesf=='') {
 				unset($RowArray['s4']);
-			}if ($asfec=='fec') {
+			}if ($asfec=='') {
 				unset($RowArray['s5']);
-			}if ($asmon=='mon') {
+			}if ($asmon=='') {
 				unset($RowArray['s6']);
-			}if ($asimp=='imp') {
+			}if ($asimp=='') {
 				unset($RowArray['s7']);
-			}if ($asval=='val') {
+			}if ($asval=='') {
 				unset($RowArray['s8']);
-			}if ($asc31=='c31') {
+			}if ($asc31=='') {
 				unset($RowArray['s9']);
-			}if ($asf31=='f31'){
+			}if ($asf31==''){
 				unset($RowArray['s10']);
-			}if ($asubi=='ubi'){
+			}if ($asubi==''){
 				unset($RowArray['s11']);
-			}if ($asres=='res') {
+			}if ($asres=='') {
 				unset($RowArray['s12']);
+			}if($asuco==''){
+				unset($RowArray['s13']);
 			}			
         $this->MultiRow($RowArray,true,1);
 
@@ -576,6 +799,7 @@ $resp = array();
 		$asf31 = '';
 		$asubi = '';
 		$asres = '';
+		$asuco = '';
 											
 		for ($i=0; $i <count($hiddes) ; $i++) {
 		switch ($hiddes[$i]) {
@@ -590,56 +814,58 @@ $resp = array();
 			case 'ac31': $asc31 = 'c31'; break;
 			case 'af31': $asf31 = 'f31'; break;
 			case 'aubi': $asubi = 'ubi'; break;
-			case 'ares': $asres = 'res'; break;								
+			case 'ares': $asres = 'res'; break;
+			case 'auco': $asuco = 'uco'; break;								
 			}									 			
 		}
 $proces = $table;
 
 		foreach ($proces as $key => $value) {	
-			switch ($key) {
-				case $ascod:
-					unset($proces['cod']);																			
-					break;
-				case $asdes:			
-					unset($proces['des']);
-					break;
-				case $asest:
-					unset($proces['est']);
-					break;
-				case $asesf:
-					unset($proces['esf']);
-					break;
-				case $asfec:
-					unset($proces['fec']);
-					break;	
-				case $asmon:
-					unset($proces['mon']);	
-					break;
-				case $asimp:
-					unset($proces['imp']);
-					break;
-				case $asval:
-					unset($proces['val']);
-					break;
-				case $asc31:
-					unset($proces['c31']);
-					break;
-				case $asf31:
-					unset($proces['f31']);
-					break;
-				case $asubi:
-					unset($proces['ubi']);					
-					break;
-				case $asres:
-					unset($proces['res']);
-					break;										
-			}	
+		    if($ascod==''){
+		        unset($proces['cod']);      
+		    }   
+		    if($asdes==''){            
+		        unset($proces['des']);
+		    }   
+		    if($asest==''){
+		        unset($proces['est']);
+		    }   
+		    if($asesf==''){
+		        unset($proces['esf']);
+		    }   
+		    if($asfec==''){
+		        unset($proces['fec']);
+		    }    
+		    if($asmon==''){
+		        unset($proces['mon']);  
+		    }   
+		    if($asimp==''){
+		        unset($proces['imp']);
+		    }   
+		    if($asval==''){
+		        unset($proces['val']);
+		    }   
+		    if($asc31==''){
+		        unset($proces['c31']);
+		    }   
+		    if($asf31==''){
+		        unset($proces['f31']);
+		    }   
+		    if($asubi==''){
+		        unset($proces['ubi']);
+		    }   
+		    if($asres==''){
+		        unset($proces['res']);
+		    }   
+		    if($asuco==''){
+		        unset($proces['uco']);
+		    }	
 		}
 	$resp=array();
 	foreach ($proces as $value) {
 		array_push($resp,$value);
 		}
 	return  $resp;
-	}
+	}//endBVP
 }
 ?>

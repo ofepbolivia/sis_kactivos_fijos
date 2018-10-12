@@ -8,8 +8,39 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function(config){
             Phx.vista.ParametrosRepDepreciacion.superclass.constructor.call(this,config);
             this.definicionRutareporte();
-            this.definirParametros();
-
+            this.definirParametros();            
+            this.formParam.topToolbar.items.items[2].setVisible(false);            
+            this.formParam.topToolbar.items.items[0].setVisible(false);
+            this.formParam.topToolbar.items.items[4].setVisible(false);
+            this.formParam.topToolbar.items.items[6].setVisible(false);            
+            this.formParam.topToolbar.add('-',{               
+                xtype: 'splitbutton',
+                grupo: [0,4],
+                tooltip: '<b>Reporte Depreciacion A.F.</b><br>Podemos generar reporte de depreciacion de formato PDF y EXCEL.',
+                text:'<i class="fa fa-file" aria-hidden="true"></i> Tipo Reporte',
+                scope: me,
+                menu: [{
+                    text: 'Detalle Depreciacion',
+                    iconCls: 'bedit',
+                    argument: {
+                        'news': true,
+                        def: 'edit'
+                    },
+                    handler: me.detalleDepreciacion,                    
+                    scope: me
+                }, {
+                    text: 'Periodo Depreciacion',
+                    iconCls: 'bedit',
+                    argument: {
+                        'news': true,
+                        def: 'edit'
+                    },
+                    handler: me.detalleDepPeriodo,
+                    scope: me
+                }]
+            }
+            );
+            this.formParam.topToolbar.doLayout();
 		//Eventos
 		this.definirEventos();
 		
@@ -49,7 +80,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.repOficina = '%'
             this.cmbOficina.on('select',function(combo,record,index){
                 this.repOficina = record.data['nombre'];
-            }, this);
+            }, this);            
         },
         definicionRutareporte: function(report){
             this.rutaReporte = '../../../sis_kactivos_fijos/vista/reportes/ReporteDepreciacion.php';
@@ -58,18 +89,18 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         definirParametros: function(report){
             this.inicializarParametros();
-
+			this.configElement(this.cmbTipoRep,false,true);
             this.configElement(this.dteFechaDesde,false,true);
-            this.configElement(this.dteFechaHasta,true,false);
+            this.configElement(this.dteFechaHasta,false,false);
             this.configElement(this.cmbActivo,false,true);
 
-		this.configElement(this.cmbClasificacion,true,true);
-		this.configElement(this.cmbClasificacionMulti,true,true);		
-		this.configElement(this.cmbTipoMov,true,false)					
+		this.configElement(this.cmbClasificacion,false,true);
+		this.configElement(this.cmbClasificacionMulti,false,true);		
+		this.configElement(this.cmbTipoMov,false,false)					
 		this.configElement(this.txtDenominacion,false,true);
 		this.configElement(this.dteFechaCompra,true,true);
-		this.configElement(this.dteFechaIniDep,true,true);
-		this.configElement(this.cmbEstadoDepre,true,true);
+		this.configElement(this.dteFechaIniDep,false,true);
+		this.configElement(this.cmbEstadoDepre,false,true);
 		this.configElement(this.cmbEstado,false,true);
 		this.configElement(this.cmbCentroCosto,false,true);
 		this.configElement(this.txtUbicacionFisica,false,true);
@@ -79,23 +110,23 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.configElement(this.cmbResponsableCompra,false,true);
 		this.configElement(this.cmbLugar,false,true);
 		this.configElement(this.radGroupTransito,false,true);
-		this.configElement(this.radGroupTangible,true,true);
+		this.configElement(this.radGroupTangible,false,true);
 		this.configElement(this.cmbDepto,false,true);
-		this.configElement(this.descNombre,true,true);
+		this.configElement(this.descNombre,false,true);
 		this.configElement(this.cmbDeposito,false,true);
 		this.configElement(this.lblDesde,false,true);
 		this.configElement(this.lblHasta,true,true);
-		this.configElement(this.cmpFechas,true,true);
+		this.configElement(this.cmpFechas,false,true);
 		this.configElement(this.txtMontoInf,true,true);
 		this.configElement(this.txtMontoSup,true,true);
 		this.configElement(this.lblMontoInf,true,true);
 		this.configElement(this.lblMontoSup,true,true);
 		this.configElement(this.txtNroCbteAsociado,false,true);
-		this.configElement(this.cmpMontos,true,true);
-		this.configElement(this.cmbMoneda,true,false);
+		this.configElement(this.cmpMontos,false,true);
+		this.configElement(this.cmbMoneda,false,false);
 		this.configElement(this.radGroupEstadoMov,false,true);
 		this.configElement(this.cmpFechaCompra,false,true);
-		this.configElement(this.radGroupDeprec,true,true);
+		this.configElement(this.radGroupDeprec,false,true);
 
 
             this.configElement(this.fieldSetGeneral,true,true);
@@ -137,7 +168,63 @@ header("content-type: text/javascript; charset=UTF-8");
                 color = obligatorio;
             }
             return color;
-        }
+        },
+		onReporteDepPe: function (cmp, event) {
+	
+			var parametros = this.getParams();
+			parametros.tipo = cmp.argument.def;
+			Phx.CP.loadingShow();
+			Ext.Ajax.request({
+				url:'../../sis_kactivos_fijos/control/Reportes/reporteDepreciacionPeriodo',
+				params: parametros,
+				success: this.successExport,
+				failure: this.conexionFailure,
+				timeout:this.timeout,
+				scope:this
+			});
+		},
+		detalleDepreciacion:function(cmp,event){						
+			this.cmbTipoRep.setVisible(true);
+			this.cmbTipoMov.setVisible(true);
+			this.cmbEstadoDepre.setVisible(true);
+			this.dteFechaHasta.setVisible(true);
+			this.cmpFechas.setVisible(true);
+			this.cmbClasificacion.setVisible(true);
+			this.cmbClasificacionMulti.setVisible(true);
+			this.cmbMoneda.setVisible(true);
+			this.cmpMontos.setVisible(true);
+			this.dteFechaIniDep.setVisible(true);
+			this.descNombre.setVisible(true);
+			this.radGroupDeprec.setVisible(true);
+			this.radGroupTangible.setVisible(true);	
+			cmp.scope.formParam.topToolbar.items.items[0].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[1].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[2].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[3].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[4].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[6].setVisible(false);					
+		},
+		detalleDepPeriodo:function(cmp,event){
+			this.cmbTipoRep.setVisible(false);
+			this.cmbTipoMov.setVisible(false);
+			this.cmbEstadoDepre.setVisible(false);
+			this.dteFechaHasta.setVisible(true);
+			this.cmpFechas.setVisible(true);
+			this.cmbClasificacion.setVisible(true);
+			this.cmbClasificacionMulti.setVisible(true);
+			this.cmbMoneda.setVisible(true);
+			this.cmpMontos.setVisible(true);
+			this.dteFechaIniDep.setVisible(true);
+			this.descNombre.setVisible(true);
+			this.radGroupDeprec.setVisible(true);
+			this.radGroupTangible.setVisible(true);				
+			cmp.scope.formParam.topToolbar.items.items[0].setVisible(false);
+			cmp.scope.formParam.topToolbar.items.items[1].setVisible(false);
+			cmp.scope.formParam.topToolbar.items.items[2].setVisible(false);
+			cmp.scope.formParam.topToolbar.items.items[3].setVisible(false);					
+			cmp.scope.formParam.topToolbar.items.items[4].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[6].setVisible(true);
+		}        
 
     }
 </script>

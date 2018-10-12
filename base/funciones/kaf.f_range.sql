@@ -4,34 +4,35 @@ CREATE OR REPLACE FUNCTION kaf.f_range (
 RETURNS varchar AS
 $body$
 DECLARE
-resp 		varchar;
-cont		integer;
-yes 		varchar;
-tam			integer;
+resp    varchar;
+cont    integer;
+yes     varchar;
+tam     integer;
 BEGIN
     select codigo
-	into resp		
-    from tt_detalle_depreciacion             
+  into resp   
+    --from tt_detalle_depreciacion             
+    from kaf.tactivo_fijo_valores
     where id_activo_fijo_valor=id_co;
     
 cont = char_length(resp);
 if cont=13 then
-	tam = 0;
+  tam = 0;
 elsif cont=14 then
-	tam = 1;
+  tam = 1;
 elsif cont=17  then
-	tam = 2;
+  tam = 2;
 elsif cont=20 then
-	tam = 3;
+  tam = 3;
 end if;   
 
-	if tam=2 then
-    	yes=substr(resp,0,14);
+  if tam=2 then
+      yes=substr(resp,0,14);
     elsif tam=3 then
-    	yes=substr(resp,0,17);
+      yes=substr(resp,0,17);
     else
-    	yes=resp;
-	end if;
+      yes=resp;
+  end if;
 return yes;
 END;
 $body$

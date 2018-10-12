@@ -1913,4 +1913,93 @@ AS
   
          
 /***********************************F-DEP-RAC-KAF-1-19/10/2017****************************************/
+/***********************************I-DEP-BVP-KAF-1-12/10/2018*****************************************/
+
+CREATE VIEW kaf.vactivo_fijo_vigente_estado_rep (
+    id_activo_fijo,
+    monto_vigente_real_af,
+    vida_util_real_af,
+    fecha_ult_dep_real_af,
+    depreciacion_acum_real_af,
+    depreciacion_per_real_af,
+    id_moneda,
+    id_moneda_dep,
+    estado_mov_dep)
+AS
+SELECT afd.id_activo_fijo,
+    sum(afd.monto_vigente_real) AS monto_vigente_real_af,
+    max(afd.vida_util_real) AS vida_util_real_af,
+    max(afd.fecha_ult_dep_real) AS fecha_ult_dep_real_af,
+    sum(afd.depreciacion_acum_real) AS depreciacion_acum_real_af,
+    sum(afd.depreciacion_per_real) AS depreciacion_per_real_af,
+    afd.id_moneda,
+    afd.id_moneda_dep,
+    afd.estado_mov_dep
+FROM kaf.vactfijo_valor_est_repl afd
+WHERE afd.id_moneda <> ALL (ARRAY[2, 3])
+GROUP BY afd.id_activo_fijo, afd.id_moneda, afd.id_moneda_dep, afd.estado_mov_dep;
+
+CREATE VIEW kaf.vactfijo_valor_est_repl (
+    id_activo_fijo,
+    monto_vigente_real,
+    vida_util_real,
+    fecha_ult_dep_real,
+    depreciacion_acum_real,
+    depreciacion_per_real,
+    depreciacion_acum_ant_real,
+    monto_actualiz_real,
+    id_moneda,
+    id_moneda_dep,
+    estado_mov_dep)
+AS
+SELECT afv.id_activo_fijo,
+    COALESCE(min.monto_vigente, afv.monto_vigente_orig) AS monto_vigente_real,
+    COALESCE(min.vida_util, afv.vida_util_orig) AS vida_util_real,
+    COALESCE(min.fecha, afv.fecha_ini_dep) AS fecha_ult_dep_real,
+    COALESCE(min.depreciacion_acum, 0::numeric) AS depreciacion_acum_real,
+    COALESCE(min.depreciacion_per, 0::numeric) AS depreciacion_per_real,
+    COALESCE(min.depreciacion_acum_ant, 0::numeric) AS depreciacion_acum_ant_real,
+    COALESCE(min.monto_actualiz, afv.monto_vigente_orig) AS monto_actualiz_real,
+    afv.id_moneda,
+    afv.id_moneda_dep,
+    min.estado AS estado_mov_dep
+FROM kaf.tactivo_fijo_valores afv
+     LEFT JOIN kaf.vista_dep_acti_prin min ON min.id_activo_fijo_valor
+         = afv.id_activo_fijo_valor AND afv.id_moneda_dep = min.id_moneda_dep;
+         
+
+CREATE VIEW kaf.vista_dep_acti_prin (
+    id_activo_fijo_valor,
+    monto_vigente,
+    vida_util,
+    fecha,
+    depreciacion_acum,
+    depreciacion_per,
+    depreciacion_acum_ant,
+    monto_actualiz,
+    id_moneda_dep,
+    estado)
+AS
+SELECT afd.id_activo_fijo_valor,
+    afd.monto_vigente,
+    afd.vida_util,
+    afd.fecha,
+    afd.depreciacion_acum,
+    afd.depreciacion_per,
+    afd.depreciacion_acum_ant,
+    afd.monto_actualiz,
+    afd.id_moneda_dep,
+    mov.estado
+FROM kaf.tmovimiento_af_dep afd
+     JOIN kaf.tafdep m ON m.id_af_dep = afd.id_movimiento_af_dep
+     JOIN kaf.tmovimiento_af maf ON maf.id_movimiento_af = afd.id_movimiento_af
+     JOIN kaf.tmovimiento mov ON mov.id_movimiento = maf.id_movimiento;         
+/***********************************F-DEP-BVP-KAF-1-12/10/2018*****************************************/
+
+/***********************************I-DEP-BVP-KAF-1-12/10/2018*****************************************/
+CREATE TRIGGER tmovimiento_af_dep_tr
+  AFTER INSERT 
+  ON kaf.tmovimiento_af_dep FOR EACH ROW 
+  EXECUTE PROCEDURE kaf.f_movimiento_af_dep_insert();
+/***********************************F-DEP-BVP-KAF-1-12/10/2018*****************************************/
                   

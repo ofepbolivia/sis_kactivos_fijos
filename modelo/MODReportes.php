@@ -182,6 +182,8 @@ class MODReportes extends MODbase{
         $this->captura('cargo','varchar');
         $this->captura('desc_depto','text');
         $this->captura('tipo_columna','varchar');
+		$this->captura('cat_desc','varchar');
+		$this->captura('ubi_fisica_ante','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -354,6 +356,7 @@ class MODReportes extends MODbase{
 		$this->setParametro('desc_nombre','desc_nombre','varchar');
 		$this->setParametro('total_consol','total_consol','varchar');
 		$this->setParametro('estado_depre','estado_depre','varchar');
+		$this->setParametro('tipo_repo','tipo_repo','varchar');
 
 		//Definicion de la lista del resultado del query
 		$this->captura('codigo','varchar(50)');
@@ -374,6 +377,66 @@ class MODReportes extends MODbase{
         $this->captura('nivel','integer');
         $this->captura('orden','bigint');
         $this->captura('tipo','varchar(10)');
+		$this->captura('reval','numeric');
+		$this->captura('ajust','numeric');
+		$this->captura('baja','numeric');
+		$this->captura('transito','numeric');
+		$this->captura('leasing','numeric');
+		$this->captura('inc_ac_acum','numeric');
+		$this->captura('color','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+
+        //echo $this->consulta;exit;
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+        function reporteKAF(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='kaf.f_reportes_af';
+        $this->transaccion='KAF_KAR_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        //Definicion de la lista del resultado del query
+        $this->captura('codigo','VARCHAR');
+        $this->captura('denominacion','VARCHAR');
+        $this->captura('fecha_compra','DATE');
+        $this->captura('fecha_ini_dep','DATE');
+        $this->captura('estado','VARCHAR');
+        $this->captura('vida_util_original','INTEGER');
+        $this->captura('porcentaje_dep','INTEGER');
+        $this->captura('ubicacion','VARCHAR');
+        $this->captura('monto_compra_orig','NUMERIC');
+        $this->captura('moneda','VARCHAR');
+        $this->captura('nro_cbte_asociado','VARCHAR');
+        $this->captura('fecha_cbte_asociado','DATE');
+        $this->captura('cod_clasif','VARCHAR');
+        $this->captura('desc_clasif','VARCHAR');
+        $this->captura('metodo_dep','VARCHAR');
+        $this->captura('ufv_fecha_compra','NUMERIC');
+        $this->captura('responsable','TEXT');
+        $this->captura('cargo','VARCHAR');
+        $this->captura('fecha_mov','DATE');
+        $this->captura('num_tramite','VARCHAR');
+        $this->captura('desc_mov','VARCHAR');
+        $this->captura('codigo_mov','VARCHAR');
+        $this->captura('ufv_mov','NUMERIC');
+        $this->captura('id_activo_fijo','INTEGER');
+        $this->captura('id_movimiento','INTEGER');
+        $this->captura('monto_vigente_orig_100','NUMERIC');
+        $this->captura('monto_vigente_orig','NUMERIC');
+        $this->captura('monto_vigente_ant','NUMERIC');
+        $this->captura('actualiz_monto_vigente','NUMERIC');
+        $this->captura('monto_actualiz','NUMERIC');
+        $this->captura('vida_util_usada','INTEGER');
+        $this->captura('vida_util','INTEGER');
+        $this->captura('dep_acum_gest_ant','NUMERIC');
+        $this->captura('act_dep_gest_ant','NUMERIC');
+        $this->captura('depreciacion_per','NUMERIC');
+        $this->captura('depreciacion_acum','NUMERIC');
+        $this->captura('monto_vigente','NUMERIC');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

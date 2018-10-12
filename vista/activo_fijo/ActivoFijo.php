@@ -421,7 +421,17 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         );
 
         this.detailsTemplate.compile();
-
+        
+        this.addButton('btnChequeoDocumentosWf',
+            {
+            	grupo:[0,1,2],
+                text: 'Chequear Documentos',
+                iconCls: 'bchecklist',
+                disabled: true,
+                handler: this.loadCheckDocumentosSolWf,
+                tooltip: '<b>Documentos de la Solicitud</b><br/>Subir los documetos requeridos en la solicitud seleccionada.'
+            }
+        );
         
         //Add button for upload Photo
         this.addButton('btnPhoto', {
@@ -568,7 +578,17 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         },
         type: 'Field',
         form: true
-    }, {
+    },
+	 {
+		config: {
+			name: 'id_proceso_wf',
+			fieldLabel: 'id_proceso_wf',
+			inputType:'hidden'
+		},
+		type: 'Field',
+		form: true
+	},    
+     {
         config: {
             name: 'codigo',
             fieldLabel: 'Código',
@@ -703,7 +723,24 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         grid: true,
         form: true,
         bottom_filter:true
-    },{
+    },
+    {
+        config:{
+            name: 'tramite_compra',
+            fieldLabel: 'Nro. de Tramite de Compra',
+            allowBlank: false,
+            anchor: '100%',
+            gwidth: 180,
+            maxLength:255
+        },
+        type:'TextField',
+        filters:{pfiltro:'afij.tramite_compra',type:'string'},
+        id_grupo:1,
+        grid:true,
+        form:true,
+        bottom_filter:true
+    },    
+    {
         config: {
             name: 'nro_serie',
             fieldLabel: '# Serie',
@@ -777,7 +814,38 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         grid: true,
         form: true,
         bottom_filter:true
-    }, {
+    },
+    {
+        config: {
+            name: 'subtipo',
+            fieldLabel: 'Subtipo',
+            allowBlank: true,
+            emptyText: 'Elija una opción...',
+            store: new Ext.data.ArrayStore({
+                   id: 0,
+                   fields: [
+                       'myId',
+                       'displayText'
+                   ],
+                   data: [[1, 'item1'], [2, 'item2']]
+               }),
+               valueField: 'myId',
+               displayField: 'displayText'
+            },
+            typeAhead: true,
+            triggerAction: 'all',
+            lazyRender:true,
+            mode: 'local' ,
+            type: 'ComboBox',
+            id_grupo: 0,
+            filters: {
+                pfiltro: 'kaf.nombre',
+                type: 'string'
+            },
+            grid: true,
+            form: true
+    },     
+    {
         config: {
             name: 'vida_util_real_af',
             fieldLabel: 'Vida Útil',
@@ -1746,7 +1814,10 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
              {name:'vida_util_original_anios',type:'numeric'},
              {name:'prestamo',type:'string'},
              {name:'fecha_dev_prestamo',type:'date',dateFormat: 'Y-m-d'},
-             {name:'fecha_asignacion',type:'date',dateFormat: 'Y-m-d'}
+             {name:'fecha_asignacion',type:'date',dateFormat: 'Y-m-d'},
+             {name:'tramite_compra', type:'string'},
+             {name:'id_proceso_wf', type:'numeric'},
+             {name:'subtipo', type:'string'}
              ],
     arrayDefaultColumHidden: ['fecha_reg', 'usr_reg', 'fecha_mod', 'usr_mod', 'estado_reg', 'id_usuario_ai', 'usuario_ai', 'id_persona', 'foto', 'id_proveedor', 'fecha_compra', 'id_cat_estado_fun', 'ubicacion', 'documento', 'observaciones', 'monto_rescate', 'id_deposito', 'monto_compra', 'id_moneda', 'depreciacion_mes', 'descripcion', 'id_moneda_orig', 'fecha_ini_dep', 'id_cat_estado_compra', 'vida_util_original', 'id_centro_costo', 'id_oficina', 'id_depto'],
     sortInfo: {
@@ -2292,6 +2363,31 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                 allowBlank: true,
                                 id: this.idContenedor+'_fecha_cbte_asociado',
                                 width: 140
+                            },{
+		                        xtype: 'textfield',
+		                        fieldLabel: 'Nro. de Tramite de Compra',
+		                        name: 'tramite_compra',
+		                        allowBlank: true,
+		                        id: this.idContenedor+'_tramite_compra',
+		                        width: 140
+                            },{
+                                xtype: 'combo',
+                                fieldLabel: 'Subtipo',
+                                name: 'subtipo',
+                                allowBlank: true,
+                                mode: 'local',
+                                triggerAction: 'all',
+                                emptyText: 'Elija una opción',
+                                id: this.idContenedor+'_subtipo',
+                                emptyText: 'Elija una opción',
+                                store: new Ext.data.ArrayStore({
+                                    id: 0,
+                                    fields: ['subtipo'],
+                                    data: [ ['Ninguno'], ['Leasing']]
+                                }),
+                                valueField: 'subtipo',
+                                displayField: 'subtipo'
+
                             }]
                         }, {
                             title: 'Datos Depreciación',
@@ -2657,12 +2753,31 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
             
        
     },
+	loadCheckDocumentosSolWf:function() {
+            var rec=this.sm.getSelected();            
+            rec.data.nombreVista = this.nombreVista;         
+            if(rec.data.id_proceso_wf==null){
+            	alert('El activo Fijo con codigo: '+rec.data.codigo+' no presenta documentacion \ndebido a que no fue ingresado mediante preingreso');
+            }else{
+            Phx.CP.loadWindows('../../../sis_workflow/vista/documento_wf/DocumentoWf.php',
+                    'Chequear documento del WF',
+                    {
+                        width:'90%',
+                        height:500
+                    },
+                    rec.data,
+                    this.idContenedor,
+                    'DocumentoWf'
+        )
+       }
+    },    
 
     preparaMenu : function(n) {
         var tb = Phx.vista.ActivoFijo.superclass.preparaMenu.call(this);
         var data = this.getSelectedData();
         this.getBoton('btnPhoto').enable();
         this.getBoton('btnHistorialDep').enable();
+        this.getBoton('btnChequeoDocumentosWf').enable();
         if(data.estado=='alta') {
             this.getBoton('btnImpCodigo').enable(); 
         }
@@ -2677,6 +2792,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         this.getBoton('btnImpCodigo').disable();      
         this.getBoton('btnPhoto').disable();
         this.getBoton('btnHistorialDep').disable();
+        this.getBoton('btnChequeoDocumentosWf').disable();
         return tb;
     },
     
