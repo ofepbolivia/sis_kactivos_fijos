@@ -16,31 +16,31 @@ class RCompraGestionPDF extends  ReportePDF{
         //cabecera del reporte
         $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 16,5,40,20);
         $this->ln(5);
-        $this->SetMargins(2, 40, 2);		
+        $this->SetMargins(2, 40, 2);
         $this->SetFont('','B',10);
         $this->Cell(0,5,"DEPARTAMENTO ACTIVOS FIJOS",0,1,'C');
         $this->Cell(0,5,"COMPRAS DE GESTIÓN",0,1,'C');
-        $this->Cell(0,5,'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: '.$this->objParam->getParametro('estado'),0,1,'C');		
+        $this->Cell(0,5,'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: '.$this->objParam->getParametro('estado'),0,1,'C');
 		if(count($this->datos2)!=0){
 				$nombre='<b>&nbsp;LUGAR:</b>'.$this->datos2[0]['nombre'].'<br>';
-				$one=0.5;						            										
+				$one=0.5;
 			}
 		if($this->objParam->getParametro('nr_factura')!=''){
 				$factura='<b>FACTURA: </b>'.$this->objParam->getParametro('nr_factura').'<br>';
-				$two=0.5;																					
-		}		
-		if($this->objParam->getParametro('id_depto')==7){			
+				$two=0.5;
+		}
+		if($this->objParam->getParametro('id_depto')==7){
 				$txt = '<b>DEPTO: </b>Unidad de Activos Fijos<br>';
 				$three=0.5;
 		}if($this->objParam->getParametro('id_depto')==47){
 				$txt = '<b>DEPTO: </b>Unidad de Activos Fijos TI<br>';
-				$three=0.5;		
+				$three=0.5;
 		}
-		if($this->objParam->getParametro('id_proveedor')!=''){			
+		if($this->objParam->getParametro('id_proveedor')!=''){
 				$provee='<b>PROVEEDOR: </b>'.$this->datos3['0']['desc_proveedor'];
-				$four=0.5;							
+				$four=0.5;
 		}
-		$sol = $one+$two+$three+$four;				
+		$sol = $one+$two+$three+$four;
         $html = <<<EOF
 		<style>
 		table {
@@ -53,24 +53,24 @@ class RCompraGestionPDF extends  ReportePDF{
 		</style>
 		<body>
 		<table>
-        	<tr><td>$nombre $factura $txt $provee</td></tr>        	        	
+        	<tr><td>$nombre $factura $txt $provee</td></tr>
         </table>
 EOF;
 
         $this->writeHTML($html);
-		
-        $this->SetFont('','B',6);		
-        $this->Ln(1+$sol);		       				
-		
-        $control = $this->objParam->getParametro('gestion_multi');				
-		$this->columnsGrid($control);		
-    }	
+
+        $this->SetFont('','B',6);
+        $this->Ln(1+$sol);
+
+        $control = $this->objParam->getParametro('gestion_multi');
+		$this->columnsGrid($control);
+    }
 	//start BVP
-    public function columnsGrid($tipo){    	
+    public function columnsGrid($tipo){
 		$hiddes = explode(',', $tipo);
 		$gscod = '';
-		$gsdes = '';				
-		$gsfec = '';		
+		$gsdes = '';
+		$gsfec = '';
 		$gsmun = '';
 		$gsf31 = '';
 		$gsfei = '';
@@ -79,7 +79,7 @@ EOF;
 		$gsimp = '';
 		$gsgmon= '';
 		$gsuco ='';
-			
+
 		//widths
 		$tam1=18;
 		$tam2=51;
@@ -87,12 +87,12 @@ EOF;
 		$tam4=13;
 		$tam5=13;
 		$tam6=15;
-		$tam7=14; 
+		$tam7=14;
 		$tam8=14;
 		$tam9=17;
 		$tam10=17;
 		$tam11=17;
-				
+
 		$num = 0;
 		$total = 0;
 
@@ -100,18 +100,18 @@ EOF;
 		switch ($hiddes[$i]) {
 			case 'gcod': $gscod = 'cod'; break;
 			case 'gdes': $gsdes = 'des'; break;
-			case 'gfec': $gsfec = 'fec'; break;			
+			case 'gfec': $gsfec = 'fec'; break;
 			case 'gnum': $gsmun = 'mun'; break;
 			case 'gf31': $gsf31 = 'f31'; break;
 			case 'gfei': $gsfei = 'fei'; break;
 			case 'gvit': $gsvit = 'vit'; break;
-			case 'gviu': $gsviu = 'viu'; break;			
+			case 'gviu': $gsviu = 'viu'; break;
 			case 'gimp': $gsimp = 'imp'; break;
 			case 'gmon': $gsgmon = 'mon'; break;
-			case 'guco': $gsuco = 'uco'; break;														
-			}									 			
+			case 'guco': $gsuco = 'uco'; break;
+			}
 		}
-		  	
+
 		if ($gscod=='') {
 			$tam1 = 0;
 		}if ($gsdes=='') {
@@ -137,47 +137,47 @@ EOF;
 		}
 		//tomamos los tamanios de las columnas no mostradas y las distribuimos a las otras presentes
 		$xpage = 202;//∑ tam^n ai = an
-		$cont = 0;		 
+		$cont = 0;
 		$resul = $tam1+$tam2+$tam3+$tam4+$tam5+$tam6+$tam7+$tam8+$tam9+$tam10+$tam11;
 		$alca = $xpage - $resul;
 		$n = count($hiddes);
-		//distribucion de tamanios 
-		if($alca>0){					 
-			$total = $alca/$n;	 
+		//distribucion de tamanios
+		if($alca>0){
+			$total = $alca/$n;
 			while ($resul<$xpage) {
 				$cont += 0.001;
 				$resul += 1;
 			}
-			$total += $cont;					 
-		}else{				
-		 	$total= 0;		 
-		}							
-		$hGlobal=6;		 		
-		$this->objParam->getParametro('desc_nombre')=='desc'?$desno='DESCRIPCIÓN':$desno='DENOMINACIÓN';          		 		        
+			$total += $cont;
+		}else{
+		 	$total= 0;
+		}
+		$hGlobal=6;
+		$this->objParam->getParametro('desc_nombre')=='desc'?$desno='DESCRIPCIÓN':$desno='DENOMINACIÓN';
 	    $this->SetFontSize(6);
 	    $this->SetFont('', 'B');
-		if(count($this->datos2)>0){				
-				$one=0.5;						            										
+		if(count($this->datos2)>0){
+				$one=0.5;
 			}
-		if($this->objParam->getParametro('nr_factura')!==''){							
-				$two=0.5;																					
-		}		
-		if($this->objParam->getParametro('id_depto')==7){							
+		if($this->objParam->getParametro('nr_factura')!==''){
+				$two=0.5;
+		}
+		if($this->objParam->getParametro('id_depto')==7){
 				$three=0.5;
-		}if($this->objParam->getParametro('id_depto')==47){				
-				$three=0.5;		
+		}if($this->objParam->getParametro('id_depto')==47){
+				$three=0.5;
 		}
-		if($this->objParam->getParametro('id_proveedor')!=''){							
-				$four=0.5;							
+		if($this->objParam->getParametro('id_proveedor')!=''){
+				$four=0.5;
 		}
-		$sol = $one+$two+$three+$four;						
+		$sol = $one+$two+$three+$four;
 		$r=1.5;
-		($sol==0.5)?$r=2:$r=-4;				
-		$this->Ln($r+$sol);								
-		$this->MultiCell(10, $hGlobal,'NUM',1,'C',false,0,'','',true,0,false,true,0,'T',false);									
-		($gscod=='cod')?$this->MultiCell($tam1+$total, $hGlobal, 'CODIGO',1,'C',false,0,'','',true,0,false,true,0,'T',false):'';			
+		($sol==0.5)?$r=2:$r=-4;
+		$this->Ln($r+$sol);
+		$this->MultiCell(10, $hGlobal,'NUM',1,'C',false,0,'','',true,0,false,true,0,'T',false);
+		($gscod=='cod')?$this->MultiCell($tam1+$total, $hGlobal, 'CODIGO',1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
 		($gsdes=='des')?$this->MultiCell($tam2+$total, $hGlobal, $desno, 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
-		($gsfec=='fec')?$this->MultiCell($tam3+$total, $hGlobal, 'FECHA COMPRA', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';			
+		($gsfec=='fec')?$this->MultiCell($tam3+$total, $hGlobal, 'FECHA COMPRA', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
 		($gsmun=='mun')?$this->MultiCell($tam4+$total, $hGlobal, 'NUM'."\x0A".'COMP', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
 		($gsf31=='f31')?$this->MultiCell($tam5+$total, $hGlobal, 'FECHA COMP 31', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
 		($gsfei=='fei')?$this->MultiCell($tam6+$total, $hGlobal, 'FECHA INI DEPRE', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
@@ -185,9 +185,9 @@ EOF;
 		($gsviu=='viu')?$this->MultiCell($tam8+$total, $hGlobal, 'VIDA UTIL RESTANTE', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
 		($gsimp=='imp')?$this->MultiCell($tam9+$total, $hGlobal, 'IMPORTE'."\x0A".'100%', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
 		($gsgmon=='mon')?$this->MultiCell($tam10+$total,$hGlobal, 'MONTO'."\x0A".'87%', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
-		($gsuco=='uco')?$this->MultiCell($tam11+$total,$hGlobal, 'UNIDAD SOLICITANTE',1,'C',false,0,'','',true,0,false,true,0,'T',false):'';					        			
+		($gsuco=='uco')?$this->MultiCell($tam11+$total,$hGlobal, 'UNIDAD SOLICITANTE',1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
     }
- 
+
     function setDatos($datos,$datos2,$datos3) {
 
         $this->datos = $datos;
@@ -197,34 +197,34 @@ EOF;
     }
 
     function  generarReporte()
-    {		
+    {
         $this->AddPage();
         $this->SetMargins(2, 40, 2);
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-		if(count($this->datos2)!=0){							
-				$one=0.5;						            										
+		if(count($this->datos2)!=0){
+				$one=0.5;
 			}
-		if($this->objParam->getParametro('nr_factura')!=''){							
-				$two=0.5;																					
-		}if(count($this->datos2)!=0 && $this->objParam->getParametro('nr_factura')!='' ){			
+		if($this->objParam->getParametro('nr_factura')!=''){
+				$two=0.5;
+		}if(count($this->datos2)!=0 && $this->objParam->getParametro('nr_factura')!='' ){
 				$five=4;
 		}
-		if(count($this->datos2)!=0 && $this->objParam->getParametro('id_depto')!='' ){			
+		if(count($this->datos2)!=0 && $this->objParam->getParametro('id_depto')!='' ){
 				$six=8;
-		}		
-		if($this->objParam->getParametro('id_depto')==7){										
+		}
+		if($this->objParam->getParametro('id_depto')==7){
 				$three=0.5;
-		}if($this->objParam->getParametro('id_depto')==47){				
-				$three=0.5;		
+		}if($this->objParam->getParametro('id_depto')==47){
+				$three=0.5;
 		}
-		if($this->objParam->getParametro('id_proveedor')!=''){										
-				$four=0.5;							
+		if($this->objParam->getParametro('id_proveedor')!=''){
+				$four=0.5;
 		}
-		$sol = $one+$two+$three+$four;		
+		$sol = $one+$two+$three+$four;
 		($five>0)?$sol+=$five:$a=0;
 		($six>0)?$sol+=$six:$a=0;
-		//var_dump($sol);exit;					
-		$r=3.5;	
+		//var_dump($sol);exit;
+		$r=3.5;
 		switch ($sol) {
 			case 2:$r=6.5;break;
 			case 1.5:$r=4;break;
@@ -236,8 +236,8 @@ EOF;
 			case 14:$r=-5.5;break;
 			case 13.5:$r=-6;break;
 		}
-		
-		($sol==0)?$this->Ln(-2.5):$this->Ln($r+$sol);				   
+
+		($sol==0)?$this->Ln(-2.5):$this->Ln($r+$sol);
         //variables para la tabla
         $codigo = '';
         $nombre = '';
@@ -252,14 +252,14 @@ EOF;
         $total_grupo_100 = 0;
 
         $i=1;
-        $contador = 1; 
+        $contador = 1;
         $tipo = $this->objParam->getParametro('tipo_reporte');
 		$select = $this->objParam->getParametro('gestion_multi');
 		$hiddes = explode(',', $select);
 
 		$gscod = '';
-		$gsdes = '';				
-		$gsfec = '';		
+		$gsdes = '';
+		$gsfec = '';
 		$gsmun = '';
 		$gsf31 = '';
 		$gsfei = '';
@@ -268,34 +268,34 @@ EOF;
 		$gsimp = '';
 		$gsgmon = '';
 		$gsuco = '';
-		
+
 		$tam1=18;
 		$tam2=51;
 		$tam3=13;
 		$tam4=13;
 		$tam5=13;
 		$tam6=15;
-		$tam7=14; 
+		$tam7=14;
 		$tam8=14;
 		$tam9=17;
 		$tam10=17;
 		$tam11=17;
-							
-		//asigna a cada variable su valor recibido desde la vista										
+
+		//asigna a cada variable su valor recibido desde la vista
 		for ($j=0; $j <count($hiddes) ; $j++) {
 		switch ($hiddes[$j]) {
 			case 'gcod': $gscod = 'cod'; break;
 			case 'gdes': $gsdes = 'des'; break;
-			case 'gfec': $gsfec = 'fec'; break;			
+			case 'gfec': $gsfec = 'fec'; break;
 			case 'gnum': $gsmun = 'mun'; break;
 			case 'gf31': $gsf31 = 'f31'; break;
 			case 'gfei': $gsfei = 'fei'; break;
 			case 'gvit': $gsvit = 'vit'; break;
-			case 'gviu': $gsviu = 'viu'; break;			
+			case 'gviu': $gsviu = 'viu'; break;
 			case 'gimp': $gsimp = 'imp'; break;
 			case 'gmon': $gsgmon = 'mon'; break;
-			case 'guco': $gsuco = 'uco' ; break;																	
-			}									 			
+			case 'guco': $gsuco = 'uco' ; break;
+			}
 		}
 		if ($gscod=='') {
 			$tam1 = 0;
@@ -319,26 +319,26 @@ EOF;
 			$tam10 = 0;
 		}if ($gsuco=='') {
 			$tam11 = 0;
-		}		
-		
+		}
+
 		$xpage = 202;//∑ tam^n ai = an
-		$cont = 0;		 
+		$cont = 0;
 		$resul = $tam1+$tam2+$tam3+$tam4+$tam5+$tam6+$tam7+$tam8+$tam9+$tam10+$tam11;
 		$alca = $xpage - $resul;
 		$n = count($hiddes);
-				
-		if($alca>0){					 
-			$total = $alca/$n;	 
+
+		if($alca>0){
+			$total = $alca/$n;
 			while ($resul<$xpage) {
 				$cont += 0.001;
 				$resul += 1;
 			}
-			$total += $cont;					 
-		}else{				
-		 	$total= 0;		 
+			$total += $cont;
+		}else{
+		 	$total= 0;
 		}
-						
-		//arreglo para tablewidths estatica 	
+
+		//arreglo para tablewidths estatica
 		$datos = array('t1'=>10,
 					   'cod'=>$tam1+$total,
 					   'des'=>$tam2+$total,
@@ -350,16 +350,16 @@ EOF;
 					   'viu'=>$tam8+$total,
 					   'imp'=>$tam9+$total,
 					   'mon'=>$tam10+$total,
-					   'uco'=>$tam11+$total);					   
-				
+					   'uco'=>$tam11+$total);
+
 		$this->tablewidths=$this->filterArray($datos);
-		$tablenums0=array('t1'=>0,'cod'=>0,'des'=>0,'fec'=>0,'num'=>0,'f31'=>0,'fei'=>0,'vit'=>0,'viu'=>0,'imp'=>2,'mon'=>2,'uco'=>0);  //1
-		$tablenums1=array('t1'=>0,'cod'=>0,'des'=>0,'fec'=>0,'num'=>0,'f31'=>0,'fei'=>0,'vit'=>0,'viu'=>0,'imp'=>0,'mon'=>0,'uco'=>0);  //2		
+		$tablenums0=array('t1'=>0,'cod'=>0,'des'=>0,'fec'=>0,'mun'=>0,'f31'=>0,'fei'=>0,'vit'=>0,'viu'=>0,'imp'=>2,'mon'=>2,'uco'=>0);  //1
+		$tablenums1=array('t1'=>0,'cod'=>0,'des'=>0,'fec'=>0,'mun'=>0,'f31'=>0,'fei'=>0,'vit'=>0,'viu'=>0,'imp'=>0,'mon'=>0,'uco'=>0);  //2		
 		$tablenums0Real = $this->filterArray($tablenums0);
-		$tablenums1Real = $this->filterArray($tablenums1); 	
-        $this->tablealigns=array('C','L','L','C','C','C','C','C','C','R','R','R');					
+		$tablenums1Real = $this->filterArray($tablenums1);
+        $this->tablealigns=array('C','L','L','C','C','C','C','C','C','R','R','R');
        foreach($this->datos as $record){
-            
+
             if($record['nivel'] == 0 || $record['nivel'] == 1){
                 $this->SetFont('','B',6);
                 if($codigo != '' && ($record['nivel'] == 0 || $record['nivel'] == 1) && $cont_87>0){
@@ -371,7 +371,7 @@ EOF;
                         $this->SetTextColor(0);
                         $this->tableborders = array('LB', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B','RB');
                         //$this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,0);
-                        $this->tablenumbers =$tablenums0Real; 
+                        $this->tablenumbers =$tablenums0Real;
                         $RowArray = array(
                             's0' => '',
                             's1' => '',
@@ -408,7 +408,7 @@ EOF;
 							unset($RowArray['s10']);
 						}if ($gsuco==''){
 							unset($RowArray['s11']);
-						}																										
+						}
                         $this->MultiRow($RowArray, true, 1);
                     }
                     $total_grupo_100 += $cont_100;
@@ -453,14 +453,14 @@ EOF;
 							unset($RowArray['s10']);
 						}if ($gsuco==''){
 							unset($RowArray['s11']);
-						}		
+						}
                             $this->MultiRow($RowArray, true, 1);
                         }else{
                             $this->SetFillColor(224, 235, 255);
                             $this->SetTextColor(0);
                             $this->tableborders = array('LB', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B','RB');
                             //$this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,0);
-                            $this->tablenumbers =$tablenums0Real; 
+                            $this->tablenumbers =$tablenums0Real;
                             $RowArray = array(
                                 's0' => '',
                                 's1' => $codigo,
@@ -497,7 +497,7 @@ EOF;
 							unset($RowArray['s10']);
 						}if ($gsuco==''){
 							unset($RowArray['s11']);
-						}							
+						}
                             $this->MultiRow($RowArray, true, 1);
                             //$contador++;
                         }
@@ -511,7 +511,7 @@ EOF;
                     $this->SetTextColor(0);
                     $this->tableborders = array('LB', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B','RB');
                     //$this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0);
-					$this->tablenumbers =$tablenums1Real; 
+					$this->tablenumbers =$tablenums1Real;
                     $RowArray = array(
                         's0' => '',
                         's1' => $record['codigo_completo'],
@@ -548,7 +548,7 @@ EOF;
 							unset($RowArray['s10']);
 						}if ($gsuco==''){
 							unset($RowArray['s11']);
-						}							
+						}
                     $this->MultiRow($RowArray, true, 1);
                 }
                 if($record['nivel'] == 0){
@@ -560,7 +560,7 @@ EOF;
                     $this->SetFont('', '', 6);
                     $this->tableborders = array('RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB','RLTB');
                     //$this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,0);
-                    $this->tablenumbers =$tablenums0Real; 
+                    $this->tablenumbers =$tablenums0Real;
                     $RowArray = array(
                         's0' => $record['nivel'] == 2 ? $i : '',
                         's1' => $record['nivel'] == 2 ? $record['codigo_af'] : $record['camino'],
@@ -597,7 +597,7 @@ EOF;
 							unset($RowArray['s10']);
 						}if ($gsuco==''){
 							unset($RowArray['s11']);
-						}																	
+						}
                     $this->MultiRow($RowArray);
                     $i++;
                 }
@@ -613,7 +613,7 @@ EOF;
         $this->SetTextColor(0);
         $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','RB');
         //$this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2,0);
-        $this->tablenumbers =$tablenums0Real; 
+        $this->tablenumbers =$tablenums0Real;
         if($tipo == 1) {
             $RowArray = array(
                 's0' => '',
@@ -651,7 +651,7 @@ EOF;
 							unset($RowArray['s10']);
 						}if ($gsuco==''){
 							unset($RowArray['s11']);
-						}					
+						}
             $this->MultiRow($RowArray, true, 1);
 
             //Final Grupo
@@ -691,7 +691,7 @@ EOF;
 							unset($RowArray['s10']);
 						}if ($gsuco==''){
 							unset($RowArray['s11']);
-						}											
+						}
             $this->MultiRow($RowArray, true, 1);
         }else{
             $this->SetFillColor(224, 235, 255);
@@ -732,7 +732,7 @@ EOF;
 							unset($RowArray['s10']);
 						}if ($gsuco==''){
 							unset($RowArray['s11']);
-						}			
+						}
             $this->MultiRow($RowArray, true, 1);
         }
 
@@ -740,7 +740,7 @@ EOF;
         $this->SetTextColor(0);
         $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','RB');
         //$this->tablenumbers=array(0,0,0,0,0,0,0,0,0,2,2,0);
-        $this->tablenumbers =$tablenums0Real; 
+        $this->tablenumbers =$tablenums0Real;
         $RowArray = array(
             's0'  => '',
             's1' => '',
@@ -777,7 +777,7 @@ EOF;
 							unset($RowArray['s10']);
 						} if($gsuco==''){
 							unset($RowArray['s11']);
-						}	
+						}
         $this->MultiRow($RowArray,true,1);
 
 
@@ -786,10 +786,10 @@ function filterArray($table){
 
 $resp = array();
 		$control = $this->objParam->getParametro('gestion_multi');
-		$hiddes = explode(',', $control);	
+		$hiddes = explode(',', $control);
 		$gscod = '';
-		$gsdes = '';				
-		$gsfec = '';		
+		$gsdes = '';
+		$gsfec = '';
 		$gsmun = '';
 		$gsf31 = '';
 		$gsfei = '';
@@ -798,60 +798,60 @@ $resp = array();
 		$gsimp = '';
 		$gsgmon = '';
 		$gsuco = '';
-							
-		//asigna a cada variable su valor recibido desde la vista										
+
+		//asigna a cada variable su valor recibido desde la vista
 		for ($j=0; $j <count($hiddes) ; $j++) {
 		switch ($hiddes[$j]) {
 			case 'gcod': $gscod = 'cod'; break;
 			case 'gdes': $gsdes = 'des'; break;
-			case 'gfec': $gsfec = 'fec'; break;			
+			case 'gfec': $gsfec = 'fec'; break;
 			case 'gnum': $gsmun = 'mun'; break;
 			case 'gf31': $gsf31 = 'f31'; break;
 			case 'gfei': $gsfei = 'fei'; break;
 			case 'gvit': $gsvit = 'vit'; break;
-			case 'gviu': $gsviu = 'viu'; break;			
+			case 'gviu': $gsviu = 'viu'; break;
 			case 'gimp': $gsimp = 'imp'; break;
 			case 'gmon': $gsgmon = 'mon'; break;
-			case 'guco': $gsuco = 'uco' ; break;																	
-			}									 			
+			case 'guco': $gsuco = 'uco' ; break;
+			}
 		}
 
 $proces = $table;
 
-		foreach ($proces as $key => $value) {	
+		foreach ($proces as $key => $value) {
 		    if($gscod==''){
-		        unset($proces['cod']);      
-		    }   
-		    if($gsdes==''){            
+		        unset($proces['cod']);
+		    }
+		    if($gsdes==''){
 		        unset($proces['des']);
-		    }   
+		    }
 		    if($gsfec==''){
 		        unset($proces['fec']);
-		    }   
+		    }
 		    if($gsmun==''){
 		        unset($proces['mun']);
-		    }   
+		    }
 		    if($gsf31==''){
 		        unset($proces['f31']);
-		    }    
+		    }
 		    if($gsfei==''){
-		        unset($proces['fei']);  
-		    }   
+		        unset($proces['fei']);
+		    }
 		    if($gsvit==''){
 		        unset($proces['vit']);
-		    }   
+		    }
 		    if($gsviu==''){
 		        unset($proces['viu']);
-		    }   
+		    }
 		    if($gsimp==''){
 		        unset($proces['imp']);
-		    }   
+		    }
 		    if($gsgmon==''){
 		        unset($proces['mon']);
-		    }   
+		    }
 		    if($gsuco==''){
 		        unset($proces['uco']);
-		    }   	
+		    }
 		}
 	$resp=array();
 	foreach ($proces as $value) {
