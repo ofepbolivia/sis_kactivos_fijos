@@ -452,13 +452,13 @@ Phx.vista.MovimientoPrincipal = {
 
  loadCheckDocumentosSol:function() {
      var rec=this.sm.getSelected();
-     console.log('LLEGA EL DATO DOCUMENTOS: ',rec.data);
      rec.data.id_proceso_wf = rec.data.id_proceso_wf_doc;
      rec.data.nombreVista = this.nombreVista;
-     var aux = rec.data.id_proceso;
-
-     console.log('DATOS DOCUMENTOS 2: ',aux);
-     console.log('DATOS AUXILIAR: ',rec.data);
+     var proceso = rec.data.id_proceso_wf_doc;
+     if (proceso == null) {
+       alert('El Movimiento no tiene documetos de preingreso');
+     }
+     else {
      Phx.CP.loadWindows('../../../sis_workflow/vista/documento_wf/DocumentoWf.php',
          'Chequear documento del WF',
          {
@@ -469,6 +469,7 @@ Phx.vista.MovimientoPrincipal = {
          this.idContenedor,
          'DocumentoWf'
    )
+ }
    this.reload();
  },
 
