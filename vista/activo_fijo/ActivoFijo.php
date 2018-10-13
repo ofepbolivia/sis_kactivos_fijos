@@ -72,7 +72,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                 border: false
                             })
                         ]
-                    }), 
+                    }),
                     new Ext.Panel({
                         id: 'af_filter_depto',
                         title: 'Departamentos',
@@ -122,12 +122,12 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                     dataIndex: 'codigo'
                                 },{
                                     header: 'Nombre',
-                                    width: .6, 
+                                    width: .6,
                                     dataIndex: 'nombre'
                                 }]
                             })
                        ]
-                    }), 
+                    }),
                     new Ext.Panel({
                         id: 'af_filter_oficina',
                         title: 'Oficinas',
@@ -175,12 +175,12 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                     dataIndex: 'codigo'
                                 },{
                                     header: 'Nombre',
-                                    width: .6, 
+                                    width: .6,
                                     dataIndex: 'nombre'
                                 }]
                             })
                        ]
-                    }), 
+                    }),
                     new Ext.Panel({
                         title: 'Organigrama',
                         cls:'empty',
@@ -282,26 +282,26 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
             if(cmbCaract.getValue()&&txtFilter.getValue()){
                 this.store.baseParams.caractFilter=cmbCaract.getValue();
                 this.store.baseParams.caractValue=txtFilter.getValue();
-                this.store.load({params:{start:0, limit:this.tam_pag}});    
+                this.store.load({params:{start:0, limit:this.tam_pag}});
             } else {
                 this.store.baseParams.caractFilter='';
                 this.store.baseParams.caractValue='';
                 this.store.load({params:{start:0, limit:this.tam_pag}});
             }
-            
+
         },this);
         txtFilter.on('blur',function (val){
             //Verifica que el campo de texto tenga algun valor
             if(cmbCaract.getValue()&&txtFilter.getValue()){
                 this.store.baseParams.caractFilter=cmbCaract.getValue();
                 this.store.baseParams.caractValue=txtFilter.getValue();
-                this.store.load({params:{start:0, limit:this.tam_pag}});    
+                this.store.load({params:{start:0, limit:this.tam_pag}});
             } else {
                 this.store.baseParams.caractFilter='';
                 this.store.baseParams.caractValue='';
                 this.store.load({params:{start:0, limit:this.tam_pag}});
             }
-            
+
         },this);
 
         this.init();
@@ -332,7 +332,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         Ext.getCmp('af_filter_oficina').on('activate',function(){
             Ext.getCmp('af_filter_oficina_cbo').store.load();
         },this);
-        
+
         Ext.getCmp('af_filter_accordion').on('expand',function(){alert('evento')},this);
 
         Ext.getCmp('tree_clasificacion_af').loader.on('beforeload', function(treeLoader,node){
@@ -422,7 +422,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
 
         this.detailsTemplate.compile();
 
-        
+
         //Add button for upload Photo
         this.addButton('btnPhoto', {
             text : 'Subir Foto',
@@ -431,7 +431,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
             handler : this.subirFoto,
             tooltip : '<b>Foto</b><br/>Subir foto para el activo fijo'
         });
-        
+
         //Add button for codification
         this.addButton('btnImpCodigo', {
             text : 'Imp Código',
@@ -448,7 +448,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
             handler : this.abrirDetalleDep,
             tooltip : '<b>Detalle Depreciación</b><br/>Detalle completo de las depreciaciones mensuales realizadas'
         });
-        
+
 
         //Add context menu
         this.grid.on('rowcontextmenu', function(grid, rowIndex, e) {
@@ -483,7 +483,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
             padding: this.paddingForm,
             bodyStyle: this.bodyStyleForm,
             border: this.borderForm,
-            frame: this.frameForm, 
+            frame: this.frameForm,
             autoScroll: false,
             autoDestroy: true,
             autoScroll: true,
@@ -846,6 +846,35 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         grid: true,
         form: true
     }, {
+        config: {
+            name: 'subtipo',
+            fieldLabel: 'Subtipo',
+            allowBlank: true,
+            emptyText: 'Elija una opción...',
+            store: new Ext.data.ArrayStore({
+                   id: 0,
+                   fields: [
+                       'myId',
+                       'displayText'
+                   ],
+                   data: [[1, 'item1'], [2, 'item2']]
+               }),
+               valueField: 'myId',
+               displayField: 'displayText'
+            },
+            typeAhead: true,
+            triggerAction: 'all',
+            lazyRender:true,
+            mode: 'local' ,
+            type: 'ComboBox',
+            id_grupo: 0,
+            filters: {
+                pfiltro: 'movtip.nombre',
+                type: 'string'
+            },
+            grid: true,
+            form: true
+    },{
         config: {
             name: 'fecha_ult_dep',
             fieldLabel: 'Ultima Dep.',
@@ -1553,7 +1582,21 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         grid: true,
         form: true,
         bottom_filter:true
-    }, {
+    },   {
+          config:{
+              name: 'tramite_compra',
+              fieldLabel: 'Nro. de Tramite de Compra',
+              allowBlank: false,
+              anchor: '100%',
+              gwidth: 180,
+              maxLength:255
+          },
+          type:'TextField',
+          filters:{pfiltro:'afij.tramite_compra',type:'string'},
+          id_grupo:1,
+          grid:true,
+          form:true
+      },{
         config: {
             name: 'caracteristicas',
             fieldLabel: 'Caracteristicas',
@@ -1686,52 +1729,52 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     ActDel: '../../sis_kactivos_fijos/control/ActivoFijo/eliminarActivoFijo',
     ActList: '../../sis_kactivos_fijos/control/ActivoFijo/listarActivoFijo',
     id_store: 'id_activo_fijo',
-    fields: [{name: 'id_activo_fijo',type: 'numeric'}, 
-             {name: 'id_persona',type: 'numeric'}, 
-             {name: 'cantidad_revaloriz',type: 'numeric'}, 
-             {name: 'foto',type: 'string'}, 
-             {name: 'id_proveedor',type: 'numeric'}, 
-             {name: 'estado_reg',type: 'string'}, 
-             {name: 'fecha_compra',type: 'date',dateFormat: 'Y-m-d'}, 
-             {name: 'monto_vigente',type: 'numeric'}, 
-             {name: 'id_cat_estado_fun',type: 'numeric'}, 
-             {name: 'ubicacion',type: 'string'}, 
-             {name: 'vida_util',type: 'numeric'}, 
-             {name: 'documento',type: 'string'}, 
-             {name: 'observaciones',type: 'string'}, 
-             {name: 'fecha_ult_dep',type: 'date',dateFormat: 'Y-m-d'}, 
-             {name: 'monto_rescate',type: 'numeric'}, 
-             {name: 'denominacion',type: 'string'}, 
-             {name: 'id_funcionario',type: 'numeric'}, 
+    fields: [{name: 'id_activo_fijo',type: 'numeric'},
+             {name: 'id_persona',type: 'numeric'},
+             {name: 'cantidad_revaloriz',type: 'numeric'},
+             {name: 'foto',type: 'string'},
+             {name: 'id_proveedor',type: 'numeric'},
+             {name: 'estado_reg',type: 'string'},
+             {name: 'fecha_compra',type: 'date',dateFormat: 'Y-m-d'},
+             {name: 'monto_vigente',type: 'numeric'},
+             {name: 'id_cat_estado_fun',type: 'numeric'},
+             {name: 'ubicacion',type: 'string'},
+             {name: 'vida_util',type: 'numeric'},
+             {name: 'documento',type: 'string'},
+             {name: 'observaciones',type: 'string'},
+             {name: 'fecha_ult_dep',type: 'date',dateFormat: 'Y-m-d'},
+             {name: 'monto_rescate',type: 'numeric'},
+             {name: 'denominacion',type: 'string'},
+             {name: 'id_funcionario',type: 'numeric'},
              {name: 'id_deposito',type: 'numeric'},
-             {name: 'monto_compra',type: 'numeric'}, 
-             {name: 'id_moneda',type: 'numeric'}, 
-             {name: 'depreciacion_mes',type: 'numeric'}, 
-             {name: 'codigo',type: 'string'}, 
-             {name: 'descripcion',type: 'string'}, 
-             {name: 'id_moneda_orig',type: 'numeric'}, 
-             {name: 'fecha_ini_dep',type: 'date',dateFormat: 'Y-m-d'}, 
-             {name: 'id_cat_estado_compra',type: 'numeric'}, 
-             {name: 'depreciacion_per',type: 'numeric'}, 
-             {name: 'vida_util_original',type: 'numeric'}, 
-             {name: 'depreciacion_acum',type: 'numeric'}, 
-             {name: 'estado',type: 'string'}, 
-             {name: 'id_clasificacion',type: 'numeric'}, 
-             {name: 'id_centro_costo',type: 'numeric'}, 
-             {name: 'id_oficina',type: 'numeric'}, 
-             {name: 'id_depto',type: 'numeric'}, 
-             {name: 'id_usuario_reg',type: 'numeric'}, 
-             {name: 'fecha_reg',type: 'date',dateFormat: 'Y-m-d H:i:s.u'}, {name: 'usuario_ai',type: 'string'}, 
-             {name: 'id_usuario_ai',type: 'numeric'}, {name: 'id_usuario_mod',type: 'numeric'}, {name: 'fecha_mod',type: 'date',dateFormat: 'Y-m-d H:i:s.u'}, {name: 'usr_reg',type: 'string'}, 
-             {name: 'usr_mod',type: 'string'}, {name: 'persona',type: 'string'}, 
-             {name: 'desc_proveedor',type: 'string'}, 
-             {name: 'estado_fun',type: 'string'}, 
-             {name: 'estado_compra',type: 'string'}, {name: 'clasificacion',type: 'string'}, 
-             {name: 'centro_costo',type: 'string'}, 
-             {name: 'oficina',type: 'string'}, 
-             {name: 'depto',type: 'string'}, 
-             {name: 'funcionario',type: 'string'}, 
-             {name: 'deposito',type: 'string'}, {name: 'deposito_cod',type: 'string'}, 
+             {name: 'monto_compra',type: 'numeric'},
+             {name: 'id_moneda',type: 'numeric'},
+             {name: 'depreciacion_mes',type: 'numeric'},
+             {name: 'codigo',type: 'string'},
+             {name: 'descripcion',type: 'string'},
+             {name: 'id_moneda_orig',type: 'numeric'},
+             {name: 'fecha_ini_dep',type: 'date',dateFormat: 'Y-m-d'},
+             {name: 'id_cat_estado_compra',type: 'numeric'},
+             {name: 'depreciacion_per',type: 'numeric'},
+             {name: 'vida_util_original',type: 'numeric'},
+             {name: 'depreciacion_acum',type: 'numeric'},
+             {name: 'estado',type: 'string'},
+             {name: 'id_clasificacion',type: 'numeric'},
+             {name: 'id_centro_costo',type: 'numeric'},
+             {name: 'id_oficina',type: 'numeric'},
+             {name: 'id_depto',type: 'numeric'},
+             {name: 'id_usuario_reg',type: 'numeric'},
+             {name: 'fecha_reg',type: 'date',dateFormat: 'Y-m-d H:i:s.u'}, {name: 'usuario_ai',type: 'string'},
+             {name: 'id_usuario_ai',type: 'numeric'}, {name: 'id_usuario_mod',type: 'numeric'}, {name: 'fecha_mod',type: 'date',dateFormat: 'Y-m-d H:i:s.u'}, {name: 'usr_reg',type: 'string'},
+             {name: 'usr_mod',type: 'string'}, {name: 'persona',type: 'string'},
+             {name: 'desc_proveedor',type: 'string'},
+             {name: 'estado_fun',type: 'string'},
+             {name: 'estado_compra',type: 'string'}, {name: 'clasificacion',type: 'string'},
+             {name: 'centro_costo',type: 'string'},
+             {name: 'oficina',type: 'string'},
+             {name: 'depto',type: 'string'},
+             {name: 'funcionario',type: 'string'},
+             {name: 'deposito',type: 'string'}, {name: 'deposito_cod',type: 'string'},
              {name: 'desc_moneda_orig',type: 'string'},
              {name: 'en_deposito',type: 'string'},{name: 'extension',type: 'string'},
              {name: 'codigo_ant',type: 'string'},{name: 'marca',type: 'string'},
@@ -1746,7 +1789,10 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
              {name:'vida_util_original_anios',type:'numeric'},
              {name:'prestamo',type:'string'},
              {name:'fecha_dev_prestamo',type:'date',dateFormat: 'Y-m-d'},
-             {name:'fecha_asignacion',type:'date',dateFormat: 'Y-m-d'}
+             {name:'fecha_asignacion',type:'date',dateFormat: 'Y-m-d'},
+             {name: 'tramite_compra',type: 'string'},
+             {name: 'subtipo',type: 'string'}
+
              ],
     arrayDefaultColumHidden: ['fecha_reg', 'usr_reg', 'fecha_mod', 'usr_mod', 'estado_reg', 'id_usuario_ai', 'usuario_ai', 'id_persona', 'foto', 'id_proveedor', 'fecha_compra', 'id_cat_estado_fun', 'ubicacion', 'documento', 'observaciones', 'monto_rescate', 'id_deposito', 'monto_compra', 'id_moneda', 'depreciacion_mes', 'descripcion', 'id_moneda_orig', 'fecha_ini_dep', 'id_cat_estado_compra', 'vida_util_original', 'id_centro_costo', 'id_oficina', 'id_depto'],
     sortInfo: {
@@ -1759,11 +1805,11 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     rowExpander: new Ext.ux.grid.RowExpander({
         tpl: new Ext.Template('<br>', '<table><tr><td rowspan="5"><img src="{foto}" height="100" width="150"></td></tr><tr><td colspan ="2"><b>Descripción:</b> {descripcion}</td></tr><tr><td><b>Responsable:</b> {funcionario}</td><td><b>Fecha Ini. Dep.:</b> {fecha_ini_dep}</td></tr><tr><td><b>Ubicación:</b> {ubicacion}</td><td><b>Documento:</b> {documento}</td></tr><tr><td><b>Oficina:</b> {oficina}</td><td><b>Estado funcional:</b> {estado_fun}</td></tr></table>')
     }),
-    bodyStyleForm: 'padding:5px;', 
+    bodyStyleForm: 'padding:5px;',
     borderForm: true,
-    frameForm: false, 
+    frameForm: false,
     paddingForm: '5 5 5 5',
-    
+
     crearVentana: function() {
         if(this.afWindow){
             this.form.destroy();
@@ -1821,14 +1867,14 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                     flex: 1
                                 },*/
                                 items: [{
-                                    xtype: 'checkbox',                                   
+                                    xtype: 'checkbox',
                                     name: 'reval',
                                     width: 10,
                                     disabled: true,
                                     id: this.idContenedor+'_reval'
                                 }, {
                                     xtype: 'numberfield',
-                                    name: 'cantidad_revaloriz',                                  
+                                    name: 'cantidad_revaloriz',
                                     width: 30,
                                     disabled: true,
                                     id: this.idContenedor+'_cantidad_revaloriz'
@@ -2292,6 +2338,31 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                 allowBlank: true,
                                 id: this.idContenedor+'_fecha_cbte_asociado',
                                 width: 140
+                            },{
+                                xtype: 'textfield',
+                                fieldLabel: 'Nro. de Tramite de Compra',
+                                name: 'tramite_compra',
+                                allowBlank: true,
+                                id: this.idContenedor+'_tramite_compra',
+                                width: 140
+                            },{
+                                xtype: 'combo',
+                                fieldLabel: 'Subtipo',
+                                name: 'subtipo',
+                                allowBlank: true,
+                                mode: 'local',
+                                triggerAction: 'all',
+                                emptyText: 'Elija una opción',
+                                id: this.idContenedor+'_subtipo',
+                                emptyText: 'Elija una opción',
+                                store: new Ext.data.ArrayStore({
+                                    id: 0,
+                                    fields: ['subtipo'],
+                                    data: [ ['Ninguno'], ['Leasing']]
+                                }),
+                                valueField: 'subtipo',
+                                displayField: 'subtipo'
+
                             }]
                         }, {
                             title: 'Datos Depreciación',
@@ -2344,7 +2415,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                 allowBlank: false,
                                 id: this.idContenedor+'_monto_rescate'
                             },
-                            
+
                             {
                                         xtype: 'combo',
                                         name:'id_proyecto',
@@ -2381,7 +2452,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                         queryDelay:1000,
                                         minChars:2
                                 }
-                            
+
                             ]
                         }]
                     }]
@@ -2390,7 +2461,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                 padding: this.paddingForm,
                 bodyStyle: this.bodyStyleForm,
                 border: this.borderForm,
-                frame: this.frameForm, 
+                frame: this.frameForm,
                 autoScroll: false,
                 autoDestroy: true,
                 autoScroll: true,
@@ -2436,7 +2507,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
             //Events
             //Clasificación
             Ext.getCmp(this.idContenedor+'_id_clasificacion').on('exception',this.conexionFailure,this);
-            
+          //  console.log('EL DATO ES:',Ext.getCmp(this.idContenedor+'_id_clasificacion'));
             Ext.getCmp(this.idContenedor+'_id_clasificacion').on('select',function(cmp,rec,index){
                 if(rec.data.depreciable == 'si'){
                     Ext.getCmp(this.idContenedor+'_vida_util_original').setValue(rec.data.vida_util);
@@ -2451,7 +2522,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                     Ext.getCmp(this.idContenedor+'_vida_util_original_anios').setValue('')
                 }
                 this.actualizarSegunClasificacion(rec.data.tipo_activo, rec.data.depreciable);
-                
+
             },this);
             //Vida util
             Ext.getCmp(this.idContenedor+'_vida_util_original').on('blur',function(cmp,rec,index){
@@ -2473,9 +2544,9 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                     Ext.getCmp(this.idContenedor+'_descripcion').setValue(Ext.getCmp(this.idContenedor+'_denominacion').getValue());
                 }
             },this);
-            
-             
-            
+
+
+
             //Depto
             Ext.getCmp(this.idContenedor+'_id_depto').on('select',function(cmp,rec,index){
                 var obj = {
@@ -2489,7 +2560,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                 Ext.getCmp(this.idContenedor+'_id_deposito').modificado=true;
                 Ext.getCmp(this.idContenedor+'_id_deposito').store.baseParams.id_depto=rec.data.id_depto;
 
-               
+
             },this);
             //Deposito
             Ext.getCmp(this.idContenedor+'_id_deposito').on('select',function(cmp,rec,index){
@@ -2522,7 +2593,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         var data;
         if(tipo=='edit'){
             //Carga datos
-            this.cargaFormulario(this.sm.getSelected().data);            
+            this.cargaFormulario(this.sm.getSelected().data);
             data = this.sm.getSelected().data;
         } else {
             //Inicializa el formulario
@@ -2547,7 +2618,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                             elm.store.commitChanges();
                             elm.modificado = true;
                         }
-                    } 
+                    }
                     elm.setValue(data[elm.name]);
                 },this);
             } else {
@@ -2560,10 +2631,10 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                         obj.modificado = true;
                         //console.log('key:'+key,',gdisplayField:'+obj.gdisplayField,',data[obj.gdisplayField]:'+data[obj.gdisplayField],',obj.valueField:'+obj.valueField,',data[key]:'+data[key]);
                         //console.log(rec,obj.store, data[key],obj.valueField);
-                    } 
+                    }
 
                 }
-                obj.setValue(data[key]);    
+                obj.setValue(data[key]);
             }
         },this);
 
@@ -2616,11 +2687,12 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     },
     dataSubmit: function(){
         var submit={};
+        console.log('LLEGA HASTA AQUI',obj.name);
         Ext.each(this.form.getForm().items.keys, function(element, index){
             obj = Ext.getCmp(element);
             if(obj.items){
                 Ext.each(obj.items.items, function(elm, ind){
-                    submit[elm.name]=elm.getValue();    
+                    submit[elm.name]=elm.getValue();
                 },this)
             } else {
                 submit[obj.name]=obj.getValue();
@@ -2640,7 +2712,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     },
 
     refreshClasif: function(){
-        
+
     },
 
     impCodigo: function(){
@@ -2654,8 +2726,8 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                     timeout: this.timeout,
                     scope: this
                 });
-            
-       
+
+
     },
 
     preparaMenu : function(n) {
@@ -2664,26 +2736,26 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         this.getBoton('btnPhoto').enable();
         this.getBoton('btnHistorialDep').enable();
         if(data.estado=='alta') {
-            this.getBoton('btnImpCodigo').enable(); 
+            this.getBoton('btnImpCodigo').enable();
         }
         else{
-            this.getBoton('btnImpCodigo').disable();           
+            this.getBoton('btnImpCodigo').disable();
         }
         return tb;
     },
 
     liberaMenu : function() {
         var tb = Phx.vista.ActivoFijo.superclass.liberaMenu.call(this);
-        this.getBoton('btnImpCodigo').disable();      
+        this.getBoton('btnImpCodigo').disable();
         this.getBoton('btnPhoto').disable();
         this.getBoton('btnHistorialDep').disable();
         return tb;
     },
-    
+
     onButtonNew: function() {
         this.crearVentana();
         this.abrirVentana('new');
-        Ext.getCmp(this.idContenedor+'_fecha_ini_dep').enable();        
+        Ext.getCmp(this.idContenedor+'_fecha_ini_dep').enable();
         Ext.getCmp(this.idContenedor+'_id_moneda_orig').enable();
         Ext.getCmp(this.idContenedor+'_monto_compra_orig').enable();
         Ext.getCmp(this.idContenedor+'_monto_compra_orig_100').enable();
@@ -2699,14 +2771,13 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     },
     onButtonEdit: function() {
         this.crearVentana();
-        this.abrirVentana('edit');        
+        this.abrirVentana('edit');
         var data = this.getSelectedData();
         this.getBoton('btnPhoto').enable();
         Ext.getCmp(this.idContenedor+'_vida_util_real_af').disable();
-        
         //diapra eventos de clasificaciones selecionada
         this.actualizarSegunClasificacion(data.tipo_activo, data.depreciable);
-        
+
         if(data.estado!='registrado') {
             Ext.getCmp(this.idContenedor+'_fecha_ini_dep').disable();
             Ext.getCmp(this.idContenedor+'_id_moneda_orig').disable();
@@ -2728,7 +2799,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
             Ext.getCmp(this.idContenedor+'_id_clasificacion').enable();
             Ext.getCmp(this.idContenedor+'_id_deposito').enable();
         }
- 
+
     },
 
     obtenerCadenaIDs: function(){
@@ -2757,7 +2828,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     },
 
     btriguerreturn:false,
-    
+
     actualizarSegunClasificacion: function(tipo_activo, depreciable){
         console.log('actualizar',tipo_activo, depreciable)
         if(tipo_activo == 'tangible'){
@@ -2769,8 +2840,8 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
             Ext.getCmp(this.idContenedor+'_nro_serie').disable();
             Ext.getCmp(this.idContenedor+'_marca').disable();
         }
-        
-        if(depreciable == 'si'){                    
+
+        if(depreciable == 'si'){
             Ext.getCmp(this.idContenedor+'_vida_util_original').enable();
             Ext.getCmp(this.idContenedor+'_vida_util_original_anios').enable();
             Ext.getCmp(this.idContenedor+'_vida_util_real_af').disable();
@@ -2782,7 +2853,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
             Ext.getCmp(this.idContenedor+'_monto_rescate').disable();
         }
     },
-    
+
 
     subirFoto: function(){
         var rec = this.sm.getSelected();
@@ -2822,7 +2893,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                 title: 'Modificaciones',
                 cls: 'ActivoFijoModificacion'
             }
-    
+
     ],
     abrirMovimientosRapido: function(tipoMov,title){
         var params={};
@@ -2836,7 +2907,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                     height : 620,
                     buttons: [],
                     bbar: []
-                }, { 
+                }, {
                     dataAf: rec,
                     tipoMov: tipoMov,
                     title: title
@@ -2884,7 +2955,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         this.mnuMov.menu.addItem(this.mnuMovAsig);
         this.mnuMov.menu.addItem(this.mnuMovTransf);
         this.mnuMov.menu.addSeparator()
-        this.mnuMov.menu.addItem(this.mnuMovDevol); 
+        this.mnuMov.menu.addItem(this.mnuMovDevol);
         this.ctxMenu.addItem(this.mnuMov);
     },
     convertirVidaUtil(cantidad,tipo='mes'){
@@ -2910,6 +2981,6 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
             'ActivoFijoValoresHist'
         );
     }
-    
+
 })
 </script>

@@ -8,17 +8,17 @@
 */
 
 class MODActivoFijoValores extends MODbase{
-	
+
 	function __construct(CTParametro $pParam){
 		parent::__construct($pParam);
 	}
-			
+
 	function listarActivoFijoValores(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='kaf.ft_activo_fijo_valores_sel';
 		$this->transaccion='SKA_ACTVAL_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
-				
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_activo_fijo_valor','int4');
 		$this->captura('id_activo_fijo','int4');
@@ -51,21 +51,21 @@ class MODActivoFijoValores extends MODbase{
 		$this->captura('fecha_fin','date');
 		$this->captura('monto_vigente_orig_100','numeric');
 		$this->captura('id_moneda','int4');
-		
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
-		
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function insertarActivoFijoValores(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_activo_fijo_valores_ime';
 		$this->transaccion='SKA_ACTVAL_INS';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_activo_fijo','id_activo_fijo','int4');
 		$this->setParametro('depreciacion_per','depreciacion_per','numeric');
@@ -94,13 +94,13 @@ class MODActivoFijoValores extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function modificarActivoFijoValores(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_activo_fijo_valores_ime';
 		$this->transaccion='SKA_ACTVAL_MOD';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_activo_fijo_valor','id_activo_fijo_valor','int4');
 		$this->setParametro('id_activo_fijo','id_activo_fijo','int4');
@@ -130,13 +130,13 @@ class MODActivoFijoValores extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function eliminarActivoFijoValores(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_activo_fijo_valores_ime';
 		$this->transaccion='SKA_ACTVAL_ELI';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_activo_fijo_valor','id_activo_fijo_valor','int4');
 
@@ -154,7 +154,7 @@ class MODActivoFijoValores extends MODbase{
 		$this->transaccion='SKA_ACTVAL_ARB';
 		$this->setCount(false);
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
-				
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_activo_fijo_valor','int4');
 		$this->captura('id_activo_fijo','int4');
@@ -188,14 +188,14 @@ class MODActivoFijoValores extends MODbase{
 		$this->captura('tipo_nodo','varchar');
 		$this->captura('monto_vigente_real','numeric');
 		$this->captura('monto_vigente_orig_100','numeric');
-		
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
-		
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 }
 ?>

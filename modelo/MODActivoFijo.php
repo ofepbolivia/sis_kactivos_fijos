@@ -104,6 +104,8 @@ class MODActivoFijo extends MODbase{
 		$this->captura('fecha_asignacion','date');
 		$this->captura('prestamo','varchar');
 		$this->captura('fecha_dev_prestamo','date');
+		$this->captura('tramite_compra','varchar');
+		$this->captura('subtipo','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -166,6 +168,8 @@ class MODActivoFijo extends MODbase{
 		$this->setParametro('monto_compra_orig_100','monto_compra_orig_100','numeric');
 		$this->setParametro('nro_cbte_asociado','nro_cbte_asociado','varchar');
 		$this->setParametro('fecha_cbte_asociado','fecha_cbte_asociado','date');
+		$this->setParametro('tramite_compra','tramite_compra','varchar');
+		$this->setParametro('subtipo','subtipo','varchar');
 
 
 
@@ -230,6 +234,9 @@ class MODActivoFijo extends MODbase{
 		$this->setParametro('monto_compra_orig_100','monto_compra_orig_100','numeric');
 		$this->setParametro('nro_cbte_asociado','nro_cbte_asociado','varchar');
 		$this->setParametro('fecha_cbte_asociado','fecha_cbte_asociado','date');
+		$this->setParametro('tramite_compra','tramite_compra','varchar');
+		$this->setParametro('subtipo','subtipo','varchar');
+
 
 
 		//Ejecuta la instruccion
@@ -656,9 +663,9 @@ class MODActivoFijo extends MODbase{
 		$this->captura('monto_compra','numeric');
 		$this->captura('estado','varchar');
 
-		//Ejecuta la instruccion 
+		//Ejecuta la instruccion
 		$this->armarConsulta();
-		//echo $this->consulta;exit; 
+		//echo $this->consulta;exit;
 		$this->ejecutarConsulta();
 
 		//Devuelve la respuesta
@@ -698,35 +705,35 @@ class MODActivoFijo extends MODbase{
 
 
 	function ListaDetActivo(){
-		
+
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_activo_fijo_sel';
-		$this->transaccion='SKA_LI_ACLIDE_SEL'; 
+		$this->transaccion='SKA_LI_ACLIDE_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 		$this->setCount(false);
-	
+
 		//Ejecuta la instruccion
 		$this->captura('id_clasificacion','int4');
 		$this->captura('codigo','varchar');
 		$this->captura('nombre','varchar');
 		$this->captura('nivel','int4');
-		
+
 		$this->armarConsulta();
-		//var_dump($this->consulta);exit; 
+		//var_dump($this->consulta);exit;
 		$this->ejecutarConsulta();
 		//Devuelve la respuesta
 		return $this->respuesta;
-		
+
 	}
 	function ReporteDetalleActivos(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_activo_fijo_sel';
-		$this->transaccion='SKA_REP_DETAF_SEL'; // texto < 20 
+		$this->transaccion='SKA_REP_DETAF_SEL'; // texto < 20
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 		//$this->setCount(false);
-		
+
 		$this->setParametro('id_clasificacion','id_clasificacion','varchar');
-		
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_clasificacion','int4');
 		$this->captura('id_clasificacion_fk','int4');
@@ -736,43 +743,43 @@ class MODActivoFijo extends MODbase{
 		$this->captura('hijos','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
-		//var_dump($this->consulta);exit; 
+		//var_dump($this->consulta);exit;
 		$this->ejecutarConsulta();
 		//Devuelve la respuesta
 		return $this->respuesta;
-		
+
 	}
 	function ReporteActivoEnDetalle(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_activo_fijo_sel';
-		$this->transaccion='SKA_REP_ACTEDET_SEL'; // texto < 20 
+		$this->transaccion='SKA_REP_ACTEDET_SEL'; // texto < 20
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
-		
+
 		$this->setParametro('id_clasificacion','id_clasificacion','varchar');
 		//$this->setParametro('id_clasificacion','id_clasificacion','int4'); cambio para seleccion multiple
-		
+
 		//Definicion de la lista del resultado del query
-		
+
 		$this->captura('tipo','varchar');
-		$this->captura('marca','varchar'); 
+		$this->captura('marca','varchar');
 		$this->captura('subtipo','varchar');
 		$this->captura('codigo','varchar');
 		$this->captura('descripcion','varchar');
 		$this->captura('clasificacion','varchar');
 		$this->captura('denominacion','varchar');
 		$this->captura('estado','varchar');
-		$this->captura('estado_funcional','varchar'); 
+		$this->captura('estado_funcional','varchar');
 		$this->captura('fecha_compra','varchar');
 		$this->captura('c31','varchar');
 		$this->captura('ubicacion','varchar');
 		$this->captura('responsable','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
-		//var_dump($this->consulta);exit; 
+		//var_dump($this->consulta);exit;
 		$this->ejecutarConsulta();
 		//Devuelve la respuesta
 		return $this->respuesta;
-		
+
 	}
 	function lecturaQRAP(){
 		//Definicion de variables para ejecucion del procedimiento
@@ -784,13 +791,13 @@ class MODActivoFijo extends MODbase{
 		$this->setParametro('code','code','varchar');
 
 		//Ejecuta la instruccion
-		$this->armarConsulta();		
+		$this->armarConsulta();
 		$this->ejecutarConsulta();
 
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-	
+
 
 }
 ?>

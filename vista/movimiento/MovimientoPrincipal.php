@@ -6,16 +6,17 @@
 *@date 20-09-2011 10:22:05
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
 */
+include_once ('../../../media/styles.php');
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.MovimientoPrincipal = {    
-    bsave:false,    
+Phx.vista.MovimientoPrincipal = {
+    bsave:false,
     require:'../../../sis_kactivos_fijos/vista/movimiento/Movimiento.php',
     requireclase:'Phx.vista.Movimiento',
     title:'Movimientos',
     nombreVista: 'MovimientoPrincipal',
-    
+
     gruposBarraTareas:[
 		{name:'Todos',title:'<h1 align="center"><i class="fa fa-bars"></i> Todos</h1>',grupo:0,height:0},
 	   	{name:'Altas',title:'<h1 align="center"><i class="fa fa-thumbs-o-up"></i> Altas</h1>',grupo:1,height:0},
@@ -55,9 +56,9 @@ Phx.vista.MovimientoPrincipal = {
     bactGroups:  [0,1,2,3,4,5,6],
     btestGroups: [0,1,2,3,4,5,6],
     bexcelGroups: [0,1,2,3,4,5,6],
-    
-    
-    
+
+
+
     constructor: function(config) {
 
         Phx.vista.MovimientoPrincipal.superclass.constructor.call(this,config);
@@ -153,7 +154,7 @@ Phx.vista.MovimientoPrincipal = {
             this.Cmp.id_deposito.modificado=true;
             this.Cmp.id_deposito.store.baseParams.id_depto=rec.data.id_depto;
         }, this);
-        
+
         //Add handler to id_cat_movimiento field
         this.Cmp.id_depto_dest.on('select', function(cmp,rec,el){
         	this.Cmp.id_deposito_dest.reset();
@@ -175,6 +176,14 @@ Phx.vista.MovimientoPrincipal = {
             }
         );
 
+        this.addButton('btnChequeoDocumentosAF',{
+          grupo:[0,1,2,3,4], text: 'Documentos Activo Fijo',
+          iconCls: 'bchecklist2',
+          disabled: true,
+          handler: this.loadCheckDocumentosSol,
+          tooltip: '<b>Documentos del Proceso</b><br/>Subir los documetos requeridos en el proceso seleccionada.'
+        });
+
         function diagramGantt(){
             var data=this.sm.getSelected().data.id_proceso_wf;
             Phx.CP.loadingShow();
@@ -185,7 +194,7 @@ Phx.vista.MovimientoPrincipal = {
                 failure: this.conexionFailure,
                 timeout:this.timeout,
                 scope:this
-            });         
+            });
         }
 
 
@@ -431,7 +440,7 @@ Phx.vista.MovimientoPrincipal = {
     	Phx.vista.Movimiento.superclass.onButtonEdit.call(this);
     	var data = this.getSelectedData();
     	this.habilitarCampos(data.cod_movimiento);
-        
+
     },
 
     south: {
@@ -440,7 +449,29 @@ Phx.vista.MovimientoPrincipal = {
 		height: '50%',
 		cls: 'MovimientoAf'
 	},
-	
+
+ loadCheckDocumentosSol:function() {
+     var rec=this.sm.getSelected();
+     console.log('LLEGA EL DATO DOCUMENTOS: ',rec.data);
+     rec.data.id_proceso_wf = rec.data.id_proceso_wf_doc;
+     rec.data.nombreVista = this.nombreVista;
+     var aux = rec.data.id_proceso;
+
+     console.log('DATOS DOCUMENTOS 2: ',aux);
+     console.log('DATOS AUXILIAR: ',rec.data);
+     Phx.CP.loadWindows('../../../sis_workflow/vista/documento_wf/DocumentoWf.php',
+         'Chequear documento del WF',
+         {
+             width:'90%',
+             height:500
+         },
+         rec.data,
+         this.idContenedor,
+         'DocumentoWf'
+   )
+   this.reload();
+ },
+
 	liberaMenu:function(){
         var tb = Phx.vista.Movimiento.superclass.liberaMenu.call(this);
         if(tb){
@@ -448,7 +479,8 @@ Phx.vista.MovimientoPrincipal = {
             this.getBoton('btnReporteDep').disable();
             this.getBoton('ant_estado').disable();
 	        this.getBoton('sig_estado').disable();
-	        this.getBoton('btnChequeoDocumentosWf').disable();
+          this.getBoton('btnChequeoDocumentosWf').disable();
+	        this.getBoton('btnChequeoDocumentosAF').disable();
 	        this.getBoton('diagrama_gantt').disable();
 	        this.getBoton('btnAsignacion').disable();
         }
@@ -460,6 +492,7 @@ Phx.vista.MovimientoPrincipal = {
       	var tb = this.tbar;
 
         this.getBoton('btnChequeoDocumentosWf').enable();
+        this.getBoton('btnChequeoDocumentosAF').enable();
         this.getBoton('diagrama_gantt').enable();
         if(data.cod_movimiento != 'asig' && data.cod_movimiento != 'transf' && data.cod_movimiento != 'devol'){
             this.getBoton('btnReporte').enable();
@@ -514,15 +547,15 @@ Phx.vista.MovimientoPrincipal = {
         })
     },
     onAntEstado:function(wizard,resp){
-        Phx.CP.loadingShow(); 
-        Ext.Ajax.request({ 
+        Phx.CP.loadingShow();
+        Ext.Ajax.request({
             url:'../../sis_kactivos_fijos/control/Movimiento/anteriorEstadoMovimiento',
             params:{
                     id_proceso_wf:resp.id_proceso_wf,
-                    id_estado_wf:resp.id_estado_wf,  
+                    id_estado_wf:resp.id_estado_wf,
                     obs:resp.obs
              },
-            argument:{wizard:wizard},  
+            argument:{wizard:wizard},
             success:this.successWizard,
             failure: this.conexionFailure,
             timeout:this.timeout,
@@ -547,10 +580,10 @@ Phx.vista.MovimientoPrincipal = {
 	            config:[{
                   event:'beforesave',
                   delegate: this.onSaveWizard,
-                  
+
                 }],
 	            scope:this
-	        });        
+	        });
     },
     onSaveWizard:function(wizard,resp){
         Phx.CP.loadingShow();
@@ -580,6 +613,7 @@ Phx.vista.MovimientoPrincipal = {
     loadCheckDocumentosPlanWf:function() {
         var rec=this.sm.getSelected();
         rec.data.nombreVista = this.nombreVista;
+        console.log('RESPUESTA:',rec.data);
         Phx.CP.loadWindows('../../../sis_workflow/vista/documento_wf/DocumentoWf.php',
             'Chequear documento del WF',
             {
@@ -625,12 +659,12 @@ Phx.vista.MovimientoPrincipal = {
 	rowExpander: new Ext.ux.grid.RowExpander({
 	        tpl : new Ext.Template(
 	            '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Usuario Registro:&nbsp;&nbsp;</b> {usr_reg}</p>',
-	            '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Fecha Registro:&nbsp;&nbsp;</b> {fecha_reg}</p>',	       
+	            '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Fecha Registro:&nbsp;&nbsp;</b> {fecha_reg}</p>',
 	            '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Usuario Modificación:&nbsp;&nbsp;</b> {usr_mod}</p>',
 	            '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Fecha Modificación:&nbsp;&nbsp;</b> {fecha_mod}</p>'
 	        )
-    })    
-    
-    
+    })
+
+
 };
 </script>

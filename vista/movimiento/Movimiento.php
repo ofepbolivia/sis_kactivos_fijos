@@ -11,11 +11,8 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 	Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
-
 		constructor:function(config){
 			this.maestro=config.maestro;
-
-
 			//funcionalidad para listado de historicos
 			this.historico = 'no';
 			this.tbarItems = ['-',{
@@ -62,6 +59,14 @@ header("content-type: text/javascript; charset=UTF-8");
 				tooltip : '<b>Reporte Depreciación</b><br/><b>Reprote que detalla la depreciación del movimiento</b>'
 			});
 
+			/*this.addButton('btnChequeoDocumentos',{
+				grupo:[0,1,2,3,4], text: 'Documentos Activo Fijo',
+				iconCls: 'bchecklist',
+				disabled: true,
+				handler: this.loadCheckDocumentosSol,
+				tooltip: '<b>Documentos del Proceso</b><br/>Subir los documetos requeridos en el proceso seleccionada.'
+			});*/
+
 
 		},
 
@@ -102,9 +107,18 @@ header("content-type: text/javascript; charset=UTF-8");
 						catalogo_tipo:'tmovimiento__id_cat_movimiento'
 					},
 					renderer: function (value,p,record) {
-						var result;
-						result = "<div style='text-align:center'><img src = '../../../lib/imagenes/" + record.data.icono +"'align='center' width='24' height='24' title='"+record.data.movimiento+"'/></div>";
-						return result;
+
+							if(record.data.tipo_movimiento=='Transito'){
+								var result;
+								return "<div style='height:45px; margin:0; boder:2px solid #FA5E5E;   background-color:#FA5E5E; position:absolute; width:100px;'><img style='padding-left:12px;' src = '../../../lib/imagenes/" + record.data.icono +"'align='center' width='24' height='24' title='"+record.data.movimiento+"'/></div>";
+								return result;
+							}else{
+								var result;
+								result = "<div style='text-align:center'><img src = '../../../lib/imagenes/" + record.data.icono +"'align='center' width='24' height='24' title='"+record.data.movimiento+"'/></div>";
+								return result;
+							}
+
+
 					},
 					valueField: 'id_catalogo'
 				},
@@ -126,7 +140,18 @@ header("content-type: text/javascript; charset=UTF-8");
 					renderer: function(value,p,record){
 						/*var fecha = new Date(record.data['fecha_mov'].dateFormat('d/m/Y'));
 						 console.log('xxxxxxx',fecha.toString());*/
-						return '<tpl for="."><div class="x-combo-list-item"><p><b>Fecha: </b> '+record.data['fecha_mov'].dateFormat('d/m/Y')+'</p><p><b>Tramite: </b> <font color="blue">'+record.data['num_tramite']+'</font></p><p><b>Estado: </b>'+record.data['estado']+'</p></div></tpl>';
+
+
+	 									if(record.data.tipo_movimiento=='Transito'){
+	 											//return String.format('<div ><font weight="bold"; color="#ffffff";>{0}</font></div>',value);
+												return '<tpl style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:250px; height:45px; float:left;"><p><b>Fecha: </b> '+record.data['fecha_mov'].dateFormat('d/m/Y')+'</p><p><b>Tramite: </b> <font color="blue">'+record.data['num_tramite']+'</font></p><p><b>Estado: </b>'+record.data['estado']+'</p></div></tpl>';
+										 }
+										 else {
+											 return '<tpl><p><b>Fecha: </b> '+record.data['fecha_mov'].dateFormat('d/m/Y')+'</p><p><b>Tramite: </b> <font color="blue">'+record.data['num_tramite']+'</font></p><p><b>Estado: </b>'+record.data['estado']+'</p></div></tpl>';
+
+										 }
+
+
 
 					}
 				},
@@ -219,14 +244,31 @@ header("content-type: text/javascript; charset=UTF-8");
 					gwidth : 250,
 					minChars : 2,
 					renderer : function(value, p, record) {
+
 						//return String.format('{0}', record.data['depto']);
+					/*	if(record.data.tipo_movimiento=='Transito'){
+								//return String.format('<div ><font weight="bold"; color="#ffffff";>{0}</font></div>',value);
+								return '<tpl style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:200px; height:45px; float:left;"><p><b>Fecha: </b> '+record.data['fecha_mov'].dateFormat('d/m/Y')+'</p><p><b>Tramite: </b> <font color="blue">'+record.data['num_tramite']+'</font></p><p><b>Estado: </b>'+record.data['estado']+'</p></div></tpl>';
+						 }*/
 						var desc;
-						if(record.data['cod_movimiento']=='transf'){
+						if(record.data['cod_movimiento']=='transf' && record.data['tipo_movimiento']=='Transito' ){
+							desc='<tpl for="."><div style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:300px; height:45px; float:left;"><p><b>Dpto.:</b> '+record.data['depto']+'</p><p><b>De:</b> <font color="blue">'+record.data['desc_funcionario2']+'</font></p><p><b>A:</b> <u><font color="green">'+record.data['funcionario_dest']+'</u></font></p></div></tpl>';
+
+						} else if (record.data['cod_movimiento']=='transf'){
 							desc='<tpl for="."><div class="x-combo-list-item"><p><b>Dpto.:</b> '+record.data['depto']+'</p><p><b>De:</b> <font color="blue">'+record.data['desc_funcionario2']+'</font></p><p><b>A:</b> <u><font color="green">'+record.data['funcionario_dest']+'</u></font></p></div></tpl>';
-						} else if(record.data['cod_movimiento']=='asig'){
+						}
+
+						else if(record.data['cod_movimiento']=='asig' && record.data['tipo_movimiento']=='Transito'){
+							desc='<tpl for="."><div style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:300px; height:45px; float:left;"	><p><b>Dpto.:</b> '+record.data['depto']+'</p><p><b>A:</b> <u><font color="green">'+record.data['desc_funcionario2']+'</u></font></p></div></tpl>';
+						}
+						else if(record.data['cod_movimiento']=='asig'){
 							desc='<tpl for="."><div class="x-combo-list-item"><p><b>Dpto.:</b> '+record.data['depto']+'</p><p><b>A:</b> <u><font color="green">'+record.data['desc_funcionario2']+'</u></font></p></div></tpl>';
-						} else {
-							desc='<tpl for="."><div class="x-combo-list-item"><p><b>Dpto.:</b> '+record.data['depto']+'</p></div></tpl>';
+						}
+						else if(record.data['tipo_movimiento']=='Transito') {
+							desc='<tpl for="."><div style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:300px; height:45px; float:left;"><p><b>Dpto.:</b> '+record.data['depto']+'</p></div></tpl>';
+						}
+						else {
+							desc='<tpl for="."><div class="x-combo-list-item" ><p><b>Dpto.:</b> '+record.data['depto']+'</p></div></tpl>';
 						}
 						return desc;
 					}
@@ -294,6 +336,14 @@ header("content-type: text/javascript; charset=UTF-8");
 					allowBlank: false,
 					anchor: '95%',
 					gwidth: 350,
+					renderer: function(value,p,record){
+						if(record.data.tipo_movimiento=='Transito'){
+								return String.format('<div style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:350px; height:45px; float:left;"><font>{0}</font></div>', value);
+						 }
+						 else{
+							 return String.format('<div><font>{0}</font></div>', value);
+						 }
+					},
 					maxLength:200
 				},
 				type:'TextArea',
@@ -310,6 +360,14 @@ header("content-type: text/javascript; charset=UTF-8");
 					allowBlank: false,
 					anchor: '95%',
 					gwidth: 150,
+					renderer: function(value,p,record){
+						if(record.data.tipo_movimiento=='Transito'){
+								return String.format('<div style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:300px; height:45px; float:left;"><font>{0}</font></div>', value);
+						 }
+						 else{
+							return String.format('<div><font>{0}</font></div>', value);
+						}
+					},
 					maxLength:200
 				},
 				type:'TextArea',
@@ -341,6 +399,15 @@ header("content-type: text/javascript; charset=UTF-8");
 					labelSeparator:'',
 					inputType:'hidden',
 					name: 'id_proceso_wf'
+				},
+				type:'Field',
+				form:true
+			},
+			{
+				config:{
+					labelSeparator:'',
+					inputType:'hidden',
+					name: 'id_proceso_wf_doc'
 				},
 				type:'Field',
 				form:true
@@ -649,6 +716,14 @@ header("content-type: text/javascript; charset=UTF-8");
 					name: 'id_int_comprobante',
 					fieldLabel: 'Cbte',
 					allowBlank: true,
+					renderer: function(value,p,record){
+						if(record.data.tipo_movimiento=='Transito'){
+								return String.format('<div style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:150px; height:45px; float:left;"><font>{0}</font></div>', value);
+						 }
+						 else{
+						 return String.format('<div><font>{0}</font></div>', value);
+					 }
+					},
 					gwidth: 40
 				},
 				type:'TextField',
@@ -662,13 +737,21 @@ header("content-type: text/javascript; charset=UTF-8");
 					name: 'id_int_comprobante_aitb',
 					fieldLabel: 'Cbte AITB',
 					allowBlank: true,
+					renderer: function(value,p,record){
+						if(record.data.tipo_movimiento=='Transito'){
+								return String.format('<div style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:50px; height:45px; float:left;"><font>{0}</font></div>', value);
+						 }
+						 else{
+						 return String.format('<div><font>{0}</font></div>', value);
+					 }
+					},
 					gwidth: 70
 				},
 				type:'TextField',
 				filters:{pfiltro:'mov.id_int_comprobante_aitb',type:'numeric'},
 				id_grupo:0,
 				grid:true,
-				form:false
+				form:true
 			},
 			{
 				config: {
@@ -786,7 +869,15 @@ header("content-type: text/javascript; charset=UTF-8");
 					anchor: '80%',
 					gwidth: 100,
 					format: 'd/m/Y',
-					renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+					renderer:function (value,p,record){
+						if(record.data.tipo_movimiento=='Transito'){
+								return String.format('<div style="background-color:#FA5E5E; margin-top:0px; position:relative; width:100px; height:45px; float:left;"><font>{0}</font></div>', value);
+						 }
+						 else{
+						 return value?value.dateFormat('d/m/Y H:i:s'):''
+					 }
+
+				 }
 				},
 				type:'DateField',
 				filters:{pfiltro:'mov.fecha_reg',type:'date'},
@@ -839,6 +930,45 @@ header("content-type: text/javascript; charset=UTF-8");
 				id_grupo:0,
 				grid:true,
 				form:false
+			},
+			{
+				config:{
+					fieldLabel: "Tipo Movimiento",
+					//gwidth: 120,
+					name: 'tipo_movimiento',
+					allowBlank:false,
+					anchor:'100%',
+					typeAhead: true,
+					allowBlank:false,
+		    		triggerAction: 'all',
+		    		emptyText:'Seleccione una opcion...',
+		    		selectOnFocus:true,
+		   			mode:'local',
+						store: new Ext.data.ArrayStore({
+				        id: 0,
+				        fields: [
+				            'tipo_movimiento'
+
+				        ],
+				        data: [['Transito'], ['Normal']]
+				    }),
+				    valueField: 'tipo_movimiento',
+				    displayField: 'tipo_movimiento',
+						renderer: function(value,p,record){
+							if(record.data.tipo_movimiento=='Transito'){
+									return String.format('<div style="background-color:#FA5E5E; margin-top:0px; position:relative; width:80px; height:45px; float:left;"><font>{0}</font></div>', value);
+							 }
+							 else{
+							 return String.format('<div><font>{0}</font></div>', value);
+						 }
+						},
+
+
+				},
+				type:'ComboBox',
+				id_grupo:0,
+				form:true,
+				grid:true
 			}/*,
 			 {
 			 config : {
@@ -916,7 +1046,10 @@ header("content-type: text/javascript; charset=UTF-8");
 			'id_int_comprobante_aitb',
 			{name:'resp_wf', type: 'string'},
 			{name:'prestamo', type: 'string'},
-			{name:'fecha_dev_prestamo', type: 'date',dateFormat:'Y-m-d H:i:s.u'}
+			{name:'fecha_dev_prestamo', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+			{name:'tipo_movimiento', type: 'string'},
+			{name:'id_proceso_wf_doc', type: 'numeric'}
+
 		],
 		sortInfo:{
 			field: 'fecha_mov',
@@ -947,6 +1080,5 @@ header("content-type: text/javascript; charset=UTF-8");
 				scope:this
 			});
 		}
-
 	})
 </script>

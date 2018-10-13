@@ -8,11 +8,11 @@
 */
 
 class MODMovimiento extends MODbase{
-	
+
 	function __construct(CTParametro $pParam){
 		parent::__construct($pParam);
 	}
-			
+
 	function listarMovimiento(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='kaf.ft_movimiento_sel';
@@ -21,7 +21,7 @@ class MODMovimiento extends MODbase{
 
 		$this->setParametro('por_usuario','por_usuario','varchar');
 		$this->setParametro('tipo_interfaz','tipo_interfaz','varchar');
-				
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_movimiento','int4');
 		$this->captura('direccion','varchar');
@@ -74,21 +74,25 @@ class MODMovimiento extends MODbase{
 		$this->captura('resp_wf','text');
 		$this->captura('prestamo','varchar');
 		$this->captura('fecha_prestamo','date');
-		
+
+		///AUMENTO CAMPO movimiento
+		$this->captura('tipo_movimiento','varchar');
+		$this->captura('id_proceso_wf_doc','int4');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
-		
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function insertarMovimiento(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_movimiento_ime';
 		$this->transaccion='SKA_MOV_INS';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('direccion','direccion','varchar');
 		$this->setParametro('fecha_hasta','fecha_hasta','date');
@@ -116,6 +120,7 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('prestamo','prestamo','varchar');
 		$this->setParametro('fecha_dev_prestamo','fecha_dev_prestamo','date');
 
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -123,13 +128,13 @@ class MODMovimiento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function modificarMovimiento(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_movimiento_ime';
 		$this->transaccion='SKA_MOV_MOD';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_movimiento','id_movimiento','int4');
 		$this->setParametro('direccion','direccion','varchar');
@@ -158,6 +163,9 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('prestamo','prestamo','varchar');
 		$this->setParametro('fecha_dev_prestamo','fecha_dev_prestamo','date');
 
+		///AUMENTO CAMPO movimiento
+		$this->setParametro('tipo_movimiento','tipo_movimiento','varchar');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -165,13 +173,13 @@ class MODMovimiento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function eliminarMovimiento(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_movimiento_ime';
 		$this->transaccion='SKA_MOV_ELI';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_movimiento','id_movimiento','int4');
 
@@ -188,7 +196,7 @@ class MODMovimiento extends MODbase{
 		$this->procedimiento='kaf.ft_movimiento_ime';
 		$this->transaccion='SKA_MOVREL_DAT';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_movimiento','id_movimiento','int4');
 		$this->setParametro('ids','ids','varchar');
@@ -209,7 +217,7 @@ class MODMovimiento extends MODbase{
 		$this->setCount(false);
 
 		$this->setParametro('id_movimiento','id_movimiento','int4');
-				
+
 		//Definicion de la lista del resultado del query
 		$this->captura('movimiento','varchar');
 		$this->captura('cod_movimiento','varchar');
@@ -254,7 +262,7 @@ class MODMovimiento extends MODbase{
 		$this->armarConsulta();
 		//echo $this->consulta;exit;
 		$this->ejecutarConsulta();
-		
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
@@ -267,8 +275,8 @@ class MODMovimiento extends MODbase{
 		$this->setCount(false);
 
 		$this->setParametro('id_movimiento','id_movimiento','int4');
-				
-		//Definicion de la lista del resultado del query		
+
+		//Definicion de la lista del resultado del query
 		$this->captura('codigo','varchar');
 		$this->captura('denominacion','varchar');
 		$this->captura('descripcion','varchar');
@@ -288,12 +296,12 @@ class MODMovimiento extends MODbase{
 		$this->captura('monto_compra_orig_100','numeric');
 		$this->captura('nro_cbte_asociado','varchar');
 		$this->captura('observaciones','varchar');
-		
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		//echo $this->consulta;exit;
 		$this->ejecutarConsulta();
-		
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
@@ -303,7 +311,7 @@ class MODMovimiento extends MODbase{
         $this->procedimiento='kaf.ft_movimiento_ime';
         $this->transaccion='KAF_SIGEMOV_IME';
         $this->tipo_procedimiento='IME';
-        
+
         //Define los parametros para la funcion
         $this->setParametro('id_proceso_wf_act','id_proceso_wf_act','int4');
         $this->setParametro('id_estado_wf_act','id_estado_wf_act','int4');
@@ -327,17 +335,17 @@ class MODMovimiento extends MODbase{
         $this->procedimiento='kaf.ft_movimiento_ime';
         $this->transaccion='KAF_ANTEMOV_IME';
         $this->tipo_procedimiento='IME';
-                
+
         //Define los parametros para la funcion
         $this->setParametro('id_proceso_wf','id_proceso_wf','int4');
         $this->setParametro('id_funcionario_usu','id_funcionario_usu','int4');
         $this->setParametro('operacion','operacion','varchar');
-        
+
         $this->setParametro('id_funcionario','id_funcionario','int4');
         $this->setParametro('id_tipo_estado','id_tipo_estado','int4');
         $this->setParametro('id_estado_wf','id_estado_wf','int4');
         $this->setParametro('obs','obs','text');
-		
+
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -345,17 +353,17 @@ class MODMovimiento extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
-	
+
 	function listarDatalleDepreciaconReporte(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='kaf.ft_movimiento_sel';
 		$this->transaccion='SKA_REPDETDE_REP';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 		$this->setCount(false);
-		
+
 		$this->setParametro('id_movimiento','id_movimiento','int4');
 		$this->captura('id_moneda_dep','INTEGER');
-		$this->captura('desc_moneda','VARCHAR');		
+		$this->captura('desc_moneda','VARCHAR');
 		$this->captura('gestion_final','INTEGER');
         $this->captura('tipo','varchar');
         $this->captura('nombre_raiz','varchar');
@@ -373,23 +381,23 @@ class MODMovimiento extends MODbase{
         $this->captura('monto_actualiz_inicial','NUMERIC');
         $this->captura('monto_actualiz_final','NUMERIC');
         $this->captura('depreciacion_acum_inicial','NUMERIC');
-        $this->captura('depreciacion_acum_final','NUMERIC'); 
+        $this->captura('depreciacion_acum_final','NUMERIC');
         $this->captura('aitb_activo','NUMERIC');
         $this->captura('aitb_depreciacion_acumulada','NUMERIC');
         $this->captura('vida_util_orig','INTEGER');
         $this->captura('vida_util_inicial','INTEGER');
         $this->captura('vida_util_final','INTEGER');
-        $this->captura('vida_util_trans','INTEGER');  
+        $this->captura('vida_util_trans','INTEGER');
         $this->captura('codigo_raiz','varchar');
         $this->captura('id_clasificacion_raiz','INTEGER');
-		$this->captura('depreciacion_per_final','NUMERIC'); 
-        $this->captura('depreciacion_per_actualiz_final','NUMERIC'); 
-				
+		$this->captura('depreciacion_per_final','NUMERIC');
+        $this->captura('depreciacion_per_actualiz_final','NUMERIC');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		//echo $this->consulta;exit;
 		$this->ejecutarConsulta();
-		
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
@@ -399,7 +407,7 @@ class MODMovimiento extends MODbase{
 		$this->procedimiento='kaf.ft_movimiento_ime';
 		$this->transaccion='SKA_MOVRAP_INS';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('tipo_movimiento','tipo_movimiento','varchar');
 		$this->setParametro('fecha_mov','fecha_mov','date');
@@ -417,6 +425,6 @@ class MODMovimiento extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 }
 ?>
