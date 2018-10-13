@@ -12,13 +12,13 @@ $body$
  DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'kaf.tmovimiento'
  AUTOR: 		 (admin)
  FECHA:	        22-10-2015 20:42:41
- COMENTARIOS:	
+ COMENTARIOS:
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
 
- DESCRIPCION:	
- AUTOR:			
- FECHA:		
+ DESCRIPCION:
+ AUTOR:
+ FECHA:
 ***************************************************************************/
 
 DECLARE
@@ -33,22 +33,22 @@ DECLARE
     v_depto_ids         varchar;
     v_aux               varchar;
 	v_tipo_movimiento	varchar;
-    v_inner				varchar;	
-    v_id_deposito		integer;	    
+    v_inner				varchar;
+    v_id_deposito		integer;
 BEGIN
 
 	v_nombre_funcion = 'kaf.ft_movimiento_sel';
     v_parametros = pxp.f_get_record(p_tabla);
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'SKA_MOV_SEL'
  	#DESCRIPCION:	Consulta de datos
- 	#AUTOR:		admin	
+ 	#AUTOR:		admin
  	#FECHA:		22-10-2015 20:42:41
 	***********************************/
 
 	if(p_transaccion='SKA_MOV_SEL')then
-     				
+
     	begin
 
             --Inicialización de filtro
@@ -71,7 +71,7 @@ BEGIN
                 if v_depto_ids is null then
                     --v_filtro = v_filtro || ' mov.id_depto = -1 and ';
                 else
-                    v_filtro = v_filtro || ' mov.id_depto in ('||v_depto_ids||') and ';    
+                    v_filtro = v_filtro || ' mov.id_depto in ('||v_depto_ids||') and ';
                 end if;
 
             end if;
@@ -149,8 +149,10 @@ BEGIN
 			            mov.id_int_comprobante,
 			            mov.id_int_comprobante_aitb,
                         funwf.desc_funcionario2 as resp_wf,
-            mov.prestamo,
-            mov.fecha_dev_prestamo
+                        mov.prestamo,
+                        mov.fecha_dev_prestamo,
+                        mov.tipo_movimiento,
+                        mov.id_proceso_wf_doc
 						from kaf.tmovimiento mov
 						inner join segu.tusuario usu1 on usu1.id_usuario = mov.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = mov.id_usuario_mod
@@ -173,13 +175,13 @@ BEGIN
 			--Verifica si la consulta es por usuario
             if pxp.f_existe_parametro(p_tabla,'por_usuario') then
                 if v_parametros.por_usuario = 'si' then
-                    v_consulta = v_consulta || ' (mov.id_funcionario in (select 
+                    v_consulta = v_consulta || ' (mov.id_funcionario in (select
                                                 fun.id_funcionario
                                                 from segu.tusuario usu
                                                 inner join orga.vfuncionario_persona fun
                                                 on fun.id_persona = usu.id_persona
                                                 where usu.id_usuario = '||p_id_usuario||') or
-                                                mov.id_funcionario_dest in (select 
+                                                mov.id_funcionario_dest in (select
                                                 fun.id_funcionario
                                                 from segu.tusuario usu
                                                 inner join orga.vfuncionario_persona fun
@@ -187,20 +189,20 @@ BEGIN
                                                 where usu.id_usuario = '||p_id_usuario||') )and ';
                 end if;
             end if;
-			
+
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
-						
+
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'SKA_MOV_CONT'
  	#DESCRIPCION:	Conteo de registros
- 	#AUTOR:		admin	
+ 	#AUTOR:		admin
  	#FECHA:		22-10-2015 20:42:41
 	***********************************/
 
@@ -226,9 +228,9 @@ BEGIN
                 and depu.id_usuario = p_id_usuario;
 
                 if v_depto_ids is null then
-                    v_filtro = v_filtro || ' mov.id_depto = -1 and ';    
+                    v_filtro = v_filtro || ' mov.id_depto = -1 and ';
                 else
-                    v_filtro = v_filtro || ' mov.id_depto in ('||v_depto_ids||') and ';    
+                    v_filtro = v_filtro || ' mov.id_depto in ('||v_depto_ids||') and ';
                 end if;
 
             end if;
@@ -280,13 +282,13 @@ BEGIN
 			--Verifica si la consulta es por usuario
             if pxp.f_existe_parametro(p_tabla,'por_usuario') then
                 if v_parametros.por_usuario = 'si' then
-                    v_consulta = v_consulta || ' (mov.id_funcionario in (select 
+                    v_consulta = v_consulta || ' (mov.id_funcionario in (select
                                                 fun.id_funcionario
                                                 from segu.tusuario usu
                                                 inner join orga.vfuncionario_persona fun
                                                 on fun.id_persona = usu.id_persona
                                                 where usu.id_usuario = '||p_id_usuario||') or
-                                                mov.id_funcionario_dest in (select 
+                                                mov.id_funcionario_dest in (select
                                                 fun.id_funcionario
                                                 from segu.tusuario usu
                                                 inner join orga.vfuncionario_persona fun
@@ -294,8 +296,8 @@ BEGIN
                                                 where usu.id_usuario = '||p_id_usuario||') )and ';
                 end if;
             end if;
-			
-			--Definicion de la respuesta		    
+
+			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
@@ -303,7 +305,7 @@ BEGIN
 
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'SKA_MOV_REP'
  	#DESCRIPCION:	Reporte de movimientos  maesto
  	#AUTOR:			RCM, RAC
@@ -315,15 +317,15 @@ BEGIN
 		begin
         	select tmm.motivo, tm.id_deposito
             into v_tipo_movimiento, v_id_deposito
-            from kaf.tmovimiento tm 
+            from kaf.tmovimiento tm
             inner join kaf.tmovimiento_motivo tmm on tmm.id_movimiento_motivo = tm.id_movimiento_motivo
             where tm.id_movimiento = v_parametros.id_movimiento;
-			
+
             if(v_tipo_movimiento='Devolución' and v_id_deposito is not null)then
             	v_inner = 'left join kaf.tdeposito tdep on tdep.id_deposito = mov.id_deposito
                 		   inner join orga.vfuncionario_cargo_lugar fun1 on fun1.id_funcionario = tdep.id_funcionario';
-            else 
-            	v_inner = 'inner join orga.vfuncionario_cargo_lugar fun1 on fun1.id_funcionario = mov.id_responsable_depto';	
+            else
+            	v_inner = 'inner join orga.vfuncionario_cargo_lugar fun1 on fun1.id_funcionario = mov.id_responsable_depto';
             end if;
 			--Consulta
 			v_consulta:=' select cat.descripcion as movimiento,
@@ -370,7 +372,7 @@ BEGIN
                                 dpto.codigo as codigo_depto,
 							    fun_r.desc_funcionario2::varchar as func_resp_dep,
                               fun_r.descripcion_cargo as func_cargo_dep
-                         from kaf.tmovimiento mov 
+                         from kaf.tmovimiento mov
                               inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
                               inner join param.tdepto dpto on dpto.id_depto = mov.id_depto
                               left join orga.vfuncionario_cargo_lugar fun on fun.id_funcionario =  mov.id_funcionario
@@ -389,8 +391,8 @@ BEGIN
 			return v_consulta;
 
 		end;
-        
-    /*********************************    
+
+    /*********************************
  	#TRANSACCION:  'SKA_MOVDET_REP'
  	#DESCRIPCION:	Reporte de movimientos detalle
  	#AUTOR:			RAC
@@ -402,7 +404,7 @@ BEGIN
 		begin
 
 			--Consulta
-			v_consulta:=' select 
+			v_consulta:=' select
                             af.codigo,
                             af.denominacion,
                             af.descripcion,
@@ -428,15 +430,15 @@ BEGIN
                           inner join kaf.tclasificacion cla on cla.id_clasificacion = af.id_clasificacion
                      where maf.id_movimiento = '||v_parametros.id_movimiento;
 
-			
+
 			v_consulta = v_consulta||' order by af.codigo asc';
 			--Devuelve la respuesta
 			return v_consulta;
 
-		end; 
-        
-        
-    /*********************************    
+		end;
+
+
+    /*********************************
  	#TRANSACCION:  'SKA_REPDETDE_REP'
  	#DESCRIPCION:	Reporte detalle de depreciacion para contabilizacion
  	#AUTOR:			RAC
@@ -448,65 +450,65 @@ BEGIN
 		begin
 
 			--Consulta
-			v_consulta:=' SELECT 
+			v_consulta:=' SELECT
                               daf.id_moneda_dep,
                               mod.descripcion as desc_moneda,
                               daf.gestion_final::INTEGER,
                               daf.tipo,
                               cr.nombre_raiz,
-                              daf.fecha_ini_dep, 
+                              daf.fecha_ini_dep,
                               daf.id_movimiento,
                               daf.id_movimiento_af,
                               daf.id_activo_fijo_valor,
                               daf.id_activo_fijo,
                               daf.codigo,
-                              daf.id_clasificacion,  
-                              daf.descripcion,  
+                              daf.id_clasificacion,
+                              daf.descripcion,
                               daf.monto_vigente_orig,
                               daf.monto_vigente_inicial,
-                              daf.monto_vigente_final,  
+                              daf.monto_vigente_final,
                               daf.monto_actualiz_inicial,
                               daf.monto_actualiz_final,
                               daf.depreciacion_acum_inicial,
-                              daf.depreciacion_acum_final,  
+                              daf.depreciacion_acum_final,
                               daf.aitb_activo,
                               daf.aitb_depreciacion_acumulada,
                               daf.vida_util_orig,
                               daf.vida_util_inicial,
                               daf.vida_util_final,
-                              daf.vida_util_orig - daf.vida_util_final as vida_util_trans,  
+                              daf.vida_util_orig - daf.vida_util_final as vida_util_trans,
                               cr.codigo_raiz,
-                              cr.id_claificacion_raiz,                              
+                              cr.id_claificacion_raiz,
                               daf.depreciacion_per_final,
                               daf.depreciacion_per_actualiz_final
-                            
+
                           FROM kaf.vdetalle_depreciacion_activo_por_gestion daf
                           INNER  JOIN kaf.vclaificacion_raiz cr on cr.id_clasificacion = daf.id_clasificacion
                           INNER JOIN kaf.tmoneda_dep mod on mod.id_moneda_dep = daf.id_moneda_dep
                           WHERE daf.id_movimiento = '||v_parametros.id_movimiento||'
-                          ORDER BY 
-                              daf.id_moneda_dep,   
-                              daf.gestion_final, 
-                              daf.tipo,   
-                              cr.id_claificacion_raiz, 
+                          ORDER BY
+                              daf.id_moneda_dep,
+                              daf.gestion_final,
+                              daf.tipo,
+                              cr.id_claificacion_raiz,
                               daf.id_clasificacion,
-                              id_activo_fijo_valor ,                                
+                              id_activo_fijo_valor ,
                               daf.fecha_ini_dep';
-                          
-			
+
+
 			--Devuelve la respuesta
 			return v_consulta;
 
-		end;         
-					
+		end;
+
 	else
-					     
+
 		raise exception 'Transaccion inexistente';
-					         
+
 	end if;
-					
+
 EXCEPTION
-					
+
 	WHEN OTHERS THEN
 			v_resp='';
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);

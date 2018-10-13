@@ -12,13 +12,13 @@ $body$
  DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'kaf.tactivo_fijo'
  AUTOR: 		 (admin)
  FECHA:	        29-10-2015 03:18:45
- COMENTARIOS:	
+ COMENTARIOS:
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
 
- DESCRIPCION:	
- AUTOR:			
- FECHA:		
+ DESCRIPCION:
+ AUTOR:
+ FECHA:
 ***************************************************************************/
 
 DECLARE
@@ -39,23 +39,23 @@ DECLARE
     v_respuesta				varchar;
     cont					integer;
     cod						varchar;
-    codant					varchar;    
-    
-			    
+    codant					varchar;
+
+
 BEGIN
 
     v_nombre_funcion = 'kaf.ft_activo_fijo_ime';
     v_parametros = pxp.f_get_record(p_tabla);
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'SKA_AFIJ_INS'
  	#DESCRIPCION:	Insercion de registros
- 	#AUTOR:		admin	
+ 	#AUTOR:		admin
  	#FECHA:		29-10-2015 03:18:45
 	***********************************/
 
 	if(p_transaccion='SKA_AFIJ_INS')then
-					
+
         begin
 
         	select
@@ -96,14 +96,16 @@ BEGIN
             v_parametros.id_unidad_medida,
             v_parametros.monto_compra_orig_100,
             v_parametros.nro_cbte_asociado,
-            v_parametros.fecha_cbte_asociado
+            v_parametros.fecha_cbte_asociado,
+            v_parametros.tramite_compra,
+            v_parametros.subtipo
 	        into v_rec_af;
 
 	        --Inserción del registro
 	        v_id_activo_fijo = kaf.f_insercion_af(p_id_usuario, hstore(v_rec_af));
 
 			--Definicion de la respuesta
-			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos Fijos almacenado(a) con exito (id_activo_fijo'||v_id_activo_fijo||')'); 
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos Fijos almacenado(a) con exito (id_activo_fijo'||v_id_activo_fijo||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_activo_fijo',v_id_activo_fijo::varchar);
 
             --Devuelve la respuesta
@@ -111,42 +113,42 @@ BEGIN
 
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'SKA_AFIJ_MOD'
  	#DESCRIPCION:	Modificacion de registros
- 	#AUTOR:		admin	
+ 	#AUTOR:		admin
  	#FECHA:		29-10-2015 03:18:45
 	***********************************/
 
 	elsif(p_transaccion='SKA_AFIJ_MOD')then
 
 		begin
-        
-             select 
+
+             select
                *
               into
                 v_rec_af
              from kaf.tactivo_fijo af
              where af.id_activo_fijo = v_parametros.id_activo_fijo;
-             
-          
+
+
               IF v_rec_af.estado != 'registrado' THEN
-                 
+
                IF v_rec_af.monto_compra_orig != v_parametros.monto_compra_orig or v_rec_af.fecha_ini_dep != v_parametros.fecha_ini_dep or v_rec_af.id_moneda != v_parametros.id_moneda_orig  THEN
                  raise exception 'no puede editar datos de compras cuando el activo ya esta de alta, registre una revalorizacion para hacer cualquier ajuste';
                END IF;
-              END IF;  
-              
+              END IF;
+
               v_monto_compra = param.f_convertir_moneda(
-                                                         v_parametros.id_moneda_orig, 
+                                                         v_parametros.id_moneda_orig,
                                                          NULL,   --por defecto moenda base
-                                                         v_parametros.monto_compra_orig, 
-                                                         v_parametros.fecha_compra, 
-                                                         'O',-- tipo oficial, venta, compra 
+                                                         v_parametros.monto_compra_orig,
+                                                         v_parametros.fecha_compra,
+                                                         'O',-- tipo oficial, venta, compra
                                                          NULL);--defecto dos decimales
-             
-        
-      
+
+
+
 			--Sentencia de la modificacion
 			update kaf.tactivo_fijo set
                 id_persona = v_parametros.id_persona,
@@ -192,22 +194,24 @@ BEGIN
                 id_unidad_medida = v_parametros.id_unidad_medida,
                 monto_compra_orig_100 = v_parametros.monto_compra_orig_100,
                 nro_cbte_asociado = v_parametros.nro_cbte_asociado,
-                fecha_cbte_asociado = v_parametros.fecha_cbte_asociado
+                fecha_cbte_asociado = v_parametros.fecha_cbte_asociado,
+                tramite_compra = v_parametros.tramite_compra,
+                subtipo = v_parametros.subtipo
 			where id_activo_fijo = v_parametros.id_activo_fijo;
-               
+
 			--Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos Fijos modificado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos Fijos modificado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_activo_fijo',v_parametros.id_activo_fijo::varchar);
-               
+
             --Devuelve la respuesta
             return v_resp;
-            
+
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'SKA_AFIJ_ELI'
  	#DESCRIPCION:	Eliminacion de registros
- 	#AUTOR:		admin	
+ 	#AUTOR:		admin
  	#FECHA:		29-10-2015 03:18:45
 	***********************************/
 
@@ -217,17 +221,17 @@ BEGIN
 			--Sentencia de la eliminacion
 			delete from kaf.tactivo_fijo
             where id_activo_fijo=v_parametros.id_activo_fijo;
-               
+
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos Fijos eliminado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos Fijos eliminado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_activo_fijo',v_parametros.id_activo_fijo::varchar);
-              
+
             --Devuelve la respuesta
             return v_resp;
 
 		end;
-        
-    /*********************************    
+
+    /*********************************
  	#TRANSACCION:  'SKA_AFCOD_MOD'
  	#DESCRIPCION:	Generación del código de activo fijo
  	#AUTOR:			RCM
@@ -239,17 +243,17 @@ BEGIN
 		begin
         	--Generación del código activo fijo
         	v_codigo = kaf.f_genera_codigo(v_parametros.id_activo_fijo);
-            
+
             --Definicion de la respuesta
-			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos Fijo codificado (id_activo_fijo'||v_id_activo_fijo||')'); 
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos Fijo codificado (id_activo_fijo'||v_id_activo_fijo||')');
             v_resp = pxp.f_agrega_clave(v_resp,'codigo',v_codigo);
 
             --Devuelve la respuesta
             return v_resp;
-        
+
         end;
 
-    /*********************************    
+    /*********************************
  	#TRANSACCION:  'SKA_AFCLO_INS'
  	#DESCRIPCION:	Clonación del activo fijo seleccionado
  	#AUTOR:			RCM
@@ -320,19 +324,19 @@ BEGIN
 				--Inserción del registro
 	        	v_ids_clon = v_ids_clon || ','|| kaf.f_insercion_af(p_id_usuario, hstore(v_rec_af))::varchar;
 			end loop;
-            
+
             --Definicion de la respuesta
-			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Han sido clonados "'||v_parametros.cant_clon::varchar||'" Activos Fijos satisfactoriamente en base al activo fijo '|| v_rec_af.codigo||'('||v_parametros.id_activo_fijo::varchar||') [IDs generados: '||v_ids_clon||']'); 
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Han sido clonados "'||v_parametros.cant_clon::varchar||'" Activos Fijos satisfactoriamente en base al activo fijo '|| v_rec_af.codigo||'('||v_parametros.id_activo_fijo::varchar||') [IDs generados: '||v_ids_clon||']');
             v_resp = pxp.f_agrega_clave(v_resp,'ids',v_ids_clon);
 
             --Devuelve la respuesta
             return v_resp;
-        
+
         end;
-        
-        
-     
-    /*********************************    
+
+
+
+    /*********************************
  	#TRANSACCION:  'SKA_GETQR_MOD'
  	#DESCRIPCION:	Recupera codigo QR segun configuracion de variable global
  	#AUTOR:			RAC
@@ -343,7 +347,7 @@ BEGIN
 
 		begin
 
-			select 
+			select
               kaf.id_activo_fijo,
               kaf.codigo,
               kaf.codigo_ant,
@@ -354,15 +358,15 @@ BEGIN
              into
                v_rec_af
             from kaf.tactivo_fijo  kaf
-            inner join param.tdepto dep on dep.id_depto = kaf.id_depto 
+            inner join param.tdepto dep on dep.id_depto = kaf.id_depto
             left join param.tentidad ent on ent.id_entidad = dep.id_entidad
 			where id_activo_fijo = v_parametros.id_activo_fijo;
-            
+
             --Recuperar configuracion del reporte de codigo de barrar por defecto de variable global
              v_clase_reporte = pxp.f_get_variable_global('kaf_clase_reporte_codigo');
 
             --Definicion de la respuesta
-			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Código recuperado'); 
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Código recuperado');
             v_resp = pxp.f_agrega_clave(v_resp,'id_activo_fijo',v_parametros.id_activo_fijo::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'codigo',v_rec_af.codigo::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'codigo_ant',v_rec_af.codigo_ant::varchar);
@@ -374,10 +378,10 @@ BEGIN
 
             --Devuelve la respuesta
             return v_resp;
-        
-        end; 
 
-    /*********************************    
+        end;
+
+    /*********************************
  	#TRANSACCION:  'SKA_PHOTO_UPL'
  	#DESCRIPCION:	Upload de l a foto principal
  	#AUTOR:			RCM
@@ -397,17 +401,17 @@ BEGIN
 			foto = v_parametros.file_name,
 			extension = v_parametros.extension
 			where id_activo_fijo = v_parametros.id_activo_fijo;
-            
+
             --Definicion de la respuesta
-			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Foto subida correctamente'); 
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Foto subida correctamente');
             v_resp = pxp.f_agrega_clave(v_resp,'id_activo_fijo',v_parametros.id_activo_fijo::varchar);
 
             --Devuelve la respuesta
             return v_resp;
-        
+
         end;
 
-    /*********************************    
+    /*********************************
 	#TRANSACCION:  'SKA_AFIJ_CLO'
 	#DESCRIPCION:   Clonación de activos fijos
 	#AUTOR:         RCM
@@ -466,7 +470,7 @@ BEGIN
 	        into v_rec_af
 	        from kaf.tactivo_fijo
 	        where id_activo_fijo = v_parametros.id_activo_fijo;
-          
+
           	for i in 1..v_parametros.cantidad_clon loop
           		--Activo fijo
 		        v_id_activo_fijo = kaf.f_insercion_af(p_id_usuario, hstore(v_rec_af));
@@ -492,15 +496,15 @@ BEGIN
 			end loop;
 
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos fijos clonados (id_activo_fijo: '||v_parametros.id_activo_fijo::varchar||', cantidad: '||v_parametros.cantidad_clon::varchar||')'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos fijos clonados (id_activo_fijo: '||v_parametros.id_activo_fijo::varchar||', cantidad: '||v_parametros.cantidad_clon::varchar||')');
             v_resp = pxp.f_agrega_clave(v_resp,'id_activo_fijo',v_parametros.id_activo_fijo::varchar);
-                
+
             --Devuelve la respuesta
             return v_resp;
 
-      end; 
+      end;
 
-    /*********************************    
+    /*********************************
  	#TRANSACCION:  'SKA_AFQR_DAT'
  	#DESCRIPCION:	Consulta de datos desde QR
  	#AUTOR:			RCM
@@ -519,7 +523,7 @@ BEGIN
 			select
 			af.id_activo_fijo, af.codigo, af.denominacion, af.descripcion, af.fecha_compra,
 			ofi.codigo || ' - ' ||ofi.nombre as oficina_asignacion,
-			af.ubicacion, af.fecha_ini_dep, 
+			af.ubicacion, af.fecha_ini_dep,
 			af.monto_compra_orig,
 			af.monto_compra_orig_100,
 			af.nro_cbte_asociado,
@@ -544,9 +548,9 @@ BEGIN
 			on fun.id_funcionario = af.id_funcionario
 			where af.id_activo_fijo = v_parametros.id_activo_fijo
 			order by fun.fecha_asignacion desc limit 1;
-               
+
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Consulta QR realizada'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Consulta QR realizada');
             v_resp = pxp.f_agrega_clave(v_resp,'id_activo_fijo',v_rec_af.id_activo_fijo::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'codigo',v_rec_af.codigo::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'denominacion',v_rec_af.denominacion::varchar);
@@ -566,46 +570,46 @@ BEGIN
             v_resp = pxp.f_agrega_clave(v_resp,'responsable',v_rec_af.responsable::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'cargo',v_rec_af.cargo::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'oficina_responsable',v_rec_af.oficina_responsable::varchar);
-            
+
 
             --Devuelve la respuesta
             return v_resp;
 
 		end;
-    /*********************************    
+    /*********************************
  	#TRANSACCION:  'SKA_AFQR_DET'
  	#DESCRIPCION:	Servicio consulta de datos desde aplicacion lectura QR
  	#AUTOR:			BVP
  	#FECHA:			06/09/2018
 	***********************************/
 
-	elsif(p_transaccion='SKA_AFQR_DET')then 
-    
+	elsif(p_transaccion='SKA_AFQR_DET')then
+
     	begin
 
-		 cont = position(']' in v_parametros.code);         
+		 cont = position(']' in v_parametros.code);
          if cont = 0 then
          	cod = v_parametros.code;
          else
 	        codant  = substr(v_parametros.code,2,cont-2);
          	cod = codant;
-         end if;        
-        
+         end if;
+
           if not exists(select 1 from kaf.tactivo_fijo
                           where codigo = trim(cod)) then
               raise exception 'Activo fijo no existente';
-          end if;        
-        
+          end if;
+
           select
           afij.codigo,
           afij.denominacion,
           afij.descripcion,
-          afij.estado,                    
+          afij.estado,
           pro.desc_proveedor as proveedor,
           pxp.f_fecha_literal(afij.fecha_compra) as fecha_compra,
           afij.marca,
-          afij.nro_serie,          
-          fun.desc_funcionario2 as responsable,            
+          afij.nro_serie,
+          fun.desc_funcionario2 as responsable,
           ofi.codigo || ' ' || ofi.nombre as oficina,
           afij.ubicacion
           into v_rec_af
@@ -613,10 +617,10 @@ BEGIN
           left join orga.vfuncionario fun on fun.id_funcionario = afij.id_funcionario
           left join param.vproveedor pro on pro.id_proveedor = afij.id_proveedor
           left join orga.toficina ofi on ofi.id_oficina = afij.id_oficina
-          where afij.codigo = trim(cod); 
+          where afij.codigo = trim(cod);
 
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Consulta QR realizada'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Consulta QR realizada');
             v_resp = pxp.f_agrega_clave(v_resp,'codigo',v_rec_af.codigo::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'denominacion',v_rec_af.denominacion::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'descripcion',v_rec_af.descripcion::varchar);
@@ -626,13 +630,13 @@ BEGIN
             v_resp = pxp.f_agrega_clave(v_resp,'marca',v_rec_af.marca::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'nro_serie',v_rec_af.nro_serie::varchar);
             v_resp = pxp.f_agrega_clave(v_resp,'responsable',v_rec_af.responsable::varchar);
-            v_resp = pxp.f_agrega_clave(v_resp,'oficina',v_rec_af.oficina::varchar);  
-            v_resp = pxp.f_agrega_clave(v_resp,'ubicacion',v_rec_af.ubicacion::varchar);            
-            
+            v_resp = pxp.f_agrega_clave(v_resp,'oficina',v_rec_af.oficina::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'ubicacion',v_rec_af.ubicacion::varchar);
+
             v_respuesta = '<div><br><b>Codigo: </b>'||coalesce(v_rec_af.codigo,'')||'<br>
             			   <b>Denominacion: </b>'||coalesce(v_rec_af.denominacion,'')||'<br>
                            <b>Descripcion: </b>'||coalesce(v_rec_af.descripcion,'')||'<br>
-            			   <b>Estado: </b>'||coalesce(v_rec_af.estado,'')||'<br><br>                           
+            			   <b>Estado: </b>'||coalesce(v_rec_af.estado,'')||'<br><br>
             			   <b>Proveedor: </b>'||coalesce(v_rec_af.proveedor,'')||'<br>
             			   <b>Fecha_compra: </b>'||coalesce(v_rec_af.fecha_compra,'')||'<br>
             			   <b>Marca: </b>'||coalesce(v_rec_af.marca,'')||'<br>
@@ -641,29 +645,29 @@ BEGIN
 						   <b>Oficina: </b>'||coalesce(v_rec_af.oficina,'')||'<br>
                            <b>Ubicacion: </b>'||coalesce(v_rec_af.ubicacion,'')||'</div>'
                            ;
-            v_respuesta= v_respuesta; 
+            v_respuesta= v_respuesta;
             --Devuelve la respuesta
-            
-            --Definicion de la respuesta            
+
+            --Definicion de la respuesta
 		v_resp = pxp.f_agrega_clave(v_resp,'mensaje_code',v_respuesta::varchar);
-            return v_resp;              
-        end;       
+            return v_resp;
+        end;
 
 	else
-     
+
     	raise exception 'Transaccion inexistente: %',p_transaccion;
 
 	end if;
 
 EXCEPTION
-				
+
 	WHEN OTHERS THEN
 		v_resp='';
 		v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
 		v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
 		v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 		raise exception '%',v_resp;
-				        
+
 END;
 $body$
 LANGUAGE 'plpgsql'

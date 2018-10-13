@@ -18,28 +18,30 @@ DECLARE
     v_id_movimiento_af      integer;
     v_aux                   record;
     v_id_moneda_base        integer;
+    v_movi					record;
+    v_movimiento			record;
 
 BEGIN
 
     --Nombre de la función
     v_nombre_funcion = 'kaf.f_insercion_movimiento_af';
 
-    select 
+    select
     mov.estado,
     mov.codigo,
     cat.codigo as codigo_movimiento,
     mov.id_depto
-    into 
+    into
     v_registros
     from kaf.tmovimiento mov
     inner join  param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
     where mov.id_movimiento = (p_parametros->'id_movimiento')::integer;
-        
-            
+
+
     /*if not kaf.f_validar_ins_mov_af((p_parametros->'id_movimiento')::integer,(p_parametros->'id_activo_fijo')::integer) then
        raise exception 'Error al validar activo fijo';
     end if;*/
-    
+
     if v_registros.estado != 'borrador' THEN
        raise exception 'Solo puede insertar activos en movimientos en borrador';
     end if;
@@ -51,15 +53,15 @@ BEGIN
     v_id_cat_estado_fun
     from kaf.tactivo_fijo
     where id_activo_fijo = (p_parametros->'id_activo_fijo')::integer;
-            
+
     --Verificamos que el activo no esté duplicado
-    if exists(select 1 
-            from kaf.tmovimiento_af maf 
-            where maf.id_movimiento = (p_parametros->'id_movimiento')::integer 
-            and  maf.id_activo_fijo = (p_parametros->'id_activo_fijo')::integer 
+    if exists(select 1
+            from kaf.tmovimiento_af maf
+            where maf.id_movimiento = (p_parametros->'id_movimiento')::integer
+            and  maf.id_activo_fijo = (p_parametros->'id_activo_fijo')::integer
             and maf.estado_reg = 'activo') then
 
-        for v_aux in select * from kaf.tmovimiento_af maf 
+        for v_aux in select * from kaf.tmovimiento_af maf
             where maf.id_movimiento = (p_parametros->'id_movimiento')::integer loop
             raise notice '%',v_aux.id_activo_fijo;
         end loop;
@@ -108,8 +110,39 @@ BEGIN
         (p_parametros->'importe_ant')::numeric,
         (p_parametros->'vida_util_ant')::integer
     ) returning id_movimiento_af into v_id_movimiento_af;
-    
-    
+
+     /*--------------ACTUALIZANDO KMOVIMIENTO CON LOS DATOS RECUPERADOS
+     ---------------------------------------------------------------------------*/
+                                select
+                                into
+             					v_movi
+                                pre.id_preingreso_det,
+                                pre.movimiento,
+                                preing.id_proceso_wf
+                                from alm.tpreingreso_det pre
+                                inner join alm.tpreingreso preing on preing.id_preingreso = pre.id_preingreso
+                                inner join kaf.tactivo_fijo activo on activo.id_preingreso_det = pre.id_preingreso_det
+                                where activo.id_activo_fijo = (p_parametros->'id_activo_fijo')::integer;
+
+                                --RAISE exception 'LLEGA aqui el valor 1234: %',v_movi.movimiento;
+
+                         		select into
+                            	v_movimiento
+                                  af.id_movimiento
+                                  from kaf.tmovimiento movi
+                                  inner join kaf.tmovimiento_af af on af.id_movimiento = movi.id_movimiento
+                                  inner join kaf.tactivo_fijo act on act.id_activo_fijo = af.id_activo_fijo
+                                  where act.id_preingreso_det = v_movi.id_preingreso_det;
+
+
+                                update kaf.tmovimiento mov set
+                                tipo_movimiento = v_movi.movimiento,
+                                id_proceso_wf_doc = v_movi.id_proceso_wf
+                                where mov.id_movimiento = v_movimiento.id_movimiento;
+
+
+            ---------------------------------------------------------------------------------
+
     ------------
 	--Respuesta
     ------------
