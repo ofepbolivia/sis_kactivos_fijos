@@ -430,6 +430,7 @@ Phx.vista.ReporteKardex=Ext.extend(Phx.gridInterfaz,{
 	    Phx.CP.loadingShow();
         Ext.Ajax.request({
             url:'../../sis_kactivos_fijos/control/Reportes/reporteKardexAF',
+            //url:'../../sis_kactivos_fijos/control/Reportes/reporteKAF',
             params:{
             	fecha_desde: this.maestro.paramsRep.fecha_desde,
 				fecha_hasta: this.maestro.paramsRep.fecha_hasta,

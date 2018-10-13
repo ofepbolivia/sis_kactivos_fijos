@@ -5,6 +5,10 @@ require_once(dirname(__FILE__).'/../reportes/RReporteGralAFXls.php');
 require_once(dirname(__FILE__).'/../reportes/RRespInventario.php');
 require_once(dirname(__FILE__).'/../reportes/RDepreciacionXls.php');
 require_once(dirname(__FILE__).'/../reportes/RDepreciacionPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RDepreciacionActulizadoPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RDepreciacionPeriodoXls.php');
+require_once(dirname(__FILE__).'/../reportes/RDepreciacionActulizadaXls.php');
+require_once(dirname(__FILE__).'/../reportes/RDepreciacionActulizadaPDF.php');
 
 class ACTReportes extends ACTbase {
 
@@ -169,17 +173,33 @@ class ACTReportes extends ACTbase {
 
 
         if($this->objParam->getParametro('tipo')=='pdf'){
-            //Instancia la clase de pdf
-            $this->objReporteFormato=new RDepreciacionPDF ($this->objParam);
-            $this->objReporteFormato->setDatos($this->res->datos);
-            $this->objReporteFormato->generarReporte();
-            $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+        	
+        	if($this->objParam->getParametro('tipo_repo')=='gepa' || $this->objParam->getParametro('tipo_repo')==''){
+	            //Instancia la clase de pdf
+	            $this->objReporteFormato=new RDepreciacionPDF ($this->objParam);
+	            $this->objReporteFormato->setDatos($this->res->datos);
+	            $this->objReporteFormato->generarReporte();
+	            $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+			}else{
+	            $this->objReporteFormato=new RDepreciacionActulizadaPDF ($this->objParam);
+	            $this->objReporteFormato->setDatos($this->res->datos);
+	            $this->objReporteFormato->generarReporte();
+	            $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');				
+			}
+			
         }
         else{
-
-            $reporte = new RDepreciacionXls($this->objParam);
-            $reporte->setDatos($this->res->datos);
-            $reporte->generarReporte();
+        	if($this->objParam->getParametro('tipo_repo')=='gepa' || $this->objParam->getParametro('tipo_repo')==''){
+        		
+	            $reporte = new RDepreciacionXls($this->objParam);
+	            $reporte->setDatos($this->res->datos);
+	            $reporte->generarReporte();
+			}else{
+				
+	            $reporte = new RDepreciacionActulizadaXls($this->objParam);
+	            $reporte->setDatos($this->res->datos);
+	            $reporte->generarReporte();				
+			}
         }
 
         $this->mensajeExito=new Mensaje();
@@ -352,6 +372,86 @@ class ACTReportes extends ACTbase {
         $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+    
+	function reporteDepreciacionPeriodo(){
+        $this->definirFiltros();
+        $this->objFunc = $this->create('MODReportes');
+        $this->res = $this->objFunc->listarRepDepreciacion($this->objParam);
+		//$this->res->imprimirRespuesta($this->res->generarJson());
+       
+        if($this->objParam->getParametro('tipo')=='pdf'){
+            $nombreArchivo = uniqid(md5(session_id()).'[DepreciaciónPeriodo AF]').'.pdf';
+        }
+        else{
+            $nombreArchivo = uniqid(md5(session_id()).'[DepreciaciónPeriodo AF]').'.xls';
+        }
+
+        $this->objParam->addParametro('orientacion','L');
+        $this->objParam->addParametro('tamano','LETTER');
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+        $this->objParam->addParametro('titulo_archivo','Depreciación AF');
+
+
+        if($this->objParam->getParametro('tipo')=='pdf'){
+        	
+		        $this->objReporteFormato=new RDepreciacionActulizadoPDF ($this->objParam);
+		        $this->objReporteFormato->setDatos($this->res->datos);
+		        $this->objReporteFormato->generarReporte();
+		        $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');        		
+        }
+        else{
+
+            $reporte = new RDepreciacionPeriodoXls($this->objParam);
+            $reporte->setDatos($this->res->datos);
+            $reporte->generarReporte();
+        }
+
+        $this->mensajeExito=new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
+            'Se generó con éxito el reporte: '.$nombreArchivo,'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());	
+		
+	}
+   function reporteKAF()
+    {
+        //$this->objParam->defecto('ordenacion', 'fecha_mov');
+        $this->objParam->defecto('ordenacion', 'id_activo_fijo');
+        $this->objParam->defecto('dir_ordenacion', 'asc');
+
+        if ($this->objParam->getParametro('fecha_desde') != '' && $this->objParam->getParametro('fecha_hasta') != '') {
+            $this->objParam->addFiltro("(mov.fecha_mov::date  BETWEEN ''%" . $this->objParam->getParametro('fecha_mov') . "%''::date  and ''%" . $this->objParam->getParametro('fecha_hasta') . "%''::date)");
+        }
+
+        if ($this->objParam->getParametro('fecha_desde') != '' && $this->objParam->getParametro('fecha_hasta') == '') {
+            $this->objParam->addFiltro("(mov.fecha_mov::date  >= ''%" . $this->objParam->getParametro('fecha_desde') . "%''::date)");
+        }
+
+        if ($this->objParam->getParametro('fecha_desde') == '' && $this->objParam->getParametro('fecha_hasta') != '') {
+            $this->objParam->addFiltro("(mov.fecha_mov::date  <= ''%" . $this->objParam->getParametro('fecha_hasta') . "%''::date)");
+        }
+
+        if($this->objParam->getParametro('id_activo_fijo')!=''){
+            $this->objParam->addFiltro("af.id_activo_fijo= ".$this->objParam->getParametro('id_activo_fijo'));
+        }
+
+        //  Verifica si la petición es para el reporte en excel o de grilla
+        if ($this->objParam->getParametro('tipo_salida') == 'reporte') {
+            $this->objFunc = $this->create('MODReportes');
+            $datos = $this->objFunc->reporteKAF($this->objParam);
+            $this->reporteKardexAFXls($datos);
+        }
+
+        if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
+            $this->objReporte = new Reporte($this->objParam, $this);
+            $this->res = $this->objReporte->generarReporteListado('MODReportes', 'reporteKAF');
+        } else {
+            $this->objFunc = $this->create('MODReportes');
+            $this->res = $this->objFunc->reporteKAF($this->objParam);
+        }
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
 }

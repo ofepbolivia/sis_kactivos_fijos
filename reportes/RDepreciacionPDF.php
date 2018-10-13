@@ -160,7 +160,7 @@ class RDepreciacionPDF extends  ReportePDF{
                     's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
                     's6' => $record['inc_actualiz']!=''?$record['inc_actualiz']:0,
                     's7' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
-                    's8' => $record['vida_util_orig'],
+                    's8' => substr($record['codigo'], 0,2)=='01' || substr($record['codigo'], 0,2)=='11'?'-':$record['vida_util_orig'],
                     's9' => $record['vida_util'],
                     's10' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
                     's11' => $record['depreciacion_acum_actualiz_gest_ant']!=''?$record['depreciacion_acum_actualiz_gest_ant']:0,

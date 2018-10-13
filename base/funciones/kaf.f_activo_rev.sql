@@ -28,7 +28,7 @@ BEGIN
             select codigo
             into ver
             from kaf.tactivo_fijo_valores
-            where substr(codigo,0,14)=resp and (tipo='reval' or tipo='ajuste_red' or tipo='ajuste');                    
+            where kaf.f_tam_codigo(codigo)=resp and (tipo='reval' or tipo='ajuste_red' or tipo='ajuste');                    
             if ver is not null then                      
             val=null;
             else 

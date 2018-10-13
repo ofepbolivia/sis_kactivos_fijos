@@ -846,7 +846,7 @@ BEGIN
                     --Actualiza estado de activo fijo
                     update kaf.tactivo_fijo set
                     en_deposito = 'si',
-                    id_funcionario = mov.id_funcionario_dest,
+                    id_funcionario = mov.id_responsable_depto,
                     id_persona = null,
                     fecha_asignacion = mov.fecha_mov,
                     ubicacion = 'Depósito'

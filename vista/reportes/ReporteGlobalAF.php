@@ -10,7 +10,7 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
     Phx.vista.ReporteGlobalAF = Ext.extend(Phx.frmInterfaz, {
-
+		
         Atributos : [
 
             {
@@ -88,49 +88,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid:true,
                 form : true
             },
-
-            /*{
-                config:{
-                    name : 'id_clasificacion',
-                    fieldLabel: 'Clasificación',
-                    anchor: '100%',
-                    emptyText: 'Elija una opción...',
-                    store: new Ext.data.JsonStore({
-                        url: '../../sis_kactivos_fijos/control/Clasificacion/ListarClasificacionTree',
-                        id: 'id_clasificacion',
-                        root: 'datos',
-                        sortInfo: {
-                            field: 'orden',
-                            direction: 'ASC'
-                        },
-                        totalProperty: 'total',
-                        fields: ['id_clasificacion', 'clasificacion', 'id_clasificacion_fk', 'nivel'],
-                        remoteSort: true,
-                        baseParams: {
-                            par_filtro: 'claf.clasificacion'
-                        }
-                    }),
-                    valueField: 'id_clasificacion',
-                    displayField: 'clasificacion',
-                    typeAhead: false,
-                    triggerAction: 'all',
-                    lazyRender: true,
-                    mode: 'remote',
-                    pageSize: 15,
-                    queryDelay: 1000,
-                    minChars: 2,
-                    tpl:['<tpl for=".">',
-                            '<tpl if="{nivel} == 1">',
-                                '<div class="x-combo-list-item"><p>{clasificacion}</p></div>',
-                            '</tpl>',
-                        '</tpl>'],
-                },
-                type : 'ComboBox',
-                id_grupo : 1,
-                grid:true,
-                form : true
-            },*/
-
             {
                 config : {
                     name : 'estado',
@@ -224,17 +181,17 @@ header("content-type: text/javascript; charset=UTF-8");
                 config : {
                     name : 'desc_nombre',
                     fieldLabel : 'Descripcion / Nombre',
-                    allowBlank : false,
+                    allowBlank : true,
                     triggerAction : 'all',
                     lazyRender : true,
                     mode : 'local',
                     store : new Ext.data.ArrayStore({
                         fields : ['tipo', 'valor'],
                         data : [['desc', 'Descripción'], ['nombre', 'Nombre']]
-                    }),
+                    }),           
                     anchor : '70%',
                     valueField : 'tipo',
-                    displayField : 'valor'
+                    displayField : 'valor'                                        
                 },
                 type : 'ComboBox',
                 id_grupo : 1,
@@ -302,7 +259,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },
 
                 type : 'AwesomeCombo',
-                id_grupo : 2,
+                id_grupo : 1,
                 grid : true,
                 form : true
             },
@@ -357,7 +314,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			{
 	            config:{
 	                name:'id_clasificacion',
-	                fieldLabel:'Clasificación Múltiple',
+	                fieldLabel:'Clasificación Múltiple Activo',
 	                allowBlank:true,
 	                emptyText:'Elija una opción...',
 	                store: new Ext.data.JsonStore({
@@ -412,10 +369,52 @@ header("content-type: text/javascript; charset=UTF-8");
 					id_grupo:2,					
 					form:true
 			},
+            {
+                config : {
+                    name : 'column_busque',
+                    fieldLabel : 'Columna de Busqueda',
+                    allowBlank : true,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'local',
+                    store : new Ext.data.ArrayStore({
+                        fields : ['id', 'valor'],
+                        data : [['1', 'Valor comp al 87%'], ['2', 'Valor comp al 100%'],['3','Valor Actual']]
+                    }),
+                    anchor : '70%',
+                    valueField : 'id',
+                    displayField : 'valor'
+                },
+                type : 'ComboBox',
+                id_grupo : 2,
+                grid:true,
+                form : true
+            },			
+            {
+                config : {
+                    name : 'valor_actual',
+                    fieldLabel : 'Condicion de Busqueda',
+                    allowBlank : true,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'local',
+                    store : new Ext.data.ArrayStore({
+                        fields : ['id', 'valor'],
+                        data : [['1', 'Mayor igual'], ['2', 'Menor igual'],['3','Ambos']]
+                    }),
+                    anchor : '70%',
+                    valueField : 'id',
+                    displayField : 'valor'
+                },
+                type : 'ComboBox',
+                id_grupo : 2,
+                grid:true,
+                form : true
+            },			
 			{	
 				config:{
 					name: 'txtMontoSup',
-					fieldLabel: 'Importe Compra >=',
+					fieldLabel: 'Valor de Busqueda >=',
 					allowBlank: true,
 					anchor: '50%',
 					gwidth: 100,
@@ -430,8 +429,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			{	
 				config:{
 					name: 'txtMontoInf',					
-					fieldLabel: 'Importe Compra <=',
-					label:'dataaaa',					
+					fieldLabel: 'Valor de Busqueda <=',								
 					allowBlank: true,
 					anchor: '50%',
 					gwidth: 100,					
@@ -442,6 +440,28 @@ header("content-type: text/javascript; charset=UTF-8");
 					id_grupo:2,					
 					form:true
 			},
+            {
+                config : {
+                    name : 'id_depto',
+					fieldLabel: 'Dpto. de Activos Fijos',
+		            emptyText: 'Seleccione un depto....',                    
+                    allowBlank : true,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'local',
+                    store : new Ext.data.ArrayStore({
+                        fields : ['id', 'valor'],
+                        data : [['7', 'Unidad de Activos Fijos'], ['47', 'Unidad de Activos Fijos TI'],['3','Ambos']]
+                    }),
+                    anchor : '70%',
+                    valueField : 'id',
+                    displayField : 'valor'
+                },
+                type : 'ComboBox',
+                id_grupo : 2,
+                grid:true,
+                form : true
+            },			
 			 {
 					 config : {
 					 name : 'activo_multi',					 
@@ -468,7 +488,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				        ['ac31','C-31'],
 				        ['af31','FECHA COMP C31'],
 				        ['aubi','UBICACION'],
-				        ['ares','RESPONSABLE']				        
+				        ['ares','RESPONSABLE'],
+				        ['auco','UNIDAD SOLICI.']			        
 				        ]
 				     }),
 				     valueField: 'key',
@@ -492,7 +513,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				        id: '',
 				        fields: [
 				            'key',
-				            'value'
+				            'value'				            
 				        ],
 				        data: [
 				        ['gcod','CODIGO'],
@@ -504,46 +525,44 @@ header("content-type: text/javascript; charset=UTF-8");
 				        ['gvit','VIDA UTIL ORIGINAL'],
 				        ['gviu','VIDA UTIL RESTANTE'],
 				        ['gimp','IMPORTE 100%'],				        
-				        ['gmon','MONTO 80%']				        
+				        ['gmon','MONTO 80%'],
+				        ['guco','UNIDAD SOLICI.']				        
 				        ]
-				     }),
+				     }),				     
 				     valueField: 'key',
 				     displayField: 'value',					 
 					 width : 200,
-					 enableMultiSelect:true					 
+					 enableMultiSelect:true				 
 			 	},
-			 	type : 'AwesomeCombo',
+			 	type : 'AwesomeCombo',			 	
 			 	id_grupo : 0,
 			 	form : true
-			 }			 
-	        /*,
-            {
+			 },
+           {
                 config : {
-                    name : 'financiador',
-                    fieldLabel : 'Financiador',
-                    allowBlank : false,
-                    emptyText : 'Financiador...',
-                    disabled: true,
+                    name : 'id_proveedor',
+                    fieldLabel : 'Proveedor',
+                    allowBlank : true,
+                    emptyText : 'Estado...',
                     store : new Ext.data.JsonStore({
-                        url : '../../sis_parametros/control/Financiador/listarFinanciador',
-                        id : 'id_financiador',
+                        url: '../../sis_kactivos_fijos/control/ActivoFijo/proveedorActivo',
+                        id : 'id_proveedor',
                         root : 'datos',
                         sortInfo : {
-                            field : 'codigo_financiador',
+                            field : 'id_proveedor',
                             direction : 'ASC'
                         },
                         totalProperty : 'total',
-                        fields : ['id_financiador', 'codigo_financiador', 'nombre_financiador', 'descripcion_financiador'],
+                        fields : ['id_proveedor', 'provee'],
                         remoteSort : true,
                         baseParams : {
-                            par_filtro : 'codigo_financiador#descripcion_financiador',
-                            cod_subsistema:'KAF'
+                            par_filtro : 'pro.desc_proveedor'                                                       
                         }
                     }),
-                    valueField : 'id_financiador',
-                    displayField : 'nombre_financiador',
-                    gdisplayField : 'nombre_financiador',
-                    hiddenName : 'id_financiador',
+                    valueField : 'id_proveedor',
+                    displayField : 'provee',
+                    gdisplayField : 'provee',
+                    hiddenName : 'id_proveedor',
                     forceSelection : true,
                     typeAhead : false,
                     triggerAction : 'all',
@@ -551,11 +570,11 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode : 'remote',
                     pageSize : 10,
                     queryDelay : 1000,
-                    anchor : '50%',
+                    anchor : '70%',
                     gwidth : 150,
                     minChars : 2,
                     renderer : function(value, p, record) {
-                        return String.format('{0}', record.data['descripcion']);
+                        return String.format('{0}', record.data['provee']);
                     }
                 },
                 type : 'ComboBox',
@@ -563,146 +582,30 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid : true,
                 form : true
             },
-            {
-                config : {
-                    name : 'programa',
-                    fieldLabel : 'Programa',
-                    allowBlank : false,
-                    emptyText : 'Programa...',
-                    disabled: true,
-                    store : new Ext.data.JsonStore({
-                        url : '../../sis_parametros/control/Programa/listarPrograma',
-                        id : 'id_programa',
-                        root : 'datos',
-                        sortInfo : {
-                            field : 'codigo_programa',
-                            direction : 'ASC'
-                        },
-                        totalProperty : 'total',
-                        fields : ['id_programa', 'codigo_programa', 'nombre_programa', 'descripcion_programa'],
-                        remoteSort : true,
-                        baseParams : {
-                            par_filtro : 'descripcion',
-                            cod_subsistema:'KAF'
-                        }
-                    }),
-                    valueField : 'id_programa',
-                    displayField : 'nombre_programa',
-                    gdisplayField : 'nombre_programa',
-                    hiddenName : 'id_programa',
-                    forceSelection : true,
-                    typeAhead : false,
-                    triggerAction : 'all',
-                    lazyRender : true,
-                    mode : 'remote',
-                    pageSize : 10,
-                    queryDelay : 1000,
-                    anchor : '50%',
-                    gwidth : 150,
-                    minChars : 2,
-                    renderer : function(value, p, record) {
-                        return String.format('{0}', record.data['descripcion']);
-                    }
-                },
-                type : 'ComboBox',
-                id_grupo : 2,
-                grid : true,
-                form : true
-            },
-            {
-                config : {
-                    name : 'proyecto',
-                    fieldLabel : 'Proyecto',
-                    allowBlank : false,
-                    emptyText : 'Proyecto...',
-                    disabled: true,
-                    store : new Ext.data.JsonStore({
-                        url : '../../sis_parametros/control/Proyecto/listarProyecto',
-                        id : 'id_proyecto',
-                        root : 'datos',
-                        sortInfo : {
-                            field : 'codigo_proyecto',
-                            direction : 'ASC'
-                        },
-                        totalProperty : 'total',
-                        fields : ['id_proyecto', 'codigo_proyecto', 'nombre_proyecto', 'descripcion_proyecto'],
-                        remoteSort : true,
-                        baseParams : {
-                            par_filtro : 'codigo_proyecto#nombre_proyecto',
-                            cod_subsistema:'KAF'
-                        }
-                    }),
-                    valueField : 'id_proyecto',
-                    displayField : 'nombre_proyecto',
-                    gdisplayField : 'nombre_proyecto',
-                    hiddenName : 'id_proyecto',
-                    forceSelection : true,
-                    typeAhead : false,
-                    triggerAction : 'all',
-                    lazyRender : true,
-                    mode : 'remote',
-                    pageSize : 10,
-                    queryDelay : 1000,
-                    anchor : '50%',
-                    gwidth : 150,
-                    minChars : 2,
-                    renderer : function(value, p, record) {
-                        return String.format('{0}', record.data['descripcion']);
-                    }
-                },
-                type : 'ComboBox',
-                id_grupo : 2,
-                grid : true,
-                form : true
-            },
-            {
-                config : {
-                    name : 'actividad',
-                    fieldLabel : 'Actividad',
-                    allowBlank : false,
-                    emptyText : 'Actividad...',
-                    disabled: true,
-                    store : new Ext.data.JsonStore({
-                        url : '../../sis_parametros/control/Actividad/listarActividad',
-                        id : 'id_actividad',
-                        root : 'datos',
-                        sortInfo : {
-                            field : 'codigo_actividad',
-                            direction : 'ASC'
-                        },
-                        totalProperty : 'total',
-                        fields : ['id_actividad', 'codigo_actividad', 'nombre_actividad', 'descripcion_actividad'],
-                        remoteSort : true,
-                        baseParams : {
-                            par_filtro : 'descripcion',
-                            cod_subsistema:'KAF',
-                            catalogo_tipo:'tactivo_fijo__estado'
-                        }
-                    }),
-                    valueField : 'codigo_actividad',
-                    displayField : 'descripcion_actividad',
-                    gdisplayField : 'descripcion_actividad',
-                    hiddenName : 'id_actividad',
-                    forceSelection : true,
-                    typeAhead : false,
-                    triggerAction : 'all',
-                    lazyRender : true,
-                    mode : 'remote',
-                    pageSize : 10,
-                    queryDelay : 1000,
-                    anchor : '50%',
-                    gwidth : 150,
-                    minChars : 2,
-                    renderer : function(value, p, record) {
-                        return String.format('{0}', record.data['descripcion']);
-                    }
-                },
-                type : 'ComboBox',
-                id_grupo : 2,
-                grid : true,
-                form : true
-            },*/
-
+			{
+				config:{
+					name: 'nr_factura',
+					fieldLabel: 'Nro Factura',
+					allowBlank: true,
+					anchor: '50%',
+					gwidth: 100					
+				},
+					type:'TextField',					
+					id_grupo:2,					
+					form:true
+			},
+			{
+				config:{
+					name:'nro_tramite_comp',
+					fieldLabel:'Numero de Tramite de Compra',
+					allowBlank:true,
+					anchor:'50%',
+					gwidth:100
+				},
+				type:'TextField',
+				id_grupo:2,
+				form:true
+			}            			 			 			 
         ],
         title : 'Reporte Global Activos Fijos',
         ActSave : '../../sis_kactivos_fijos/control/ActivoFijo/reportesAFGlobal',
@@ -713,68 +616,54 @@ header("content-type: text/javascript; charset=UTF-8");
         labelSubmit : 'Imprimir',
         tooltipSubmit : '<b>Estimado usuario</b><br>Eliga los campos necesario e imprima su reporte.',
 
-        constructor : function(config) {
+        constructor : function(config) {        	
             Phx.vista.ReporteGlobalAF.superclass.constructor.call(this, config);
             this.init();
-            this.iniciarEventos();
+            this.iniciarEventos();            
             this.getComponente('gestion_multi').setVisible(false);
-            this.getComponente('activo_multi').setVisible(false);            
+            this.getComponente('activo_multi').setVisible(false);
+            this.getComponente('txtMontoInf').setVisible(false);
+            this.getComponente('txtMontoSup').setVisible(false);
+            this.getComponente('valor_actual').setVisible(false);                        
         },
 
-        iniciarEventos:function(){        	
+        iniciarEventos:function(){        	        	
         	this.Cmp.configuracion_reporte.on('select',function(cmb,rec,ind){        		        		        	
         		if (rec.data.tipo == 'compras_gestion'){
 		            this.ocultarComponente(this.Cmp.activo_multi);      			
-		            this.mostrarComponente(this.Cmp.gestion_multi);		            								
+		            this.mostrarComponente(this.Cmp.gestion_multi);
+		            this.Cmp.gestion_multi.getStore().each(function(rec){
+		            	this.Cmp.gestion_multi.checkRecord(rec);
+		            },this);		            		            		            								
 				}else{
 		            this.mostrarComponente(this.Cmp.activo_multi);		            			
-		            this.ocultarComponente(this.Cmp.gestion_multi);					
+		            this.ocultarComponente(this.Cmp.gestion_multi);
+		            this.Cmp.activo_multi.getStore().each(function(rec){
+		            	this.Cmp.activo_multi.checkRecord(rec);
+		            },this);					
 				}        						       		        		        	
-        	},this);        	        	
-            /*var that = this;
-            this.Cmp.configuracion_reporte.on('select',function (cmb, rec, ind) {
-                console.log('tipo',that.Cmp.desc_nombre);
-            });*/
-            /*this.cmpFormatoReporte = this.getComponente('formato_reporte');
-            this.cmpFechaIni = this.getComponente('fecha_ini');
-            this.cmpFechaFin = this.getComponente('fecha_fin');
-            this.cmpIdCuentaBancaria = this.getComponente('id_cuenta_bancaria');
-            this.cmpEstado = this.getComponente('estado');
-            this.cmpTipo = this.getComponente('tipo');
-            this.cmpNombreBanco = this.getComponente('nombre_banco');
-            this.cmpNroCuenta = this.getComponente('nro_cuenta');
-
-            this.getComponente('finalidad').hide(true);
-            this.cmpNroCuenta.hide(true);
-            this.getComponente('id_finalidad').on('change',function(c,r,n){
-                this.getComponente('finalidad').setValue(c.lastSelectionText);
-            },this);
-
-            this.cmpIdCuentaBancaria.on('select',function(c,r,n){
-                this.cmpNombreBanco.setValue(r.data.nombre_institucion);
-                this.cmpNroCuenta.setValue(c.lastSelectionText);
-                this.getComponente('id_finalidad').reset();
-                this.getComponente('id_finalidad').store.baseParams={id_cuenta_bancaria:c.value, vista: 'reporte'};
-                this.getComponente('id_finalidad').modificado=true;
-            },this);*/
+        	},this);
+        	
+        	this.Cmp.column_busque.on('select',function(cmb,rec,ind){
+        		if(rec.data.id in ['1','2','3']){
+        			this.mostrarComponente(this.Cmp.valor_actual);
+        		}
+        	},this);
+        	this.Cmp.valor_actual.on('select',function(cmb,rec,ind){
+				if (rec.data.id == '1'){
+        			this.mostrarComponente(this.Cmp.txtMontoSup);
+        			this.ocultarComponente(this.Cmp.txtMontoInf);
+        		}else if(rec.data.id == '2'){
+        			this.mostrarComponente(this.Cmp.txtMontoInf);
+        			this.ocultarComponente(this.Cmp.txtMontoSup);
+        		}else{
+        			this.mostrarComponente(this.Cmp.txtMontoInf);
+        			this.mostrarComponente(this.Cmp.txtMontoSup);
+        		}        		
+        	},this);        		       	        	
         },
 
-        onSubmit:function(o){
-            /*if(this.cmpFormatoReporte.getValue()==2){
-                var data = 'FechaIni=' + this.cmpFechaIni.getValue().format('d-m-Y');
-                data = data + '&FechaFin=' + this.cmpFechaFin.getValue().format('d-m-Y');
-                data = data + '&IdCuentaBancaria=' + this.cmpIdCuentaBancaria.getValue();
-                data = data + '&Estado=' + this.cmpEstado.getValue();
-                data = data + '&Tipo=' + this.cmpTipo.getValue();
-                data = data + '&NombreBanco=' + this.cmpNombreBanco.getValue();
-                data = data + '&NumeroCuenta=' + this.cmpNroCuenta.getValue();
-
-                console.log(data);
-                window.open('http://sms.obairlines.bo/LibroBancos/Home/VerLibroBancos?'+data);
-                //window.open('http://localhost:2309/Home/VerLibroBancos?'+data);				
-            }else{
-                Phx.vista.ReporteLibroBancos.superclass.onSubmit.call(this,o);
-            }*/
+        onSubmit:function(o){        	
             Phx.vista.ReporteGlobalAF.superclass.onSubmit.call(this,o);
         },
 
@@ -872,41 +761,8 @@ header("content-type: text/javascript; charset=UTF-8");
                             ]
                         }
                     ]
-                }/*,
-
-                {
-                    columnWidth: .39,
-                    border: false,
-                    //split: true,
-                    layout: 'anchor',
-                    autoScroll: true,
-                    autoHeight: true,
-                    collapseFirst : false,
-                    collapsible: false,
-                    anchor: '100%',
-
-                    items:[
-                        {
-                            anchor: '100%',
-                            bodyStyle: 'padding-right:10px;padding-left:5px;',
-                            autoHeight: true,
-                            border: false,
-                            items:[
-                                {
-                                    xtype: 'fieldset',
-                                    layout: 'form',
-                                    border: true,
-                                    title: 'Datos Estructura Programatica',
-                                    bodyStyle: 'padding: 5px 10px 10px 10px;',
-
-                                    items: [],
-                                    id_grupo: 2
-                                }
-                            ]
-                        }
-                    ]
-                }*/
+                }
             ]
         }]
-    })
+    })   
 </script>

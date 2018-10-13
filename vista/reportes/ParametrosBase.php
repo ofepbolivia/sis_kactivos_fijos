@@ -62,6 +62,22 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.lblHasta = new Ext.form.Label({
 			text: 'Hasta: '
 		});
+		this.cmbTipoRep = new Ext.form.ComboBox({
+			name : 'tipo_repo',
+			fieldLabel : 'Reporte Actu/Gant',
+			allowBlank : true,
+			triggerAction : 'all',
+			lazyRender : true,
+			mode : 'local',
+			store : new Ext.data.ArrayStore({
+				fields : ['tipo', 'valor'],
+				data : [['gepa', 'Gestion Pasada'], ['geac', 'Gestion Actual']]
+			}),
+			anchor : '40%',
+			valueField : 'tipo',
+			displayField : 'valor',
+			style: this.setBackgroundColor('cmbTipoRep')
+		});		
 		this.cmpFechas = new Ext.form.CompositeField({
         	fieldLabel: 'Fechas',
         	items: [this.lblDesde,this.dteFechaDesde,this.lblHasta,this.dteFechaHasta]
@@ -175,7 +191,8 @@ Ext.define('Phx.vista.ParametrosBase', {
 			allowBlank: true,
             emptyText: 'Elija un activo fijo...',
             store: new Ext.data.JsonStore({
-                url: '../../sis_kactivos_fijos/control/ActivoFijo/ListarActivoFijo',
+                //url: '../../sis_kactivos_fijos/control/ActivoFijo/ListarActivoFijo',
+                url:'../../sis_kactivos_fijos/control/ActivoFijo/listarAF',
                 id: 'id_activo_fijo',
                 root: 'datos',
                 sortInfo: {
@@ -595,7 +612,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.fieldSetGeneral = new Ext.form.FieldSet({
         	collapsible: true,
         	title: 'General',
-        	items: [this.cmpFechas,this.cmbClasificacion,this.cmbClasificacionMulti,this.cmbTipoMov,this.cmbEstadoDepre,this.cmbActivo,this.txtDenominacion,this.cmbMoneda,this.cmpFechaCompra,this.cmpMontos,this.cmbTipo,this.cmbLugar,this.txtNroCbteAsociado,
+        	items: [this.cmbTipoRep,this.cmpFechas,this.cmbClasificacion,this.cmbClasificacionMulti,this.cmbTipoMov,this.cmbEstadoDepre,this.cmbActivo,this.txtDenominacion,this.cmbMoneda,this.cmpFechaCompra,this.cmpMontos,this.cmbTipo,this.cmbLugar,this.txtNroCbteAsociado,
         		this.dteFechaIniDep,this.cmbEstado,this.cmbCentroCosto,this.txtUbicacionFisica,
 				this.cmbOficina,this.cmbResponsable,this.cmbDepto, this.descNombre, this.cmbDeposito,this.radGroupDeprec]
         });
@@ -660,10 +677,36 @@ Ext.define('Phx.vista.ParametrosBase', {
 				},'-',
 				//{xtype:'button', text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Generar Xls', tooltip: 'Resetear los parámetros', handler: this.onReporteDep, scope: this},
                 {xtype:'button', text:'<i class="fa fa-undo" aria-hidden="true"></i> Reset', tooltip: 'Resetear los parámetros', handler: this.onReset, scope: this},
-
-
-            ]
-        });
+				'-',{               
+                xtype: 'splitbutton',
+                grupo: [0,4],
+                tooltip: '<b>Reporte Depreciacion Periodo A.F.</b><br>Podemos generar reporte de depreciacion periodo de formato PDF y EXCEL.',
+                text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Reporte Depreciacion Periodo',
+                scope: me,
+                menu: [{
+                    text: 'Reporte XLS',
+                    iconCls: 'bexcel',
+                    argument: {
+                        'news': true,
+                        def: 'csv'
+                    },
+                    handler: me.onReporteDepPe,
+                    scope: me
+                }, {
+                    text: 'Reporte PDF',
+                    iconCls: 'bpdf',
+                    argument: {
+                        'news': true,
+                        def: 'pdf'
+                    },
+                    handler: me.onReporteDepPe,
+                    scope: me
+		                }]
+		            }                
+		
+		
+		            ]
+				        });
 
 		//Contenedor
 		this.viewPort = new Ext.Container({
@@ -699,12 +742,27 @@ Ext.define('Phx.vista.ParametrosBase', {
 			scope:this
 		});
 	},
+	onReporteDepPe: function (cmp, event) {
+
+		var parametros = this.getParams();
+		parametros.tipo = cmp.argument.def;
+		Phx.CP.loadingShow();
+		Ext.Ajax.request({
+			url:'../../sis_kactivos_fijos/control/Reportes/reporteDepreciacionPeriodo',
+			params: parametros,
+			success: this.successExport,
+			failure: this.conexionFailure,
+			timeout:this.timeout,
+			scope:this
+		});
+	}, 	
 	render: function(){
 		this.panel.add(this.viewPort);
         this.panel.doLayout();
         this.addEvents('init'); 
 	},
 	onReset: function(){
+		this.cmbTipoRep.setValue('');
 		this.dteFechaDesde.setValue('');
 		this.dteFechaHasta.setValue('');
 		this.cmbActivo.setValue('');
@@ -817,7 +875,8 @@ Ext.define('Phx.vista.ParametrosBase', {
 			tipo: this.cmbTipo.getValue(),
 			id_clasificacion_multi: this.cmbClasificacionMulti.getValue(),
 			total_consol : this.cmbTipoMov.getValue(),
-			estado_depre : this.cmbEstadoDepre.getValue(),			
+			estado_depre : this.cmbEstadoDepre.getValue(),
+			tipo_repo : this.cmbTipoRep.getValue(),			
 		};
 
 		Ext.apply(params,this.getExtraParams());
@@ -887,6 +946,7 @@ Ext.define('Phx.vista.ParametrosBase', {
         });
 	},
 	inicializarParametros: function(){
+		this.configElement(this.cmbTipoRep,false,true);
 		this.configElement(this.dteFechaDesde,false,true);
 		this.configElement(this.dteFechaHasta,false,true);
 		this.configElement(this.cmbActivo,false,true);
