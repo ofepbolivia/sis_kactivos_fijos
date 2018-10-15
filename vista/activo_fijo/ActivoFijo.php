@@ -270,7 +270,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         var txtFilter = new Ext.form.TextField({
             name: 'valor_filtro',
             emptyText: 'Valor...',
-            width: 150
+            width: 100
         });
 
         this.tbar.add(cmbCaract);
@@ -425,7 +425,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         this.addButton('btnChequeoDocumentosWf',
             {
             	grupo:[0,1,2],
-                text: 'Chequear Documentos',
+                text: 'Doc. Compra',
                 iconCls: 'bchecklist',
                 disabled: true,
                 handler: this.loadCheckDocumentosSolWf,

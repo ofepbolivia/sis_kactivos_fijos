@@ -38,6 +38,7 @@ DECLARE
     v_presu             record; 
     first       varchar='niv.codigo';
     v_filtro      varchar='';
+    ord					text;
 BEGIN
 
   v_nombre_funcion = 'kaf.ft_activo_fijo_sel';
