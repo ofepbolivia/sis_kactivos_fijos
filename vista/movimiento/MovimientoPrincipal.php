@@ -167,7 +167,7 @@ Phx.vista.MovimientoPrincipal = {
 		this.addButton('diagrama_gantt',{text:'Gant',iconCls: 'bgantt',disabled:true,handler:diagramGantt,tooltip: '<b>Diagrama Gantt del proceso</b>',grupo: [0,1,2,3,4,5,6],});
 		this.addButton('btnChequeoDocumentosWf',
             {
-                text: 'Documentos',
+                text: 'Doc. Proceso Compra',
                 iconCls: 'bchecklist',
                 disabled: true,
                 handler: this.loadCheckDocumentosPlanWf,
@@ -177,8 +177,8 @@ Phx.vista.MovimientoPrincipal = {
         );
 
         this.addButton('btnChequeoDocumentosAF',{
-          grupo:[0,1,2,3,4], text: 'Documentos Activo Fijo',
-          iconCls: 'bchecklist2',
+          grupo:[0,1,2,3,4], text: 'Doc. Movimiento ',
+          iconCls: 'bchecklist',
           disabled: true,
           handler: this.loadCheckDocumentosSol,
           tooltip: '<b>Documentos del Proceso</b><br/>Subir los documetos requeridos en el proceso seleccionada.'
