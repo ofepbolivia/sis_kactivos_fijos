@@ -193,14 +193,20 @@ class RDepreciacionActulizadaXls
         $sheet0->getStyle('B5:R5')->applyFromArray($styleTitulos);
         $sheet0->getStyle('C5:R5')->getAlignment()->setWrapText(true);
 
-
+		$descnom=$this->objParam->getParametro('desc_nombre');
+		switch ($descnom) {
+			case 'desc' :$desno='DESCRIPCIÓN';break;
+			case 'nombre' :$desno='DENOMINACIÓN';break;
+			case 'ambos':$desno='NOMBRE/DESC.';break;
+			default:$desno='DENOMINACIÓN';break;
+		}
         //*************************************Cabecera*****************************************
 
         $sheet0->setCellValue('B5', 'Nº');
 
         $sheet0->setCellValue('C5', 'CODIGO');
 
-        $sheet0->setCellValue('D5', 'DESCRIPCIÓN');
+        $sheet0->setCellValue('D5', $desno);
 
         $sheet0->setCellValue('E5', 'INICIO DEP.');
 

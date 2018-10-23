@@ -38,7 +38,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config:{
                     name: 'fecha_ini',
                     fieldLabel: 'Fecha Inicio',
-                    allowBlank: true,
+                    allowBlank: false,
                     anchor: '54.5%',
                     gwidth: 100,
                     format: 'd/m/Y',
@@ -54,7 +54,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config:{
                     name: 'fecha_fin',
                     fieldLabel: 'Fecha Fin',
-                    allowBlank: true,
+                    allowBlank: false,
                     anchor: '54.5%',
                     gwidth: 100,
                     format: 'd/m/Y',
@@ -181,13 +181,13 @@ header("content-type: text/javascript; charset=UTF-8");
                 config : {
                     name : 'desc_nombre',
                     fieldLabel : 'Descripcion / Nombre',
-                    allowBlank : true,
+                    allowBlank : false,
                     triggerAction : 'all',
                     lazyRender : true,
                     mode : 'local',
                     store : new Ext.data.ArrayStore({
                         fields : ['tipo', 'valor'],
-                        data : [['desc', 'Descripción'], ['nombre', 'Nombre']]
+                        data : [['desc', 'Descripción'], ['nombre', 'Nombre'],['descnom','Nombre/Desc.']]
                     }),           
                     anchor : '70%',
                     valueField : 'tipo',
@@ -201,7 +201,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config : {
                     name : 'ubicacion',
                     fieldLabel : 'Ubicación',
-                    allowBlank : true,
+                    allowBlank : false,
                     triggerAction : 'all',
                     lazyRender : true,
                     mode : 'local',
@@ -525,7 +525,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				        ['gvit','VIDA UTIL ORIGINAL'],
 				        ['gviu','VIDA UTIL RESTANTE'],
 				        ['gimp','IMPORTE 100%'],				        
-				        ['gmon','MONTO 80%'],
+				        ['gmon','MONTO 87%'],
 				        ['guco','UNIDAD SOLICI.']				        
 				        ]
 				     }),				     
@@ -596,8 +596,20 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			{
 				config:{
-					name:'nro_tramite_comp',
-					fieldLabel:'Numero de Tramite de Compra',
+					name:'tramite_compra',
+					fieldLabel:'Nro de Tramite de Compra',
+					allowBlank:true,
+					anchor:'50%',
+					gwidth:100
+				},
+				type:'TextField',
+				id_grupo:2,
+				form:true
+			},
+			{
+				config:{
+					name:'nro_serie',
+					fieldLabel:'Nro de Serie',
 					allowBlank:true,
 					anchor:'50%',
 					gwidth:100

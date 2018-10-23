@@ -107,6 +107,8 @@ class MODActivoFijo extends MODbase{
 		$this->captura('tramite_compra','varchar');
 		$this->captura('id_proceso_wf','int4');
 		$this->captura('subtipo','varchar');
+		$this->captura('nombre_unidad','varchar');
+		$this->captura('id_uo','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -171,6 +173,8 @@ class MODActivoFijo extends MODbase{
 		$this->setParametro('fecha_cbte_asociado','fecha_cbte_asociado','date');
 		$this->setParametro('tramite_compra','tramite_compra','varchar');
 		$this->setParametro('subtipo','subtipo','varchar');
+		$this->setParametro('nombre_unidad','nombre_unidad','varchar');
+		$this->setParametro('id_uo','id_uo','int4');
 
 
 
@@ -237,6 +241,8 @@ class MODActivoFijo extends MODbase{
 		$this->setParametro('fecha_cbte_asociado','fecha_cbte_asociado','date');
 		$this->setParametro('tramite_compra','tramite_compra','varchar');
 		$this->setParametro('subtipo','subtipo','varchar');
+		$this->setParametro('nombre_unidad','nombre_unidad','varchar');
+		$this->setParametro('id_uo','id_uo','int4');
 
 
 		//Ejecuta la instruccion
@@ -866,6 +872,21 @@ class MODActivoFijo extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+    function listarAFUnidSol(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='kaf.ft_activo_fijo_sel';
+        $this->transaccion='KA_AFUNSOL_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        //Definicion de la lista del resultado del query
+        $this->captura('id_uo','int4');
+        $this->captura('nombre_unidad','varchar');        
+        //Ejecuta la instruccion
+        $this->armarConsulta();        
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }	
 
 }
 ?>

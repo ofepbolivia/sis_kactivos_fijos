@@ -599,7 +599,12 @@ class ACTActivoFijo extends ACTbase{
 		if($this->objParam->getParametro('id_proveedor')!=''){
 			$this->objParam->addFiltro("taf.id_proveedor = ".$this->objParam->getParametro('id_proveedor'));
 		}
-		
+		if($this->objParam->getParametro('tramite_compra')!=''){
+			$this->objParam->addFiltro("taf.tramite_compra = ''".$this->objParam->getParametro('tramite_compra')."''");
+		}
+		if($this->objParam->getParametro('nro_serie')!=''){
+			$this->objParam->addFiltro("taf.nro_serie = ''".$this->objParam->getParametro('nro_serie')."''");
+		}
 		///		
 		if($this->objParam->getParametro('tipo_activo')== 1){
 			$this->objParam->addFiltro("niv.tipo_activo  = ''tangible''");
@@ -814,6 +819,13 @@ class ACTActivoFijo extends ACTbase{
 		    }
 		    $this->res->imprimirRespuesta($this->res->generarJson());
     	}
+		function listarAFUnidSol(){
+			$this->objParam->defecto('ordenacion','id_uo');
+			$this->objParam->defecto('dir_ordenacion','asc');
+			$this->objFunc=$this->create('MODActivoFijo');
+			$this->res=$this->objFunc->listarAFUnidSol($this->objParam);
+			$this->res->imprimirRespuesta($this->res->generarJson());			
+		}
 
 }
 ?>

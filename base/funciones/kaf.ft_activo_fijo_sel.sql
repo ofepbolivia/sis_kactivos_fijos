@@ -140,7 +140,9 @@ BEGIN
                             afij.fecha_dev_prestamo,
                             afij.tramite_compra,
                             afij.id_proceso_wf,
-                            afij.subtipo
+                            afij.subtipo,
+                            uoac.nombre_unidad,
+                            afij.id_uo                            
             from kaf.tactivo_fijo afij                       
             inner join segu.tusuario usu1 on usu1.id_usuario = afij.id_usuario_reg            
             left join param.tcatalogo cat1 on cat1.id_catalogo = afij.id_cat_estado_fun
@@ -173,6 +175,7 @@ BEGIN
                         and uof.tipo = ''oficial''
                         left join orga.tuo uo
                         on uo.id_uo = uof.id_uo
+                        left join orga.tuo uoac on uoac.id_uo = afij.id_uo                        
                 where  ';
 
             --Verifica si la consulta es por usuario
@@ -243,6 +246,7 @@ BEGIN
                         and uof.tipo = ''oficial''
                         left join orga.tuo uo
                         on uo.id_uo = uof.id_uo
+                        left join orga.tuo uoac on uoac.id_uo = afij.id_uo                        
                 where  ';
 
             --Verifica si la consulta es por usuario
@@ -673,7 +677,9 @@ BEGIN
             niv.nombre,
               niv.camino,
         taf.codigo as codig_af,
-              case when '''||v_parametros.desc_nombre||'''= ''desc'' then coalesce(taf.descripcion, ''-'') else coalesce(taf.denominacion, ''-'') end as denominacion, 
+              case when '''||v_parametros.desc_nombre||'''= ''desc'' then coalesce(taf.descripcion, ''-'')
+              when '''||v_parametros.desc_nombre||'''= ''descnom'' then coalesce(taf.denominacion||'' /'||chr(10)||'''||taf.descripcion, ''-'')
+              else coalesce(taf.denominacion, ''-'') end as denominacion, 
               coalesce(taf.fecha_compra::varchar, ''-'')::varchar as fecha_compra,               
               coalesce(taf.nro_cbte_asociado, ''-'') as nro_cbte_asociado, 
               coalesce(taf.fecha_cbte_asociado::varchar, ''-'') as fecha_cbte_asociado,
@@ -686,7 +692,7 @@ BEGIN
               vf.desc_funcionario2::varchar as responsable,
               taf.monto_compra,
               taf.estado,
-        coalesce(ger.nombre_unidad,''-'') as nombre_unidad,
+        coalesce(tu.nombre_unidad,''-'') as nombre_unidad,
               cat.descripcion as estado_fun
                             
               from niveles  niv 
@@ -694,13 +700,9 @@ BEGIN
               left join orga.vfuncionario vf on vf.id_funcionario = taf.id_funcionario
               left join orga.toficina tof on tof.id_oficina = taf.id_oficina
               left join param.tlugar tlug on tlug.id_lugar = tof.id_lugar
-              left join adq.tcotizacion_det cot on cot.id_cotizacion_det=taf.id_cotizacion_det
-              left join adq.tsolicitud_det sod on sod.id_solicitud_det=cot.id_solicitud_det
-              left join adq.tsolicitud sol on sol.id_solicitud=sod.id_solicitud
-              left join orga.tuo ger on ger.id_uo=orga.f_get_uo_gerencia(sol.id_uo,null::INTEGER,null::date)
               left join param.tcatalogo cat on cat.id_catalogo = taf.id_cat_estado_fun
-              --left join param.tproveedor pro on pro.id_proveedor=taf.id_proveedor
-              where '||v_condicion||'(            
+              left join orga.tuo tu on tu.id_uo= taf.id_uo           
+              where '||v_condicion||'(              
             ';
             
             --Definicion de la respuesta
@@ -1001,6 +1003,45 @@ BEGIN
               
               end;    
 ----------------------------------------------------------        
+        /*********************************    
+        #TRANSACCION:  'KA_AFUNSOL_SEL'
+        #DESCRIPCION: Conteo de registros
+        #AUTOR:   BVP 
+        #FECHA:   23-10-2018
+        ***********************************/
+
+        elsif(p_transaccion='KA_AFUNSOL_SEL')then
+
+          begin
+            --Sentencia de la consulta de conteo de registros
+            v_consulta:='select uo.id_uo,
+                            uo.nombre_unidad
+                              from orga.tuo uo 
+                  where  ';
+            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            return v_consulta;
+
+          end;
+              
+        /*********************************    
+        #TRANSACCION:  'KA_AFUNSOL_CONT'
+        #DESCRIPCION: Conteo de registros
+        #AUTOR:   BVP 
+        #FECHA:   23-10-2018
+        ***********************************/
+
+        elsif(p_transaccion='KA_AFUNSOL_CONT')then
+
+          begin
+            --Sentencia de la consulta de conteo de registros
+            v_consulta:='select count(uo.nombre_unidad)
+                              from orga.tuo uo 
+                  where  ';
+            v_consulta:=v_consulta||v_parametros.filtro;
+            return v_consulta;
+
+          end;
   else
     raise exception 'Transaccion inexistente';
                    

@@ -8,12 +8,20 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function(config){
             Phx.vista.ParametrosRepDepreciacion.superclass.constructor.call(this,config);
             this.definicionRutareporte();
-            this.definirParametros();            
-            this.formParam.topToolbar.items.items[2].setVisible(false);            
-            this.formParam.topToolbar.items.items[0].setVisible(false);
-            this.formParam.topToolbar.items.items[4].setVisible(false);
-            this.formParam.topToolbar.items.items[6].setVisible(false);            
-            this.formParam.topToolbar.add('-',{               
+            this.definirParametros();
+            this.formParam.topToolbar.items.items[0].setVisible(false);            
+			this.formParam.topToolbar.items.items[1].setVisible(false);
+			this.formParam.topToolbar.items.items[2].setVisible(false);
+			this.formParam.topToolbar.items.items[3].setVisible(false);
+			this.formParam.topToolbar.items.items[4].setVisible(false);
+			this.formParam.topToolbar.items.items[5].setVisible(false);
+			this.formParam.topToolbar.items.items[6].setVisible(false);		
+			this.formParam.topToolbar.items.items[7].setVisible(false);
+			this.formParam.topToolbar.items.items[8].setVisible(false);
+			this.formParam.topToolbar.items.items[9].setVisible(false);		
+			this.formParam.topToolbar.items.items[10].setVisible(false);
+			            
+            this.formParam.topToolbar.insert(0,'-',{               
                 xtype: 'splitbutton',
                 grupo: [0,4],
                 tooltip: '<b>Reporte Depreciacion A.F.</b><br>Podemos generar reporte de depreciacion de formato PDF y EXCEL.',
@@ -123,7 +131,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.configElement(this.lblMontoSup,true,true);
 		this.configElement(this.txtNroCbteAsociado,false,true);
 		this.configElement(this.cmpMontos,false,true);
-		this.configElement(this.cmbMoneda,false,false);
+		this.configElement(this.cmbMoneda,false,true);
 		this.configElement(this.radGroupEstadoMov,false,true);
 		this.configElement(this.cmpFechaCompra,false,true);
 		this.configElement(this.radGroupDeprec,false,true);
@@ -191,7 +199,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.cmpFechas.setVisible(true);
 			this.cmbClasificacion.setVisible(true);
 			this.cmbClasificacionMulti.setVisible(true);
-			this.cmbMoneda.setVisible(true);
+			this.cmbMoneda.setVisible(false);
 			this.cmpMontos.setVisible(true);
 			this.dteFechaIniDep.setVisible(true);
 			this.descNombre.setVisible(true);
@@ -202,7 +210,15 @@ header("content-type: text/javascript; charset=UTF-8");
 			cmp.scope.formParam.topToolbar.items.items[2].setVisible(true);
 			cmp.scope.formParam.topToolbar.items.items[3].setVisible(true);
 			cmp.scope.formParam.topToolbar.items.items[4].setVisible(true);
-			cmp.scope.formParam.topToolbar.items.items[6].setVisible(false);					
+			cmp.scope.formParam.topToolbar.items.items[5].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[6].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[7].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[8].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[9].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[10].setVisible(false);
+			cmp.scope.formParam.topToolbar.items.items[11].setVisible(false);
+			cmp.scope.formParam.topToolbar.items.items[12].setVisible(false);			
+								
 		},
 		detalleDepPeriodo:function(cmp,event){
 			this.cmbTipoRep.setVisible(false);
@@ -212,18 +228,26 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.cmpFechas.setVisible(true);
 			this.cmbClasificacion.setVisible(true);
 			this.cmbClasificacionMulti.setVisible(true);
-			this.cmbMoneda.setVisible(true);
+			this.cmbMoneda.setVisible(false);
 			this.cmpMontos.setVisible(true);
 			this.dteFechaIniDep.setVisible(true);
 			this.descNombre.setVisible(true);
 			this.radGroupDeprec.setVisible(true);
-			this.radGroupTangible.setVisible(true);				
-			cmp.scope.formParam.topToolbar.items.items[0].setVisible(false);
-			cmp.scope.formParam.topToolbar.items.items[1].setVisible(false);
+			this.radGroupTangible.setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[0].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[1].setVisible(true);
 			cmp.scope.formParam.topToolbar.items.items[2].setVisible(false);
-			cmp.scope.formParam.topToolbar.items.items[3].setVisible(false);					
-			cmp.scope.formParam.topToolbar.items.items[4].setVisible(true);
-			cmp.scope.formParam.topToolbar.items.items[6].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[3].setVisible(false);
+			cmp.scope.formParam.topToolbar.items.items[4].setVisible(false);
+			cmp.scope.formParam.topToolbar.items.items[5].setVisible(false);
+			cmp.scope.formParam.topToolbar.items.items[6].setVisible(false);
+			cmp.scope.formParam.topToolbar.items.items[7].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[8].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[9].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[10].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[11].setVisible(true);
+			cmp.scope.formParam.topToolbar.items.items[12].setVisible(true);
+
 		}        
 
     }

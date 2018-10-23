@@ -643,70 +643,58 @@ Ext.define('Phx.vista.ParametrosBase', {
 
             tbar: [
                 {xtype:'button', text:'<i class="fa fa-print" aria-hidden="true"></i> Generar en Pantalla', tooltip: 'Generar el reporte', handler: this.onSubmit, scope: this},'-',
+                {
+		        	xtype:'button', 
+		        	text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Reporte XLS', 
+		        	tooltip: 'reporte excel',
+		        	grupo:[0,4],
+		        	argument: {
+		        		'news':true,
+		        		def: 'csv'
+		        	},
+		        	handler: this.onReporteDep,
+		        	scope: this
+            	},'-',                
 				{
-					//iconCls: 'bexcel',
-					xtype: 'splitbutton',
-					grupo: [0,4],
-					tooltip: '<b>Reporte Depreciacion A.F.</b><br>Podemos generar reporte de depreciacion de formato PDF y EXCEL.',
-					text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Reporte Depreciacion',
-					//handler: this.onButtonExcel,
-					argument: {
-						'news': true,
-						def: 'reset'
-					},
-					scope: me,
-					menu: [{
-						text: 'Reporte XLS',
-						iconCls: 'bexcel',
-						argument: {
-							'news': true,
-							def: 'csv'
-						},
-						handler: me.onReporteDep,
-						scope: me
-					}, {
-						text: 'Reporte PDF',
-						iconCls: 'bpdf',
-						argument: {
-							'news': true,
-							def: 'pdf'
-						},
-						handler: me.onReporteDep,
-						scope: me
-					}]
-				},'-',
-				//{xtype:'button', text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Generar Xls', tooltip: 'Resetear los parámetros', handler: this.onReporteDep, scope: this},
+            	xtype:'button', 
+            	text:'<i class="fa fa-file-pdf-o" aria-hidden="true"></i> Reporte PDF', 
+            	tooltip: 'reporte pdf',
+            	grupo:[0,4],            	
+                argument: {
+                    'news': true,
+                    def: 'pdf'
+                },
+                handler: this.onReporteDep,            	
+            	scope: this            		
+            	},'-',			
                 {xtype:'button', text:'<i class="fa fa-undo" aria-hidden="true"></i> Reset', tooltip: 'Resetear los parámetros', handler: this.onReset, scope: this},
-				'-',{               
-                xtype: 'splitbutton',
-                grupo: [0,4],
-                tooltip: '<b>Reporte Depreciacion Periodo A.F.</b><br>Podemos generar reporte de depreciacion periodo de formato PDF y EXCEL.',
-                text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Reporte Depreciacion Periodo',
-                scope: me,
-                menu: [{
-                    text: 'Reporte XLS',
-                    iconCls: 'bexcel',
-                    argument: {
-                        'news': true,
-                        def: 'csv'
-                    },
-                    handler: me.onReporteDepPe,
-                    scope: me
-                }, {
-                    text: 'Reporte PDF',
-                    iconCls: 'bpdf',
-                    argument: {
-                        'news': true,
-                        def: 'pdf'
-                    },
-                    handler: me.onReporteDepPe,
-                    scope: me
-		                }]
-		            }                
-		
-		
-		            ]
-				        });
+				'-',
+                {
+		        	xtype:'button', 
+		        	text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Reporte XLS', 
+		        	tooltip: 'reporte excel',
+		        	grupo:[0,4],
+		        	argument: {
+		        		'news':true,
+		        		def: 'csv'
+		        	},
+		        	handler: this.onReporteDepPe,
+		        	scope: this
+            	},'-',                
+				{
+            	xtype:'button', 
+            	text:'<i class="fa fa-file-pdf-o" aria-hidden="true"></i> Reporte PDF', 
+            	tooltip: 'reporte pdf',
+            	grupo:[0,4],            	
+                argument: {
+                    'news': true,
+                    def: 'pdf'
+                },
+                handler: this.onReporteDepPe,            	
+            	scope: this            		
+            	}				               				
+		      ]
+			}); 
 
 		//Contenedor
 		this.viewPort = new Ext.Container({

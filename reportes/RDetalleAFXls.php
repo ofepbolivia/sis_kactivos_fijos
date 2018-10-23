@@ -176,14 +176,30 @@ class RDetalleAFXls
 		$city=$this->datos2[0]['nombre'];
 		$fact=$this->objParam->getParametro('nr_factura');
 		$dept=$this->objParam->getParametro('id_depto');
-		$prove=$this->datos3[0]['desc_proveedor'];
-		$pro='';		
-		($dept==7)?$pro='Unidad de Activos Fijos':($dept=47)?$pro='Unidad de Activos Fijos TI':$pro;
-		if(count($city)!=0 || $fact!='' || $dept!='' || $prove!=''){
+        $nr_tr = $this->objParam->getParametro('tramite_compra'); //nro tramite de compra
+        $serie = $this->objParam->getParametro('nro_serie'); //nro de serie
+        $c31   = $this->objParam->getParametro('nro_cbte_asociado'); //c31		
+		
+		$pro='';        
+        if ($dept=='' || $dept==3) {
+            $pro;
+        }else if($dept==7){
+        	$pro='Unidad Activos Fijos';
+        }else{
+        	$pro='Unidad Activos Fijos TI';
+        } 				
+		$cell1 = ($city!=null)?'LUGAR: '.$city."\x0A":'';
+		$cell2 = ($fact!='')?'FACTURA: '.$fact."\x0A":'';
+		$cell3 = ($dept!='')?'DEPTO.: '.$pro."\x0A":'';
+		$cell4 = ($nr_tr!='')?'Nº TRAMITE COMP.: '.$nr_tr."\x0A":'';
+		$cell5 = ($serie!='')?'Nº SERIE: '.$serie."\x0A":'';
+		$cell6 = ($c31!='')?'C31: '.$c31."\x0A":'';
+				
+		if($city!=null || $fact!='' || $dept!='' || $nr_tr!='' || $serie!='' || $c31!=''){
 			$sheet0->getRowDimension('8')->setRowHeight(55);
 			$sheet0->getStyle('B4:C4')->applyFromArray($styleExtras);
 			$sheet0->mergeCells('B4:C4');
-			$sheet0->setCellValue('B4','LUGAR: '.$city."\x0A".' Factura: '.$fact."\x0A".' DEPTO: '.$pro."\x0A".' PROVEEDOR: '.$prove);
+			$sheet0->setCellValue('B4',$cell1.$cell2.$cell3.$cell4.$cell5.$cell6);
 		}	
 
         $styleTitulos = array(
@@ -256,18 +272,19 @@ class RDetalleAFXls
         $sheet0->getStyle('B5:O5')->applyFromArray($styleTitulos);
         $sheet0->getStyle('C5:O5')->getAlignment()->setWrapText(true);
 
-
+		$descnom=$this->objParam->getParametro('desc_nombre');
+		switch ($descnom) {
+			case 'desc' :$desno='DESCRIPCIÓN';break;
+			case 'nombre' :$desno='DENOMINACIÓN';break;
+			default:$desno='NOMBRE / DESCRIPCIÓN';break;
+		}
         //*************************************Cabecera*****************************************
 
         $sheet0->setCellValue('B5', 'Nº');
 
         $sheet0->setCellValue('C5', 'CODIGO');
 		
-        if($this->objParam->getParametro('desc_nombre') == 'desc') {
-            $sheet0->setCellValue('D5', 'DESCRIPCIÓN');
-        }else{
-            $sheet0->setCellValue('D5', 'DENOMINACIÓN');
-        }
+        $sheet0->setCellValue('D5', $desno);        
 		
         $sheet0->setCellValue('E5', 'ESTADO');
 
@@ -455,7 +472,7 @@ class RDetalleAFXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, $value['codigo_af']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, $value['denominacion']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, $value['estado']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, '');
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, $value['estado_fun']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, $value['fecha_compra'] == '-'?'-':date("d/m/Y",strtotime($value['fecha_compra'])));
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['monto_compra_orig']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['monto_compra_orig_100']);

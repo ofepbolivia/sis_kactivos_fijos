@@ -415,7 +415,7 @@ $body$
             sum(de.depreciacion_acum),                            
             sum(de.monto_vigente),
             de.codigo_padre::integer,                            
-            replace(de.codigo,'.','')::bigint,
+			replace(replace(replace(replace(replace(replace(de.codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
             'detalle',
             kaf.f_activo_si_no_rev(de.codigo)    
             from tt_detalle_depreciacion_consol_actuali de

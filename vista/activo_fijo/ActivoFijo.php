@@ -741,6 +741,22 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         bottom_filter:true
     },
     {
+        config:{
+            name: 'nombre_unidad',
+            fieldLabel: 'Unidad Solicitante',
+            allowBlank: false,
+            anchor: '100%',
+            gwidth: 180,
+            maxLength:255
+        },
+        type:'TextField',
+        filters:{pfiltro:'afij.nombre_unidad',type:'string'},
+        id_grupo:1,
+        grid:true,
+        form:true,
+        bottom_filter:true
+    },    
+    {
         config: {
             name: 'nro_serie',
             fieldLabel: '# Serie',
@@ -1817,7 +1833,9 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
              {name:'fecha_asignacion',type:'date',dateFormat: 'Y-m-d'},
              {name:'tramite_compra', type:'string'},
              {name:'id_proceso_wf', type:'numeric'},
-             {name:'subtipo', type:'string'}
+             {name:'subtipo', type:'string'},
+             {name:'nombre_unidad',type:'string'},
+             {name:'id_uo',type:'string'}
              ],
     arrayDefaultColumHidden: ['fecha_reg', 'usr_reg', 'fecha_mod', 'usr_mod', 'estado_reg', 'id_usuario_ai', 'usuario_ai', 'id_persona', 'foto', 'id_proveedor', 'fecha_compra', 'id_cat_estado_fun', 'ubicacion', 'documento', 'observaciones', 'monto_rescate', 'id_deposito', 'monto_compra', 'id_moneda', 'depreciacion_mes', 'descripcion', 'id_moneda_orig', 'fecha_ini_dep', 'id_cat_estado_compra', 'vida_util_original', 'id_centro_costo', 'id_oficina', 'id_depto'],
     sortInfo: {
@@ -2240,7 +2258,9 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                 triggerAction: 'all',
                                 lazyRender: true,
                                 pageSize: 15,
-                                //valueNotFoundText: 'Proveedor no encontrado',
+                                minChars : 2, 
+                                queryDelay : 1000,
+                                valueNotFoundText: 'PROVEEDOR INEXISTENTE',
                                 pageSize: 15
                             }, {
                                 xtype: 'datefield',
@@ -2388,7 +2408,45 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                 valueField: 'subtipo',
                                 displayField: 'subtipo'
 
-                            }]
+                            },
+{
+                                xtype: 'combo',
+                                fieldLabel: 'Proveedor',
+                                name: 'id_uo',
+                                allowBlank: true,
+                                id: this.idContenedor+'_id_uo',
+                                emptyText: 'Elija el Proveedor',
+                                store: new Ext.data.JsonStore({
+                                    url: '../../sis_kactivos_fijos/control/ActivoFijo/listarAFUnidSol',
+                                    id: 'id_uo',
+                                    root: 'datos',
+                                    fields: ['id_uo','nombre_unidad'],
+                                    totalProperty: 'total',
+                                    sortInfo: {
+                                        field: 'nombre_unidad',
+                                        direction: 'ASC'
+                                    },
+                                    baseParams:{
+                                        start: 0,
+                                        limit: 10,
+                                        sort: 'nombre_unidad',
+                                        dir: 'ASC',
+                                        par_filtro:'uo.nombre_unidad'
+                                    }
+                                }),
+                                valueField: 'id_uo',
+                                displayField: 'nombre_unidad',
+                                gdisplayField: 'nombre_unidad',
+                                mode: 'remote',
+                                triggerAction: 'all',
+                                lazyRender: true,
+                                pageSize: 15,
+                                minChars : 2, 
+                                queryDelay : 1000,
+                                valueNotFoundText: 'PROVEEDOR INEXISTENTE',
+                                pageSize: 15
+                            }                            
+                            ]
                         }, {
                             title: 'Datos Depreciación',
                             layout: 'form',

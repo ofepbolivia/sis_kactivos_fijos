@@ -21,54 +21,84 @@ class RDetalleAFPDF extends  ReportePDF{
         $this->Cell(0,5,"DEPARTAMENTO ACTIVOS FIJOS",0,1,'C');
         $this->Cell(0,5,"DETALLE DE ACTIVOS FIJOS",0,1,'C');
         $this->Cell(0,5,'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: '.$this->objParam->getParametro('estado'),0,1,'C');
-		if(count($this->datos2)!=0){
-				$nombre='<b>&nbsp;LUGAR:</b>'.$this->datos2[0]['nombre'].'<br>';
-				$one=0.5;						            										
-			}
-		if($this->objParam->getParametro('nr_factura')!=''){
-				$factura='<b>FACTURA: </b>'.$this->objParam->getParametro('nr_factura').'<br>';
-				$two=0.5;																					
-		}		
-		if($this->objParam->getParametro('id_depto')==7){			
-				$txt = '<b>DEPTO: </b>Unidad de Activos Fijos<br>';
-				$three=0.5;
-		}if($this->objParam->getParametro('id_depto')==47){
-				$txt = '<b>DEPTO: </b>Unidad de Activos Fijos TI<br>';
-				$three=0.5;		
-		}
-		if($this->objParam->getParametro('id_proveedor')!=''){			
-				$provee='<b>PROVEEDOR: </b>'.$this->datos3[0]['desc_proveedor'];
-				$four=0.5;							
-		}
-		$sol = $one+$two+$three+$four;				
-        $html = <<<EOF
-		<style>
-		table {
-   			font-family: "Calibri";
-   			font-size:5pt;
-   			width: 120px;
-   			height:10px;
-   			align=:center;
-		}
-		</style>
-		<body>
-		<table>
-        	<tr><td>$nombre $factura $txt $provee</td></tr>        	        	
-        </table>
-EOF;
 
-        $this->writeHTML($html);
-        $this->SetFont('','B',6);
-        //$this->Ln(2);
-        $this->Ln(1+$sol);
-        //primera linea
+		$this->SetFont('','',6);	
+        $place = count($this->datos2); //estacion
+        $factu = $this->objParam->getParametro('nr_factura'); //factura
+        $depto = $this->objParam->getParametro('id_depto'); //departamento        
+        $nr_tr = $this->objParam->getParametro('tramite_compra'); //nro tramite de compra
+        $serie = $this->objParam->getParametro('nro_serie'); //nro de serie
+        $c31   = $this->objParam->getParametro('nro_cbte_asociado'); //c31
+        
+        $this->SetFontSize(6);
 
+        if ($place!=0 || $factu!='' || $depto!='' || $nr_tr!='' || $serie!='' || $c31!='') {
+         $this->fieldsHeader();
+			$this->Ln(2.1); //si	     
+        }else{
+        	$this->Ln(6);
+        }
         $control = $this->objParam->getParametro('activo_multi');		
 		$this->columnsGrid($control);
 
     }
+    public function fieldsHeader(){
+        $place = $this->datos2[0]['nombre']; //estacion
+        $factu = $this->objParam->getParametro('nr_factura'); //factura
+        $depto = $this->objParam->getParametro('id_depto'); //departamento        
+        $nr_tr = $this->objParam->getParametro('tramite_compra'); //nro tramite de compra
+        $serie = $this->objParam->getParametro('nro_serie'); //nro de serie
+        $c31   = $this->objParam->getParametro('nro_cbte_asociado'); //c31
+        $retVal = '';
+        if ($depto=='' || $depto==3) {
+            $retVal;
+        }else if($depto==7){
+        	$retVal='Unidad Activos Fijos';
+        }else{
+        	$retVal='Unidad Activos Fijos TI';
+        }        
+		        
+		$cell1 = ($place!='')?'<td><b>ESTACION:</b>'.$place.'</td>':'<td></td>';
+		$cell2 = ($retVal!='')?'<td><b>DEPTO.:</b>'.$retVal.'</td>':'<td></td>';
+        $cell3 = ($factu!='')?'<td><b>FACTURA:</b> '.$factu.'</td>':'<td></td>';
+        $cell4 = ($nr_tr!='')?'<td><b>Nº TRA. COMP.:</b> '.$nr_tr.'</td>':'<td></td>';
+        $cell5 = ($serie!='')?'<td><b>Nro SERIE:</b> '.$serie.'</td>':'<td></td>';
+        $cell6 = ($c31!='')?'<td><b>C31.:</b> '.$c31.'</td>':'<td></td>';   
+		
+        $this->SetFontSize(6);        
+                $html = <<<EOF
+            <style>    
+            table {
+                width: 100%;
+                height: 100px;
+            }
+            </style>                
+                <table>
+                <tr>
+                $cell1
+                $cell2
+                $cell3
+                $cell4
+                $cell5
+                $cell6                                                          
+                </tr>
+EOF;
+
+        $this->writeHTML ($html);
+		if ($place!='' || $factu!='' || $depto!='' || $nr_tr!='' || $serie!='' || $c31!='') {		
+        	$this->Ln(-5); //si
+		}
+        //$this->Ln(6); //no sin esto
+    }
 	//startBVP
     public function columnsGrid($tipo){
+        $place = $this->datos2[0]['nombre']; //estacion
+        $factu = $this->objParam->getParametro('nr_factura'); //factura
+        $depto = $this->objParam->getParametro('id_depto'); //departamento        
+        $nr_tr = $this->objParam->getParametro('tramite_compra'); //nro tramite de compra
+        $serie = $this->objParam->getParametro('nro_serie'); //nro de serie
+        $c31   = $this->objParam->getParametro('nro_cbte_asociado'); //c31
+            	
 		$hiddes = explode(',', $tipo);
 		$ascod = '';
 		$asdes = '';
@@ -174,27 +204,17 @@ EOF;
 		
 			$hGlobal=6;
 			$wiTa = 188;		 		
-			$this->objParam->getParametro('desc_nombre')=='desc'?$desno='DESCRIPCIÓN':$desno='DENOMINACIÓN';          		 		        
+			$descnom= $this->objParam->getParametro('desc_nombre');
+			switch ($descnom) {
+				case 'desc' :$desno='DESCRIPCIÓN';break;
+				case 'nombre' :$desno='DENOMINACIÓN';break;
+				default:$desno='NOMBRE / DESCRIPCIÓN';break;
+			}					          		 		        
             $this->SetFontSize(6);
             $this->SetFont('', 'B');
-		if(count($this->datos2)>0){				
-				$one=0.5;						            										
-			}
-		if($this->objParam->getParametro('nr_factura')!==''){							
-				$two=0.5;																					
-		}		
-		if($this->objParam->getParametro('id_depto')==7){							
-				$three=0.5;
-		}if($this->objParam->getParametro('id_depto')==47){				
-				$three=0.5;		
-		}
-		if($this->objParam->getParametro('id_proveedor')!=''){							
-				$four=0.5;							
-		}
-		$sol = $one+$two+$three+$four;						
-		$r=1.5;
-		($sol==0.5)?$r=2:$r=-4;				
-		($sol==0)?$this->Ln(2):$this->Ln($r+$sol);												
+			if ($place!='' || $factu!='' || $depto!='' || $nr_tr!='' || $serie!='' || $c31!='') {		
+				$this->Ln(1);//si
+			}												
 			$this->MultiCell(10, $hGlobal,'NUM',1,'C',false,0,'','',true,0,false,true,0,'T',false);									
 			($ascod=='cod')?$this->MultiCell($tam1+$total, $hGlobal, 'CODIGO',1,'C',false,0,'','',true,0,false,true,0,'T',false):'';			
 			($asdes=='des')?$this->MultiCell($tam2+$total, $hGlobal, $desno, 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
@@ -223,45 +243,7 @@ EOF;
         $this->AddPage();
         $this->SetMargins(2, 40, 2);
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);		
-        //$this->Ln(13);
-		if(count($this->datos2)!=0){							
-				$one=0.5;						            										
-			}
-		if($this->objParam->getParametro('nr_factura')!=''){							
-				$two=0.5;																					
-		}if(count($this->datos2)!=0 && $this->objParam->getParametro('nr_factura')!='' ){			
-				$five=4;
-		}
-		if(count($this->datos2)!=0 && $this->objParam->getParametro('id_depto')!='' ){			
-				$six=8;
-		}		
-		if($this->objParam->getParametro('id_depto')==7){										
-				$three=0.5;
-		}if($this->objParam->getParametro('id_depto')==47){				
-				$three=0.5;		
-		}
-		if($this->objParam->getParametro('id_proveedor')!=''){										
-				$four=0.5;							
-		}
-		$sol = $one+$two+$three+$four;		
-		($five>0)?$sol+=$five:$a=0;
-		($six>0)?$sol+=$six:$a=0;
-		//var_dump($sol);exit;					
-		$r=3.5;	
-		switch ($sol) {
-			case 2:$r=6.5;break;
-			case 1.5:$r=4;break;
-			case 1:$r=1;break;
-			case 0.5:$r=6.5;break;
-			case 5:$r=-0.5;break;
-			case 9:$r=-5;break;
-			case 5.5:$r=0;break;
-			case 14:$r=-5.5;break;
-			case 13.5:$r=-6;break;
-		}						
-		$this->Ln($r+$sol);	        		
-
-
+        $this->Ln();
 
         //variables para la tabla
         $codigo = '';

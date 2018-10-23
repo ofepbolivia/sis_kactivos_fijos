@@ -22,7 +22,7 @@ $body$
            from kaf.tmovimiento_af_dep            
            where id_activo_fijo_valor = v_id_activ_valor;
 
-           update pruebas.tafdep set
+           update kaf.tafdep set
                   id_af_dep = v_id_movi_af_dep
                   where id_activo_valor=v_id_activ_valor;  
 

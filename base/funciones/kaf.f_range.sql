@@ -18,7 +18,7 @@ BEGIN
 cont = char_length(resp);
 if cont=13 then
   tam = 0;
-elsif cont=14 then
+elsif cont=14 or cont=16 then
   tam = 1;
 elsif cont=17  then
   tam = 2;

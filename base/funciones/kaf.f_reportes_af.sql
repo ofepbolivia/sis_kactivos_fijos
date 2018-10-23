@@ -1096,8 +1096,10 @@ BEGIN
             afv.codigo,
              case when v_parametros.desc_nombre='desc' then
                 upper(af.descripcion)
-                when v_parametros.desc_nombre='nombre' or v_parametros.desc_nombre = '' then
-                af.denominacion
+                when v_parametros.desc_nombre='nombre' or v_parametros.desc_nombre='' then
+                upper(af.denominacion)
+                else 
+                upper(af.denominacion||' / '||chr(10)||af.descripcion)
             end,            
             --af.descripcion,
             --afv.fecha_ini_dep,
@@ -1143,7 +1145,7 @@ BEGIN
             inner join kaf.tmoneda_dep mon
             on mon.id_moneda =  afv.id_moneda_dep
             where date_trunc('month',mdep.fecha) = date_trunc('month',v_parametros.fecha_hasta::date)
-            and mdep.id_moneda_dep = v_parametros.id_moneda
+            and mdep.id_moneda_dep = coalesce(v_parametros.id_moneda,1)
             and af.id_activo_fijo in (select id_activo_fijo from tt_af_filtro)
                                                             --and afv.codigo not like '%-G%'
             and af.estado <> 'eliminado';
@@ -1160,8 +1162,10 @@ BEGIN
             afv.codigo,
              case when v_parametros.desc_nombre='desc' then
                 upper(af.descripcion)
-                when v_parametros.desc_nombre='nombre' or v_parametros.desc_nombre = '' then
-                af.denominacion
+                when v_parametros.desc_nombre='nombre' or v_parametros.desc_nombre='' then
+                upper(af.denominacion)
+                else 
+                upper(af.denominacion||' / '||chr(10)||af.descripcion)
             end,
             afv.fecha_ini_dep,
             afv.monto_vigente_orig_100,
@@ -1207,7 +1211,7 @@ BEGIN
                                                     and date_trunc('month',fecha) <> date_trunc('month',v_parametros.fecha_hasta::date)
                                                     and date_trunc('month',fecha) < date_trunc('month',v_parametros.fecha_hasta::date) --between date_trunc('month',('01-01-'||extract(year from v_parametros.fecha_hasta)::varchar)::date) and date_trunc('month',v_parametros.fecha_hasta)
                                                 )
-            and mdep.id_moneda_dep = v_parametros.id_moneda
+            and mdep.id_moneda_dep = coalesce(v_parametros.id_moneda,1)
             and af.id_activo_fijo in (select id_activo_fijo from tt_af_filtro)
             and afv.id_activo_fijo_valor not in (select id_activo_fijo_valor
                                                 from tt_detalle_depreciacion)
@@ -1227,8 +1231,10 @@ BEGIN
             afv.codigo,
              case when v_parametros.desc_nombre='desc' then
                 upper(af.descripcion)
-                when v_parametros.desc_nombre='nombre' or v_parametros.desc_nombre = '' then
-                af.denominacion
+                when v_parametros.desc_nombre='nombre' or v_parametros.desc_nombre='' then
+                upper(af.denominacion)
+                else 
+                upper(af.denominacion||' / '||chr(10)||af.descripcion)
             end,
             --afv.fecha_ini_dep,
             case coalesce(afv.id_activo_fijo_valor_original,0)
@@ -1278,7 +1284,7 @@ BEGIN
                                 where mdep1.id_activo_fijo_valor = afv.id_activo_fijo_valor
                                 and fecha between ('01-01-'||extract(year from mdep.fecha))::date and v_parametros.fecha_hasta::date)
             
-            and mdep.id_moneda_dep = v_parametros.id_moneda
+            and mdep.id_moneda_dep = coalesce(v_parametros.id_moneda,1)
             and af.id_activo_fijo in (select id_activo_fijo from tt_af_filtro)
                                                             --and afv.codigo not like '%-G%'
             and afv.id_activo_fijo_valor not in (select id_activo_fijo_valor
@@ -1333,7 +1339,7 @@ BEGIN
                                                     and date_trunc('month',fecha) <> date_trunc('month',v_parametros.fecha_hasta)
                                                     and date_trunc('month',fecha) < date_trunc('month',v_parametros.fecha_hasta) --between date_trunc('month',('01-01-'||extract(year from v_parametros.fecha_hasta)::varchar)::date) and date_trunc('month',v_parametros.fecha_hasta)
                                                 )
-            and mdep.id_moneda_dep = v_parametros.id_moneda
+            and mdep.id_moneda_dep = coalesce(v_parametros.id_moneda,1)
             and af.id_activo_fijo in (select id_activo_fijo from tt_af_filtro)
             and afv.id_activo_fijo_valor not in (select id_activo_fijo_valor
                                                 from tt_detalle_depreciacion)
@@ -1363,14 +1369,14 @@ BEGIN
                 select depreciacion_acum
                 from kaf.tmovimiento_af_dep
                 where id_activo_fijo_valor = tt_detalle_depreciacion.id_activo_fijo_valor
-                and id_moneda_dep = v_parametros.id_moneda
+                and id_moneda_dep = coalesce(v_parametros.id_moneda,1)
                 and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_parametros.fecha_hasta::date)::integer -1 )::date)
             ),0),
             depreciacion_acum_actualiz_gest_ant = (((tt_detalle_depreciacion.tipo_cambio_fin/(param.f_get_tipo_cambio_v2(tt_detalle_depreciacion.id_moneda_act, v_parametros.id_moneda, ('31/12/'||extract(year from v_parametros.fecha_hasta::date)::integer -1)::date, 'O'))))-1)*(coalesce((
                             select depreciacion_acum
                             from kaf.tmovimiento_af_dep
                             where id_activo_fijo_valor = tt_detalle_depreciacion.id_activo_fijo_valor
-                            and id_moneda_dep = v_parametros.id_moneda
+                            and id_moneda_dep = coalesce(v_parametros.id_moneda,1)
                             and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_parametros.fecha_hasta)::integer -1 )::date)
                         ),0));
                         
@@ -1381,7 +1387,7 @@ BEGIN
                 from kaf.tmovimiento_af_dep
                 where id_activo_fijo_valor = tt_detalle_depreciacion.id_activo_fijo_valor_original
                 and tipo = tt_detalle_depreciacion.tipo
-                and id_moneda_dep = v_parametros.id_moneda
+                and id_moneda_dep = coalesce(v_parametros.id_moneda,1)
                 and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_parametros.fecha_hasta::date)::integer -1 )::date)
             ),0),
             depreciacion_acum_actualiz_gest_ant = (((tt_detalle_depreciacion.tipo_cambio_fin/(param.f_get_tipo_cambio_v2(tt_detalle_depreciacion.id_moneda_act, v_parametros.id_moneda, ('31/12/'||extract(year from v_parametros.fecha_hasta::date)::integer -1)::date, 'O'))))-1)*(coalesce((
@@ -1389,7 +1395,7 @@ BEGIN
                             from kaf.tmovimiento_af_dep
                             where id_activo_fijo_valor = tt_detalle_depreciacion.id_activo_fijo_valor_original
                             and tipo = tt_detalle_depreciacion.tipo
-                            and id_moneda_dep = v_parametros.id_moneda
+                            and id_moneda_dep = coalesce(v_parametros.id_moneda,1)
                             and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_parametros.fecha_hasta::date)::integer -1 )::date)
                         ),0))
             where coalesce(depreciacion_acum_gest_ant,0) = 0
@@ -1867,20 +1873,20 @@ BEGIN
             sum(de.monto_vigente_orig),            
             sum(de.inc_actualiz),
             sum(de.monto_actualiz),
-            null,
-            null,        
+            ac.vida_util_orig,
+            ac.vida_util,       
             sum(de.depreciacion_acum_gest_ant),                            
             sum(de.depreciacion_acum_actualiz_gest_ant),                                                                                                          
             sum(de.depreciacion_per),                            
             sum(de.depreciacion_acum),                            
             sum(de.monto_vigente),
             de.codigo_padre::integer,                            
-            replace(de.codigo,'.','')::bigint,
+            replace(replace(replace(replace(replace(replace(de.codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
             'detalle'
             from tt_detalle_depreciacion_consol de
-            inner join kaf.tactivo_fijo ac on ac.codigo=de.codigo
+            inner join tt_detalle_depreciacion ac on ac.codigo=de.codigo                        
             group by de.codigo,de.denominacion,ac.fecha_ini_dep,
-            de.codigo_padre;
+            de.codigo_padre,ac.vida_util_orig,ac.vida_util;
 
             --Inserta los totales finales
             insert into tt_detalle_depreciacion_totales
@@ -2068,20 +2074,20 @@ BEGIN
             sum(de.monto_vigente_orig),            
             sum(de.inc_actualiz),
             sum(de.monto_actualiz),
-            null,
-            null,        
+            ac.vida_util_orig,
+            ac.vida_util,         
             sum(de.depreciacion_acum_gest_ant),                            
             sum(de.depreciacion_acum_actualiz_gest_ant),                                                                                                          
             sum(de.depreciacion_per),                            
             sum(de.depreciacion_acum),                            
             sum(de.monto_vigente),
             de.codigo_padre::integer,                            
-            replace(de.codigo,'.','')::bigint,
+            replace(replace(replace(replace(replace(replace(de.codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,            
             'detalle'
             from tt_detalle_depreciacion_consol de
-            inner join kaf.tactivo_fijo ac on ac.codigo=de.codigo
+            inner join tt_detalle_depreciacion ac on ac.codigo=de.codigo
             group by de.codigo,de.denominacion,
-            de.codigo_padre;
+            de.codigo_padre,ac.vida_util_orig,ac.vida_util;
 
             --Inserta los totales finales
             insert into tt_detalle_depreciacion_totales

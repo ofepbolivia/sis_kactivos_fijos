@@ -21,7 +21,7 @@ BEGIN
     	if tipe = 'reval' then 
           select monto_vigente_orig_100
           into rev 
-          from tt_detalle_depreciacion
+          from kaf.tactivo_fijo_valores
           where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%reval%';
           dev = rev;
         
@@ -29,7 +29,7 @@ BEGIN
     
        	  select monto_vigente_orig_100
           into rev 
-          from tt_detalle_depreciacion
+          from kaf.tactivo_fijo_valores
           where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%ajuste%';
           dev = rev;    
           
@@ -37,7 +37,7 @@ BEGIN
     
           select monto_vigente_orig_100
           into rev 
-          from tt_detalle_depreciacion
+          from kaf.tactivo_fijo_valores
           where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%baja%';
           dev = rev;  
             
@@ -45,7 +45,7 @@ BEGIN
         
           select monto_vigente_orig_100
           into rev 
-          from tt_detalle_depreciacion
+          from kaf.tactivo_fijo_valores
           where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%transito%';
           dev = rev;
         
@@ -53,7 +53,7 @@ BEGIN
         
           select monto_vigente_orig_100
           into rev 
-          from tt_detalle_depreciacion
+          from kaf.tactivo_fijo_valores
           where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%leasing%';
           dev = rev;
           

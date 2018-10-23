@@ -36,16 +36,17 @@ class RDepreciacionPDF extends  ReportePDF{
 
         $this->SetFont('','B',6);
         $this->Ln(3);
-
+		$descnom=$this->objParam->getParametro('desc_nombre');
+		switch ($descnom) {
+			case 'desc' :$desno='DESCRIPCIÓN';break;
+			case 'nombre' :$desno='DENOMINACIÓN';break;
+			case 'ambos':$desno='NOMBRE/DESC.';break;
+			default:$desno='DENOMINACIÓN';break;
+		}		
         //primera linea
         $this->Cell(10,3,'','',0,'C');
         $this->Cell(20,3,'','',0,'C');
-        //var_dump($this->objParam->getParametro('desc_nombre'));exit;
-        /*if($this->objParam->getParametro('desc_nombre') == 'desc'){
-            $this->Cell(57,3,'DESCRIPCIÓN','TRL',0,'C');
-        }else{*/
-        $this->Cell(36,3,'','',0,'C');
-        //}
+        $this->Cell(36,3,'','',0,'C');        
         $this->Cell(15,3,'','',0,'C');
 
         $this->Cell(18,3,'','',0,'C');
@@ -66,7 +67,7 @@ class RDepreciacionPDF extends  ReportePDF{
         //segunda linea
         $this->Cell(10,3,'NUM','TBRL',0,'C');
         $this->Cell(20,3,'CODIGO','TBRL',0,'C');
-        $this->Cell(36,3,'DESCRIPCIÓN','BTRL',0,'C');
+        $this->Cell(36,3,$desno,'BTRL',0,'C');
         $this->Cell(15,3,'INICIO DEP.','TBRL',0,'C');
 
         $this->Cell(18,3,'COMPRA (100%)','TBRL',0,'C');
@@ -160,7 +161,7 @@ class RDepreciacionPDF extends  ReportePDF{
                     's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
                     's6' => $record['inc_actualiz']!=''?$record['inc_actualiz']:0,
                     's7' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
-                    's8' => substr($record['codigo'], 0,2)=='01' || substr($record['codigo'], 0,2)=='11'?'-':$record['vida_util_orig'],
+                    's8' => substr($record['codigo'], 0,2)=='01'?'-':$record['vida_util_orig'],
                     's9' => $record['vida_util'],
                     's10' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
                     's11' => $record['depreciacion_acum_actualiz_gest_ant']!=''?$record['depreciacion_acum_actualiz_gest_ant']:0,

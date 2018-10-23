@@ -36,7 +36,13 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
 
         $this->SetFont('','B',6);
         $this->Ln(3);
-		$this->objParam->getParametro('desc_nombre')=='desc'?$desno='DESCRIPCIÓN':$desno='DENOMINACIÓN';
+		$descnom=$this->objParam->getParametro('desc_nombre');
+		switch ($descnom) {
+			case 'desc' :$desno='DESCRIPCIÓN';break;
+			case 'nombre' :$desno='DENOMINACIÓN';break;
+			case 'ambos':$desno='NOMBRE/DESC.';break;
+			default:$desno='DENOMINACIÓN';break;
+		}		
 		$y = 10;
 		
         $this->MultiCell(10,$y,'NUM',1,'C',false,0,'','',true,0,false,true,0,'T',false);                                    
@@ -48,7 +54,7 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
         $this->MultiCell(20,$y, 'INC. X ACTUALIZ ACUMULADO', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
         $this->MultiCell(20,$y, 'VALOR ACTUALIZ DEL PERIODO', 1,'C',false,0,'','',true,0,false,true,0,'T',false);		
 		$this->MultiCell(17,$y, 'VALOR ACTUALIZ', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
-        $this->MultiCell(11,$y, 'VU.'."\x0A".' ORIGINAL', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
+        $this->MultiCell(11,$y, 'VU. ORIGINAL', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
         $this->MultiCell(11,$y, 'VU. RESIDUAL', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
         $this->MultiCell(15,$y, 'DEP. ACUM. GEST.', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
         $this->MultiCell(15,$y, 'ACT. DEPREC. GEST.', 1,'C',false,0,'','',true,0,false,true,0,'T',false);
@@ -102,7 +108,7 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
                     's4' => $record['monto_vigente_orig_100']!=''?$record['monto_vigente_orig_100']:0,
                     's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
                     's6' => $record['inc_ac_acum']!=0.00?$record['inc_ac_acum']:0,
-                    's7' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
+                    's7' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,//inc_actualiz	
                     's8' => $record['monto_vigente']!=''?$record['monto_vigente']:0,
                     's9' => '',
                     's10' => '',
@@ -111,7 +117,7 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
                     's13' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,
                     's14' => '',
                     's15' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
-                    's116' => $record['monto_vigente']!=''?$record['monto_vigente']:0
+                    's16' => $record['monto_vigente']!=''?$record['monto_vigente']:0
                 );
 
                 $this->MultiRow($RowArray,true,1);
@@ -135,9 +141,9 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
                     's4' => $record['monto_vigente_orig_100']!=''?$record['monto_vigente_orig_100']:0,
                     's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
                     's6' => $record['inc_ac_acum']!=0.00?$record['inc_ac_acum']:0,
-                    's7' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
+                    's7' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,//inc_actualiz
                     's8' => $record['monto_vigente']!=''?$record['monto_vigente']:0,
-                    's9' => $record['vida_util_orig'],
+                    's9' => substr($record['codigo'], 0,2)=='01'?'-':$record['vida_util_orig'],
                     's10' => $record['vida_util'],
                     's11' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
                     's12' => $record['depreciacion_acum_actualiz_gest_ant']!=''?$record['depreciacion_acum_actualiz_gest_ant']:0,
@@ -165,7 +171,7 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
                     's4' => $record['monto_vigente_orig_100']!=''?$record['monto_vigente_orig_100']:0,
                     's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
                     's6' => $record['inc_ac_acum']!=0.00?$record['inc_ac_acum']:0,
-                    's7' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
+                    's7' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,//inc_actualiz
                     's8' => $record['monto_vigente']!=''?$record['monto_vigente']:0,
                     's9' => '',
                     's10' => '',

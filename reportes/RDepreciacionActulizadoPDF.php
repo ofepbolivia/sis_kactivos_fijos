@@ -36,7 +36,14 @@ class RDepreciacionActulizadoPDF extends  ReportePDF{
 
         $this->SetFont('','B',6);
         $this->Ln(3);
-		$this->objParam->getParametro('desc_nombre')=='desc'?$desno='DESCRIPCIÓN':$desno='DENOMINACIÓN';
+		$descnom=$this->objParam->getParametro('desc_nombre');
+		switch ($descnom) {
+			case 'desc' :$desno='DESCRIPCIÓN';break;
+			case 'nombre' :$desno='DENOMINACIÓN';break;
+			case 'ambos':$desno='NOMBRE/DESC.';break;
+			default:$desno='DENOMINACIÓN';break;
+		}		
+		//$this->objParam->getParametro('desc_nombre')=='desc'?$desno='DESCRIPCIÓN':$desno='DENOMINACIÓN';
 		$y = 13;
         $this->MultiCell(8,$y, 'NUM',1,'C',false,0,'','',true,0,false,true,0,'T',false);                                    
         $this->MultiCell(13,$y, 'CODIGO',1,'C',false,0,'','',true,0,false,true,0,'T',false);         
@@ -111,7 +118,7 @@ class RDepreciacionActulizadoPDF extends  ReportePDF{
                     's13' => $record['inc_actualiz']!=''?$record['inc_actualiz']:0,
                     's14' => '',
                     's15' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
-                    's16' => $record['vida_util_orig'],
+                    's16' => substr($record['codigo'], 0,2)=='01'?'-':$record['vida_util_orig'],
                     's17' => $record['vida_util'],
                     's18' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
                     's19' => $record['depreciacion_acum_actualiz_gest_ant']!=''?$record['depreciacion_acum_actualiz_gest_ant']:0,

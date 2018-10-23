@@ -20,14 +20,14 @@ BEGIN
     
         select fecha_ini_dep
         into rev 
-        from tt_detalle_depreciacion
+        from kaf.tactivo_fijo_valores
         where kaf.f_tam_codigo(codigo)= kaf.f_tam_codigo(resp.codigo) and  tipo like '%reval%';
         dev = rev;
         
         if rev is null then
         select fecha_ini_dep
         into ver 
-        from tt_detalle_depreciacion
+        from kaf.tactivo_fijo_valores
         where kaf.f_tam_codigo(codigo)=kaf.f_tam_codigo(resp.codigo)  and (tipo like '%ajuste%' or tipo like '%alta%');        
         dev =resp.fecha_ini_dep;
         end if;

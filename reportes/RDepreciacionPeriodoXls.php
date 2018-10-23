@@ -193,7 +193,13 @@ class RDepreciacionPeriodoXls
         $sheet0->getStyle('B5:Y5')->applyFromArray($styleTitulos);
         $sheet0->getStyle('C5:Y5')->getAlignment()->setWrapText(true);
 
-		$this->objParam->getParametro('desc_nombre')=='desc'?$desno='DESCRIPCIÓN':$desno='DENOMINACIÓN';
+		$descnom=$this->objParam->getParametro('desc_nombre');
+		switch ($descnom) {
+			case 'desc' :$desno='DESCRIPCIÓN';break;
+			case 'nombre' :$desno='DENOMINACIÓN';break;
+			case 'ambos':$desno='NOMBRE/DESC.';break;
+			default:$desno='DENOMINACIÓN';break;
+		}	
 				
         //*************************************Cabecera*****************************************
 
@@ -326,7 +332,7 @@ class RDepreciacionPeriodoXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14, $fila, $value['inc_actualiz']);
 				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(15, $fila, '');
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(16, $fila, $value['monto_actualiz']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(17, $fila,$value['vida_util_orig']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(17, $fila,substr($value['codigo'], 0,2)=='01'?'-':$value['vida_util_orig']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(18, $fila,$value['vida_util']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(19, $fila, $value['depreciacion_acum_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(20, $fila, $value['depreciacion_acum_actualiz_gest_ant']);
