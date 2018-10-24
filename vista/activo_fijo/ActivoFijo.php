@@ -750,7 +750,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
             maxLength:255
         },
         type:'TextField',
-        filters:{pfiltro:'afij.nombre_unidad',type:'string'},
+        filters:{pfiltro:'uoac.nombre_unidad',type:'string'},
         id_grupo:1,
         grid:true,
         form:true,
