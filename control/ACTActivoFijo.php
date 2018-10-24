@@ -822,6 +822,7 @@ class ACTActivoFijo extends ACTbase{
 		function listarAFUnidSol(){
 			$this->objParam->defecto('ordenacion','id_uo');
 			$this->objParam->defecto('dir_ordenacion','asc');
+			$this->objParam->addFiltro("uo.presupuesta= ''si''");			 
 			$this->objFunc=$this->create('MODActivoFijo');
 			$this->res=$this->objFunc->listarAFUnidSol($this->objParam);
 			$this->res->imprimirRespuesta($this->res->generarJson());			

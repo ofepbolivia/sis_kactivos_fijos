@@ -1035,7 +1035,7 @@ BEGIN
 
           begin
             --Sentencia de la consulta de conteo de registros
-            v_consulta:='select count(uo.nombre_unidad)
+            v_consulta:='select count(uo.id_uo)
                               from orga.tuo uo 
                   where  ';
             v_consulta:=v_consulta||v_parametros.filtro;

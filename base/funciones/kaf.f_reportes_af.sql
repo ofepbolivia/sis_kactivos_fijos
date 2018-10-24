@@ -1455,7 +1455,7 @@ BEGIN
             ) on commit drop;
 
             --Inserta los totales por clasificacióm
-    if(v_parametros.total_consol = 'deta' and (v_parametros.tipo_repo='' or v_parametros.tipo_repo='gepa')) then  
+    if((v_parametros.total_consol = 'deta' or v_parametros.total_consol='') and (v_parametros.tipo_repo='' or v_parametros.tipo_repo='gepa')) then  
         if( extract(year from v_parametros.fecha_hasta)=extract(year from now()::date))THEN
         
           CREATE temp TABLE tt_detalle_depreciacion_rev (
@@ -1484,8 +1484,12 @@ BEGIN
           
             insert into tt_detalle_depreciacion_rev
             select
-            id_activo_fijo_valor,                     
-            kaf.f_activo_rev(id_activo_fijo_valor,fecha_ini_dep),            
+            id_activo_fijo_valor,
+            case when v_parametros.af_deprec='clasif' then                     
+			      codigo
+                  else
+                 kaf.f_activo_rev(id_activo_fijo_valor,fecha_ini_dep)
+                  end,                                  
             denominacion,          
             fecha_ini_dep,
             monto_vigente_orig_100,
