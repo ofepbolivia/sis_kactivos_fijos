@@ -98,7 +98,8 @@ BEGIN
             v_parametros.nro_cbte_asociado,
             v_parametros.fecha_cbte_asociado,
             v_parametros.tramite_compra,
-            v_parametros.subtipo
+            v_parametros.subtipo,
+            v_parametros.id_uo
 	        into v_rec_af;
 
 	        --Inserción del registro
@@ -196,7 +197,8 @@ BEGIN
                 nro_cbte_asociado = v_parametros.nro_cbte_asociado,
                 fecha_cbte_asociado = v_parametros.fecha_cbte_asociado,
                 tramite_compra = v_parametros.tramite_compra,
-                subtipo = v_parametros.subtipo
+                subtipo = v_parametros.subtipo,
+                id_uo = v_parametros.id_uo
 			where id_activo_fijo = v_parametros.id_activo_fijo;
 
 			--Definicion de la respuesta

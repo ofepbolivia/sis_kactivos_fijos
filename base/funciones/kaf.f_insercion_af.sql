@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION kaf.f_insercion_af (
   p_id_usuario integer,
   p_parametros public.hstore
@@ -17,20 +15,58 @@ DECLARE
     v_nombre_funcion		varchar;
     v_resp					varchar;
     v_monto_compra			numeric;
+    v_activo_fijo			record;
+    v_id_uo					integer;
 
 BEGIN
 
     v_nombre_funcion = 'kaf.f_insercion_af';
-     
+
     --Conversión de monedas
     v_monto_compra = param.f_convertir_moneda(
-                           (p_parametros->'id_moneda_orig')::integer, 
+                           (p_parametros->'id_moneda_orig')::integer,
                            NULL,   --por defecto moneda base
-                           (p_parametros->'monto_compra_orig')::numeric, 
-                           (p_parametros->'fecha_compra')::date, 
-                           'O',-- tipo oficial, venta, compra 
+                           (p_parametros->'monto_compra_orig')::numeric,
+                           (p_parametros->'fecha_compra')::date,
+                           'O',-- tipo oficial, venta, compra
                            NULL);--defecto dos decimales
-            
+
+ /*--------------------RECUPERACION DE DATOS DESDE PREINGRESO----------------------------------------*/
+  select
+              into
+              v_activo_fijo
+             					pre.id_preingreso_det,
+                                pre.vida_util_original,
+                                pre.nro_serie,
+                                pre.marca,
+                                pre.id_unidad_medida,
+                                pre.id_cat_estado_fun,
+                                pre.id_deposito,
+                                pre.id_oficina,
+                                pre.id_proveedor,
+                                pre.documento,
+                                pre.id_cat_estado_compra,
+                                pre.fecha_cbte_asociado,
+                                pre.tramite_compra,
+                                pre.id_proyecto,
+                                pre.subtipo,
+                                pre.movimiento,
+                                preing.id_proceso_wf,
+                                prowf.nro_tramite,
+                                pre.id_preingreso,
+                                pre.id_uo
+                                from alm.tpreingreso_det pre
+                                inner join alm.tpreingreso preing on preing.id_preingreso = pre.id_preingreso
+                                inner join wf.tproceso_wf prowf on prowf.id_proceso_wf = preing.id_proceso_wf
+                                where pre.id_preingreso_det = (p_parametros->'id_preingreso_det')::integer;
+
+    /*------------------------------------------------------------------------------------------------------------*/
+
+
+
+
+
+
 	--Se hace el registro del activo fijo
 	insert into kaf.tactivo_fijo(
 		id_persona,
@@ -85,25 +121,29 @@ BEGIN
         nro_cbte_asociado,
         fecha_cbte_asociado,
         id_cotizacion_det,
-        id_preingreso_det
+        id_preingreso_det,
+        subtipo,
+        id_proceso_wf,
+        tramite_compra,
+        id_uo
     ) values(
-        (p_parametros->'id_persona')::integer, 
+        (p_parametros->'id_persona')::integer,
         0,
         './../../../uploaded_files/sis_kactivos_fijos/ActivoFijo/default.jpg',
-        (p_parametros->'id_proveedor')::integer,
+        v_activo_fijo.id_proveedor,
         'activo',
         (p_parametros->'fecha_compra')::date,
         --(p_parametros->'monto_vigente')::numeric,
-        (p_parametros->'id_cat_estado_fun')::integer,
+        v_activo_fijo.id_cat_estado_fun,
         (p_parametros->'ubicacion')::varchar,
        -- (p_parametros->'vida_util')::integer,
-        (p_parametros->'documento')::varchar,
+        v_activo_fijo.documento,
         (p_parametros->'observaciones')::varchar,
        -- (p_parametros->'fecha_ult_dep')::date,
         (p_parametros->'monto_rescate')::numeric,
         (p_parametros->'denominacion')::varchar,
         (p_parametros->'id_funcionario')::integer,
-        (p_parametros->'id_deposito')::integer,
+        v_activo_fijo.id_deposito,
         (p_parametros->'monto_compra_orig')::numeric,
          v_monto_compra,
         (p_parametros->'id_moneda_orig')::integer,
@@ -112,14 +152,14 @@ BEGIN
         (p_parametros->'descripcion')::varchar,
         (p_parametros->'id_moneda_orig')::integer,
         (p_parametros->'fecha_ini_dep')::date,
-        (p_parametros->'id_cat_estado_compra')::integer,
+        v_activo_fijo.id_cat_estado_compra,
         0,
         (p_parametros->'vida_util_original')::integer,
         0,
         'registrado',
         (p_parametros->'id_clasificacion')::integer,
         null,
-        (p_parametros->'id_oficina')::integer,
+        v_activo_fijo.id_oficina,
         (p_parametros->'id_depto')::integer,
         p_id_usuario,
         now(),
@@ -129,20 +169,23 @@ BEGIN
         null,
         'si',
         (p_parametros->'codigo_ant')::varchar,
-        (p_parametros->'marca')::varchar,
-        (p_parametros->'nro_serie')::varchar,
+        v_activo_fijo.marca,
+        v_activo_fijo.nro_serie,
         (p_parametros->'caracteristicas')::text,
-        (p_parametros->'id_proyecto')::integer,
-        (p_parametros->'id_unidad_medida')::integer,
+        v_activo_fijo.id_proyecto,
+        v_activo_fijo.id_unidad_medida,
         (p_parametros->'cantidad_af')::integer,
         (p_parametros->'monto_compra_orig_100')::numeric,
         (p_parametros->'nro_cbte_asociado')::varchar,
-        (p_parametros->'fecha_cbte_asociado')::date,
+        v_activo_fijo.fecha_cbte_asociado,
         (p_parametros->'id_cotizacion_det')::integer,
-        (p_parametros->'id_preingreso_det')::integer
-        
-    ) returning id_activo_fijo into v_id_activo_fijo;
+        (p_parametros->'id_preingreso_det')::integer,
+        v_activo_fijo.subtipo,
+        v_activo_fijo.id_proceso_wf,
+        v_activo_fijo.nro_tramite,
+        coalesce(v_activo_fijo.id_uo,(p_parametros->'id_uo')::integer)
 
+    ) returning id_activo_fijo into v_id_activo_fijo;
 	--Respuesta
     return v_id_activo_fijo;
 

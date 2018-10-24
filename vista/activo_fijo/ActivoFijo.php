@@ -755,7 +755,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         grid:true,
         form:true,
         bottom_filter:true
-    },    
+    },
     {
         config: {
             name: 'nro_serie',
@@ -2258,7 +2258,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                 triggerAction: 'all',
                                 lazyRender: true,
                                 pageSize: 15,
-                                minChars : 2, 
+                                minChars : 2,
                                 queryDelay : 1000,
                                 valueNotFoundText: 'PROVEEDOR INEXISTENTE',
                                 pageSize: 15
@@ -2411,7 +2411,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                             },
 {
                                 xtype: 'combo',
-                                fieldLabel: 'Proveedor',
+                                fieldLabel: 'Unidad Solicitante',
                                 name: 'id_uo',
                                 allowBlank: true,
                                 id: this.idContenedor+'_id_uo',
@@ -2441,11 +2441,11 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                 triggerAction: 'all',
                                 lazyRender: true,
                                 pageSize: 15,
-                                minChars : 2, 
+                                minChars : 2,
                                 queryDelay : 1000,
                                 valueNotFoundText: 'PROVEEDOR INEXISTENTE',
                                 pageSize: 15
-                            }                            
+                            }
                             ]
                         }, {
                             title: 'Datos Depreciación',

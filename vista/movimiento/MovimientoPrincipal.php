@@ -244,12 +244,13 @@ Phx.vista.MovimientoPrincipal = {
     },
 
     habilitarCampos: function(mov){
-    	var swDeposito=false,swDireccion=false,swFechaHasta=false,swFuncionario=false,swOficina=false,swPersona=false,h=130,w=450,swDeptoDest=false,swDepositoDest=false,swFuncionarioDest=false,swCatMovMotivo=false,swPrestamo=false,swTipoAsig=false;
-
+    	var swTipoMovimiento=false,swDeposito=false,swDireccion=false,swFechaHasta=false,swFuncionario=false,swOficina=false,swPersona=false,h=600,w=600,swDeptoDest=false,swDepositoDest=false,swFuncionarioDest=false,swCatMovMotivo=false,swPrestamo=false,swTipoAsig=false;
+      console.log('MUESTRA LO SIGUIENTE:',this.Cmp.glosa);
     	//Muesta y habilita los campos basicos
     	this.Cmp.fecha_mov.setVisible(true);
     	this.Cmp.glosa.setVisible(true);
-    	this.Cmp.id_depto.setVisible(true);
+      this.Cmp.id_depto.setVisible(true);
+
 
     	this.form.getForm().clearInvalid();
 
@@ -264,7 +265,8 @@ Phx.vista.MovimientoPrincipal = {
     		swDepositoDest=false;
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
-    		h=253;
+        swTipoMovimiento=true;
+    		h=300;
     	} else if(mov=='asig'){
     		swDireccion=true;
     		swFechaHasta=false;
@@ -276,7 +278,8 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
             swPrestamo=true;
-    		h=381;
+            swTipoMovimiento=false;
+    		h=370;
     	} else if(mov=='baja'||mov=='retiro'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -287,7 +290,8 @@ Phx.vista.MovimientoPrincipal = {
     		swDepositoDest=false;
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
-    		h=275;
+        swTipoMovimiento=false;
+    		h=370;
     	} else if(mov=='deprec'){
     		swDireccion=false;
     		swFechaHasta=true;
@@ -298,7 +302,8 @@ Phx.vista.MovimientoPrincipal = {
     		swDepositoDest=false;
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
-    		h=280;
+        swTipoMovimiento=false;
+    		h=370;
     	} else if(mov=='desuso'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -309,7 +314,8 @@ Phx.vista.MovimientoPrincipal = {
     		swDepositoDest=false;
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
-    		h=275;
+        swTipoMovimiento=false;
+    		h=600;
     	} else if(mov=='devol'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -321,7 +327,8 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
             swTipoAsig=true;
-    		h=298;
+            swTipoMovimiento=false;
+    		h=370;
             swDeposito=true;
     	} else if(mov=='ajuste'){
     		swDireccion=false;
@@ -333,7 +340,8 @@ Phx.vista.MovimientoPrincipal = {
     		swDepositoDest=false;
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
-    		h=275;
+        swTipoMovimiento=false;
+    		h=370;
     	} else if(mov=='reval'||mov=='mejora'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -344,7 +352,8 @@ Phx.vista.MovimientoPrincipal = {
     		swDepositoDest=false;
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
-    		h=275;
+        swTipoMovimiento=false;
+    		h=250;
     	} else if(mov=='transf'){
     		swDireccion=true;
     		swFechaHasta=false;
@@ -356,7 +365,8 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=true;
     		swCatMovMotivo=true;
             swTipoAsig=true;
-    		h=415;
+            swTipoMovimiento=false;
+    		h=410;
     	} else if(mov=='tranfdep'){
     		swDireccion=false;
     		swFechaHasta=false;
@@ -367,7 +377,8 @@ Phx.vista.MovimientoPrincipal = {
     		swDepositoDest=true;
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
-    		h=355;
+        swTipoMovimiento=false;
+    		h=370;
     	} else if(mov=='actua'){
     		swDireccion=false;
     		swFechaHasta=true;
@@ -378,7 +389,8 @@ Phx.vista.MovimientoPrincipal = {
     		swDepositoDest=false;
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
-    		h=280;
+        swTipoMovimiento=false;
+    		h=370;
     	} else if(mov=='divis'||mov=='desgl'||mov=='intpar'){
             swDireccion=false;
             swFechaHasta=false;
@@ -389,7 +401,8 @@ Phx.vista.MovimientoPrincipal = {
             swDepositoDest=false;
             swFuncionarioDest=false;
             swCatMovMotivo=true;
-            h=253;
+            swTipoMovimiento=false;
+            h=370;
         } else if(mov=='transito'){
             swDireccion=false;
             swFechaHasta=false;
@@ -400,7 +413,8 @@ Phx.vista.MovimientoPrincipal = {
             swDepositoDest=false;
             swFuncionarioDest=false;
             swCatMovMotivo=true;
-            h=253;
+            swTipoMovimiento=false;
+            h=370;
         }
 
     	//Enable/disable user controls based on mov type
@@ -418,6 +432,7 @@ Phx.vista.MovimientoPrincipal = {
         this.Cmp.tipo_asig.setVisible(swTipoAsig);
         //(f.e.a)Habilitando campo deposito
         this.Cmp.id_deposito.setVisible(swDeposito);
+        this.Cmp.tipo_movimiento.setVisible(swTipoMovimiento);
 
     	//Set required or not
     	this.Cmp.direccion.allowBlank=!swDireccion;
@@ -630,7 +645,7 @@ Phx.vista.MovimientoPrincipal = {
     onButtonNew: function() {
 
     	this.hideFields();
-    	this.window.setSize(450,130);
+    	this.window.setSize(600,130);
     	Phx.vista.Movimiento.superclass.onButtonNew.call(this);
 
     },
@@ -655,6 +670,8 @@ Phx.vista.MovimientoPrincipal = {
         this.Cmp.tipo_asig.hide();
         //(f.e.a)Ocultando el campo deposito
         this.Cmp.id_deposito.hide();
+        this.Cmp.tipo_movimiento.hide();
+        this.Cmp.id_int_comprobante_aitb.hide();
     }  ,
     arrayDefaultColumHidden:['fecha_reg','usr_reg','fecha_mod','usr_mod','fecha_hasta','id_proceso_wf','id_estado_wf','id_funcionario','estado_reg','id_usuario_ai','usuario_ai','direccion','id_oficina'],
 	rowExpander: new Ext.ux.grid.RowExpander({
