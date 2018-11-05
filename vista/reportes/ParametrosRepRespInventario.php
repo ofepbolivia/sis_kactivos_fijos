@@ -64,6 +64,11 @@ Phx.vista.ParametrosRepRespInventario = {
 				this.cmbOficina.setValue('');
 				this.cmbOficina.setVisible(false);
 				this.cmbOficina.modificado=true;
+				
+				this.cmbInventa.allowBlank=true;
+				this.cmbInventa.setValue('');
+				this.cmbInventa.setVisible(false);
+				this.cmbInventa.modificado=true;				
 
 			} else {
 				this.cmbLugar.setVisible(false);
@@ -78,8 +83,25 @@ Phx.vista.ParametrosRepRespInventario = {
 				this.cmbOficina.allowBlank=true;
 				this.cmbOficina.setVisible(true);
 				this.cmbOficina.modificado=true;
+				
+				this.cmbInventa.allowBlank=false;
+				this.cmbInventa.setVisible(true);
+				this.cmbInventa.modificado=true;
 			}
 		}, this);
+		this.cmbInventa.on('select',function(combo,record,index){	
+			if(record.data.tipo=="2"){
+				this.descNombre.setVisible(false);
+				this.descNombre.allowBlank=true;
+				this.descNombre.clearInvalid();
+				this.descNombre.setValue('');										
+			}else{
+				this.descNombre.setVisible(true);
+				this.descNombre.allowBlank=false;
+				this.descNombre.clearInvalid();
+				this.descNombre.setValue('');				
+			}
+		},this);
 	},
 	definicionRutareporte: function(report){
 		this.rutaReporte = '../../../sis_kactivos_fijos/vista/reportes/ReporteAsignados.php';
@@ -129,7 +151,7 @@ Phx.vista.ParametrosRepRespInventario = {
 		this.configElement(this.fieldSetGeneral,true,true);
 		this.configElement(this.fieldSetIncluir,false,true);
 		this.configElement(this.fieldSetCompra,false,true);
-        this.configElement(this.descNombre,true,false);
+        this.configElement(this.descNombre,true,false);        
 	},
 	onSubmit: function(){
 		if(this.formParam.getForm().isValid()){
@@ -150,7 +172,8 @@ Phx.vista.ParametrosRepRespInventario = {
 	                	limit: 5000,
 	                	start: 0,
 	                	tipo_salida: 'reporte',
-                        columna: this.descNombre.getValue()
+                        columna: this.descNombre.getValue(),
+                        inventario : this.cmbInventa.getValue()
 	                },
 	                success: this.successExport,
 	                failure: this.conexionFailure,

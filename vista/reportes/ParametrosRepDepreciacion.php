@@ -221,6 +221,18 @@ header("content-type: text/javascript; charset=UTF-8");
 								
 		},
 		detalleDepPeriodo:function(cmp,event){
+	      this.cmbTipoRep.setValue('');
+	      this.cmbTipoMov.setValue('');
+	      this.cmbEstadoDepre.setValue('');
+	      this.dteFechaHasta.setValue('');
+	      this.cmbClasificacion.setValue('');       
+	      this.cmbClasificacionMulti.reset();
+	      this.cmbMoneda.setValue('');
+	      this.dteFechaIniDep.setValue('');
+	      this.descNombre.setValue('');
+	      this.radGroupDeprec.setValue('completo');
+	      this.radGroupTangible.setValue('ambos');	
+	      					
 			this.cmbTipoRep.setVisible(false);
 			this.cmbTipoMov.setVisible(false);
 			this.cmbEstadoDepre.setVisible(false);
