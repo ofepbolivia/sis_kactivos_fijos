@@ -184,6 +184,7 @@ class MODReportes extends MODbase{
         $this->captura('tipo_columna','varchar');
 		$this->captura('cat_desc','varchar');
 		$this->captura('ubi_fisica_ante','varchar');
+		$this->captura('prestamo','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

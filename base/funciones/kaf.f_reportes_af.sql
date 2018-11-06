@@ -613,7 +613,8 @@ BEGIN
                             dep.codigo ||'' - ''||dep.nombre,
                             case when '''||v_parametros.columna||''' = '''' then ''ambos''::varchar else '''||v_parametros.columna||'''::varchar end as tipo_columna,
                             cat.descripcion as cat_desc,
-                            afij.ubicacion as ubi_fisica_ante                         
+                            afij.ubicacion as ubi_fisica_ante,
+                            afij.prestamo                         
                             from kaf.tactivo_fijo afij
                             inner join kaf.tclasificacion cla on cla.id_clasificacion = afij.id_clasificacion
                             left join orga.vfuncionario fun on fun.id_funcionario = afij.id_funcionario

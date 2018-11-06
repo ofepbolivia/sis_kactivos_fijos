@@ -726,6 +726,22 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     },
     {
         config:{
+            name: 'nro_cbte_asociado',
+            fieldLabel: 'C31',
+            allowBlank: false,
+            anchor: '80%',
+            width: 70,
+            maxLength: 15        
+        },
+        type:'TextField',
+        filters:{pfiltro:'afij.nro_cbte_asociado',type:'string'},
+        id_grupo:1,
+        grid:true,
+        form:true,
+        bottom_filter:true
+    },     
+    {
+        config:{
             name: 'tramite_compra',
             fieldLabel: 'Nro. de Tramite de Compra',
             allowBlank: false,
@@ -2260,7 +2276,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                 pageSize: 15,
                                 minChars : 2,
                                 queryDelay : 1000,
-                                valueNotFoundText: 'PROVEEDOR INEXISTENTE',
+                               //valueNotFoundText: 'UNIDAD INEXISTENTE',
                                 pageSize: 15
                             }, {
                                 xtype: 'datefield',
@@ -2443,7 +2459,7 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
                                 pageSize: 15,
                                 minChars : 2,
                                 queryDelay : 1000,
-                                valueNotFoundText: 'PROVEEDOR INEXISTENTE',
+                                //valueNotFoundText: 'PROVEEDOR INEXISTENTE',
                                 pageSize: 15
                             }
                             ]

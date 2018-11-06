@@ -109,7 +109,9 @@ class ACTActivoFijo extends ACTbase{
 			$this->objParam->addFiltro("afij.en_deposito = ''".$this->objParam->getParametro('en_deposito_mov')."''");
 			$this->objParam->addFiltro("afij.id_depto = ".$this->objParam->getParametro('id_depto_mov'));
 		}
-
+        if($this->objParam->getParametro('tipo_activo')!=''){
+            $this->objParam->addFiltro("cla.tipo_activo = ''intangible'' ");
+        }
 
 
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
@@ -605,6 +607,9 @@ class ACTActivoFijo extends ACTbase{
 		if($this->objParam->getParametro('nro_serie')!=''){
 			$this->objParam->addFiltro("taf.nro_serie = ''".$this->objParam->getParametro('nro_serie')."''");
 		}
+		if($this->objParam->getParametro('id_cat_estado_fun')!=''){
+			$this->objParam->addFiltro("taf.id_cat_estado_fun = ".$this->objParam->getParametro('id_cat_estado_fun'));
+		}		
 		///		
 		if($this->objParam->getParametro('tipo_activo')== 1){
 			$this->objParam->addFiltro("niv.tipo_activo  = ''tangible''");

@@ -109,6 +109,7 @@ class MODActivoFijo extends MODbase{
 		$this->captura('subtipo','varchar');
 		$this->captura('nombre_unidad','varchar');
 		$this->captura('id_uo','int4');
+        $this->captura('desc_denominacion','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

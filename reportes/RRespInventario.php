@@ -58,9 +58,12 @@ class RRespInventario extends ReportePDF {
         $this->SetFontSize(12);
         $this->SetFont('', 'B');
         $this->Cell(53, $midHeight, '', 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');
-
+		if ($inventa=='1'){
         $this->Cell(168, $midHeight, 'DETALLE DE ACTIVOS FIJOS POR RESPONSABLE - INVENTARIO', 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');
-
+		}else{
+		$this->Cell(168, $midHeight, 'DETALLE DE ACTIVOS FIJOS POR RESPONSABLE', 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');			
+		}
+		
         $x = $this->GetX();
         $y = $this->GetY();
         $this->Ln();
@@ -173,13 +176,14 @@ class RRespInventario extends ReportePDF {
         $this->AddPage();
 
         $this->SetFontSize(7);
-
+		$inventa = $this->objParam->getParametro('inventario');
+		
         if($this->tipo=='lug' || $this->tipo=='lug_fun'){
             $this->SetY(47);
         } else {
             $this->SetY(51);
         }
-		$this->Ln(-4.5);
+		($inventa=='1')?$this->Ln(-4.5):$this->Ln(-9);
         foreach ($this->getDataSource() as $datarow) {
             $this->tablealigns=array('R','C','L','L','C','L','L','L','L','L');
             $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,0);
@@ -227,6 +231,7 @@ class RRespInventario extends ReportePDF {
                     );
                 }
             } else {
+              if($inventa=='1'){	
                 if($this->columna == 'desc' || $this->columna == 'nombre') {
                     $this->tablealigns = array('R', 'C', 'L', 'L', 'L', 'C', 'L', 'L', 'L', 'L','L','L');
                     $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0);
@@ -267,6 +272,27 @@ class RRespInventario extends ReportePDF {
                         's10' => ''
                     );
                 }
+            }else{
+            	    
+                    $this->tablealigns = array('R', 'C', 'L', 'L', 'L', 'L', 'C', 'L', 'L', 'L', 'L','L');
+                    $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0);
+                    $this->tableborders = array('RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB','RLTB');
+                    $this->tabletextcolor = array();                    
+                    $RowArray = array(
+                        's0' => $i + 1,
+                        's1' => $datarow['codigo'],
+                        's2' => $datarow['desc_clasificacion'],
+                        's3' => $datarow['denominacion'],
+                        's4' => $datarow['descripcion'],
+                        's5' => $datarow['estado'],
+                        's6' => $datarow['cat_desc'],
+                        's7' => date("d/m/Y", strtotime($datarow['fecha_asignacion'])),
+                        's8' => $datarow['prestamo'],                        
+                        's9' => $datarow['ubi_fisica_ante'],
+                        's10' => $datarow['desc_oficina'],
+                        's11' => $datarow['observaciones']
+                    );            	
+			 }
             }
 
 
@@ -277,12 +303,14 @@ class RRespInventario extends ReportePDF {
 
         }
         $this->Ln(8);
+		if ($inventa=='1'){
         $this->setFont('helvetica', 'B', 10);
         $this->Cell(15, 5, "(1)  ", 0, 0, 'L', false, '', 0, false, 'T', 'C');
         $this->Cell(100, 5,"Bueno, Malo, Regular", 0, 0, 'L', false, '', 0, false, 'T', 'C');
         $this->Ln();
         $this->Cell(15, 5, "(2)  ", 0, 0, 'L', false, '', 0, false, 'T', 'C');
         $this->Cell(100, 5,"SI, NO", 0, 0, 'L', false, '', 0, false, 'T', 'C');
+		}
 
     }
 
@@ -290,8 +318,9 @@ class RRespInventario extends ReportePDF {
 		$this->Ln(-9);
         $this->SetFontSize(9);
         $this->SetFont('', 'B');
-
-
+		
+		$inventa = $this->objParam->getParametro('inventario'); 
+	
         if($this->tipo=='lug' || $this->tipo=='lug_fun'){			
             $titulo_columna = '';
             if($this->columna == 'desc' || $this->columna == 'nombre') {
@@ -341,6 +370,7 @@ class RRespInventario extends ReportePDF {
                 );
             }
         } else {
+         if($inventa=='1'){	
             $titulo_columna = '';
             if($this->columna == 'desc' || $this->columna == 'nombre') {
                 $this->tablewidthsHD = array(8, 25, 45, 20, 20, 22, 30,30, 43, 50);
@@ -389,9 +419,30 @@ class RRespInventario extends ReportePDF {
                     's9' => 'Oficina  Asignada',
                     's10' => 'Observaciones'
                 );
-            }
+             }
+        	}else{
+            
+				$this->tablewidthsHD = array(8, 25, 25, 35, 60, 15, 15, 20, 10, 20, 25, 35);
+				$this->tablealignsHD = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
+				$this->tablenumbersHD = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+				$this->tablebordersHD = array('LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB','LRTB', 'LRTB', 'LRTB');
+				$this->tabletextcolorHD = array();
+		            $RowArray = array(
+		                's0' => 'Nro',
+		                's1' => 'Código',
+		                's2' => 'Clasificacion',
+		                's3' => 'Denominación',
+		                's4' => 'Descripción',		                
+		                's5' => 'Estado ' . "\n" . 'Act. Fijo',
+		                's6' => 'Estado',
+		                's7' => 'Fecha Asig.',
+		                's8' => 'Prestamo',
+		                's9' => 'Ubicación',
+		                's10' => 'Oficina Asignada',		   		                
+		                's11' => 'Observaciones'
+		            );      		
+        	}
         }
-
         /////////////////////////////////
         $this-> MultiRowHeader($RowArray,false,1);
         $this->tablewidths = $this->tablewidthsHD;
