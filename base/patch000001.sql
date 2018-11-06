@@ -1063,3 +1063,18 @@ ALTER TABLE kaf.tactivo_fijo
   ADD COLUMN id_uo INTEGER;
   
 /***********************************F-SCP-IRVA-KAF-1-23/10/2018****************************************/
+/***********************************I-SCP-BVP-KAF-1-06/11/2018****************************************/
+CREATE TABLE kaf.tclasificacion_partida (
+  id_clasificacion_partida SERIAL NOT NULL,
+  id_clasificacion INTEGER NOT NULL,
+  id_partida INTEGER NOT NULL,
+  id_gestion INTEGER,
+  tipo_nodo TEXT,
+  PRIMARY KEY(id_clasificacion_partida)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE kaf.tclasificacion_partida
+  OWNER TO postgres;
+/***********************************F-SCP-BVP-KAF-1-06/11/2018****************************************/
