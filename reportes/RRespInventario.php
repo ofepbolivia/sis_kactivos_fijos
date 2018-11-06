@@ -54,7 +54,7 @@ class RRespInventario extends ReportePDF {
 
         //$this->Image(dirname(__FILE__).'/../../lib/'.$_SESSION['_DIR_LOGO'], 10,5,35,20);
         $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 17,5,35,16);
-
+		$inventa = $this->objParam->getParametro('inventario');
         $this->SetFontSize(12);
         $this->SetFont('', 'B');
         $this->Cell(53, $midHeight, '', 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');
