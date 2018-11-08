@@ -495,7 +495,7 @@ BEGIN
 
 /*********************************ANEXO2*******************************/
    /*
-      v_consulta:='select pruebas.f_anexo_2('||p_id_usuario||',de.c31,de.nro_partida,sum(de.monto_sigep),de.id_periodo_anexo)
+      v_consulta:='select kaf.f_anexo_2('||p_id_usuario||',de.c31,de.nro_partida,sum(de.monto_sigep),de.id_periodo_anexo)
       from kaf.tdetalle_sigep de
       where de.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'
       group by de.c31,

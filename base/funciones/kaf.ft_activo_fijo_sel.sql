@@ -143,7 +143,8 @@ BEGIN
                             afij.subtipo,
                             uoac.nombre_unidad,
                             afij.id_uo,
-                            (afij.codigo ||''-''||afij.denominacion)::varchar as desc_denominacion                            
+                            (afij.codigo ||''-''||afij.denominacion)::varchar as desc_denominacion,
+                            dpto.nombre as departamento                            
             from kaf.tactivo_fijo afij                       
             inner join segu.tusuario usu1 on usu1.id_usuario = afij.id_usuario_reg            
             left join param.tcatalogo cat1 on cat1.id_catalogo = afij.id_cat_estado_fun

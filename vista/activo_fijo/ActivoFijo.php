@@ -1020,46 +1020,15 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     }, {
         config: {
             name: 'id_proveedor',
-            fieldLabel: 'id_proveedor',
-            allowBlank: true,
-            emptyText: 'Elija una opción...',
-            store: new Ext.data.JsonStore({
-                url: '../../sis_/control/Clase/Metodo',
-                id: 'id_',
-                root: 'datos',
-                sortInfo: {
-                    field: 'nombre',
-                    direction: 'ASC'
-                },
-                totalProperty: 'total',
-                fields: ['id_', 'nombre', 'codigo'],
-                remoteSort: true,
-                baseParams: {
-                    par_filtro: 'movtip.nombre#movtip.codigo'
-                }
-            }),
-            valueField: 'id_',
-            displayField: 'nombre',
-            gdisplayField: 'desc_',
-            hiddenName: 'id_proveedor',
-            forceSelection: true,
-            typeAhead: false,
-            triggerAction: 'all',
-            lazyRender: true,
-            mode: 'remote',
-            pageSize: 15,
-            queryDelay: 1000,
-            anchor: '100%',
-            gwidth: 150,
-            minChars: 2,
+            fieldLabel: 'proveedor',
             renderer: function(value, p, record) {
-                return String.format('{0}', record.data['desc_']);
+                return String.format('{0}', record.data['desc_proveedor']);
             }
         },
-        type: 'ComboBox',
+        type: 'Field',
         id_grupo: 0,
         filters: {
-            pfiltro: 'movtip.nombre',
+            pfiltro: 'pro.desc_proveedor',
             type: 'string'
         },
         grid: true,
@@ -1104,46 +1073,15 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     }, {
         config: {
             name: 'id_cat_estado_fun',
-            fieldLabel: 'id_cat_estado_fun',
-            allowBlank: true,
-            emptyText: 'Elija una opción...',
-            store: new Ext.data.JsonStore({
-                url: '../../sis_/control/Clase/Metodo',
-                id: 'id_',
-                root: 'datos',
-                sortInfo: {
-                    field: 'codigo',
-                    direction: 'ASC'
-                },
-                totalProperty: 'total',
-                fields: ['id_', 'nombre', 'codigo'],
-                remoteSort: true,
-                baseParams: {
-                    par_filtro: 'movtip.nombre#movtip.codigo'
-                }
-            }),
-            valueField: 'id_',
-            displayField: 'nombre',
-            gdisplayField: 'desc_',
-            hiddenName: 'id_cat_estado_fun',
-            forceSelection: true,
-            typeAhead: false,
-            triggerAction: 'all',
-            lazyRender: true,
-            mode: 'remote',
-            pageSize: 15,
-            queryDelay: 1000,
-            anchor: '100%',
-            gwidth: 150,
-            minChars: 2,
+            fieldLabel: 'Estado fun.',
             renderer: function(value, p, record) {
-                return String.format('{0}', record.data['desc_']);
+                return String.format('{0}', record.data['estado_fun']);
             }
         },
-        type: 'ComboBox',
+        type: 'TextField',
         id_grupo: 0,
         filters: {
-            pfiltro: 'movtip.nombre',
+            pfiltro: 'cat1.descripcion',
             type: 'string'
         },
         grid: true,
@@ -1221,46 +1159,15 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     }, {
         config: {
             name: 'id_deposito',
-            fieldLabel: 'id_deposito',
-            allowBlank: true,
-            emptyText: 'Elija una opción...',
-            store: new Ext.data.JsonStore({
-                url: '../../sis_/control/Clase/Metodo',
-                id: 'id_',
-                root: 'datos',
-                sortInfo: {
-                    field: 'nombre',
-                    direction: 'ASC'
-                },
-                totalProperty: 'total',
-                fields: ['id_', 'nombre', 'codigo'],
-                remoteSort: true,
-                baseParams: {
-                    par_filtro: 'movtip.nombre#movtip.codigo'
-                }
-            }),
-            valueField: 'id_',
-            displayField: 'nombre',
-            gdisplayField: 'desc_',
-            hiddenName: 'id_deposito',
-            forceSelection: true,
-            typeAhead: false,
-            triggerAction: 'all',
-            lazyRender: true,
-            mode: 'remote',
-            pageSize: 15,
-            queryDelay: 1000,
-            anchor: '100%',
-            gwidth: 150,
-            minChars: 2,
+            fieldLabel: 'Deposito',
             renderer: function(value, p, record) {
-                return String.format('{0}', record.data['desc_']);
+                return String.format('{0}', record.data['deposito']);
             }
         },
-        type: 'ComboBox',
+        type: 'TextField',
         id_grupo: 0,
         filters: {
-            pfiltro: 'movtip.nombre',
+            pfiltro: 'depaf.nombre',
             type: 'string'
         },
         grid: true,
@@ -1281,54 +1188,8 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
         id_grupo: 1,
         grid: true,
         form: true
-    }, {
-        config: {
-            name: 'id_moneda',
-            fieldLabel: 'id_moneda',
-            allowBlank: true,
-            emptyText: 'Elija una opción...',
-            store: new Ext.data.JsonStore({
-                url: '../../sis_/control/Clase/Metodo',
-                id: 'id_',
-                root: 'datos',
-                sortInfo: {
-                    field: 'nombre',
-                    direction: 'ASC'
-                },
-                totalProperty: 'total',
-                fields: ['id_', 'nombre', 'codigo'],
-                remoteSort: true,
-                baseParams: {
-                    par_filtro: 'movtip.nombre#movtip.codigo'
-                }
-            }),
-            valueField: 'id_',
-            displayField: 'nombre',
-            gdisplayField: 'desc_',
-            hiddenName: 'id_moneda',
-            forceSelection: true,
-            typeAhead: false,
-            triggerAction: 'all',
-            lazyRender: true,
-            mode: 'remote',
-            pageSize: 15,
-            queryDelay: 1000,
-            anchor: '100%',
-            gwidth: 150,
-            minChars: 2,
-            renderer: function(value, p, record) {
-                return String.format('{0}', record.data['desc_']);
-            }
-        },
-        type: 'ComboBox',
-        id_grupo: 0,
-        filters: {
-            pfiltro: 'movtip.nombre',
-            type: 'string'
-        },
-        grid: true,
-        form: true
-    }, {
+    },
+    {
         config: {
             name: 'depreciacion_mes',
             fieldLabel: 'depreciacion_mes',
@@ -1366,46 +1227,15 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     }, {
         config: {
             name: 'id_moneda_orig',
-            fieldLabel: 'id_moneda_orig',
-            allowBlank: true,
-            emptyText: 'Elija una opción...',
-            store: new Ext.data.JsonStore({
-                url: '../../sis_/control/Clase/Metodo',
-                id: 'id_',
-                root: 'datos',
-                sortInfo: {
-                    field: 'nombre',
-                    direction: 'ASC'
-                },
-                totalProperty: 'total',
-                fields: ['id_', 'nombre', 'codigo'],
-                remoteSort: true,
-                baseParams: {
-                    par_filtro: 'movtip.nombre#movtip.codigo'
-                }
-            }),
-            valueField: 'id_',
-            displayField: 'nombre',
-            gdisplayField: 'desc_',
-            hiddenName: 'id_moneda_orig',
-            forceSelection: true,
-            typeAhead: false,
-            triggerAction: 'all',
-            lazyRender: true,
-            mode: 'remote',
-            pageSize: 15,
-            queryDelay: 1000,
-            anchor: '100%',
-            gwidth: 150,
-            minChars: 2,
+            fieldLabel: 'Moneda orig.',
             renderer: function(value, p, record) {
-                return String.format('{0}', record.data['desc_']);
+                return String.format('{0}', record.data['desc_moneda_orig']);
             }
         },
-        type: 'ComboBox',
+        type: 'TextField',
         id_grupo: 0,
         filters: {
-            pfiltro: 'movtip.nombre',
+            pfiltro: 'mon.codigo',
             type: 'string'
         },
         grid: true,
@@ -1433,46 +1263,15 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     }, {
         config: {
             name: 'id_cat_estado_compra',
-            fieldLabel: 'id_cat_estado_compra',
-            allowBlank: true,
-            emptyText: 'Elija una opción...',
-            store: new Ext.data.JsonStore({
-                url: '../../sis_/control/Clase/Metodo',
-                id: 'id_',
-                root: 'datos',
-                sortInfo: {
-                    field: 'nombre',
-                    direction: 'ASC'
-                },
-                totalProperty: 'total',
-                fields: ['id_', 'nombre', 'codigo'],
-                remoteSort: true,
-                baseParams: {
-                    par_filtro: 'movtip.nombre#movtip.codigo'
-                }
-            }),
-            valueField: 'id_',
-            displayField: 'nombre',
-            gdisplayField: 'desc_',
-            hiddenName: 'id_cat_estado_compra',
-            forceSelection: true,
-            typeAhead: false,
-            triggerAction: 'all',
-            lazyRender: true,
-            mode: 'remote',
-            pageSize: 15,
-            queryDelay: 1000,
-            anchor: '100%',
-            gwidth: 150,
-            minChars: 2,
+            fieldLabel: 'Estado compra',
             renderer: function(value, p, record) {
-                return String.format('{0}', record.data['desc_']);
+                return String.format('{0}', record.data['estado_compra']);
             }
         },
-        type: 'ComboBox',
+        type: 'TextField',
         id_grupo: 0,
         filters: {
-            pfiltro: 'movtip.nombre',
+            pfiltro: 'cat2.descripcion',
             type: 'string'
         },
         grid: true,
@@ -1497,46 +1296,15 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     }, {
         config: {
             name: 'id_centro_costo',
-            fieldLabel: 'id_centro_costo',
-            allowBlank: true,
-            emptyText: 'Elija una opción...',
-            store: new Ext.data.JsonStore({
-                url: '../../sis_/control/Clase/Metodo',
-                id: 'id_',
-                root: 'datos',
-                sortInfo: {
-                    field: 'nombre',
-                    direction: 'ASC'
-                },
-                totalProperty: 'total',
-                fields: ['id_', 'nombre', 'codigo'],
-                remoteSort: true,
-                baseParams: {
-                    par_filtro: 'movtip.nombre#movtip.codigo'
-                }
-            }),
-            valueField: 'id_',
-            displayField: 'nombre',
-            gdisplayField: 'desc_',
-            hiddenName: 'id_centro_costo',
-            forceSelection: true,
-            typeAhead: false,
-            triggerAction: 'all',
-            lazyRender: true,
-            mode: 'remote',
-            pageSize: 15,
-            queryDelay: 1000,
-            anchor: '100%',
-            gwidth: 150,
-            minChars: 2,
+            fieldLabel: 'Centro costo',
             renderer: function(value, p, record) {
-                return String.format('{0}', record.data['desc_']);
+                return String.format('{0}', record.data['centro_costo']);
             }
         },
-        type: 'ComboBox',
+        type: 'TextField',
         id_grupo: 0,
         filters: {
-            pfiltro: 'movtip.nombre',
+            pfiltro: 'cc.centro_costo',
             type: 'string'
         },
         grid: true,
@@ -1544,46 +1312,15 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     }, {
         config: {
             name: 'id_oficina',
-            fieldLabel: 'id_oficina',
-            allowBlank: true,
-            emptyText: 'Elija una opción...',
-            store: new Ext.data.JsonStore({
-                url: '../../sis_/control/Clase/Metodo',
-                id: 'id_',
-                root: 'datos',
-                sortInfo: {
-                    field: 'nombre',
-                    direction: 'ASC'
-                },
-                totalProperty: 'total',
-                fields: ['id_', 'nombre', 'codigo'],
-                remoteSort: true,
-                baseParams: {
-                    par_filtro: 'movtip.nombre#movtip.codigo'
-                }
-            }),
-            valueField: 'id_',
-            displayField: 'nombre',
-            gdisplayField: 'desc_',
-            hiddenName: 'id_oficina',
-            forceSelection: true,
-            typeAhead: false,
-            triggerAction: 'all',
-            lazyRender: true,
-            mode: 'remote',
-            pageSize: 15,
-            queryDelay: 1000,
-            anchor: '100%',
-            gwidth: 150,
-            minChars: 2,
+            fieldLabel: 'Oficina',
             renderer: function(value, p, record) {
-                return String.format('{0}', record.data['desc_']);
+                return String.format('{0}', record.data['oficina']);
             }
         },
-        type: 'ComboBox',
+        type: 'TextField',
         id_grupo: 0,
         filters: {
-            pfiltro: 'movtip.nombre',
+            pfiltro: 'ofi.nombre',
             type: 'string'
         },
         grid: true,
@@ -1591,46 +1328,15 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
     }, {
         config: {
             name: 'id_depto',
-            fieldLabel: 'id_depto',
-            allowBlank: true,
-            emptyText: 'Elija una opción...',
-            store: new Ext.data.JsonStore({
-                url: '../../sis_/control/Clase/Metodo',
-                id: 'id_',
-                root: 'datos',
-                sortInfo: {
-                    field: 'nombre',
-                    direction: 'ASC'
-                },
-                totalProperty: 'total',
-                fields: ['id_', 'nombre', 'codigo'],
-                remoteSort: true,
-                baseParams: {
-                    par_filtro: 'movtip.nombre#movtip.codigo'
-                }
-            }),
-            valueField: 'id_',
-            displayField: 'nombre',
-            gdisplayField: 'desc_',
-            hiddenName: 'id_depto',
-            forceSelection: true,
-            typeAhead: false,
-            triggerAction: 'all',
-            lazyRender: true,
-            mode: 'remote',
-            pageSize: 15,
-            queryDelay: 1000,
-            anchor: '100%',
-            gwidth: 150,
-            minChars: 2,
+            fieldLabel: 'departamento',
             renderer: function(value, p, record) {
-                return String.format('{0}', record.data['desc_']);
+                return String.format('{0}', record.data['departamento']);
             }
         },
-        type: 'ComboBox',
+        type: 'TextField',
         id_grupo: 0,
         filters: {
-            pfiltro: 'movtip.nombre',
+            pfiltro: 'dpto.nombre',
             type: 'string'
         },
         grid: true,
@@ -1851,7 +1557,8 @@ Phx.vista.ActivoFijo = Ext.extend(Phx.gridInterfaz, {
              {name:'id_proceso_wf', type:'numeric'},
              {name:'subtipo', type:'string'},
              {name:'nombre_unidad',type:'string'},
-             {name:'id_uo',type:'string'}
+             {name:'id_uo',type:'string'},
+             {name:'departamento', type:'string'}
              ],
     arrayDefaultColumHidden: ['fecha_reg', 'usr_reg', 'fecha_mod', 'usr_mod', 'estado_reg', 'id_usuario_ai', 'usuario_ai', 'id_persona', 'foto', 'id_proveedor', 'fecha_compra', 'id_cat_estado_fun', 'ubicacion', 'documento', 'observaciones', 'monto_rescate', 'id_deposito', 'monto_compra', 'id_moneda', 'depreciacion_mes', 'descripcion', 'id_moneda_orig', 'fecha_ini_dep', 'id_cat_estado_compra', 'vida_util_original', 'id_centro_costo', 'id_oficina', 'id_depto'],
     sortInfo: {
