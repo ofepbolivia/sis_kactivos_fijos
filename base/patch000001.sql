@@ -1061,7 +1061,7 @@ WITH (oids = false);
 /***********************************I-SCP-IRVA-KAF-1-23/10/2018****************************************/
 ALTER TABLE kaf.tactivo_fijo
   ADD COLUMN id_uo INTEGER;
-  
+
 /***********************************F-SCP-IRVA-KAF-1-23/10/2018****************************************/
 /***********************************I-SCP-BVP-KAF-1-06/11/2018****************************************/
 CREATE TABLE kaf.tclasificacion_partida (
@@ -1078,3 +1078,164 @@ WITH (oids = false);
 ALTER TABLE kaf.tclasificacion_partida
   OWNER TO postgres;
 /***********************************F-SCP-BVP-KAF-1-06/11/2018****************************************/
+/***********************************I-SCP-IRVA-KAF-2-08/11/2018****************************************/
+CREATE TABLE kaf.tanexo (
+  id_anexo SERIAL,
+  id_periodo_anexo INTEGER NOT NULL,
+  id_partida INTEGER NOT NULL,
+  c31 VARCHAR(50) NOT NULL,
+  detalle_c31 TEXT,
+  observaciones TEXT,
+  monto_contrato NUMERIC(20,2),
+  monto_alta NUMERIC(20,2),
+  monto_transito NUMERIC(20,2),
+  monto_pagado NUMERIC(20,2),
+  monto_sigep NUMERIC(20,2),
+  monto_erp NUMERIC(20,2),
+  diferencia NUMERIC(20,2),
+  tipo_anexo INTEGER NOT NULL,
+  id_uo INTEGER,
+  monto_tercer NUMERIC(20,2),
+  seleccionado VARCHAR(20),
+  id_seleccionado INTEGER,
+  CONSTRAINT tanexo_pkey PRIMARY KEY(id_anexo),
+  CONSTRAINT tanexo_fk FOREIGN KEY (id_partida)
+    REFERENCES pre.tpartida(id_partida)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT tanexo_fk1 FOREIGN KEY (tipo_anexo)
+    REFERENCES param.tcatalogo(id_catalogo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT tanexo_fk2 FOREIGN KEY (id_periodo_anexo)
+    REFERENCES kaf.tperiodo_anexo(id_periodo_anexo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE kaf.tanexo
+  ALTER COLUMN id_anexo SET STATISTICS 0;
+
+ALTER TABLE kaf.tanexo
+  ALTER COLUMN id_periodo_anexo SET STATISTICS 0;
+
+ALTER TABLE kaf.tanexo
+  ALTER COLUMN id_partida SET STATISTICS 0;
+
+ALTER TABLE kaf.tanexo
+  ALTER COLUMN c31 SET STATISTICS 0;
+
+ALTER TABLE kaf.tanexo
+  ALTER COLUMN monto_erp SET STATISTICS 0;
+
+ALTER TABLE kaf.tanexo
+  ALTER COLUMN diferencia SET STATISTICS 0;
+
+/***********************************F-SCP-IRVA-KAF-2-08/11/2018****************************************/
+/***********************************I-SCP-IRVA-KAF-3-08/11/2018****************************************/
+CREATE TABLE kaf.tdetalle_sigep (
+  id_detalle_sigep SERIAL,
+  nro_partida VARCHAR(200) NOT NULL,
+  c31 VARCHAR(200) NOT NULL,
+  monto_sigep NUMERIC(20,2) NOT NULL,
+  id_periodo_anexo INTEGER,
+  CONSTRAINT tdetalle_sigep_pkey PRIMARY KEY(id_detalle_sigep)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+/***********************************F-SCP-IRVA-KAF-3-08/11/2018****************************************/
+/***********************************I-SCP-IRVA-KAF-4-08/11/2018****************************************/
+CREATE TABLE kaf.tpartida_periodo (
+  id_partida_periodo SERIAL,
+  id_periodo_anexo INTEGER NOT NULL,
+  id_partida INTEGER NOT NULL,
+  importe_sigep NUMERIC(20,2),
+  importe_anexo1 NUMERIC(20,2),
+  importe_anexo2 NUMERIC(20,2),
+  importe_anexo3 NUMERIC(20,2),
+  importe_anexo4 NUMERIC(20,2),
+  importe_anexo5 NUMERIC(20,2),
+  importe_total NUMERIC(20,2),
+  CONSTRAINT tpartida_periodo_pkey PRIMARY KEY(id_partida_periodo),
+  CONSTRAINT tpartida_periodo_fk FOREIGN KEY (id_periodo_anexo)
+    REFERENCES kaf.tperiodo_anexo(id_periodo_anexo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT tpartida_periodo_fk1 FOREIGN KEY (id_partida)
+    REFERENCES pre.tpartida(id_partida)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN id_partida_periodo SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN id_periodo_anexo SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN id_partida SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_sigep SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_anexo1 SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_anexo2 SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_anexo3 SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_anexo4 SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_anexo5 SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_total SET STATISTICS 0;
+
+/***********************************F-SCP-IRVA-KAF-4-08/11/2018****************************************/
+/***********************************I-SCP-IRVA-KAF-5-08/11/2018****************************************/
+CREATE TABLE kaf.tperiodo_anexo (
+  id_periodo_anexo SERIAL,
+  nombre_periodo VARCHAR(200) NOT NULL,
+  fecha_ini DATE NOT NULL,
+  fecha_fin DATE NOT NULL,
+  id_gestion INTEGER NOT NULL,
+  observaciones TEXT,
+  estado VARCHAR(20),
+  CONSTRAINT tperiodo_anexo_pkey PRIMARY KEY(id_periodo_anexo),
+  CONSTRAINT tperiodo_anexo_fk FOREIGN KEY (id_gestion)
+    REFERENCES param.tgestion(id_gestion)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE kaf.tperiodo_anexo
+  ALTER COLUMN id_periodo_anexo SET STATISTICS 0;
+
+ALTER TABLE kaf.tperiodo_anexo
+  ALTER COLUMN nombre_periodo SET STATISTICS 0;
+
+ALTER TABLE kaf.tperiodo_anexo
+  ALTER COLUMN fecha_ini SET STATISTICS 0;
+
+ALTER TABLE kaf.tperiodo_anexo
+  ALTER COLUMN fecha_fin SET STATISTICS 0;
+/***********************************F-SCP-IRVA-KAF-5-08/11/2018****************************************/

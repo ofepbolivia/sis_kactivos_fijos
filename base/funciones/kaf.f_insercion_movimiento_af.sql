@@ -64,10 +64,18 @@ BEGIN
         for v_aux in select * from kaf.tmovimiento_af maf
             where maf.id_movimiento = (p_parametros->'id_movimiento')::integer loop
             raise notice '%',v_aux.id_activo_fijo;
-        end loop;
+        end loop; 
 
          raise exception 'El activo ya se encuentra registrado en el movimiento actual';
     end if;
+
+    if exists (select 1
+        from kaf.tmovimiento_af maf
+        inner join kaf.tmovimiento mo on mo.id_movimiento = maf.id_movimiento
+        where maf.id_activo_fijo = (p_parametros->'id_activo_fijo')::integer  and mo.estado = 'borrador') then
+
+      raise exception 'El activo ya se encuentra registrado en un movimiento en estado borrador';
+end if;
 
     --Se obtiene la moneda base
     v_id_moneda_base  = param.f_get_moneda_base();
