@@ -510,6 +510,22 @@ Ext.define('Phx.vista.ParametrosBase', {
             msgTarget: 'side',
             style: this.setBackgroundColor('cmbClasificacion')
         });
+        this.cmbInventa = new Ext.form.ComboBox({
+            name : 'inventario',
+            fieldLabel : 'Inventario (si/no)',
+            triggerAction : 'all',
+            lazyRender : true,
+            mode : 'local',
+            store : new Ext.data.ArrayStore({
+                fields : ['tipo', 'valor'],
+                data : [['1', 'SI'], ['2', 'NO']]
+            }),
+            anchor : '50%',
+            valueField : 'tipo',
+            displayField : 'valor',
+            msgTarget: 'side',
+            style: this.setBackgroundColor('cmbInventa')
+        });        
 
 		this.cmbDeposito = new Ext.form.ComboBox({
 			fieldLabel: 'Deposito',
@@ -614,7 +630,7 @@ Ext.define('Phx.vista.ParametrosBase', {
         	title: 'General',
         	items: [this.cmbTipoRep,this.cmpFechas,this.cmbClasificacion,this.cmbClasificacionMulti,this.cmbTipoMov,this.cmbEstadoDepre,this.cmbActivo,this.txtDenominacion,this.cmbMoneda,this.cmpFechaCompra,this.cmpMontos,this.cmbTipo,this.cmbLugar,this.txtNroCbteAsociado,
         		this.dteFechaIniDep,this.cmbEstado,this.cmbCentroCosto,this.txtUbicacionFisica,
-				this.cmbOficina,this.cmbResponsable,this.cmbDepto, this.descNombre, this.cmbDeposito,this.radGroupDeprec]
+				this.cmbOficina,this.cmbResponsable,this.cmbDepto, this.cmbInventa, this.descNombre, this.cmbDeposito,this.radGroupDeprec]
         });
 
         this.fieldSetIncluir = new Ext.form.FieldSet({
@@ -774,6 +790,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.radGroupEstadoMov.setValue('todos');
 		this.cmbDepto.setValue('');
 		this.descNombre.setValue('');
+		this.cmbInventa.setValue('');
 		this.cmbDeposito.setValue('');
 		this.cmbMoneda.setValue('');
 		this.moneda='';
@@ -852,6 +869,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			af_estado_mov: this.radGroupEstadoMov.getValue().inputValue,
 			id_depto: this.cmbDepto.getValue(),
 			desc_nombre: this.descNombre.getValue(),
+			inventario: this.cmbInventa.getValue(),
 			id_deposito: this.cmbDeposito.getValue(),
 			id_moneda: this.cmbMoneda.getValue(),
 			desc_moneda: this.moneda,
@@ -957,6 +975,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.configElement(this.radGroupTangible,false,true);
 		this.configElement(this.cmbDepto,false,true);
 		this.configElement(this.descNombre,false,true);
+		this.configElement(this.cmbInventa,false,true);
 		this.configElement(this.cmbDeposito,false,true);
 		this.configElement(this.lblDesde,false,true);
 		this.configElement(this.lblHasta,false,true);

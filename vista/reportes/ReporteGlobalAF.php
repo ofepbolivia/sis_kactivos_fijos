@@ -134,6 +134,47 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid : true,
                 form : true
             },
+            {  config: {             
+                fieldLabel: 'Estado funcional Actual',
+                name: 'id_cat_estado_fun',
+                emptyText: 'Elija una opción',
+                store: new Ext.data.JsonStore({
+                    url: '../../sis_parametros/control/Catalogo/listarCatalogoCombo',
+                    id: 'id_catalogo',
+                    root: 'datos',
+                    fields: ['id_catalogo','codigo','descripcion'],
+                    totalProperty: 'total',
+                    sortInfo: {
+                        field: 'codigo',
+                        direction: 'ASC'
+                    },
+                    baseParams:{
+                        start: 0,
+                        limit: 10,
+                        sort: 'descripcion',
+                        dir: 'ASC',
+                        par_filtro:'cat.descripcion',
+                        cod_subsistema:'KAF',
+                        catalogo_tipo:'tactivo_fijo__id_cat_estado_fun'
+                    }
+                }),
+                valueField: 'id_catalogo',
+                hiddenValue: 'id_catalogo',
+                displayField: 'descripcion',
+                gdisplayField: 'estado_fun',
+                mode: 'remote',
+                triggerAction: 'all',
+                lazyRender: true,
+                pageSize: 15,
+                anchor : '70%',
+                gwidth : 150,                
+                tpl : '<tpl for="."><div class="x-combo-list-item"><p>{codigo} - {descripcion}</p></div></tpl>'
+               },
+                type : 'ComboBox',
+                id_grupo : 1,
+                grid : true,
+                form : true               
+            },            
 
             {
                 config : {

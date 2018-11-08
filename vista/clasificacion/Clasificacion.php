@@ -543,12 +543,20 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 
 		}
 	},
-	east: {
-		url: '../../../sis_kactivos_fijos/vista/clasificacion_variable/ClasificacionVariable.php',
-		title: 'Variables',
-		width: '30%',
-		cls: 'ClasificacionVariable'
+	tabeast: [
+	{
+		url: '../../../sis_kactivos_fijos/vista/clasificacion_variable/ClasificacionPartida.php',
+		title: 'Partidas',
+		width: '50%',
+		cls: 'ClasificacionPartida'
 	},
+	{
+	    url: '../../../sis_kactivos_fijos/vista/clasificacion_variable/ClasificacionVariable.php',
+	    title: 'Variables',
+	    width: '50%',
+	    cls: 'ClasificacionVariable'
+	}
+	],
 	definirEventos: function(){
 		this.Cmp.vida_util.on('blur',function(val){
 			this.Cmp.vida_util_anios.setValue(this.convertirVidaUtil(this.Cmp.vida_util.getValue()));

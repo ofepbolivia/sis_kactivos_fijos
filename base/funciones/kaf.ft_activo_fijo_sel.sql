@@ -142,7 +142,8 @@ BEGIN
                             afij.id_proceso_wf,
                             afij.subtipo,
                             uoac.nombre_unidad,
-                            afij.id_uo                            
+                            afij.id_uo,
+                            (afij.codigo ||''-''||afij.denominacion)::varchar as desc_denominacion                            
             from kaf.tactivo_fijo afij                       
             inner join segu.tusuario usu1 on usu1.id_usuario = afij.id_usuario_reg            
             left join param.tcatalogo cat1 on cat1.id_catalogo = afij.id_cat_estado_fun
@@ -1035,7 +1036,7 @@ BEGIN
 
           begin
             --Sentencia de la consulta de conteo de registros
-            v_consulta:='select count(uo.nombre_unidad)
+            v_consulta:='select count(uo.id_uo)
                               from orga.tuo uo 
                   where  ';
             v_consulta:=v_consulta||v_parametros.filtro;
