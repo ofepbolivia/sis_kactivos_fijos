@@ -1239,3 +1239,15 @@ ALTER TABLE kaf.tperiodo_anexo
 ALTER TABLE kaf.tperiodo_anexo
   ALTER COLUMN fecha_fin SET STATISTICS 0;
 /***********************************F-SCP-IRVA-KAF-5-08/11/2018****************************************/
+
+/***********************************I-SCP-FEA-KAF-1-07/11/2018****************************************/
+
+
+ALTER TABLE kaf.tactivo_fijo_valores
+  ADD COLUMN monto_vigente_actualiz_inicial NUMERIC DEFAULT 0 NOT NULL;
+
+ALTER TABLE kaf.tmovimiento
+  ADD COLUMN tipo_movimiento VARCHAR(50),
+  ADD COLUMN id_proceso_wf_doc INTEGER;
+
+/***********************************F-SCP-FEA-KAF-1-07/11/2018****************************************/
