@@ -42,6 +42,8 @@ DECLARE
     v_contador				record;
     v_partida				record;
     v_id_uo					record;
+    v_fecha_ini				date;
+    v_fecha_fin				date;    
 
 
 BEGIN
@@ -484,19 +486,25 @@ BEGIN
 
     begin
 
+	 v_fecha_ini=v_parametros.fecha_ini;
+     v_fecha_fin=v_parametros.fecha_fin;
+     
 /*********************************ANEXO1*******************************/
 
-/*      v_consulta:='select pruebas.f_anexo_1('||p_id_usuario||',de.c31, de.nro_partida, de.id_periodo_anexo,'||v_parametros.fecha_ini||','||v_parametros.fecha_fin||')
-      from kaf.tdetalle_sigep de
-      where de.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'';
-      execute(v_consulta);*/
+      v_consulta:='select kaf.f_anexo_1('||p_id_usuario||',de.c31, de.nro_partida, de.id_periodo_anexo,'''||v_fecha_ini||''','''||v_fecha_fin||''')
+      from kaf.tdetalle_sigep de 
+      where de.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'
+            group by de.c31,
+               de.nro_partida,
+               de.id_periodo_anexo';
+      execute(v_consulta);
+      
+/**********************************************************************/			        				
 
-/**********************************************************************/
-
-/*********************************ANEXO2*******************************/
-   
+/*********************************ANEXO2*******************************/			
+        		
       v_consulta:='select kaf.f_anexo_2('||p_id_usuario||',de.c31,de.nro_partida,sum(de.monto_sigep),de.id_periodo_anexo)
-      from kaf.tdetalle_sigep de
+      from kaf.tdetalle_sigep de 
       where de.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'
       group by de.c31,
                de.nro_partida,
@@ -506,22 +514,29 @@ BEGIN
 /**********************************************************************/
 
 /*********************************ANEXO3*******************************/
-   /*   v_consulta:='select pruebas.f_anexo_3('||p_id_usuario||',de.c31,de.nro_partida,de.id_periodo_anexo,'||v_parametros.fecha_ini::date||','||v_parametros.fecha_fin::date||')
-      from kaf.tdetalle_sigep de
+     v_consulta:='select kaf.f_anexo_3('||p_id_usuario||',de.c31,de.nro_partida,de.id_periodo_anexo,'''||v_fecha_ini||''','''||v_fecha_fin||''')
+      from kaf.tdetalle_sigep de 
       where de.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'
       group by de.c31,
                de.nro_partida,
                de.id_periodo_anexo';
 
-      execute(v_consulta);*/
+      execute(v_consulta);	
 /**********************************************************************/
 
 /*********************************ANEXO4*******************************/
-/**********************************************************************/
-      v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Anexo Agregado(a)');
-
-	return v_resp;
-
+       v_consulta:='select kaf.f_anexo_4('||p_id_usuario||',de.c31,sum(de.monto_sigep),de.nro_partida,de.id_periodo_anexo,'''||v_fecha_ini||''','''||v_fecha_fin||''')
+        from kaf.tdetalle_sigep de 
+        where de.id_periodo_anexo='||v_parametros.id_periodo_anexo||'
+        group by de.c31,
+                 de.nro_partida,
+                 de.id_periodo_anexo';
+	  execute(v_consulta);                         
+/**********************************************************************/	
+      v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Anexo Agregado(a)');                
+                
+	return v_resp;		
+            
 		end;
 
         /*********************************

@@ -439,8 +439,8 @@ class MODAnexo extends MODbase{
 			$this->tipo_procedimiento='IME';
 
 			$this->setParametro('id_periodo_anexo','id_periodo_anexo','int4');
-			$this->setParametro('fecha_ini','fecha_ini','timestamp');
-			$this->setParametro('fecha_fin','fecha_fin','timestamp');
+			$this->setParametro('fecha_ini','fecha_ini','date');
+			$this->setParametro('fecha_fin','fecha_fin','date');
 
 			//Ejecuta la instruccion
 			$this->armarConsulta();

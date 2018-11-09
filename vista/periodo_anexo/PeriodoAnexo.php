@@ -736,8 +736,8 @@ generarAnexos: function () {
             url: '../../sis_kactivos_fijos/control/Anexo/generarAnexos',
             params: {
                 id_periodo_anexo: rec.data.id_periodo_anexo,
-                fecha_ini: rec.data.fecha_ini,
-                fecha_fin: rec.data.fecha_fin
+                fecha_ini: rec.data.fecha_ini.toLocaleDateString(),
+                fecha_fin: rec.data.fecha_fin.toLocaleDateString()
             },
             success: this.successRep,
             failure: this.conexionFailure,

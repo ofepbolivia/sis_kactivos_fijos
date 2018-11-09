@@ -272,6 +272,8 @@ class RCompraGestionXls
         //*************************************Cabecera*****************************************
 
         $sheet0->setCellValue('B5', 'Nº');
+		
+		$sheet0->setCellValue('C5', 'CODIGO');
         
         $sheet0->setCellValue('D5', $desno);
        
@@ -461,7 +463,7 @@ class RCompraGestionXls
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, date("d/m/Y", strtotime($value['fecha_compra'])));
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, $value['nro_cbte_asociado']);
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, date("d/m/Y", strtotime($value['fecha_cbte_asociado'])));
-                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['fecha_ini_dep']);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, date("d/m/Y", strtotime($value['fecha_ini_dep'])));
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['vida_util_original']);
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, $value['-']);
                     $sheet0->getStyle('K'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
@@ -509,7 +511,9 @@ class RCompraGestionXls
 			$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, '');
 
             $fila ++;
-
+	        $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
+	        $sheet0->getStyle('B'.$fila.':M'.$fila)->applyFromArray($styleTitulos);
+	        $sheet0->getStyle('B'.$fila.':M'.$fila)->getAlignment()->setWrapText(true);
             $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
             $sheet0->getStyle('K'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
             $sheet0->getStyle('L'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
