@@ -538,15 +538,15 @@ class RReporteAnexo2
     $this->docexcel->getActiveSheet()->getStyle("B$total:E$total")->applyFromArray($bordes);
     $this->docexcel->getActiveSheet()->getStyle("B$total:I$total")->applyFromArray($styleBoa4);
 
-    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(5, ($total), array_sum($montoSigep));
+    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(5, ($total), array_sum(($montoSigep==null)?array():$montoSigep));
     $this->docexcel->getActiveSheet()->getStyle("F$total")->applyFromArray($styleContenido4);
     $this->docexcel->getActiveSheet()->getStyle("F$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
-    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, ($total), array_sum($montoErp));
+    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, ($total), array_sum(($montoErp==null)?array():$montoErp));
     $this->docexcel->getActiveSheet()->getStyle("G$total")->applyFromArray($styleContenido4);
     $this->docexcel->getActiveSheet()->getStyle("G$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
-    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, ($total), array_sum($diferencia));
+    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, ($total), array_sum(($diferencia==null)?array():$diferencia));
     $this->docexcel->getActiveSheet()->getStyle("H$total")->applyFromArray($styleContenido4);
     $this->docexcel->getActiveSheet()->getStyle("H$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 

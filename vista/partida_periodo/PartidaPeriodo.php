@@ -35,66 +35,65 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 			type:'Field',
 			form:true
 		},
-		{
-			config: {
-				name: 'id_partida',
-				fieldLabel: 'Cod - Partida',
-				allowBlank: false,
-				emptyText: 'Seleccione la Partida...',
-				store: new Ext.data.JsonStore({
-					url: '../../sis_presupuestos/control/Partida/listarPartida',
-					id: 'id_partida',
-					root: 'datos',
-					sortInfo: {
-						field: 'nombre_partida',
-						direction: 'ASC'
-					},
-					totalProperty: 'total',
-					fields: ['id_partida', 'nombre_partida','codigo'],
-					remoteSort: true,
-					baseParams: {par_filtro: 'par.nombre_partida#par.codigo'}
-				}),
-				valueField: 'id_partida',
-				displayField: 'nombre_partida',
-				gdisplayField: 'nombre_partida',
-				hiddenName: 'id_partida',
-				forceSelection: true,
-				typeAhead: false,
-				triggerAction: 'all',
-				lazyRender: true,
-				mode: 'remote',
-				pageSize: 15,
-				queryDelay: 1000,
-				anchor: '80%',
-				gwidth: 450,
-				minChars: 2,
-				tpl: new Ext.XTemplate([
-					'<tpl for=".">',
-					'<div class="x-combo-list-item">',
-					'<div class="awesomecombo-item {checked}">',
-					'<p><b style="color: red;">Codigo: {codigo}</b></p>',
-					'</div><p><b>Nombre:</b> <span style="color: blue;">{nombre_partida}</span></p>',
-					'</div></tpl>'
-				]),
-				renderer : function(value, p, record) {
-					if(record.data.tipo_reg != 'summary'){
-						return  String.format("<b style='color: red; font-weight:bold; font-size:12px;'>"+record.data['desc_codigo']+" </b>"+"- "+"<b style='font-size:12px; color:blue;'>"+record.data['desc_partida']+"</b>");
-
-					}
-					else{
-						return '<hr><b><p style="font-size:20px; float:right; color:green; border-top:2px;">Totales: &nbsp;&nbsp; </p></b>';
-					}
-
-
-				}
-			},
-			type: 'ComboBox',
-			id_grupo: 0,
-			bottom_filter:true,
-			filters: {pfiltro: 'par.nombre_partida#par.codigo',type: 'string'},
-			grid: true,
-			form: true
-		},
+     	{
+            config: {
+                name: 'id_partida',
+                fieldLabel: 'Partidas',
+                allowBlank: true,
+                emptyText: 'Elija una opción...',
+                store: new Ext.data.JsonStore({
+                    url: '../../sis_kactivos_fijos/control/ClasificacionVariable/listarPartidas',
+                    id: 'id_partida',
+                    root: 'datos',
+                    sortInfo: {
+                        field: 'id_partida',
+                        direction: 'ASC'
+                    },
+                    totalProperty: 'total',
+                    fields: ['id_partida', 'nombre_partida', 'codigo','sw_movimiento','tipo','gestion'],
+                    remoteSort: true,
+                    baseParams: {
+                        par_filtro: 'par.nombre_partida#codigo'
+                    }
+                }),
+                tpl:'<tpl for="."><div class="x-combo-list-item"><p style="color:green;">({codigo}) {nombre_partida}- {gestion}</p><p>Tipo: {sw_movimiento}<p>Rubro: {tipo}</div></tpl>',
+                valueField: 'id_partida',
+                displayField: 'nombre_partida',
+                gdisplayField: 'nombre_partida',
+                hiddenName: 'id_partida',
+                forceSelection: true,
+                typeAhead: false,
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'remote',
+                pageSize: 15,
+                queryDelay: 1000,
+                anchor: '90%',
+                gwidth: 250,
+                minChars: 2,
+				tpl:'<tpl for="."><div class="x-combo-list-item"><p style="color:green;">({codigo}) {nombre_partida}- {gestion}</p><p>Tipo: {sw_movimiento}<p>Rubro: {tipo}</div></tpl>',
+		        renderer : function(value, p, record) {
+		          if(record.data.tipo_reg != 'summary'){
+		            return  String.format("<b style='color: red; font-weight:bold; font-size:12px;'>"+record.data['desc_codigo']+" </b>"+"- "+"<b style='font-size:12px; color:blue;'>"+record.data['desc_partida']+"</b>");
+		
+		          }
+		          else{
+		            return '<hr><b><p style="font-size:20px; float:right; color:green; border-top:2px;">Totales: &nbsp;&nbsp; </p></b>';
+		          }
+		
+		
+		        }               
+            },
+            type: 'ComboBox',
+            id_grupo: 0,
+            filters: {
+                pfiltro: 'par.nombre_partida#par.codigo',
+                type: 'string'
+            },
+            grid: true,
+            form: true,
+            bottom_filter:true
+        },
 		{
 			config:{
 				name: 'importe_sigep',
@@ -104,11 +103,11 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 160,
 				renderer:function (value,p,record){
 					if(record.data.tipo_reg != 'summary'){
-						return  String.format('<div style="color:#004DFF; text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0,000.00'));
+						return  String.format('<div style="color:#004DFF; text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0.000,00/i'));
 					}
 
 					else{
-						return  String.format('<hr><div style="font-size:20px; float:right; color:#004DFF;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_sigep,'0,000.00'));
+						return  String.format('<hr><div style="font-size:20px; float:right; color:#004DFF;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_sigep,'0.000,00/i'));
 					}
 				},
 				maxLength:1310722
@@ -128,11 +127,11 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 160,
 				renderer:function (value,p,record){
 					if(record.data.tipo_reg != 'summary'){
-						return  String.format('<div style="color:green; text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0,000.00'));
+						return  String.format('<div style="color:green; text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0.000,00/i'));
 					}
 
 					else{
-						return  String.format('<hr><div style="font-size:20px; float:right; color:green;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_anex1,'0,000.00'));
+						return  String.format('<hr><div style="font-size:20px; float:right; color:green;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_anex1,'0.000,00/i'));
 					}
 				},
 				maxLength:1310722
@@ -152,11 +151,11 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 160,
 				renderer:function (value,p,record){
 					if(record.data.tipo_reg != 'summary'){
-						return  String.format('<div style="color:red; text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0,000.00'));
+						return  String.format('<div style="color:red; text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0.000,00/i'));
 					}
 
 					else{
-						return  String.format('<hr><div style="font-size:20px; float:right; color:red;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_anex2,'0,000.00'));
+						return  String.format('<hr><div style="font-size:20px; float:right; color:red;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_anex2,'0.000,00/i'));
 					}
 				},
 				maxLength:1310722
@@ -176,11 +175,11 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 160,
 				renderer:function (value,p,record){
 					if(record.data.tipo_reg != 'summary'){
-						return  String.format('<div style="color:#FF9300; text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0,000.00'));
+						return  String.format('<div style="color:#FF9300; text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0.000,00/i'));
 					}
 
 					else{
-						return  String.format('<hr><div style="font-size:20px; float:right; color:#FF9300"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_anex3,'0,000.00'));
+						return  String.format('<hr><div style="font-size:20px; float:right; color:#FF9300"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_anex3,'0.000,00/i'));
 					}
 				},
 				maxLength:1310722
@@ -200,11 +199,11 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 160,
 				renderer:function (value,p,record){
 					if(record.data.tipo_reg != 'summary'){
-						return  String.format('<div style="color:#955CFF; text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0,000.00'));
+						return  String.format('<div style="color:#955CFF; text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0.000,00/i'));
 					}
 
 					else{
-						return  String.format('<hr><div style="font-size:20px; float:right; color:#955CFF;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_anex4,'0,000.00'));
+						return  String.format('<hr><div style="font-size:20px; float:right; color:#955CFF;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_anex4,'0.000,00/i'));
 					}
 				},
 				maxLength:1310722
@@ -224,11 +223,11 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 160,
 				renderer:function (value,p,record){
 					if(record.data.tipo_reg != 'summary'){
-						return  String.format('<div style=" text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0,000.00'));
+						return  String.format('<div style=" text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0.000,00/i'));
 					}
 
 					else{
-						return  String.format('<hr><div style="font-size:20px; float:right; "><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_anex5,'0,000.00'));
+						return  String.format('<hr><div style="font-size:20px; float:right; "><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_anex5,'0.000,00/i'));
 					}
 				},
 				maxLength:1310722
@@ -248,11 +247,11 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 160,
 				renderer:function (value,p,record){
 					if(record.data.tipo_reg != 'summary'){
-						return  String.format('<div style="color:#9B00FF; text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0,000.00'));
+						return  String.format('<div style="color:#9B00FF; text-align:right; font-size:12px; font-weight:bold;"><b>{0}</b></div>', Ext.util.Format.number(value,'0.000,00/i'));
 					}
 
 					else{
-						return  String.format('<hr><div style="font-size:20px; float:right; color:#9B00FF;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_importe,'0,000.00'));
+						return  String.format('<hr><div style="font-size:20px; float:right; color:#9B00FF;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_importe,'0.000,00/i'));
 					}
 				},
 				maxLength:1310722
@@ -481,6 +480,7 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 	},
 	onButtonNew : function () {
 		Phx.vista.PartidaPeriodo.superclass.onButtonNew.call(this);
+		this.Cmp.id_partida.store.baseParams.id_gestion=this.maestro.id_gestion;
 		this.Cmp.importe_anexo1.hide();
 		this.Cmp.importe_anexo2.hide();
 		this.Cmp.importe_anexo3.hide();
@@ -489,7 +489,7 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 		this.Cmp.importe_total.hide();
 		this.Cmp.id_periodo_anexo.hide();
 
-	}
+	}	
 
 	}
 );

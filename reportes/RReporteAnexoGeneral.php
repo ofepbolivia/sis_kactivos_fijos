@@ -1108,6 +1108,7 @@ $this->docexcel->getActiveSheet()->getStyle("D$obser:L$obser")->getAlignment()->
       if ($value['desc_codigo'] == $value1) {
 
         $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, $numero);
+		$this->docexcel->getActiveSheet()->getStyle("B$fila")->applyFromArray($bordes);  
         $this->docexcel->getActiveSheet()->getStyle("B$fila")->applyFromArray($styleContenido);
 
         $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(2, $fila, $value['desc_codigo']);
@@ -1212,23 +1213,23 @@ $this->docexcel->getActiveSheet()->getStyle("D$obser:L$obser")->getAlignment()->
   $this->docexcel->getActiveSheet()->getStyle("B$total:F$total")->applyFromArray($bordes);
   $this->docexcel->getActiveSheet()->getStyle("B$total:M$total")->applyFromArray($styleBoa4);
 
-  $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, ($total), array_sum($montoContrato));
+  $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, ($total), array_sum(($montoContrato==null)?array():$montoContrato));
   $this->docexcel->getActiveSheet()->getStyle("G$total")->applyFromArray($styleContenido4);
   $this->docexcel->getActiveSheet()->getStyle("G$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
-  $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, ($total), array_sum($montoErp));
+  $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, ($total), array_sum(($montoErp==null)?array():$montoErp));
   $this->docexcel->getActiveSheet()->getStyle("H$total")->applyFromArray($styleContenido4);
   $this->docexcel->getActiveSheet()->getStyle("H$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
-  $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(8, ($total), array_sum($montoTransito));
+  $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(8, ($total), array_sum(($montoTransito==null)?array():$montoTransito));
   $this->docexcel->getActiveSheet()->getStyle("I$total")->applyFromArray($styleContenido4);
   $this->docexcel->getActiveSheet()->getStyle("I$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
-  $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, ($total), array_sum($montoPagado));
+  $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, ($total), array_sum(($montoPagado==null)?array():$montoPagado));
   $this->docexcel->getActiveSheet()->getStyle("J$total")->applyFromArray($styleContenido4);
   $this->docexcel->getActiveSheet()->getStyle("J$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
-  $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(10, ($total), array_sum($montoTercer));
+  $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(10, ($total), array_sum(($montoTercer==null)?array():$montoTercer));
   $this->docexcel->getActiveSheet()->getStyle("K$total")->applyFromArray($styleContenido4);
   $this->docexcel->getActiveSheet()->getStyle("K$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
@@ -1730,15 +1731,15 @@ $this->docexcel->getActiveSheet()->mergeCells("B$total:E$total");
 $this->docexcel->getActiveSheet()->getStyle("B$total:E$total")->applyFromArray($bordes);
 $this->docexcel->getActiveSheet()->getStyle("B$total:I$total")->applyFromArray($styleBoa4);
 
-$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(5, ($total), array_sum($montoSigep));
+$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(5, ($total), array_sum(($montoSigep==null)?array():$montoSigep));
 $this->docexcel->getActiveSheet()->getStyle("F$total")->applyFromArray($styleContenido4);
 $this->docexcel->getActiveSheet()->getStyle("F$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
-$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, ($total), array_sum($montoErp));
+$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6, ($total), array_sum(($montoErp==null)?array():$montoErp));
 $this->docexcel->getActiveSheet()->getStyle("G$total")->applyFromArray($styleContenido4);
 $this->docexcel->getActiveSheet()->getStyle("G$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
-$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, ($total), array_sum($diferencia));
+$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, ($total), array_sum(($diferencia==null)?array():$diferencia));
 $this->docexcel->getActiveSheet()->getStyle("H$total")->applyFromArray($styleContenido4);
 $this->docexcel->getActiveSheet()->getStyle("H$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
@@ -2215,7 +2216,7 @@ $this->docexcel->getActiveSheet()->mergeCells("E$total:I$total");
 $this->docexcel->getActiveSheet()->getStyle("E$total:I$total")->applyFromArray($bordes);
 $this->docexcel->getActiveSheet()->getStyle("E$total:K$total")->applyFromArray($styleBoa4);
 
-$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, ($total), array_sum($montoSigep));
+$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, ($total), array_sum(($montoSigep==null)?array():$montoSigep));
 $this->docexcel->getActiveSheet()->getStyle("J$total")->applyFromArray($styleContenido4);
 $this->docexcel->getActiveSheet()->getStyle("J$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
@@ -2710,15 +2711,15 @@ $this->docexcel->getActiveSheet()->getStyle("J$total")->getNumberFormat()->setFo
 	$this->docexcel->getActiveSheet()->getStyle("E$total:H$total")->applyFromArray($bordes);
 	$this->docexcel->getActiveSheet()->getStyle("E$total:L$total")->applyFromArray($styleBoa4);
 
-	$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(8, ($total), array_sum($montoSigep));
+	$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(8, ($total), array_sum(($montoSigep==null)?array():$montoSigep));
 	$this->docexcel->getActiveSheet()->getStyle("I$total")->applyFromArray($styleContenido4);
 	$this->docexcel->getActiveSheet()->getStyle("I$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
-	$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, ($total), array_sum($montoErp));
+	$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, ($total), array_sum(($montoErp==null)?array():$montoErp));
 	$this->docexcel->getActiveSheet()->getStyle("J$total")->applyFromArray($styleContenido4);
 	$this->docexcel->getActiveSheet()->getStyle("J$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 
-	$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(10, ($total), array_sum($diferencia));
+	$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(10, ($total), array_sum(($diferencia==null)?array():$diferencia));
 	$this->docexcel->getActiveSheet()->getStyle("K$total")->applyFromArray($styleContenido4);
 	$this->docexcel->getActiveSheet()->getStyle("K$total")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
 

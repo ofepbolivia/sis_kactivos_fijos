@@ -54,9 +54,10 @@ class MODAnexo extends MODbase{
 		$this->captura('nombre_unidad','varchar');
 		$this->captura('control','varchar');
 		$this->captura('seleccionado','varchar');
+		$this->captura('monto_alta','numeric');
 
 		//Ejecuta la instruccion
-		$this->armarConsulta();
+		$this->armarConsulta();		
 		$this->ejecutarConsulta();
 
 		//Devuelve la respuesta
@@ -114,6 +115,11 @@ class MODAnexo extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('id_anexo','id_anexo','int4');
 		$this->setParametro('tipo_anexo','tipo_anexo','int4');
+		$this->setParametro('id_partida','id_partida','int4');
+		$this->setParametro('monto_contrato','monto_contrato','numeric');
+		$this->setParametro('monto_tercer','monto_tercer','numeric');
+		$this->setParametro('monto_alta','monto_alta','numeric');
+		$this->setParametro('monto_erp','monto_erp','numeric');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -129,7 +135,7 @@ class MODAnexo extends MODbase{
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 
 		//Definicion de la lista del resultado del query
-		$this->capturaCount('total_sigep','numeric');
+		$this->capturaCount('total_erp','numeric');
 
 		$this->captura('id_anexo','int4');
 		$this->captura('id_partida','int4');
@@ -153,6 +159,7 @@ class MODAnexo extends MODbase{
 		$this->captura('nombre_unidad','varchar');
 		$this->captura('control','varchar');
 		$this->captura('seleccionado','varchar');
+		$this->captura('monto_erp','numeric');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -223,7 +230,7 @@ class MODAnexo extends MODbase{
 		$this->setParametro('monto_transito','monto_transito','numeric');
 		$this->setParametro('monto_pagado','monto_pagado','numeric');
 		$this->setParametro('detalle_c31','detalle_c31','text');
-		$this->setParametro('monto_erp','monto_erp','numeric');
+		$this->setParametro('monto_alta','monto_alta','numeric');
 		$this->setParametro('id_uo','id_uo','int4');
 		$this->setParametro('monto_tercer','monto_tercer','numeric');
 
@@ -268,7 +275,7 @@ class MODAnexo extends MODbase{
 		$this->setParametro('id_partida','id_partida','int4');
 		$this->setParametro('tipo_anexo','tipo_anexo','int4');
 		$this->setParametro('id_periodo_anexo','id_periodo_anexo','int4');
-		$this->setParametro('monto_sigep','monto_sigep','numeric');
+		$this->setParametro('monto_erp','monto_erp','numeric');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('c31','c31','varchar');
 		$this->setParametro('detalle_c31','detalle_c31','text');
@@ -320,7 +327,7 @@ class MODAnexo extends MODbase{
 		$this->setParametro('monto_transito','monto_transito','numeric');
 		$this->setParametro('monto_pagado','monto_pagado','numeric');
 		$this->setParametro('detalle_c31','detalle_c31','text');
-		$this->setParametro('monto_erp','monto_erp','numeric');
+		$this->setParametro('monto_alta','monto_alta','numeric');
 		$this->setParametro('id_uo','id_uo','int4');
 		$this->setParametro('monto_tercer','monto_tercer','numeric');
 
@@ -376,7 +383,7 @@ class MODAnexo extends MODbase{
 		$this->setParametro('id_partida','id_partida','int4');
 		$this->setParametro('tipo_anexo','tipo_anexo','int4');
 		$this->setParametro('id_periodo_anexo','id_periodo_anexo','int4');
-		$this->setParametro('monto_sigep','monto_sigep','numeric');
+		$this->setParametro('monto_erp','monto_erp','numeric');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('c31','c31','varchar');
 		$this->setParametro('detalle_c31','detalle_c31','text');
@@ -441,6 +448,7 @@ class MODAnexo extends MODbase{
 			$this->setParametro('id_periodo_anexo','id_periodo_anexo','int4');
 			$this->setParametro('fecha_ini','fecha_ini','date');
 			$this->setParametro('fecha_fin','fecha_fin','date');
+			$this->setParametro('id_gestion','id_gestion','int4');
 
 			//Ejecuta la instruccion
 			$this->armarConsulta();

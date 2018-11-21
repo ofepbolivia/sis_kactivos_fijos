@@ -196,7 +196,7 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 				}),
 				valueField: 'id_gestion',
 				displayField: 'gestion',
-				gdisplayField: 'gestion',
+				gdisplayField: 'desc_gestion',
 				hiddenName: 'id_gestion',
 				forceSelection: true,
 				typeAhead: false,
@@ -307,7 +307,7 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 				filters:{pfiltro:'perane.estado',type:'string'},
 				id_grupo:1,
 				grid:true,
-				form:false
+				form:true
 		},
 		{
 			config:{
@@ -433,7 +433,7 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 		direction: 'DESC'
 	},
 	bdel:true,
-	bsave:true,
+	//bsave:true,
 
 	tabsouth :[
 		{
@@ -492,7 +492,7 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 								this.getBoton('btnInsertar_periodo').disable();
 								this.getBoton('btnVentana').enable();
 								this.getBoton('btnfinalizado').disable();
-								this.getBoton('btnreporte_general').enable();
+								this.getBoton('btnreporte_general').disable();
 								Phx.vista.PeriodoAnexo.superclass.preparaMenu.call(this);
 								tb.items.get('b-edit-' + this.idContenedor).enable();
 							}
@@ -508,7 +508,7 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 								this.getBoton('btnquitar_archivo').disable();
 								this.getBoton('btnVentana').enable();
 								this.getBoton('btnfinalizado').enable();
-								this.getBoton('btnreporte_general').enable();
+								this.getBoton('btnreporte_general').disable();
 								Phx.vista.PeriodoAnexo.superclass.preparaMenu.call(this);
 								tb.items.get('b-edit-' + this.idContenedor).enable();
 							}
@@ -729,32 +729,36 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 
 
 			    },
-generarAnexos: function () {
-	var rec=this.sm.getSelected();
-        Phx.CP.loadingShow();
-        Ext.Ajax.request({
-            url: '../../sis_kactivos_fijos/control/Anexo/generarAnexos',
-            params: {
-                id_periodo_anexo: rec.data.id_periodo_anexo,
-                fecha_ini: rec.data.fecha_ini.toLocaleDateString(),
-                fecha_fin: rec.data.fecha_fin.toLocaleDateString()
-            },
-            success: this.successRep,
-            failure: this.conexionFailure,
-            timeout: this.timeout,
-            scope: this
-        });
-},
-successRep:function(resp){
-    Phx.CP.loadingHide();
-    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-    if(!reg.ROOT.error){
-        this.reload();
-    }else{
-        alert('Ocurrió un error durante el proceso')
-    }
-}
+	generarAnexos: function () {
+		var rec=this.sm.getSelected();
+	        Phx.CP.loadingShow();
+	        Ext.Ajax.request({
+	            url: '../../sis_kactivos_fijos/control/Anexo/generarAnexos',
+	            params: {
+	                id_periodo_anexo: rec.data.id_periodo_anexo,
+	                fecha_ini: rec.data.fecha_ini.toLocaleDateString(),
+	                fecha_fin: rec.data.fecha_fin.toLocaleDateString(),
+	                id_gestion: rec.data.id_gestion
+	            },
+	            success: this.successRep,
+	            failure: this.conexionFailure,
+	            timeout: this.timeout,
+	            scope: this
+	        });
+	},
+	successRep:function(resp){
+	    Phx.CP.loadingHide();
+	    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+	    if(!reg.ROOT.error){
+	        this.reload();
+	    }else{
+	        alert('Ocurrió un error durante el proceso')
+	    }
+	},
+	onButtonEdit : function () {
+		Phx.vista.PeriodoAnexo.superclass.onButtonEdit.call(this);		
+		this.Cmp.estado.hide();
+	}	
 
-	}
-)
+})
 </script>

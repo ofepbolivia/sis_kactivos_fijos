@@ -3,7 +3,10 @@ CREATE OR REPLACE FUNCTION kaf.f_anexo_2 (
   p_c31 varchar,
   p_partida varchar,
   p_monto_sigep numeric,
-  p_id_periodo_anexo integer
+  p_id_periodo_anexo integer,
+  p_id_gestion integer,
+  p_fecha_ini date,
+  p_fecha_fin date
 )
 RETURNS void AS
 $body$
@@ -14,33 +17,37 @@ Descripción: generador de datos para anexo 2
 */
 DECLARE
 	v_registro 				record;
-    v_registro_erp			record;
+    v_monto_erp				record;
     v_resp 					numeric;
     v_sum					numeric;
     v_i 					integer;
 	v_diferencia    		numeric;
 BEGIN
-               
-      select 
-             ac.nro_cbte_asociado,
-             par.id_partida,
+
+		--MONTO EN EL ERP EN EL PERIODO
+          select 
+              pa.id_partida,
+              ac.nro_cbte_asociado as c31,
              sum(ac.monto_compra_orig_100) as monto_compra_100
              into 
-             v_registro_erp
-      from kaf.tclasificacion_partida cla
-      inner join kaf.tclasificacion clas on clas.id_clasificacion=cla.id_clasificacion
-      left join kaf.tactivo_fijo ac on ac.id_clasificacion = clas.id_clasificacion 
-      inner join pre.tpartida par on par.id_partida = cla.id_partida
-      where ac.estado = 'alta' and ac.nro_cbte_asociado = p_c31 and par.codigo= p_partida
-      group by
-             ac.nro_cbte_asociado,
-             par.id_partida;               
-     
-  		if ( v_registro_erp.nro_cbte_asociado is not null) then   
-			if v_registro_erp.monto_compra_100 <> p_monto_sigep then  
-                       
-                v_diferencia = v_registro_erp.monto_compra_100 - p_monto_sigep;
-                
+             v_monto_erp
+          from kaf.tactivo_fijo ac 
+          inner join kaf.tclasificacion cla on cla.id_clasificacion = ac.id_clasificacion
+          inner join kaf.tclasificacion_partida par on par.id_clasificacion = cla.id_clasificacion
+          inner join pre.tpartida pa on pa.id_partida = par.id_partida and pa.id_gestion = p_id_gestion
+          where ac.estado = 'alta'  and ac.nro_cbte_asociado like '%'||p_c31||'%' and pa.codigo = p_partida
+          and ac.fecha_ini_dep between p_fecha_ini and p_fecha_fin 
+          group by 
+          pa.id_partida,
+          ac.nro_cbte_asociado;
+            
+                 
+  		if  v_monto_erp.id_partida is not null then 
+                  
+                  v_diferencia = v_monto_erp.monto_compra_100 - p_monto_sigep; 
+                                        
+                if ((v_monto_erp.monto_compra_100 - p_monto_sigep) <> 0) then 
+
                   insert into  kaf.tanexo
                     (id_usuario_reg,
                     id_periodo_anexo,
@@ -54,13 +61,14 @@ BEGIN
                   values
                     (p_id_usuario,
                     p_id_periodo_anexo,                     
-                     v_registro_erp.id_partida,
-                     p_c31,
+                     v_monto_erp.id_partida,
+                     v_monto_erp.c31,
                      v_diferencia,
                      p_monto_sigep,
-                     v_registro_erp.monto_compra_100,
+                     v_monto_erp.monto_compra_100,
                      2
                   );
+                  
             end if;
         end if;
             

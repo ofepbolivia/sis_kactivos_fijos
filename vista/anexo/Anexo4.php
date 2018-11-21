@@ -111,7 +111,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 						}
 				},
 				type: 'TextField',
-				filters: {pfiltro: 'planc.impreso', type: 'string'},
+				filters: {pfiltro: 'anex.seleccionado', type: 'string'},
 				id_grupo: 0,
 				grid: true,
 				form: false
@@ -127,7 +127,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: false,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_presupuestos/control/Partida/listarPartida',
+					url: '../../sis_kactivos_fijos/control/ClasificacionVariable/listarPartidas',
 					id: 'id_partida',
 					root: 'datos',
 					sortInfo: {
@@ -135,9 +135,9 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_partida', 'nombre_partida', 'codigo'],
+					fields: ['id_partida', 'nombre_partida', 'codigo','sw_movimiento','tipo','gestion'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'nombre_partida'}
+					baseParams: {par_filtro: 'par.nombre_partida#codigo'}
 				}),
 				valueField: 'id_partida',
 				displayField: 'nombre_partida',
@@ -153,14 +153,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 				anchor: '80%',
 				gwidth: 450,
 				minChars: 2,
-				tpl: new Ext.XTemplate([
-					'<tpl for=".">',
-					'<div class="x-combo-list-item">',
-					'<div class="awesomecombo-item {checked}">',
-					'<p><b style="color: red;">Codigo: {codigo}</b></p>',
-					'</div><p><b>Nombre:</b> <span style="color: blue;">{nombre_partida}</span></p>',
-					'</div></tpl>'
-				]),
+				tpl:'<tpl for="."><div class="x-combo-list-item"><p style="color:green;">({codigo}) {nombre_partida}- {gestion}</p><p>Tipo: {sw_movimiento}<p>Rubro: {tipo}</div></tpl>',
 				renderer : function(value, p, record) {
 					var cadena = "<b style='color: red; font-weight: bold; font-size:12px;'>"+record.data['desc_codigo']+" </b>"+"- "+"<b style='font-size:12px; color:blue;'>"+record.data['desc_nombre']+"</b>";
 					return String.format('{0}',cadena);
@@ -212,11 +205,11 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 200,
 				renderer:function (value,p,record){
 					if(record.data.tipo_reg != 'summary'){
-						return  String.format('<div style="color:#004DFF; font-weight: bold; text-align:right;"><b>{0}</b></div>', Ext.util.Format.number(value,'0,000.00'));
+						return  String.format('<div style="color:#004DFF; font-weight: bold; text-align:right;"><b>{0}</b></div>', Ext.util.Format.number(value,'0.000,00/i'));
 					}
 
 					else{
-						return  String.format('<hr><div style="font-size:15px; float:right; color:#004DFF;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_sigep,'0,000.00'));
+						return  String.format('<hr><div style="font-size:15px; float:right; color:#004DFF;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_sigep,'0.000,00/i'));
 					}
 				},
 				maxLength:1310722
@@ -239,11 +232,11 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 200,
 				renderer:function (value,p,record){
 					if(record.data.tipo_reg != 'summary'){
-						return  String.format('<div style="color:#7000ff; font-weight: bold; text-align:right;"><b>{0}</b></div>', Ext.util.Format.number(value,'0,000.00'));
+						return  String.format('<div style="color:#7000ff; font-weight: bold; text-align:right;"><b>{0}</b></div>', Ext.util.Format.number(value,'0.000,00/i'));
 					}
 
 					else{
-						return  String.format('<hr><div style="font-size:15px; float:right; color:#7000ff;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_erp,'0,000.00'));
+						return  String.format('<hr><div style="font-size:15px; float:right; color:#7000ff;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_erp,'0.000,00/i'));
 					}
 				},
 				maxLength:1310722
@@ -266,11 +259,11 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 						gwidth: 200,
 						renderer:function (value,p,record){
 							if(record.data.tipo_reg != 'summary'){
-								return  String.format('<div style="color:#f12f4c; font-weight: bold; text-align:right;"><b>{0}</b></div>', Ext.util.Format.number(value,'0,000.00'));
+								return  String.format('<div style="color:#f12f4c; font-weight: bold; text-align:right;"><b>{0}</b></div>', Ext.util.Format.number(value,'0.000,00/i'));
 							}
 
 							else{
-								return  String.format('<hr><div style="font-size:15px; float:right; color:#f12f4c;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_diferencia,'0,000.00'));
+								return  String.format('<hr><div style="font-size:15px; float:right; color:#f12f4c;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_diferencia,'0.000,00/i'));
 							}
 						},
 				maxLength:1310722
@@ -514,15 +507,12 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 		{name:'seleccionado', type: 'string'},
 
 	],
-	sortInfo:{
-		field: 'id_anexo',
-		direction: 'ASC'
-	},
 	bdel:true,
-	bsave:true,
+	//bsave:true,
 
 	onButtonNew : function () {
 		Phx.vista.Anexo.superclass.onButtonNew.call(this);
+		this.Cmp.id_partida.store.baseParams.id_gestion=this.maestro.id_gestion;
 		console.log('EL THIS:',this.maestro);
 		this.Cmp.tipo_anexo.setValue(this.codigo);
 		this.Cmp.tipo_anexo.disable();
@@ -534,6 +524,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 
 	onButtonEdit : function () {
 		Phx.vista.Anexo.superclass.onButtonEdit.call(this);
+		this.Cmp.id_partida.store.baseParams.id_gestion=this.maestro.id_gestion;
 		this.Cmp.tipo_anexo.setValue(this.codigo);
 		this.Cmp.tipo_anexo.disable();
 		this.Cmp.tipo_anexo.hide();

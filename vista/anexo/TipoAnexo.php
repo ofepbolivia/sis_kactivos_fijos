@@ -22,6 +22,11 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 Phx.vista.AnexoTipo.superclass.loadValoresIniciales.call(this);
                 this.getComponente('id_anexo').setValue(this.id_anexo);
+                this.getComponente('id_partida').setValue(this.id_partida);
+                this.getComponente('monto_contrato').setValue(this.monto_contrato);
+                this.getComponente('monto_tercer').setValue(this.monto_tercer);                
+                this.getComponente('monto_alta').setValue(this.monto_alta);
+                this.getComponente('monto_erp').setValue(this.monto_erp);
                // this.getComponente('EXTACM').setValue(this.id_plantilla_archivo_excel);
             },
 
@@ -45,6 +50,53 @@ header("content-type: text/javascript; charset=UTF-8");
                     form:true
 
                 },
+                {
+                    config:{
+                        labelSeparator:'',
+                        inputType:'hidden',
+                        name: 'id_partida'
+
+                    },
+                    type:'Field',
+                    form:true
+
+                },
+			    {
+			      config:{
+			      	labelSeparator:'',
+			        inputType : 'hidden',
+			        name: 'monto_tercer',    
+			      },
+			        type:'NumberField',			        
+			        form:true,
+			    },
+			    {
+			      config:{
+			      	labelSeparator:'',
+			        inputType : 'hidden',
+			        name: 'monto_alta',    
+			      },
+			        type:'NumberField',			        
+			        form:true,
+			    },			    
+			    {
+			      config:{
+			      	labelSeparator:'',
+			        inputType : 'hidden',
+			        name: 'monto_contrato',    
+			      },
+			        type:'NumberField',			        
+			        form:true,
+			    },
+			    {
+			      config:{
+			      	labelSeparator:'',
+			        inputType : 'hidden',
+			        name: 'monto_erp',    
+			      },
+			        type:'NumberField',			        
+			        form:true,
+			    },			    			                                    
                 {
             			config: {
             				name: 'tipo_anexo',
@@ -71,7 +123,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             ],
             title:'Mover Anexo',
-            fileUpload:true,
+            //fileUpload:true,  reload() 
             ActSave:'../../sis_kactivos_fijos/control/Anexo/MoverAnexo'
         }
     )

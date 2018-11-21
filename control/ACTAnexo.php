@@ -11,7 +11,7 @@ include_once(dirname(__FILE__).'/../../lib/lib_general/ExcelInput.php');
 class ACTAnexo extends ACTbase{
 
 	function listarAnexo(){
-		$this->objParam->defecto('ordenacion','id_anexo');
+		//$this->objParam->defecto('ordenacion','codigo');
 
 		$this->objParam->defecto('dir_ordenacion','asc');
 
@@ -59,7 +59,7 @@ class ACTAnexo extends ACTbase{
 
 
 	function listarAnexo1(){
-		$this->objParam->defecto('ordenacion','id_anexo');
+		//$this->objParam->defecto('ordenacion','id_anexo');
 
 		$this->objParam->defecto('dir_ordenacion','asc');
 
@@ -92,7 +92,7 @@ class ACTAnexo extends ACTbase{
 	}
 
 	function listarAnexo2(){
-		$this->objParam->defecto('ordenacion','id_anexo');
+		//$this->objParam->defecto('ordenacion','id_anexo');
 
 		$this->objParam->defecto('dir_ordenacion','asc');
 
@@ -108,7 +108,7 @@ class ACTAnexo extends ACTbase{
 			if ($this->objParam->getParametro('id_periodo_anexo') != '') {
 					$this->res=$this->objFunc->listarAnexo2($this->objParam);
 					$temp = Array();
-					$temp['total_sigep'] = $this->res->extraData['total_sigep'];
+					$temp['total_erp'] = $this->res->extraData['total_erp'];
 					$temp['tipo_reg'] = 'summary';
 					//$temp['id_deposito'] = 0;
 					$this->res->total++;
@@ -124,7 +124,7 @@ class ACTAnexo extends ACTbase{
 	}
 
 	function listarAnexo3(){
-		$this->objParam->defecto('ordenacion','id_anexo');
+		//$this->objParam->defecto('ordenacion','id_anexo');
 
 		$this->objParam->defecto('dir_ordenacion','asc');
 
