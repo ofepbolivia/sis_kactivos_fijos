@@ -490,6 +490,22 @@ class MODAnexo extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+	function generaAnexoGeneral(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='kaf.ft_anexo_ime';
+		$this->transaccion='KAF_GEGERAL_INS';
+		$this->tipo_procedimiento='IME';
+
+		//Define los parametros para la funcion
+		$this->setParametro('id_periodo_anexo','id_periodo_anexo','int4');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;		
+	}
 
 }
 ?>

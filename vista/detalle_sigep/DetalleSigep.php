@@ -282,8 +282,10 @@ Phx.vista.DetalleSigep=Ext.extend(Phx.gridInterfaz,{
 		field: 'id_detalle_sigep',
 		direction: 'ASC'
 	},
-	bdel:true,
-	bsave:true
+	bdel:false,
+	bsave:false,
+	bedit:false,
+	bnew:false
 	}
 )
 </script>

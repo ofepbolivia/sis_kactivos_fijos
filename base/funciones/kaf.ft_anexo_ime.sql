@@ -454,7 +454,8 @@ BEGIN
                 monto_sigep = v_parametros.monto_tercer,
                 monto_erp = v_parametros.monto_alta,
                 diferencia = v_parametros.monto_alta - v_parametros.monto_tercer,
-                tipo_anexo = v_parametros.tipo_anexo			           
+                tipo_anexo = v_parametros.tipo_anexo,
+                seleccionado = 'no'			           
                 where id_anexo=v_parametros.id_anexo;
             end if;
          end if;   
@@ -465,7 +466,8 @@ BEGIN
                 monto_sigep = v_parametros.monto_tercer,
                 monto_erp = v_parametros.monto_alta,
                 diferencia = v_parametros.monto_alta - v_parametros.monto_tercer,
-                tipo_anexo = v_parametros.tipo_anexo			           
+                tipo_anexo = v_parametros.tipo_anexo,
+                seleccionado = 'no'			           
                 where id_anexo=v_parametros.id_anexo;              
               end if;
      	  end if;
@@ -474,7 +476,8 @@ BEGIN
                 --Sentencia de la modificacion
                 update kaf.tanexo set		
                 monto_alta = v_parametros.monto_erp,
-                tipo_anexo = v_parametros.tipo_anexo			           
+                tipo_anexo = v_parametros.tipo_anexo,
+                seleccionado = 'no'			           
                 where id_anexo=v_parametros.id_anexo;              
               end if;
           end if;    
@@ -483,17 +486,20 @@ BEGIN
                 --Sentencia de la modificacion
                 update kaf.tanexo set		
                 monto_erp = v_parametros.monto_erp,
-                tipo_anexo = v_parametros.tipo_anexo			           
+                tipo_anexo = v_parametros.tipo_anexo,
+                seleccionado = 'no'			           
                 where id_anexo=v_parametros.id_anexo;              
               else 
                 update kaf.tanexo set
-                tipo_anexo = v_parametros.tipo_anexo			           
+                tipo_anexo = v_parametros.tipo_anexo,
+                seleccionado = 'no'			           
                 where id_anexo=v_parametros.id_anexo;                            
               end if;                           
           else 
 
 			update kaf.tanexo set
-			tipo_anexo = v_parametros.tipo_anexo			           
+			tipo_anexo = v_parametros.tipo_anexo,
+            seleccionado = 'no'			           
 			where id_anexo=v_parametros.id_anexo;            
 	     end if;
 
@@ -587,7 +593,22 @@ BEGIN
 		';
 	  execute(v_consulta);                      
 	/**********************************************************************/
-	
+      
+      v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Anexo Agregado(a)');                
+                
+	return v_resp;		
+            
+		end;
+        
+        /*********************************
+ 	#TRANSACCION:  'KAF_GEGERAL_INS'
+ 	#DESCRIPCION:	Generador de reporte general
+ 	#AUTOR:		BVP
+ 	#FECHA:		20-11-2018 
+	***********************************/
+    elseif(p_transaccion='KAF_GEGERAL_INS') then
+    	begin
+        
 /*******************REGISTRO DE DATOS PARTIDA PERIODO**************************/
 
       --------1---------------
@@ -598,7 +619,7 @@ BEGIN
         group by 
         ane.id_periodo_anexo,
         ane.id_partida';
-	  execute(v_consulta);        
+    execute(v_consulta);        
 
       --------2---------------
       v_consulta:='select kaf.f_update_partida_periodo(ane.id_periodo_anexo,2,ane.id_partida,sum(ane.diferencia))
@@ -607,7 +628,7 @@ BEGIN
         group by 
         ane.id_periodo_anexo,
         ane.id_partida';
-	  execute(v_consulta);
+    execute(v_consulta);
       
       --------3---------------
       v_consulta:='select kaf.f_update_partida_periodo(ane.id_periodo_anexo,3,ane.id_partida,sum(ane.monto_erp))
@@ -616,7 +637,7 @@ BEGIN
         group by 
         ane.id_periodo_anexo,
         ane.id_partida';
-	  execute(v_consulta);
+    execute(v_consulta);
       
       --------4---------------
       v_consulta:='select kaf.f_update_partida_periodo(ane.id_periodo_anexo,4,ane.id_partida,sum(ane.diferencia))
@@ -625,27 +646,25 @@ BEGIN
         group by 
         ane.id_periodo_anexo,
         ane.id_partida';
-	  execute(v_consulta);
+    execute(v_consulta);
       
 /*************IMPORTE TOTAL****************************************************/
       
-	for v_partidas_per in        
-          SELECT pa.id_partida,
-		  coalesce(pa.importe_sigep,0)-(coalesce(pa.importe_anexo1,0))-(-(coalesce(pa.importe_anexo2,0)))-(-(coalesce(pa.importe_anexo4,0))) as total
-          FROM kaf.tpartida_periodo pa 
-          where pa.id_periodo_anexo = v_parametros.id_periodo_anexo
-	loop 
-          update kaf.tpartida_periodo set
-          importe_total =  v_partidas_per.total
-          where id_partida = v_partidas_per.id_partida;
-	end loop;
-      
-      
-      v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Anexo Agregado(a)');                
-                
-	return v_resp;		
-            
-		end;  
+      for v_partidas_per in        
+              SELECT pa.id_partida,
+          coalesce(pa.importe_sigep,0)-(coalesce(pa.importe_anexo1,0))-(-(coalesce(pa.importe_anexo2,0)))-(-(coalesce(pa.importe_anexo4,0))) as total
+              FROM kaf.tpartida_periodo pa 
+              where pa.id_periodo_anexo = v_parametros.id_periodo_anexo
+      loop 
+              update kaf.tpartida_periodo set
+              importe_total =  v_partidas_per.total
+              where id_partida = v_partidas_per.id_partida;
+      end loop;
+          v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Anexo Agregado(a)');                
+                    
+	return v_resp;
+
+	end;          
         
         /*********************************
  	#TRANSACCION:  'KAF_CONTROL_CON'

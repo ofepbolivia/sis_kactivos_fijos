@@ -633,6 +633,7 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 	},
 
 	Finalizar: function(){
+		if(confirm('Esta seguro de finalizar')){
 		Phx.CP.loadingShow();
 		var d = this.sm.getSelected().data;
 		Ext.Ajax.request({
@@ -643,7 +644,7 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 						timeout:this.timeout,
 						scope:this
 		});
-	},
+	}},
 	successFinalizar:function(resp){
 			Phx.CP.loadingHide();
 			var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));

@@ -220,6 +220,12 @@ class ACTAnexo extends ACTbase{
 			$this->objFunc=$this->create('MODAnexo');
 			$this->res=$this->objFunc->agruparAnexo($this->objParam);
 			$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+	
+	function generaAnexoGeneral(){
+		$this->objFunc=$this->create('MODAnexo');
+		$this->res=$this->objFunc->generaAnexoGeneral($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());
 	}	
 
 }

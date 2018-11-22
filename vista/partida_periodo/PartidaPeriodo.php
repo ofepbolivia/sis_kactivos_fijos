@@ -18,8 +18,17 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.PartidaPeriodo.superclass.constructor.call(this,config);
 		this.init();
-		//this.reload();
-	//	this.load({params:{start:0, limit:this.tam_pag}})
+	
+		this.addButton('btnGeneral',
+				{
+				//grupo: [0],
+				text: 'Generar Datos',
+				iconCls: 'bdocuments',
+				disabled: true,
+				handler: this.general,
+				tooltip: '<b>Cargar Archivo</b><br/>Carga un Archivo del tipo Excel.'
+				}
+		);	
 
 	},
 
@@ -464,6 +473,9 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 
 	onReloadPage:function (m) {
 		this.maestro = m;
+		if (this.maestro.estado != 'Finalizado'){			
+			this.getBoton('btnGeneral').disable();			
+		}
 		//this.store.baseParams=m;
 		this.store.baseParams = {id_periodo_anexo:this.maestro.id_periodo_anexo};
 		this.Cmp.id_partida.store.setBaseParam('gestion',this.maestro.id_gestion);
@@ -489,7 +501,29 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 		this.Cmp.importe_total.hide();
 		this.Cmp.id_periodo_anexo.hide();
 
-	}	
+	},
+	general: function () {		
+		var rec=this.maestro.id_periodo_anexo;	        
+	        Ext.Ajax.request({
+	            url: '../../sis_kactivos_fijos/control/Anexo/generaAnexoGeneral',
+	            params: {
+	                id_periodo_anexo: rec
+	            },
+	            success: this.successRep,
+	            failure: this.conexionFailure,
+	            timeout: this.timeout,
+	            scope: this
+	        });
+	},
+	successRep:function(resp){
+	    Phx.CP.loadingHide();
+	    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+	    if(!reg.ROOT.error){
+	        this.reload();
+	    }else{
+	        alert('Ocurrió un error durante el proceso')
+	    }
+	},		
 
 	}
 );
