@@ -1253,8 +1253,8 @@ BEGIN
               select  afij.codigo,
                       afij.descripcion,
                       afij.fecha_ini_dep,
-                      (to_char(afij.monto_compra_orig_100,''999G999G999G999D99''))::varchar as monto_compra_orig_100,
-                      (to_char(afij.monto_compra_orig,''999G999G999G999D99''))::varchar as monto_compra_orig,
+                      afij.monto_compra_orig_100,
+                      afij.monto_compra_orig,
                       uoac.nombre_unidad::varchar as nombre_unidad,
                       afij.tramite_compra,
                       afij.nro_cbte_asociado

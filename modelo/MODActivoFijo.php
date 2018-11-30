@@ -1030,8 +1030,8 @@ class MODActivoFijo extends MODbase{
         $this->captura('codigo','varchar');
         $this->captura('descripcion','varchar');
         $this->captura('fecha_ini_dep','date');
-        $this->captura('monto_compra_orig_100','varchar');
-        $this->captura('monto_compra_orig','varchar');
+        $this->captura('monto_compra_orig_100','numeric');
+        $this->captura('monto_compra_orig','numeric');
         $this->captura('nombre_unidad','varchar');
         $this->captura('tramite_compra','varchar');
         $this->captura('nro_cbte_asociado','varchar');

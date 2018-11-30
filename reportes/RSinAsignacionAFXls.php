@@ -209,6 +209,38 @@ class RSinAsignacionAFXls
                 'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
             )
         );
+        $styleActivos2 = array(
+            'font' => array(
+                'bold' => false,
+                'size' => 8,
+                'name' => 'Arial'
+            ),
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                )
+            ),
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+            )
+        );
+        $styleActivos3 = array(
+            'font' => array(
+                'bold' => false,
+                'size' => 8,
+                'name' => 'Arial'
+            ),
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                )
+            ),
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+            )
+        );
 
 
         $styleCabeza = array(
@@ -240,6 +272,8 @@ class RSinAsignacionAFXls
         $sheet0->getRowDimension('4')->setRowHeight(35);
         $sheet0->getStyle('B5:J5')->applyFromArray($styleTitulos);
         $sheet0->getStyle('C5:J5')->getAlignment()->setWrapText(true);
+
+        $this->docexcel->getActiveSheet()->getStyle('F:G')->getNumberFormat()->setFormatCode('#,##0.00');
 
 
         //*************************************Cabecera*****************************************
@@ -289,7 +323,9 @@ class RSinAsignacionAFXls
         foreach($datos as $value) {
 
             $styleTitulos['fill']['color']['rgb'] = 'e6e8f4';
-            $sheet0->getStyle('B' . $fila . ':J' . $fila)->applyFromArray($styleActivos);
+            $sheet0->getStyle('E' . $fila . ':G' . $fila)->applyFromArray($styleActivos);
+            $sheet0->getStyle('B' . $fila . ':D' . $fila)->applyFromArray($styleActivos2);
+            $sheet0->getStyle('H' . $fila . ':J' . $fila)->applyFromArray($styleActivos3);
             $sheet0->getStyle('B' . $fila . ':J' . $fila)->getAlignment()->setWrapText(true);
 
             $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, $contador);
