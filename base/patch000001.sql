@@ -1251,6 +1251,7 @@ ALTER TABLE kaf.tmovimiento
   ADD COLUMN id_proceso_wf_doc INTEGER;
 
 /***********************************F-SCP-FEA-KAF-1-07/11/2018****************************************/
+
 /***********************************I-SCP-MAY-KAF-1-09/11/2018****************************************/
 
 CREATE TABLE kaf.tactivo_fijo_historico (

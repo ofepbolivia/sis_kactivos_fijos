@@ -258,6 +258,7 @@ class MODActivoFijo extends MODbase{
         $this->setParametro('fecha_cbte_asociado_hist','fecha_cbte_asociado','date');
 
 
+
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();
@@ -900,6 +901,7 @@ class MODActivoFijo extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+
     function listarActivoFijoHistorico(){
         //Definicion de variables para ejecucion del procedimientp
         $this->procedimiento='kaf.ft_activo_fijo_sel';

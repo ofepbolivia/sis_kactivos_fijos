@@ -51,6 +51,57 @@ class ACTClasificacionVariable extends ACTbase{
 		$this->res=$this->objFunc->eliminarClasificacionVariable($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+	
+	function listarClasificacionPartida(){
+		$this->objParam->defecto('ordenacion','id_clasificacion_partida');		
+		$this->objParam->defecto('dir_ordenacion','asc');
+		if($this->objParam->getParametro('id_gestion')!=''){
+			$this->objParam->addFiltro("clapa.id_gestion = ".$this->objParam->getParametro('id_gestion'));
+		}		
+		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+			$this->objReporte = new Reporte($this->objParam,$this);
+			$this->res = $this->objReporte->generarReporteListado('MODClasificacionVariable','listarClasificacionPartida');
+		} else{
+			$this->objFunc=$this->create('MODClasificacionVariable');
+			
+			$this->res=$this->objFunc->listarClasificacionPartida($this->objParam);
+		}
+		$this->res->imprimirRespuesta($this->res->generarJson());		
+				
+	}
+	
+	function insertarClasificacionPartida(){
+		$this->objFunc=$this->create('MODClasificacionVariable');
+		if($this->objParam->insertar('id_clasificacion_partida')){
+			$this->res=$this->objFunc->insertarClasificacionPartida($this->objParam);			
+		} else{			
+			$this->res=$this->objFunc->modificarClasificacionPartida($this->objParam);
+		}
+		$this->res->imprimirRespuesta($this->res->generarJson());		
+	}
+
+	function eliminarClasificacionPartida(){
+			$this->objFunc=$this->create('MODClasificacionVariable');	
+		$this->res=$this->objFunc->eliminarClasificacionPartida($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());		
+	}
+	
+	function listarPartidas(){
+		$this->objParam->defecto('ordenacion','id_partida');
+		$this->objParam->defecto('dir_ordenacion','asc');
+		if($this->objParam->getParametro('id_gestion')!=''){
+			$this->objParam->addFiltro("par.id_gestion = ".$this->objParam->getParametro('id_gestion'));
+		}							
+		$this->objFunc=$this->create('MODClasificacionVariable');
+		$this->res=$this->objFunc->listarPartidas($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());					
+	}
+	
+	function clonarClasificacionPartidaGestion(){
+		$this->objFunc=$this->create('MODClasificacionVariable');	
+		$this->res=$this->objFunc->clonarClasificacionPartidaGestion($this->objParam);
+		$this->res->imprimirRespuesta($this->res->generarJson());		
+	}
 			
 }
 

@@ -20,6 +20,7 @@ DECLARE
     v_id_moneda_base        integer;
     v_movi					record;
     v_movimiento			record;
+    v_extis					record;
 
 BEGIN
 
@@ -64,10 +65,23 @@ BEGIN
         for v_aux in select * from kaf.tmovimiento_af maf
             where maf.id_movimiento = (p_parametros->'id_movimiento')::integer loop
             raise notice '%',v_aux.id_activo_fijo;
-        end loop;
+        end loop; 
 
          raise exception 'El activo ya se encuentra registrado en el movimiento actual';
     end if;
+
+		select pro.nro_tramite
+        into v_extis 
+        from kaf.tmovimiento_af maf 
+        inner join kaf.tmovimiento mo on mo.id_movimiento = maf.id_movimiento
+        inner join kaf.tmovimiento_motivo mov on mov.id_movimiento_motivo = mo.id_movimiento_motivo
+        inner join wf.tproceso_wf pro on pro.id_proceso_wf=mo.id_proceso_wf
+        where maf.id_activo_fijo = (p_parametros->'id_activo_fijo')::integer and mo.estado<>'finalizado' 
+        and mov.motivo <> 'Depreciación';
+        
+	if v_extis is not null then      
+          raise exception 'El activo esta registrado en el movimiento %',v_extis.nro_tramite;
+	end if;
 
     --Se obtiene la moneda base
     v_id_moneda_base  = param.f_get_moneda_base();

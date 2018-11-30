@@ -892,6 +892,5 @@ class ACTActivoFijo extends ACTbase{
 //        var_dump($firma); exit;
     }
 
-
 }
 ?>

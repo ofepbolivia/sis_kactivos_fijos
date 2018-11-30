@@ -2919,7 +2919,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 'ActivoFijoValoresHist'
             );
         },
-
         historicoAF: function () {
             var data = this.getSelectedData();
             this.crearVentanaHist(data);
