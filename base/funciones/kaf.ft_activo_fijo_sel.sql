@@ -1201,6 +1201,78 @@ BEGIN
 			return v_consulta;
 
 		end;
+              /*********************************
+    #TRANSACCION:  'SKA_REPPENAPROB_SEL'
+    #DESCRIPCION:   Reporte Pendientes de Aprobacion
+    #AUTOR:         admin
+    #FECHA:         21/11/2018
+    ***********************************/
+
+    elsif(p_transaccion='SKA_REPPENAPROB_SEL')then
+
+        begin
+        --raise exception 'entra aca SKA_REPPENAPROB_SEL';
+
+        v_consulta:='select   pro.nro_tramite,
+                              pro.fecha_ini::date,
+                              mo.glosa::varchar,
+                              fun.desc_funcionario1::varchar as funcionario,
+                              dep.nombre::varchar as depto
+
+                      from kaf.tmovimiento mo 
+                      inner join orga.vfuncionario fun on fun.id_funcionario = mo.id_funcionario
+                      inner join wf.tproceso_wf pro on pro.id_proceso_wf = mo.id_proceso_wf_doc
+                      inner join param.tdepto dep on dep.id_depto = mo.id_depto
+                          where mo.estado = ''pendiente'' and';
+
+
+         --raise exception 'acaaaa %', v_consulta;
+         v_consulta:=v_consulta||v_parametros.filtro;
+
+         --raise notice '%', v_consulta;
+            return v_consulta;
+
+
+        end;
+
+    /*********************************
+    #TRANSACCION:  'SKA_REPSINASIG_SEL'
+    #DESCRIPCION:   Reporte Sin Asignacion
+    #AUTOR:         admin
+    #FECHA:         22/11/2018
+    ***********************************/
+
+    elsif(p_transaccion='SKA_REPSINASIG_SEL')then
+
+        begin
+        --raise exception 'entra aca SKA_REPSINASIG_SEL';
+        --afij.tramite_compra, --nro proceso compra
+
+            --Sentencia de la consulta
+            v_consulta:='
+              select  afij.codigo,
+                      afij.descripcion,
+                      afij.fecha_ini_dep,
+                      (to_char(afij.monto_compra_orig_100,''999G999G999G999D99''))::varchar as monto_compra_orig_100,
+                      (to_char(afij.monto_compra_orig,''999G999G999G999D99''))::varchar as monto_compra_orig,
+                      uoac.nombre_unidad::varchar as nombre_unidad,
+                      afij.tramite_compra,
+                      afij.nro_cbte_asociado
+
+              from kaf.tactivo_fijo afij
+              left join orga.tuo uoac on uoac.id_uo = afij.id_uo
+              left join kaf.tmovimiento_af maf on maf.id_activo_fijo = afij.id_activo_fijo
+              left join kaf.tmovimiento mov ON mov.id_movimiento = maf.id_movimiento
+              left join param.tcatalogo cat on cat.id_catalogo = mov.id_movimiento
+              where cat.codigo <> ''asig''  and
+
+             		';
+         --raise exception 'aca %',v_consulta;
+ 			v_consulta:=v_consulta||v_parametros.filtro;
+
+                return v_consulta;
+        end;
+
 
 
   else

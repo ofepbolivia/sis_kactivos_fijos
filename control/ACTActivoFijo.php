@@ -18,6 +18,10 @@ require_once(dirname(__FILE__).'/../reportes/RActivoFijoXls.php');
 require_once(dirname(__FILE__).'/../reportes/RActivoFijoDetalleXls.php');
 
 require_once(dirname(__FILE__).'/../reportes/RHistoricoAF.php');
+require_once(dirname(__FILE__).'/../reportes/RPendientesAprobAFPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RPendientesAprobAFXls.php');
+require_once(dirname(__FILE__).'/../reportes/RSinAsignacionAFPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RSinAsignacionAFXls.php');
 
 
 class ACTActivoFijo extends ACTbase{
@@ -593,9 +597,10 @@ class ACTActivoFijo extends ACTbase{
         if($this->objParam->getParametro('id_depto')!=''){
             if($this->objParam->getParametro('id_depto')==3){
                 $this->objParam->addFiltro("taf.id_depto in (7,47)");
-            }else{
-                $this->objParam->addFiltro("taf.id_depto = ".$this->objParam->getParametro('id_depto'));
             }
+//            else{
+//                $this->objParam->addFiltro("taf.id_depto = ".$this->objParam->getParametro('id_depto'));
+//            }
         }
         if($this->objParam->getParametro('nr_factura')!=''){
             $this->objParam->addFiltro("taf.documento = ''".$this->objParam->getParametro('nr_factura')."''");
@@ -609,26 +614,82 @@ class ACTActivoFijo extends ACTbase{
         if($this->objParam->getParametro('nro_serie')!=''){
             $this->objParam->addFiltro("taf.nro_serie = ''".$this->objParam->getParametro('nro_serie')."''");
         }
-        if($this->objParam->getParametro('id_cat_estado_fun')!=''){
-            $this->objParam->addFiltro("taf.id_cat_estado_fun = ".$this->objParam->getParametro('id_cat_estado_fun'));
-        }
         ///
         if($this->objParam->getParametro('tipo_activo')== 1){
             $this->objParam->addFiltro("niv.tipo_activo  = ''tangible''");
         }else if($this->objParam->getParametro('tipo_activo')== 2){
             $this->objParam->addFiltro("niv.tipo_activo = ''intangible''");
-        }else{
-            $this->objParam->addFiltro("niv.tipo_activo in  (''tangible'', ''intangible'')");
         }
+//        else
+//        $this->objParam->addFiltro("niv.tipo_activo in  (''tangible'', ''intangible'')");
+//        }
+
+
+        if($this->objParam->getParametro('configuracion_reporte') == 'pendientes_aprobacion') {
+            //fecha
+            if ($this->objParam->getParametro('fecha_ini') != '' && $this->objParam->getParametro('fecha_fin') != '') {
+                $this->objParam->addFiltro("(pro.fecha_ini::date  BETWEEN ''%" . $this->objParam->getParametro('fecha_ini') . "%''::date  and ''%" . $this->objParam->getParametro('fecha_fin') . "%''::date)");
+            }
+
+            if ($this->objParam->getParametro('fecha_ini') != '' && $this->objParam->getParametro('fecha_fin') == '') {
+                $this->objParam->addFiltro("(pro.fecha_ini  >= ''%" . $this->objParam->getParametro('fecha_ini') . "%''::date)");
+            }
+
+            if ($this->objParam->getParametro('fecha_ini') == '' && $this->objParam->getParametro('fecha_fin') != '') {
+                $this->objParam->addFiltro("(pro.fecha_ini  <= ''%" . $this->objParam->getParametro('fecha_fin') . "%''::date)");
+            }
+            if($this->objParam->getParametro('id_depto')!=''){
+                if($this->objParam->getParametro('id_depto')==3){
+                    $this->objParam->addFiltro("mo.id_depto in (7,47)");
+                }else{
+                    $this->objParam->addFiltro("mo.id_depto = ".$this->objParam->getParametro('id_depto'));
+                }
+            }
+
+        }
+        if($this->objParam->getParametro('configuracion_reporte') == 'sin_asignacion') {
+            //fecha
+            if ($this->objParam->getParametro('fecha_ini') != '' && $this->objParam->getParametro('fecha_fin') != '') {
+                $this->objParam->addFiltro("(afij.fecha_ini_dep::date  BETWEEN ''%" . $this->objParam->getParametro('fecha_ini') . "%''::date  and ''%" . $this->objParam->getParametro('fecha_fin') . "%''::date)");
+            }
+
+            if ($this->objParam->getParametro('fecha_ini') != '' && $this->objParam->getParametro('fecha_fin') == '') {
+                $this->objParam->addFiltro("(afij.fecha_ini_dep  >= ''%" . $this->objParam->getParametro('fecha_ini') . "%''::date)");
+            }
+
+            if ($this->objParam->getParametro('fecha_ini') == '' && $this->objParam->getParametro('fecha_fin') != '') {
+                $this->objParam->addFiltro("(afij.fecha_ini_dep  <= ''%" . $this->objParam->getParametro('fecha_fin') . "%''::date)");
+            }
+            if($this->objParam->getParametro('id_depto')!=''){
+                if($this->objParam->getParametro('id_depto')==3){
+                    $this->objParam->addFiltro("mo.id_depto in (7,47)");
+                }else{
+                    $this->objParam->addFiltro("mo.id_depto = ".$this->objParam->getParametro('id_depto'));
+                }
+            }
+
+
+        }
+
+        //
+
 
         //Llamada al Modelo, consulta BD
         $this->objFunc = $this->create('MODActivoFijo');
         $this->res = $this->objFunc->reportesAFGlobal($this->objParam);
+
         $this->objFunc=$this->create('MODActivoFijo');
         $this->res2=$this->objFunc->listaLug($this->objParam);
         $this->objFunc=$this->create('MODActivoFijo');
         $this->res3=$this->objFunc->proveedorActivoRep($this->objParam);
         //$this->res->imprimirRespuesta($this->res->generarJson());
+        //AF PENDIENTES DE APROBACION
+        $this->objFunc = $this->create('MODActivoFijo');
+        $this->res4 = $this->objFunc->reportesPendientesAprob($this->objParam);
+//        var_dump($this->res4);
+        //AF SIN ASIGNACION
+        $this->objFunc = $this->create('MODActivoFijo');
+        $this->res5 = $this->objFunc->reportesSinAsignacion($this->objParam);
 
         //Configuracion Reporte
 
@@ -648,6 +709,24 @@ class ACTActivoFijo extends ACTbase{
             }
             else{
                 $nombreArchivo = uniqid(md5(session_id()).'[Detalle - Activos Fijos]').'.xls';
+            }
+
+        }else if($this->objParam->getParametro('configuracion_reporte') == 'pendientes_aprobacion'){
+
+            if($this->objParam->getParametro('formato_reporte')=='pdf'){
+                $nombreArchivo = uniqid(md5(session_id()).'[Reporte - Pendientes Aprobacion]').'.pdf';
+            }
+            else{
+                $nombreArchivo = uniqid(md5(session_id()).'[Reporte - Pendientes Aprobacion]').'.xls';
+            }
+
+        }else if($this->objParam->getParametro('configuracion_reporte') == 'sin_asignacion'){
+
+            if($this->objParam->getParametro('formato_reporte')=='pdf'){
+                $nombreArchivo = uniqid(md5(session_id()).'[Reporte - Sin Asignacion]').'.pdf';
+            }
+            else{
+                $nombreArchivo = uniqid(md5(session_id()).'[Reporte - Sin Asignacion]').'.xls';
             }
         }
 
@@ -684,6 +763,33 @@ class ACTActivoFijo extends ACTbase{
             } else {
                 $reporte = new RDetalleAFXls($this->objParam);
                 $reporte->setDatos($this->res->datos,$this->res2->datos,$this->res3->datos);
+                $reporte->generarReporte();
+            }
+        }else if($this->objParam->getParametro('configuracion_reporte') == 'pendientes_aprobacion'){
+            if ($this->objParam->getParametro('formato_reporte') == 'pdf') {
+                //Orientacion Hoja Documento.
+                $this->objParam->addParametro('orientacion','P');
+                $this->objReporteFormato = new RPendientesAprobAFPDF ($this->objParam);
+                $this->objReporteFormato->setDatos($this->res4->datos);
+                $this->objReporteFormato->generarReporte();
+                $this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
+            } else {
+                $reporte = new RPendientesAprobAFXls($this->objParam);
+                $reporte->setDatos($this->res4->datos);
+
+                $reporte->generarReporte();
+            }
+        }else if($this->objParam->getParametro('configuracion_reporte') == 'sin_asignacion'){
+            if ($this->objParam->getParametro('formato_reporte') == 'pdf') {
+                //Orientacion Hoja Documento.
+                $this->objParam->addParametro('orientacion','L');
+                $this->objReporteFormato = new RSinAsignacionAFPDF ($this->objParam);
+                $this->objReporteFormato->setDatos($this->res5->datos);
+                $this->objReporteFormato->generarReporte();
+                $this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
+            } else {
+                $reporte = new RSinAsignacionAFXls($this->objParam);
+                $reporte->setDatos($this->res5->datos);
                 $reporte->generarReporte();
             }
         }

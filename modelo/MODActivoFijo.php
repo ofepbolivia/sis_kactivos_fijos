@@ -992,6 +992,62 @@ class MODActivoFijo extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+    function reportesPendientesAprob(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='kaf.ft_activo_fijo_sel';
+        $this->transaccion='SKA_REPPENAPROB_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        $this->setCount(false);
+
+
+        //Definicion de la lista del resultado del query
+        $this->captura('nro_tramite','varchar');
+        $this->captura('fecha_ini','date');
+        $this->captura('glosa','varchar');
+        $this->captura('funcionario','varchar');
+        $this->captura('depto','varchar');
+
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+//        echo $this->consulta;exit;
+        $this->ejecutarConsulta();
+//        var_dump($this->respuesta); exit;
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+    function reportesSinAsignacion(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='kaf.ft_activo_fijo_sel';
+        $this->transaccion='SKA_REPSINASIG_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion
+        $this->setCount(false);
+
+
+        //Definicion de la lista del resultado del query
+        $this->captura('codigo','varchar');
+        $this->captura('descripcion','varchar');
+        $this->captura('fecha_ini_dep','date');
+        $this->captura('monto_compra_orig_100','varchar');
+        $this->captura('monto_compra_orig','varchar');
+        $this->captura('nombre_unidad','varchar');
+        $this->captura('tramite_compra','varchar');
+        $this->captura('nro_cbte_asociado','varchar');
+
+
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        //echo $this->consulta;exit;
+
+        $this->ejecutarConsulta();
+//        var_dump($this->respuesta); exit;
+
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
 
 }
 ?>
