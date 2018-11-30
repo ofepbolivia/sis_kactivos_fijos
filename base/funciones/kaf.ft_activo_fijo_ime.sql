@@ -41,6 +41,11 @@ DECLARE
     cod						varchar;
     codant					varchar;
 
+    v_id_activo_fijo_hist   integer;
+    v_tipo_activo			varchar;
+    v_fecha_compra_hist		date;
+    v_codigo_hist			varchar;
+
 
 BEGIN
 
@@ -99,11 +104,116 @@ BEGIN
             v_parametros.fecha_cbte_asociado,
             v_parametros.tramite_compra,
             v_parametros.subtipo,
-            v_parametros.id_uo
+            v_parametros.id_uo,
+            v_parametros.fecha_inicio,
+            v_parametros.fecha_fin
 	        into v_rec_af;
 
 	        --Inserción del registro
 	        v_id_activo_fijo = kaf.f_insercion_af(p_id_usuario, hstore(v_rec_af));
+
+			 ---------------------------------------------
+
+            --insercion de activos intangibles historicos
+
+            SELECT cla.tipo_activo
+            INTO v_tipo_activo
+            FROM kaf.tclasificacion cla
+            WHERE cla.id_clasificacion = v_parametros.id_clasificacion;
+
+
+            IF (v_tipo_activo = 'intangible')THEN
+
+            insert into kaf.tactivo_fijo_historico(
+            	  codigo_hist,
+                  denominacion_hist,
+                  descripcion_hist,
+                  fecha_ini_dep_hist,
+                  fecha_compra_hist,
+                  documento_hist,
+                  vida_util_original_hist,
+                  observaciones_hist,
+                  --monto_rescate_hist,
+                  --ubicacion_hist,
+                  --en_deposito_hist,
+                  --fecha_baja_hist,
+                  monto_compra_orig_hist,
+                  --tipo_reg_hist,
+                  cantidad_af_hist,
+                  monto_compra_orig_100_hist,
+                  nro_cbte_asociado_hist,
+                  fecha_cbte_asociado_hist,
+                  tramite_compra_hist,
+
+                  id_activo_fijo,
+
+                  id_clasificacion,
+                  id_moneda_orig,
+                  id_proveedor,
+                  --id_cat_estado_compra,
+                  --id_cat_estado_fun,
+                  id_depto,
+                  id_oficina,
+                  --id_moneda,
+                  id_funcionario,
+                  id_deposito,
+                  id_proyecto,
+                  --id_unidad_medida,
+                  --id_cotizacion_det,
+                  --id_preingreso_det,
+                  --id_proceso_wf,
+                  id_uo,
+                  fecha_inicio,
+                  fecha_fin,
+                  id_usuario_reg,
+				  fecha_reg,
+                  fecha_mod,
+                  id_usuario_mod
+
+
+            ) values(
+            	  v_parametros.codigo,
+                  v_parametros.denominacion,
+                  v_parametros.descripcion,
+                  v_parametros.fecha_ini_dep,
+                  v_parametros.fecha_compra,
+                  v_parametros.documento,
+                  v_parametros.vida_util_original,
+                  v_parametros.observaciones,
+                  v_parametros.monto_compra_orig,
+                  v_parametros.cantidad_af,
+                  v_parametros.monto_compra_orig_100,
+                  v_parametros.nro_cbte_asociado,
+            	  v_parametros.fecha_cbte_asociado,
+                  v_parametros.tramite_compra,
+
+                  v_id_activo_fijo,
+
+                  v_parametros.id_clasificacion,
+                  v_parametros.id_moneda_orig,
+                  v_parametros.id_proveedor,
+                  v_parametros.id_depto,
+                  v_parametros.id_oficina,
+                  p_id_usuario,
+                  v_parametros.id_deposito,
+                  v_parametros.id_proyecto,
+                  v_parametros.id_uo,
+                  v_parametros.fecha_inicio,
+                  v_parametros.fecha_fin,
+                  v_parametros.id_usuario_reg,
+                  p_id_usuario,
+                  now(),
+                  null,
+                  null
+
+            )RETURNING id_activo_fijo_hist into v_id_activo_fijo_hist;
+
+         END IF;
+			--------------------------------------------
+            --para control de fechas inicio y fin
+            IF (v_parametros.fecha_inicio > v_parametros.fecha_fin) THEN
+                raise exception 'La Fecha Inicio es mayor a la Fecha Fin';
+            END IF;
 
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos Fijos almacenado(a) con exito (id_activo_fijo'||v_id_activo_fijo||')');
@@ -124,7 +234,17 @@ BEGIN
 	elsif(p_transaccion='SKA_AFIJ_MOD')then
 
 		begin
+			SELECT cla.tipo_activo
+            INTO v_tipo_activo
+            FROM kaf.tclasificacion cla
+            WHERE cla.id_clasificacion = v_parametros.id_clasificacion;
 
+            select h.fecha_compra_hist, h.codigo_hist
+            into v_fecha_compra_hist, v_codigo_hist
+            from kaf.tactivo_fijo_historico h
+            where h.id_activo_fijo = v_parametros.id_activo_fijo;
+
+    IF (v_tipo_activo = 'intangible')THEN
              select
                *
               into
@@ -198,8 +318,231 @@ BEGIN
                 fecha_cbte_asociado = v_parametros.fecha_cbte_asociado,
                 tramite_compra = v_parametros.tramite_compra,
                 subtipo = v_parametros.subtipo,
-                id_uo = v_parametros.id_uo
+                id_uo = v_parametros.id_uo,
+                fecha_inicio = v_parametros.fecha_inicio,
+                fecha_fin = v_parametros.fecha_fin
+
+
 			where id_activo_fijo = v_parametros.id_activo_fijo;
+
+
+       		---------------------------------------------------
+            --modificacion en activos intangibles historicos
+
+                update kaf.tactivo_fijo_historico set
+                      codigo_hist = v_parametros.codigo,
+                      denominacion_hist = v_parametros.denominacion,
+                      descripcion_hist = v_parametros.descripcion,
+                      fecha_ini_dep_hist = v_parametros.fecha_ini_dep,
+                      fecha_compra_hist = v_parametros.fecha_compra,
+                      documento_hist = v_parametros.documento,
+                      vida_util_original_hist = v_parametros.vida_util_original,
+                      observaciones_hist =  v_parametros.observaciones,
+                      --monto_rescate_hist,
+                      --ubicacion_hist,
+                      --en_deposito_hist,
+                      --fecha_baja_hist,
+                      monto_compra_orig_hist = v_parametros.monto_compra_orig,
+                      --tipo_reg_hist,
+                      cantidad_af_hist = v_parametros.monto_compra_orig,
+                      monto_compra_orig_100_hist = v_parametros.monto_compra_orig_100,
+                      nro_cbte_asociado_hist = v_parametros.nro_cbte_asociado,
+                      fecha_cbte_asociado_hist = v_parametros.fecha_cbte_asociado,
+                      tramite_compra_hist = v_parametros.tramite_compra,
+
+                      id_activo_fijo = v_parametros.id_activo_fijo,
+
+                      id_clasificacion =  v_parametros.id_clasificacion,
+                      id_moneda_orig = v_parametros.id_moneda_orig,
+                      id_proveedor = v_parametros.id_proveedor,
+                      --id_cat_estado_compra =
+                      --id_cat_estado_fun,
+                      id_depto = v_parametros.id_depto,
+                      id_oficina = v_parametros.id_oficina,
+                      --id_moneda,
+                      id_funcionario =  p_id_usuario,
+                      id_deposito = v_parametros.id_deposito,
+                      id_proyecto = v_parametros.id_proyecto,
+                      id_uo = v_parametros.id_uo,
+                      fecha_inicio = v_parametros.fecha_inicio,
+                      fecha_fin = v_parametros.fecha_fin,
+                      fecha_mod = now(),
+			    	  id_usuario_mod = p_id_usuario
+
+                    where id_activo_fijo_hist = v_id_activo_fijo_hist;
+                    --id_activo_fijo = v_parametros.id_activo_fijo;
+
+
+                      insert into kaf.tactivo_fijo_historico(
+            	  codigo_hist,
+                  denominacion_hist,
+                  descripcion_hist,
+                  fecha_ini_dep_hist,
+                  fecha_compra_hist,
+                  documento_hist,
+                  vida_util_original_hist,
+                  observaciones_hist,
+                  --monto_rescate_hist,
+                  --ubicacion_hist,
+                  --en_deposito_hist,
+                  --fecha_baja_hist,
+                  monto_compra_orig_hist,
+                  --tipo_reg_hist,
+                  cantidad_af_hist,
+                  monto_compra_orig_100_hist,
+                  nro_cbte_asociado_hist,
+                  fecha_cbte_asociado_hist,
+                  tramite_compra_hist,
+
+                  id_activo_fijo,
+
+                  id_clasificacion,
+                  id_moneda_orig,
+                  id_proveedor,
+                  --id_cat_estado_compra,
+                  --id_cat_estado_fun,
+                  id_depto,
+                  id_oficina,
+                  --id_moneda,
+                  id_funcionario,
+                  id_deposito,
+                  id_proyecto,
+                  --id_unidad_medida,
+                  --id_cotizacion_det,
+                  --id_preingreso_det,
+                  --id_proceso_wf,
+                  id_uo,
+                  fecha_inicio,
+                  fecha_fin,
+                  id_usuario_reg,
+				  fecha_reg,
+                  fecha_mod,
+                  id_usuario_mod
+
+            ) values(
+            	  v_parametros.codigo,
+                  v_parametros.denominacion,
+                  v_parametros.descripcion,
+                  v_parametros.fecha_ini_dep,
+                  v_parametros.fecha_compra,
+                  v_parametros.documento,
+                  v_parametros.vida_util_original,
+                  v_parametros.observaciones,
+                  v_parametros.monto_compra_orig,
+                  v_parametros.cantidad_af,
+                  v_parametros.monto_compra_orig_100,
+                  v_parametros.nro_cbte_asociado,
+            	  v_parametros.fecha_cbte_asociado,
+                  v_parametros.tramite_compra,
+
+                  v_parametros.id_activo_fijo,
+
+                  v_parametros.id_clasificacion,
+                  v_parametros.id_moneda_orig,
+                  v_parametros.id_proveedor,
+                  v_parametros.id_depto,
+                  v_parametros.id_oficina,
+                  p_id_usuario,
+                  v_parametros.id_deposito,
+                  v_parametros.id_proyecto,
+                  v_parametros.id_uo,
+                  v_parametros.fecha_inicio,
+                  v_parametros.fecha_fin,
+                  p_id_usuario,
+                  now(),
+                  null,
+                  null
+
+            )RETURNING id_activo_fijo_hist into v_id_activo_fijo_hist;
+
+      ELSE
+            select
+               *
+              into
+                v_rec_af
+             from kaf.tactivo_fijo af
+             where af.id_activo_fijo = v_parametros.id_activo_fijo;
+
+
+              IF v_rec_af.estado != 'registrado' THEN
+
+               IF v_rec_af.monto_compra_orig != v_parametros.monto_compra_orig or v_rec_af.fecha_ini_dep != v_parametros.fecha_ini_dep or v_rec_af.id_moneda != v_parametros.id_moneda_orig  THEN
+                 raise exception 'no puede editar datos de compras cuando el activo ya esta de alta, registre una revalorizacion para hacer cualquier ajuste';
+               END IF;
+              END IF;
+
+              v_monto_compra = param.f_convertir_moneda(
+                                                         v_parametros.id_moneda_orig,
+                                                         NULL,   --por defecto moenda base
+                                                         v_parametros.monto_compra_orig,
+                                                         v_parametros.fecha_compra,
+                                                         'O',-- tipo oficial, venta, compra
+                                                         NULL);--defecto dos decimales
+
+
+
+			--Sentencia de la modificacion
+			update kaf.tactivo_fijo set
+                id_persona = v_parametros.id_persona,
+                cantidad_revaloriz = v_parametros.cantidad_revaloriz,
+                foto = v_parametros.foto,
+                id_proveedor = v_parametros.id_proveedor,
+                fecha_compra = v_parametros.fecha_compra,
+               -- monto_vigente = v_parametros.monto_vigente,
+                id_cat_estado_fun = v_parametros.id_cat_estado_fun,
+                ubicacion = v_parametros.ubicacion,
+               -- vida_util = v_parametros.vida_util,
+                documento = v_parametros.documento,
+                observaciones = v_parametros.observaciones,
+              --  fecha_ult_dep = v_parametros.fecha_ult_dep,
+                monto_rescate = v_parametros.monto_rescate,
+                denominacion = v_parametros.denominacion,
+                id_funcionario = v_parametros.id_funcionario,
+                id_deposito = v_parametros.id_deposito,
+                monto_compra_orig = v_parametros.monto_compra_orig,
+                monto_compra = v_monto_compra,
+                id_moneda = v_parametros.id_moneda_orig,
+                --codigo = v_parametros.codigo,
+                descripcion = v_parametros.descripcion,
+                id_moneda_orig = v_parametros.id_moneda_orig,
+                fecha_ini_dep = v_parametros.fecha_ini_dep,
+                id_cat_estado_compra = v_parametros.id_cat_estado_compra,
+                vida_util_original = v_parametros.vida_util_original,
+                estado = v_parametros.estado,
+                id_clasificacion = v_parametros.id_clasificacion,
+                -- id_centro_costo = v_parametros.id_centro_costo,
+                id_oficina = v_parametros.id_oficina,
+                id_depto = v_parametros.id_depto,
+                id_usuario_mod = p_id_usuario,
+                fecha_mod = now(),
+                id_usuario_ai = v_parametros._id_usuario_ai,
+                usuario_ai = v_parametros._nombre_usuario_ai,
+                codigo_ant = v_parametros.codigo_ant,
+                nro_serie = v_parametros.nro_serie,
+                marca = v_parametros.marca,
+                id_proyecto = v_parametros.id_proyecto,
+                --caraceristicas = v_parametros._nombre_usuario_ai,
+                cantidad_af = v_parametros.cantidad_af,
+                id_unidad_medida = v_parametros.id_unidad_medida,
+                monto_compra_orig_100 = v_parametros.monto_compra_orig_100,
+                nro_cbte_asociado = v_parametros.nro_cbte_asociado,
+                fecha_cbte_asociado = v_parametros.fecha_cbte_asociado,
+                tramite_compra = v_parametros.tramite_compra,
+                subtipo = v_parametros.subtipo,
+                id_uo = v_parametros.id_uo,
+                fecha_inicio = v_parametros.fecha_inicio,
+                fecha_fin = v_parametros.fecha_fin
+
+
+			where id_activo_fijo = v_parametros.id_activo_fijo;
+
+      END IF;
+            --------------------------------------------------------
+			--para control de fechas inicio y fin
+            IF (v_parametros.fecha_inicio > v_parametros.fecha_fin) THEN
+                raise exception 'La Fecha Inicio es mayor a la Fecha Fin';
+            END IF;
+
 
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos Fijos modificado(a)');

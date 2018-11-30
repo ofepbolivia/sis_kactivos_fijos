@@ -1061,5 +1061,254 @@ WITH (oids = false);
 /***********************************I-SCP-IRVA-KAF-1-23/10/2018****************************************/
 ALTER TABLE kaf.tactivo_fijo
   ADD COLUMN id_uo INTEGER;
-  
+
 /***********************************F-SCP-IRVA-KAF-1-23/10/2018****************************************/
+/***********************************I-SCP-BVP-KAF-1-06/11/2018****************************************/
+CREATE TABLE kaf.tclasificacion_partida (
+  id_clasificacion_partida SERIAL NOT NULL,
+  id_clasificacion INTEGER NOT NULL,
+  id_partida INTEGER NOT NULL,
+  id_gestion INTEGER,
+  tipo_nodo TEXT,
+  PRIMARY KEY(id_clasificacion_partida)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE kaf.tclasificacion_partida
+  OWNER TO postgres;
+/***********************************F-SCP-BVP-KAF-1-06/11/2018****************************************/
+/***********************************I-SCP-IRVA-KAF-2-08/11/2018****************************************/
+CREATE TABLE kaf.tanexo (
+  id_anexo SERIAL,
+  id_periodo_anexo INTEGER NOT NULL,
+  id_partida INTEGER NOT NULL,
+  c31 VARCHAR(50) NOT NULL,
+  detalle_c31 TEXT,
+  observaciones TEXT,
+  monto_contrato NUMERIC(20,2),
+  monto_alta NUMERIC(20,2),
+  monto_transito NUMERIC(20,2),
+  monto_pagado NUMERIC(20,2),
+  monto_sigep NUMERIC(20,2),
+  monto_erp NUMERIC(20,2),
+  diferencia NUMERIC(20,2),
+  tipo_anexo INTEGER NOT NULL,
+  id_uo INTEGER,
+  monto_tercer NUMERIC(20,2),
+  seleccionado VARCHAR(20),
+  id_seleccionado INTEGER,
+  CONSTRAINT tanexo_pkey PRIMARY KEY(id_anexo),
+  CONSTRAINT tanexo_fk FOREIGN KEY (id_partida)
+    REFERENCES pre.tpartida(id_partida)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT tanexo_fk1 FOREIGN KEY (tipo_anexo)
+    REFERENCES param.tcatalogo(id_catalogo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT tanexo_fk2 FOREIGN KEY (id_periodo_anexo)
+    REFERENCES kaf.tperiodo_anexo(id_periodo_anexo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE kaf.tanexo
+  ALTER COLUMN id_anexo SET STATISTICS 0;
+
+ALTER TABLE kaf.tanexo
+  ALTER COLUMN id_periodo_anexo SET STATISTICS 0;
+
+ALTER TABLE kaf.tanexo
+  ALTER COLUMN id_partida SET STATISTICS 0;
+
+ALTER TABLE kaf.tanexo
+  ALTER COLUMN c31 SET STATISTICS 0;
+
+ALTER TABLE kaf.tanexo
+  ALTER COLUMN monto_erp SET STATISTICS 0;
+
+ALTER TABLE kaf.tanexo
+  ALTER COLUMN diferencia SET STATISTICS 0;
+
+/***********************************F-SCP-IRVA-KAF-2-08/11/2018****************************************/
+/***********************************I-SCP-IRVA-KAF-3-08/11/2018****************************************/
+CREATE TABLE kaf.tdetalle_sigep (
+  id_detalle_sigep SERIAL,
+  nro_partida VARCHAR(200) NOT NULL,
+  c31 VARCHAR(200) NOT NULL,
+  monto_sigep NUMERIC(20,2) NOT NULL,
+  id_periodo_anexo INTEGER,
+  CONSTRAINT tdetalle_sigep_pkey PRIMARY KEY(id_detalle_sigep)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+/***********************************F-SCP-IRVA-KAF-3-08/11/2018****************************************/
+/***********************************I-SCP-IRVA-KAF-4-08/11/2018****************************************/
+CREATE TABLE kaf.tpartida_periodo (
+  id_partida_periodo SERIAL,
+  id_periodo_anexo INTEGER NOT NULL,
+  id_partida INTEGER NOT NULL,
+  importe_sigep NUMERIC(20,2),
+  importe_anexo1 NUMERIC(20,2),
+  importe_anexo2 NUMERIC(20,2),
+  importe_anexo3 NUMERIC(20,2),
+  importe_anexo4 NUMERIC(20,2),
+  importe_anexo5 NUMERIC(20,2),
+  importe_total NUMERIC(20,2),
+  CONSTRAINT tpartida_periodo_pkey PRIMARY KEY(id_partida_periodo),
+  CONSTRAINT tpartida_periodo_fk FOREIGN KEY (id_periodo_anexo)
+    REFERENCES kaf.tperiodo_anexo(id_periodo_anexo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE,
+  CONSTRAINT tpartida_periodo_fk1 FOREIGN KEY (id_partida)
+    REFERENCES pre.tpartida(id_partida)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN id_partida_periodo SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN id_periodo_anexo SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN id_partida SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_sigep SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_anexo1 SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_anexo2 SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_anexo3 SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_anexo4 SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_anexo5 SET STATISTICS 0;
+
+ALTER TABLE kaf.tpartida_periodo
+  ALTER COLUMN importe_total SET STATISTICS 0;
+
+/***********************************F-SCP-IRVA-KAF-4-08/11/2018****************************************/
+/***********************************I-SCP-IRVA-KAF-5-08/11/2018****************************************/
+CREATE TABLE kaf.tperiodo_anexo (
+  id_periodo_anexo SERIAL,
+  nombre_periodo VARCHAR(200) NOT NULL,
+  fecha_ini DATE NOT NULL,
+  fecha_fin DATE NOT NULL,
+  id_gestion INTEGER NOT NULL,
+  observaciones TEXT,
+  estado VARCHAR(20),
+  CONSTRAINT tperiodo_anexo_pkey PRIMARY KEY(id_periodo_anexo),
+  CONSTRAINT tperiodo_anexo_fk FOREIGN KEY (id_gestion)
+    REFERENCES param.tgestion(id_gestion)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+ALTER TABLE kaf.tperiodo_anexo
+  ALTER COLUMN id_periodo_anexo SET STATISTICS 0;
+
+ALTER TABLE kaf.tperiodo_anexo
+  ALTER COLUMN nombre_periodo SET STATISTICS 0;
+
+ALTER TABLE kaf.tperiodo_anexo
+  ALTER COLUMN fecha_ini SET STATISTICS 0;
+
+ALTER TABLE kaf.tperiodo_anexo
+  ALTER COLUMN fecha_fin SET STATISTICS 0;
+/***********************************F-SCP-IRVA-KAF-5-08/11/2018****************************************/
+
+/***********************************I-SCP-FEA-KAF-1-07/11/2018****************************************/
+
+
+ALTER TABLE kaf.tactivo_fijo_valores
+  ADD COLUMN monto_vigente_actualiz_inicial NUMERIC DEFAULT 0 NOT NULL;
+
+ALTER TABLE kaf.tmovimiento
+  ADD COLUMN tipo_movimiento VARCHAR(50),
+  ADD COLUMN id_proceso_wf_doc INTEGER;
+
+/***********************************F-SCP-FEA-KAF-1-07/11/2018****************************************/
+/***********************************I-SCP-MAY-KAF-1-09/11/2018****************************************/
+
+CREATE TABLE kaf.tactivo_fijo_historico (
+  id_activo_fijo_hist SERIAL NOT NULL,
+  codigo_hist VARCHAR(50),
+  denominacion_hist VARCHAR(500),
+  descripcion_hist VARCHAR(5000),
+  estado_hist VARCHAR(15),
+  fecha_ini_dep_hist DATE,
+  monto_compra_hist NUMERIC,
+  fecha_compra_hist DATE,
+  documento_hist VARCHAR(100),
+  vida_util_original_hist INTEGER,
+  observaciones_hist VARCHAR(5000),
+  monto_rescate_hist NUMERIC,
+  ubicacion_hist VARCHAR(1000),
+  en_deposito_hist VARCHAR(2),
+  fecha_baja_hist DATE,
+  monto_compra_orig_hist NUMERIC,
+  tipo_reg_hist VARCHAR(100),
+  cantidad_af_hist INTEGER,
+  monto_compra_orig_100_hist NUMERIC,
+  nro_cbte_asociado_hist VARCHAR(50),
+  fecha_cbte_asociado_hist DATE,
+  tramite_compra_hist VARCHAR(200),
+  id_activo_fijo INTEGER,
+  id_clasificacion INTEGER,
+  id_moneda_orig INTEGER,
+  id_proveedor INTEGER,
+  id_cat_estado_compra INTEGER,
+  id_cat_estado_fun INTEGER,
+  id_depto INTEGER,
+  id_oficina INTEGER,
+  id_moneda INTEGER,
+  id_funcionario INTEGER,
+  id_deposito INTEGER,
+  id_proyecto INTEGER,
+  id_unidad_medida INTEGER,
+  id_cotizacion_det INTEGER,
+  id_preingreso_det INTEGER,
+  id_proceso_wf INTEGER,
+  id_uo INTEGER,
+  PRIMARY KEY(id_activo_fijo_hist)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+/***********************************F-SCP-MAY-KAF-1-09/11/2018****************************************/
+/***********************************I-SCP-MAY-KAF-1-10/11/2018****************************************/
+ALTER TABLE kaf.tactivo_fijo_historico
+  ADD COLUMN fecha_inicio DATE;
+
+ALTER TABLE kaf.tactivo_fijo_historico
+  ADD COLUMN fecha_fin DATE;
+
+
+ALTER TABLE kaf.tactivo_fijo
+  ADD COLUMN fecha_inicio DATE;
+
+ALTER TABLE kaf.tactivo_fijo
+  ADD COLUMN fecha_fin DATE;
+/***********************************F-SCP-MAY-KAF-1-10/11/2018****************************************/

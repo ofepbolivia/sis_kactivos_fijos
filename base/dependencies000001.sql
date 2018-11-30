@@ -71,7 +71,7 @@ ALTER TABLE kaf.tmovimiento_af
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
-/***********************************F-DEP-RCM-KAF-1-18/03/2016****************************************/    
+/***********************************F-DEP-RCM-KAF-1-18/03/2016****************************************/
 
 /***********************************I-DEP-RCM-KAF-1-28/03/2016****************************************/
 
@@ -110,13 +110,13 @@ ALTER TABLE kaf.tactivo_fijo
     REFERENCES param.tcentro_costo(id_centro_costo)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-    NOT DEFERRABLE;    
+    NOT DEFERRABLE;
 ALTER TABLE kaf.tactivo_fijo
   ADD CONSTRAINT fk_tactivo_fijo__id_depto FOREIGN KEY (id_depto)
     REFERENCES param.tdepto(id_depto)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-    NOT DEFERRABLE;    
+    NOT DEFERRABLE;
 ALTER TABLE kaf.tactivo_fijo
   ADD CONSTRAINT tactivo_fijo__id_oficina FOREIGN KEY (id_oficina)
     REFERENCES orga.toficina(id_oficina)
@@ -140,7 +140,7 @@ ALTER TABLE kaf.tactivo_fijo
     REFERENCES segu.tpersona(id_persona)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-    NOT DEFERRABLE;        
+    NOT DEFERRABLE;
 /***********************************F-DEP-RCM-KAF-1-28/03/2016****************************************/
 
 /***********************************I-DEP-RCM-KAF-1-06/05/2016****************************************/
@@ -177,8 +177,8 @@ add constraint fk_tactivo_fijo_valores__id_movimiento_af foreign key (id_movimie
 
 /***********************************I-DEP-RAC-KAF-1-29/03/2017****************************************/
 
-          
-           
+
+
 CREATE OR REPLACE VIEW kaf.vminimo_movimiento_af_dep
 AS
   SELECT DISTINCT ON (afd.id_activo_fijo_valor) afd.id_activo_fijo_valor,
@@ -280,11 +280,11 @@ AS
   FROM kaf.tactivo_fijo_valores afv
        LEFT JOIN kaf.vminimo_movimiento_af_dep min ON min.id_activo_fijo_valor =
          afv.id_activo_fijo_valor AND afv.id_moneda_dep = min.id_moneda_dep;
-       
-       
-       
-       
-       
+
+
+
+
+
 CREATE OR REPLACE VIEW kaf.vactivo_fijo_vigente
 AS
   SELECT afd.id_activo_fijo,
@@ -298,11 +298,11 @@ AS
   FROM kaf.vactivo_fijo_valor afd
   GROUP BY afd.id_activo_fijo,
            afd.id_moneda,
-           afd.id_moneda_dep;       
-       
+           afd.id_moneda_dep;
+
 
 --vistas para reportes y contabilizacion
-  
+
   CREATE OR REPLACE VIEW kaf.vultimo_movimiento_af_dep_gestion(
     gestion,
     id_activo_fijo_valor,
@@ -347,8 +347,8 @@ AS
            afd.id_movimiento_af,
            (date_part('year'::text, afd.fecha)),
            afd.fecha DESC;
- 
- 
+
+
 CREATE OR REPLACE VIEW kaf.vprimero_movimiento_af_dep_gestion(
     gestion,
     id_activo_fijo_valor,
@@ -392,9 +392,9 @@ AS
   ORDER BY afd.id_activo_fijo_valor,
            afd.id_movimiento_af,
            (date_part('year'::text, afd.fecha)),
-           afd.fecha;   
-           
-           
+           afd.fecha;
+
+
  CREATE OR REPLACE VIEW kaf.vdetalle_depreciacion_activo(
     id_activo_fijo,
     id_clasificacion,
@@ -567,9 +567,9 @@ ALTER TABLE kaf.tactivo_fijo_valores
 
 --------------- SQL ---------------
 
-CREATE OR REPLACE VIEW kaf.vmovimiento_cbte 
-AS 
-SELECT 
+CREATE OR REPLACE VIEW kaf.vmovimiento_cbte
+AS
+SELECT
 mov.id_movimiento,
 mov.id_depto as id_depto_af,
 mov.fecha_mov,
@@ -579,7 +579,7 @@ cat.descripcion as desc_catalogo,
 mov.num_tramite,
 mov.fecha_hasta,
 mov.glosa,
-depc.id_depto as id_depto_conta, 
+depc.id_depto as id_depto_conta,
 depc.codigo as codigo_depto_conta,
 per.id_gestion,
 ges.gestion,
@@ -587,8 +587,8 @@ md.id_moneda,
 md.descripcion
 FROM kaf.tmovimiento mov
 INNER JOIN param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
-INNER JOIN param.tdepto_depto dd on dd.id_depto_origen = mov.id_depto 
-INNER JOIN param.tdepto depc on depc.id_depto = dd.id_depto_destino 
+INNER JOIN param.tdepto_depto dd on dd.id_depto_origen = mov.id_depto
+INNER JOIN param.tdepto depc on depc.id_depto = dd.id_depto_destino
 INNER JOIN segu.tsubsistema sis on sis.id_subsistema = depc.id_subsistema and sis.codigo = 'CONTA'
 INNER JOIN param.tperiodo per on mov.fecha_mov BETWEEN per.fecha_ini and per.fecha_fin
 INNER JOIN param.tgestion ges on ges.id_gestion = per.id_gestion
@@ -681,7 +681,7 @@ AS
          det.id_clasificacion
   WHERE mov.gestion::double precision = det.gestion_final AND
         mov.id_moneda = det.id_moneda;
-        
+
  CREATE OR REPLACE VIEW kaf.vdetalle_depreciacion_activo_cbte_aitb(
     id_activo_fijo,
     id_clasificacion,
@@ -761,7 +761,7 @@ AS
        JOIN kaf.vclaificacion_raiz cr ON cr.id_clasificacion =
          det.id_clasificacion
   WHERE mov.gestion::double precision = det.gestion_final AND
-        mov.id_moneda = det.id_moneda;       
+        mov.id_moneda = det.id_moneda;
 
 
 /***********************************F-DEP-RAC-KAF-1-02/05/2017****************************************/
@@ -796,7 +796,7 @@ ALTER TABLE kaf.tmovimiento
     REFERENCES param.tperiodo_subsistema(id_periodo_subsistema)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-    NOT DEFERRABLE;        
+    NOT DEFERRABLE;
 /***********************************F-DEP-RCM-KAF-1-05/06/2017****************************************/
 
 
@@ -956,7 +956,7 @@ AS
            afd.id_moneda,
            afd.id_moneda_dep,
            afd.estado_mov_dep;
-         
+
 
 /***********************************F-DEP-RCM-KAF-1-09/06/2017****************************************/
 
@@ -989,7 +989,7 @@ ALTER TABLE kaf.tmovimiento_af_especial
     REFERENCES kaf.tmovimiento_af(id_movimiento_af)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-    NOT DEFERRABLE;        
+    NOT DEFERRABLE;
 /***********************************F-DEP-RCM-KAF-1-23/06/2017****************************************/
 
 /***********************************I-DEP-RCM-KAF-1-27/06/2017****************************************/
@@ -999,10 +999,10 @@ ALTER TABLE kaf.tclasificacion_variable
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
-/***********************************F-DEP-RCM-KAF-1-27/06/2017****************************************/    
+/***********************************F-DEP-RCM-KAF-1-27/06/2017****************************************/
 
 
-/***********************************I-DEP-RCM-KAF-1-25/07/2017****************************************/    
+/***********************************I-DEP-RCM-KAF-1-25/07/2017****************************************/
 CREATE VIEW kaf.vclasificacion_arbol(
     clasificacion,
     nivel,
@@ -1043,10 +1043,10 @@ WITH RECURSIVE t(
              orden
       FROM t
       ORDER BY t.orden;
-/***********************************F-DEP-RCM-KAF-1-25/07/2017****************************************/    
+/***********************************F-DEP-RCM-KAF-1-25/07/2017****************************************/
 
 
-/***********************************I-DEP-RCM-KAF-1-09/08/2017****************************************/    
+/***********************************I-DEP-RCM-KAF-1-09/08/2017****************************************/
 ALTER TABLE kaf.tactivo_fijo
   ADD CONSTRAINT fk_tactivo_fijo__id_unidad_medida FOREIGN KEY (id_unidad_medida)
     REFERENCES param.tunidad_medida(id_unidad_medida)
@@ -1067,7 +1067,7 @@ ALTER TABLE kaf.tactivo_fijo
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
     NOT DEFERRABLE;
-/***********************************F-DEP-RCM-KAF-1-09/08/2017****************************************/    
+/***********************************F-DEP-RCM-KAF-1-09/08/2017****************************************/
 
 
 /***********************************I-DEP-RCM-KAF-1-14/08/2017****************************************/
@@ -1122,9 +1122,9 @@ ALTER TABLE kaf.tactivo_fijo_modificacion
 
 
 /***********************************I-DEP-RCM-KAF-1-25/08/2017****************************************/
-CREATE VIEW kaf.v_cbte_det_importe 
-AS 
-select 
+CREATE VIEW kaf.v_cbte_det_importe
+AS
+select
 id_movimiento,
 id_moneda,
 id_clasificacion,
@@ -1217,7 +1217,7 @@ AS
          depreciacion, depreciacion_acum, depreciacion_per, monto_vigente,
          vida_util, monto_vigente_orig_100) ON afvi.id_activo_fijo =
          afij.id_activo_fijo AND afvi.id_moneda = maf.id_moneda;
-         
+
 CREATE OR REPLACE VIEW kaf.v_cbte_det_baja(
     id_movimiento,
     id_moneda,
@@ -1339,7 +1339,7 @@ AS
 
 /***********************************F-DEP-RCM-KAF-1-06/10/2017****************************************/
 
-      
+
 
 /***********************************I-DEP-RAC-KAF-1-11/10/2017****************************************/
 
@@ -1364,7 +1364,7 @@ AS
            pa.id_partida_dep_acum,
            pa.id_auxiliar_dep_aucm,
            maf.id_movimiento;
-           
+
 CREATE OR REPLACE VIEW kaf.v_cbte_depreciacion_debe(
     id_fila,
     id_centro_costo,
@@ -1390,7 +1390,7 @@ AS
            pa.id_cuenta_dep,
            pa.id_partida_dep,
            pa.id_auxiliar_dep,
-           maf.id_movimiento;           
+           maf.id_movimiento;
 
 CREATE OR REPLACE VIEW kaf.v_cbte_aitb_haber(
     id_fila,
@@ -1435,8 +1435,8 @@ AS
            pa.id_partida_act_activo,
            pa.id_auxiliar_act_activo,
            maf.id_movimiento;
-           
-           
+
+
 /***********************************F-DEP-RAC-KAF-1-11/10/2017****************************************/
 
 
@@ -1495,8 +1495,8 @@ AS
            afd.id_movimiento_af,
            afd.id_moneda_dep,
            afd.fecha DESC;
-           
-           
+
+
  CREATE OR REPLACE VIEW kaf.vprimero_movimiento_af_dep_movimiento(
     gestion,
     id_activo_fijo_valor,
@@ -1546,8 +1546,8 @@ AS
   ORDER BY afd.id_activo_fijo_valor,
            afd.id_movimiento_af,
            afd.id_moneda_dep,
-           afd.fecha;   
-           
+           afd.fecha;
+
  --------------- SQL ---------------
 
 CREATE OR REPLACE VIEW kaf.vdetalle_depreciacion_activo(
@@ -1622,18 +1622,18 @@ AS
          ud.tipo_cambio_fin AS tipo_cabio_final,
          ud.tipo_cambio_fin - pd.tipo_cambio_ini AS factor,
          afv.id_moneda,
-         afv.id_moneda_dep, 
+         afv.id_moneda_dep,
          af.id_proyecto,
          afv.deducible
   FROM kaf.tactivo_fijo_valores afv
        JOIN kaf.tactivo_fijo af ON af.id_activo_fijo = afv.id_activo_fijo
        JOIN kaf.vprimero_movimiento_af_dep_movimiento pd ON pd.id_activo_fijo_valor  = afv.id_activo_fijo_valor  and pd.id_moneda_dep = afv.id_moneda_dep
        JOIN kaf.vultimo_movimiento_af_dep_movimiento ud ON ud.id_activo_fijo_valor  = afv.id_activo_fijo_valor AND ud.id_movimiento_af = pd.id_movimiento_af and ud.id_moneda_dep = pd.id_moneda_dep
-       JOIN kaf.tmovimiento_af maf ON 
+       JOIN kaf.tmovimiento_af maf ON
               maf.id_movimiento_af = pd.id_movimiento_af
-         AND  maf.id_movimiento_af = ud.id_movimiento_af;   
-         
-         
+         AND  maf.id_movimiento_af = ud.id_movimiento_af;
+
+
  CREATE OR REPLACE VIEW kaf.vminimo_movimiento_af_dep_estado(
     id_activo_fijo_valor,
     monto_vigente,
@@ -1675,7 +1675,7 @@ WITH maximo AS(
          JOIN maximo m ON afd.id_movimiento_af_dep = m.id_movimiento_af_dep
          JOIN kaf.tmovimiento_af maf ON maf.id_movimiento_af =
            afd.id_movimiento_af
-         JOIN kaf.tmovimiento mov ON mov.id_movimiento = maf.id_movimiento;               
+         JOIN kaf.tmovimiento mov ON mov.id_movimiento = maf.id_movimiento;
 
 
 
@@ -1698,7 +1698,7 @@ CREATE OR REPLACE VIEW kaf.vminimo_movimiento_af_dep (
     tipo_cambio_ini)
 AS
 
-   
+
  WITH maximo AS(
   SELECT z.id_activo_fijo_valor,
          max(z.id_movimiento_af_dep) AS id_movimiento_af_dep
@@ -1776,7 +1776,7 @@ AS
            (date_part('year'::text, afd.fecha)),
            afd.id_moneda_dep,
            afd.fecha;
-         
+
  CREATE OR REPLACE VIEW kaf.vultimo_movimiento_af_dep_gestion (
     gestion,
     id_activo_fijo_valor,
@@ -1823,9 +1823,9 @@ AS
     afd.id_moneda_dep
    FROM kaf.tmovimiento_af_dep afd
      JOIN kaf.tmovimiento_af maf ON maf.id_movimiento_af = afd.id_movimiento_af
-  ORDER BY afd.id_activo_fijo_valor, afd.id_movimiento_af, (date_part('year'::text, afd.fecha)), afd.id_moneda_dep, afd.fecha DESC;        
-         
-  
+  ORDER BY afd.id_activo_fijo_valor, afd.id_movimiento_af, (date_part('year'::text, afd.fecha)), afd.id_moneda_dep, afd.fecha DESC;
+
+
 CREATE OR REPLACE VIEW kaf.vdetalle_depreciacion_activo_por_gestion(
     id_activo_fijo,
     id_clasificacion,
@@ -1909,9 +1909,9 @@ AS
          = afv.id_activo_fijo_valor AND ud.gestion = pd.gestion AND
          ud.id_moneda_dep = pd.id_moneda_dep
        JOIN kaf.tmovimiento_af maf ON maf.id_movimiento_af = pd.id_movimiento_af
-         AND maf.id_movimiento_af = ud.id_movimiento_af;  
-  
-         
+         AND maf.id_movimiento_af = ud.id_movimiento_af;
+
+
 /***********************************F-DEP-RAC-KAF-1-19/10/2017****************************************/
 /***********************************I-DEP-BVP-KAF-1-12/10/2018*****************************************/
 
@@ -1966,7 +1966,7 @@ SELECT afv.id_activo_fijo,
 FROM kaf.tactivo_fijo_valores afv
      LEFT JOIN kaf.vista_dep_acti_prin min ON min.id_activo_fijo_valor
          = afv.id_activo_fijo_valor AND afv.id_moneda_dep = min.id_moneda_dep;
-         
+
 
 CREATE VIEW kaf.vista_dep_acti_prin (
     id_activo_fijo_valor,
@@ -1993,13 +1993,23 @@ SELECT afd.id_activo_fijo_valor,
 FROM kaf.tmovimiento_af_dep afd
      JOIN kaf.tafdep m ON m.id_af_dep = afd.id_movimiento_af_dep
      JOIN kaf.tmovimiento_af maf ON maf.id_movimiento_af = afd.id_movimiento_af
-     JOIN kaf.tmovimiento mov ON mov.id_movimiento = maf.id_movimiento;         
+     JOIN kaf.tmovimiento mov ON mov.id_movimiento = maf.id_movimiento;
 /***********************************F-DEP-BVP-KAF-1-12/10/2018*****************************************/
 
 /***********************************I-DEP-BVP-KAF-1-12/10/2018*****************************************/
 CREATE TRIGGER tmovimiento_af_dep_tr
-  AFTER INSERT 
-  ON kaf.tmovimiento_af_dep FOR EACH ROW 
+  AFTER INSERT
+  ON kaf.tmovimiento_af_dep FOR EACH ROW
   EXECUTE PROCEDURE kaf.f_movimiento_af_dep_insert();
 /***********************************F-DEP-BVP-KAF-1-12/10/2018*****************************************/
-                  
+
+/***********************************I-DEP-MAY-KAF-1-09/11/2018*****************************************/
+
+ALTER TABLE kaf.tactivo_fijo_historico
+  ADD CONSTRAINT tactivo_fijo_historico_fk FOREIGN KEY (id_activo_fijo)
+    REFERENCES kaf.tactivo_fijo(id_activo_fijo)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+
+/***********************************F-DEP-MAY-KAF-1-09/11/2018*****************************************/
