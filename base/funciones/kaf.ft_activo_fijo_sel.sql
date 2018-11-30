@@ -1219,10 +1219,10 @@ BEGIN
                               fun.desc_funcionario1::varchar as funcionario,
                               dep.nombre::varchar as depto
 
-                      from kaf.tmovimiento mo 
-                      inner join orga.vfuncionario fun on fun.id_funcionario = mo.id_funcionario
-                      inner join wf.tproceso_wf pro on pro.id_proceso_wf = mo.id_proceso_wf_doc
-                      inner join param.tdepto dep on dep.id_depto = mo.id_depto
+                      from kaf.tmovimiento mo
+                      left join orga.vfuncionario fun on fun.id_funcionario = mo.id_funcionario
+                      left join wf.tproceso_wf pro on pro.id_proceso_wf = mo.id_proceso_wf_doc
+                      left join param.tdepto dep on dep.id_depto = mo.id_depto
                           where mo.estado = ''pendiente'' and';
 
 
@@ -1249,7 +1249,7 @@ BEGIN
         --afij.tramite_compra, --nro proceso compra
 
             --Sentencia de la consulta
-            v_consulta:='
+           v_consulta:='
               select  afij.codigo,
                       afij.descripcion,
                       afij.fecha_ini_dep,
@@ -1263,12 +1263,21 @@ BEGIN
               left join orga.tuo uoac on uoac.id_uo = afij.id_uo
               left join kaf.tmovimiento_af maf on maf.id_activo_fijo = afij.id_activo_fijo
               left join kaf.tmovimiento mov ON mov.id_movimiento = maf.id_movimiento
-              left join param.tcatalogo cat on cat.id_catalogo = mov.id_movimiento
-              where cat.codigo <> ''asig''  and
+
+              where afij.fecha_asignacion is Null and
 
              		';
          --raise exception 'aca %',v_consulta;
  			v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' group by afij.codigo,
+                                               afij.descripcion,
+                                              afij.fecha_ini_dep,
+                                              afij.monto_compra_orig_100,
+                                              afij.monto_compra_orig,
+                                              uoac.nombre_unidad,
+                                              afij.tramite_compra,
+                                              afij.nro_cbte_asociado
+                                      order by afij.codigo' ;
 
                 return v_consulta;
         end;

@@ -641,7 +641,8 @@ class ACTActivoFijo extends ACTbase{
             if($this->objParam->getParametro('id_depto')!=''){
                 if($this->objParam->getParametro('id_depto')==3){
                     $this->objParam->addFiltro("mo.id_depto in (7,47)");
-                }else{
+                }
+                else{
                     $this->objParam->addFiltro("mo.id_depto = ".$this->objParam->getParametro('id_depto'));
                 }
             }
@@ -662,9 +663,10 @@ class ACTActivoFijo extends ACTbase{
             }
             if($this->objParam->getParametro('id_depto')!=''){
                 if($this->objParam->getParametro('id_depto')==3){
-                    $this->objParam->addFiltro("mo.id_depto in (7,47)");
-                }else{
-                    $this->objParam->addFiltro("mo.id_depto = ".$this->objParam->getParametro('id_depto'));
+                    $this->objParam->addFiltro("mov.id_depto in (7,47)");
+                }
+                else{
+                    $this->objParam->addFiltro("mov.id_depto = ".$this->objParam->getParametro('id_depto'));
                 }
             }
 

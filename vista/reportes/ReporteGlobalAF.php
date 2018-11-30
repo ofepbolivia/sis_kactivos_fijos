@@ -760,6 +760,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     //MOSTRAR CAMPOS
                     this.mostrarComponente(this.Cmp.tipo_reporte);
                     this.mostrarComponente(this.Cmp.estado);
+                    this.mostrarComponente(this.Cmp.id_cat_estado_fun);
                     this.mostrarComponente(this.Cmp.desc_nombre);
                     this.mostrarComponente(this.Cmp.ubicacion);
                     this.mostrarComponente(this.Cmp.nro_cbte_asociado);
@@ -783,6 +784,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     //MOSTRAR CAMPOS
                     this.mostrarComponente(this.Cmp.tipo_reporte);
                     this.mostrarComponente(this.Cmp.estado);
+                    this.mostrarComponente(this.Cmp.id_cat_estado_fun);
                     this.mostrarComponente(this.Cmp.desc_nombre);
                     this.mostrarComponente(this.Cmp.ubicacion);
                     this.mostrarComponente(this.Cmp.nro_cbte_asociado);
@@ -806,6 +808,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     //OCULTAR CAMPOS
                     this.ocultarComponente(this.Cmp.tipo_reporte);
                     this.ocultarComponente(this.Cmp.estado);
+                    this.ocultarComponente(this.Cmp.id_cat_estado_fun);
                     this.ocultarComponente(this.Cmp.desc_nombre);
                     this.ocultarComponente(this.Cmp.ubicacion);
                     this.ocultarComponente(this.Cmp.nro_cbte_asociado);
@@ -830,6 +833,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     //OCULTAR CAMPOS
                     this.ocultarComponente(this.Cmp.tipo_reporte);
                     this.ocultarComponente(this.Cmp.estado);
+                    this.ocultarComponente(this.Cmp.id_cat_estado_fun);
                     this.ocultarComponente(this.Cmp.desc_nombre);
                     this.ocultarComponente(this.Cmp.ubicacion);
                     this.ocultarComponente(this.Cmp.nro_cbte_asociado);
@@ -874,6 +878,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.tipo_reporte.modificado = true;
                     this.Cmp.estado.reset();
                     this.Cmp.estado.modificado = true;
+                    this.Cmp.id_cat_estado_fun.reset();
+                    this.Cmp.id_cat_estado_fun.modificado = true;
                     this.Cmp.desc_nombre.reset();
                     this.Cmp.desc_nombre.modificado = true;
                     this.Cmp.ubicacion.reset();
