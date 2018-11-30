@@ -23,7 +23,10 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode : 'local',
                     store : new Ext.data.ArrayStore({
                         fields : ['tipo', 'valor'],
-                        data : [['compras_gestion', 'Compras de Gestion'], ['detalle_af', 'Detalle Activos Fijos']]
+                        data : [['compras_gestion', 'Compras de Gestion'],
+                                ['detalle_af', 'Detalle Activos Fijos'],
+                                ['pendientes_aprobacion', 'Pendientes de Aprobación'],
+                                ['sin_asignacion', 'Sin Asignación']]
                     }),
                     anchor : '100%',
                     valueField : 'tipo',
@@ -559,7 +562,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             par_filtro : 'pro.desc_proveedor'                                                       
                         }
                     }),
-                    valueField : 'id_proveedor',
+                    valueField : 'idproveedor_',
                     displayField : 'provee',
                     gdisplayField : 'provee',
                     hiddenName : 'id_proveedor',
@@ -617,7 +620,72 @@ header("content-type: text/javascript; charset=UTF-8");
 				type:'TextField',
 				id_grupo:2,
 				form:true
-			}            			 			 			 
+			},{
+                config : {
+                    name : 'rep_pendiente_aprobacion',
+                    fieldLabel : 'Reporte Mult Pendiente de Aprobación',
+                    allowBlank : true,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'local',
+                    store: new Ext.data.ArrayStore({
+                        id: '',
+                        fields: [
+                            'key',
+                            'value'
+                        ],
+                        data: [
+                            ['pprc','Nº PROCESO COMPRA'],
+                            ['pfpr','FECHA DE PROCESO'],
+                            ['pglo','GLOSA'],
+                            ['pnom','NOMBRE USUARIO'],
+                            ['pdep','DEPARTAMENTO'],
+
+                        ]
+                    }),
+                    valueField: 'key',
+                    displayField: 'value',
+                    width : 200,
+                    enableMultiSelect:true
+                },
+                type : 'AwesomeCombo',
+                id_grupo : 0,
+                form : true
+            },{
+                config : {
+                    name : 'rep_sin_asignacion',
+                    fieldLabel : 'Reporte Mult Sin Asignacion',
+                    allowBlank : true,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'local',
+                    store: new Ext.data.ArrayStore({
+                        id: '',
+                        fields: [
+                            'key',
+                            'value'
+                        ],
+                        data: [
+                            ['scod','CODIGO'],
+                            ['sdes','DESCRIPCIÓN'],
+                            ['sfea','FECHA DE ALTA'],
+                            ['s100','MONTO 100%'],
+                            ['sm87','MONTO 87%'],
+                            ['suns','UNIDAD SOLICITANTE'],
+                            ['sprc','Nº PROCESO COMPRA'],
+                            ['sc31','C31'],
+
+                        ]
+                    }),
+                    valueField: 'key',
+                    displayField: 'value',
+                    width : 200,
+                    enableMultiSelect:true
+                },
+                type : 'AwesomeCombo',
+                id_grupo : 0,
+                form : true
+            }
         ],
         title : 'Reporte Global Activos Fijos',
         ActSave : '../../sis_kactivos_fijos/control/ActivoFijo/reportesAFGlobal',
@@ -634,6 +702,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.iniciarEventos();            
             this.getComponente('gestion_multi').setVisible(false);
             this.getComponente('activo_multi').setVisible(false);
+            this.getComponente('rep_pendiente_aprobacion').setVisible(false);
+            this.getComponente('rep_sin_asignacion').setVisible(false);
             this.getComponente('txtMontoInf').setVisible(false);
             this.getComponente('txtMontoSup').setVisible(false);
             this.getComponente('valor_actual').setVisible(false);                        
@@ -644,17 +714,99 @@ header("content-type: text/javascript; charset=UTF-8");
         		if (rec.data.tipo == 'compras_gestion'){
 		            this.ocultarComponente(this.Cmp.activo_multi);      			
 		            this.mostrarComponente(this.Cmp.gestion_multi);
+		            this.ocultarComponente(this.Cmp.rep_pendiente_aprobacion);
+                    this.ocultarComponente(this.Cmp.rep_sin_asignacion);
+                    //MOSTRAR CAMPOS
+                    this.mostrarComponente(this.Cmp.tipo_reporte);
+                    this.mostrarComponente(this.Cmp.estado);
+                    this.mostrarComponente(this.Cmp.desc_nombre);
+                    this.mostrarComponente(this.Cmp.ubicacion);
+                    this.mostrarComponente(this.Cmp.nro_cbte_asociado);
+                    this.mostrarComponente(this.Cmp.column_busque);
+                    this.mostrarComponente(this.Cmp.id_proveedor);
+                    this.mostrarComponente(this.Cmp.nr_factura);
+                    this.mostrarComponente(this.Cmp.tramite_compra);
+                    this.mostrarComponente(this.Cmp.nro_serie);
+                    this.mostrarComponente(this.Cmp.id_oficina);
+                    this.mostrarComponente(this.Cmp.id_clasificacion);
+                    this.mostrarComponente(this.Cmp.id_lugar);
+                    this.mostrarComponente(this.Cmp.tipo_activo);
 		            this.Cmp.gestion_multi.getStore().each(function(rec){
 		            	this.Cmp.gestion_multi.checkRecord(rec);
 		            },this);		            		            		            								
-				}else{
-		            this.mostrarComponente(this.Cmp.activo_multi);		            			
-		            this.ocultarComponente(this.Cmp.gestion_multi);
-		            this.Cmp.activo_multi.getStore().each(function(rec){
-		            	this.Cmp.activo_multi.checkRecord(rec);
-		            },this);					
-				}        						       		        		        	
-        	},this);
+				}else if(rec.data.tipo == 'detalle_af'){
+                    this.mostrarComponente(this.Cmp.activo_multi);
+                    this.ocultarComponente(this.Cmp.gestion_multi);
+                    this.ocultarComponente(this.Cmp.rep_pendiente_aprobacion);
+                    this.ocultarComponente(this.Cmp.rep_sin_asignacion);
+                    //MOSTRAR CAMPOS
+                    this.mostrarComponente(this.Cmp.tipo_reporte);
+                    this.mostrarComponente(this.Cmp.estado);
+                    this.mostrarComponente(this.Cmp.desc_nombre);
+                    this.mostrarComponente(this.Cmp.ubicacion);
+                    this.mostrarComponente(this.Cmp.nro_cbte_asociado);
+                    this.mostrarComponente(this.Cmp.column_busque);
+                    this.mostrarComponente(this.Cmp.id_proveedor);
+                    this.mostrarComponente(this.Cmp.nr_factura);
+                    this.mostrarComponente(this.Cmp.tramite_compra);
+                    this.mostrarComponente(this.Cmp.nro_serie);
+                    this.mostrarComponente(this.Cmp.id_oficina);
+                    this.mostrarComponente(this.Cmp.id_clasificacion);
+                    this.mostrarComponente(this.Cmp.id_lugar);
+                    this.mostrarComponente(this.Cmp.tipo_activo);
+                    this.Cmp.activo_multi.getStore().each(function(rec){
+                        this.Cmp.activo_multi.checkRecord(rec);
+                    },this);
+                }else if(rec.data.tipo == 'pendientes_aprobacion'){
+                    this.ocultarComponente(this.Cmp.activo_multi);
+                    this.ocultarComponente(this.Cmp.gestion_multi);
+                    this.mostrarComponente(this.Cmp.rep_pendiente_aprobacion);
+                    this.ocultarComponente(this.Cmp.rep_sin_asignacion);
+                    //OCULTAR CAMPOS
+                    this.ocultarComponente(this.Cmp.tipo_reporte);
+                    this.ocultarComponente(this.Cmp.estado);
+                    this.ocultarComponente(this.Cmp.desc_nombre);
+                    this.ocultarComponente(this.Cmp.ubicacion);
+                    this.ocultarComponente(this.Cmp.nro_cbte_asociado);
+                    this.ocultarComponente(this.Cmp.column_busque);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.nr_factura);
+                    this.ocultarComponente(this.Cmp.tramite_compra);
+                    this.ocultarComponente(this.Cmp.nro_serie);
+                    this.ocultarComponente(this.Cmp.id_oficina);
+                    this.ocultarComponente(this.Cmp.id_clasificacion);
+                    this.ocultarComponente(this.Cmp.id_lugar);
+                    this.ocultarComponente(this.Cmp.tipo_activo);
+
+                    this.Cmp.rep_pendiente_aprobacion.getStore().each(function(rec){
+                        this.Cmp.rep_pendiente_aprobacion.checkRecord(rec);
+                    },this);
+                }else if(rec.data.tipo == 'sin_asignacion'){
+                    this.ocultarComponente(this.Cmp.activo_multi);
+                    this.ocultarComponente(this.Cmp.gestion_multi);
+                    this.ocultarComponente(this.Cmp.rep_pendiente_aprobacion);
+                    this.mostrarComponente(this.Cmp.rep_sin_asignacion);
+                    //OCULTAR CAMPOS
+                    this.ocultarComponente(this.Cmp.tipo_reporte);
+                    this.ocultarComponente(this.Cmp.estado);
+                    this.ocultarComponente(this.Cmp.desc_nombre);
+                    this.ocultarComponente(this.Cmp.ubicacion);
+                    this.ocultarComponente(this.Cmp.nro_cbte_asociado);
+                    this.ocultarComponente(this.Cmp.column_busque);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.nr_factura);
+                    this.ocultarComponente(this.Cmp.tramite_compra);
+                    this.ocultarComponente(this.Cmp.nro_serie);
+                    this.ocultarComponente(this.Cmp.id_oficina);
+                    this.ocultarComponente(this.Cmp.id_clasificacion);
+                    this.ocultarComponente(this.Cmp.id_lugar);
+                    this.ocultarComponente(this.Cmp.tipo_activo);
+
+                    this.Cmp.rep_sin_asignacion.getStore().each(function(rec){
+                        this.Cmp.rep_sin_asignacion.checkRecord(rec);
+                    },this);
+                }
+            },this);
         	
         	this.Cmp.column_busque.on('select',function(cmb,rec,ind){
         		if(rec.data.id in ['1','2','3']){
@@ -672,7 +824,47 @@ header("content-type: text/javascript; charset=UTF-8");
         			this.mostrarComponente(this.Cmp.txtMontoInf);
         			this.mostrarComponente(this.Cmp.txtMontoSup);
         		}        		
-        	},this);        		       	        	
+        	},this);
+        	//PARA RESET DE CAMPOS
+
+            this.Cmp.configuracion_reporte.on('select', function (cmp, rec, ind) {
+                if ((rec.data.tipo == 'pendientes_aprobacion') || (rec.data.tipo == 'sin_asignacion')){
+                    this.Cmp.tipo_reporte.reset();
+                    this.Cmp.tipo_reporte.modificado = true;
+                    this.Cmp.estado.reset();
+                    this.Cmp.estado.modificado = true;
+                    this.Cmp.desc_nombre.reset();
+                    this.Cmp.desc_nombre.modificado = true;
+                    this.Cmp.ubicacion.reset();
+                    this.Cmp.ubicacion.modificado = true;
+                    this.Cmp.nro_cbte_asociado.reset();
+                    this.Cmp.nro_cbte_asociado.modificado = true;
+                    this.Cmp.column_busque.reset();
+                    this.Cmp.column_busque.modificado = true;
+                    this.Cmp.id_depto.reset();
+                    this.Cmp.id_depto.modificado = true;
+                    this.Cmp.id_proveedor.reset();
+                    this.Cmp.id_proveedor.modificado = true;
+                    this.Cmp.nr_factura.reset();
+                    this.Cmp.nr_factura.modificado = true;
+                    this.Cmp.tramite_compra.reset();
+                    this.Cmp.tramite_compra.modificado = true;
+                    this.Cmp.nro_serie.reset();
+                    this.Cmp.nro_serie.modificado = true;
+                    this.Cmp.id_oficina.reset();
+                    this.Cmp.id_oficina.modificado = true;
+                    this.Cmp.id_clasificacion.reset();
+                    this.Cmp.id_clasificacion.modificado = true;
+                    this.Cmp.id_lugar.reset();
+                    this.Cmp.id_lugar.modificado = true;
+                    this.Cmp.tipo_activo.reset();
+                    this.Cmp.tipo_activo.modificado = true;
+                    this.Cmp.nro_cbte_asociado.reset();
+                    this.Cmp.nro_cbte_asociado.modificado = true;
+
+                }
+
+            }, this);
         },
 
         onSubmit:function(o){        	
