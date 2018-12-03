@@ -1251,3 +1251,65 @@ ALTER TABLE kaf.tmovimiento
   ADD COLUMN id_proceso_wf_doc INTEGER;
 
 /***********************************F-SCP-FEA-KAF-1-07/11/2018****************************************/
+
+/***********************************I-SCP-MAY-KAF-1-09/11/2018****************************************/
+
+CREATE TABLE kaf.tactivo_fijo_historico (
+  id_activo_fijo_hist SERIAL NOT NULL,
+  codigo_hist VARCHAR(50),
+  denominacion_hist VARCHAR(500),
+  descripcion_hist VARCHAR(5000),
+  estado_hist VARCHAR(15),
+  fecha_ini_dep_hist DATE,
+  monto_compra_hist NUMERIC,
+  fecha_compra_hist DATE,
+  documento_hist VARCHAR(100),
+  vida_util_original_hist INTEGER,
+  observaciones_hist VARCHAR(5000),
+  monto_rescate_hist NUMERIC,
+  ubicacion_hist VARCHAR(1000),
+  en_deposito_hist VARCHAR(2),
+  fecha_baja_hist DATE,
+  monto_compra_orig_hist NUMERIC,
+  tipo_reg_hist VARCHAR(100),
+  cantidad_af_hist INTEGER,
+  monto_compra_orig_100_hist NUMERIC,
+  nro_cbte_asociado_hist VARCHAR(50),
+  fecha_cbte_asociado_hist DATE,
+  tramite_compra_hist VARCHAR(200),
+  id_activo_fijo INTEGER,
+  id_clasificacion INTEGER,
+  id_moneda_orig INTEGER,
+  id_proveedor INTEGER,
+  id_cat_estado_compra INTEGER,
+  id_cat_estado_fun INTEGER,
+  id_depto INTEGER,
+  id_oficina INTEGER,
+  id_moneda INTEGER,
+  id_funcionario INTEGER,
+  id_deposito INTEGER,
+  id_proyecto INTEGER,
+  id_unidad_medida INTEGER,
+  id_cotizacion_det INTEGER,
+  id_preingreso_det INTEGER,
+  id_proceso_wf INTEGER,
+  id_uo INTEGER,
+  PRIMARY KEY(id_activo_fijo_hist)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+/***********************************F-SCP-MAY-KAF-1-09/11/2018****************************************/
+/***********************************I-SCP-MAY-KAF-1-10/11/2018****************************************/
+ALTER TABLE kaf.tactivo_fijo_historico
+  ADD COLUMN fecha_inicio DATE;
+
+ALTER TABLE kaf.tactivo_fijo_historico
+  ADD COLUMN fecha_fin DATE;
+
+
+ALTER TABLE kaf.tactivo_fijo
+  ADD COLUMN fecha_inicio DATE;
+
+ALTER TABLE kaf.tactivo_fijo
+  ADD COLUMN fecha_fin DATE;
+/***********************************F-SCP-MAY-KAF-1-10/11/2018****************************************/
