@@ -127,17 +127,28 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 				}
 		);
 
-		this.addButton('btnreporte_general',
+		this.addButton('btnreporte_generalexcel',
 				{
 				//grupo: [0],
-				text: 'Reporte General',
+				text: 'Rep/General',
 				iconCls: 'bexcel',
+				def: 'excel',
 				disabled: true,
-				handler: this.onButtonReporte,
+				handler: this.onButtonReporteExcel,
 				tooltip: '<b>Reporte General</b><br/>Reporte General de los Anexos.'
 				}
 		);
-
+		
+		this.addButton('btnreporte_generalpdf',
+				{
+					text:'Rep/General',
+					iconCls:'bpdf',
+					def:'pdf',
+					disabled:true,
+					handler:this.onButtonReportePdf,
+					tooltip: '<b>Reporte General</b><br/>Reporte General de los Anexos.'	
+				}
+		);
 
 		/*-------------------------------------------------------------------------*/
 
@@ -307,7 +318,7 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 				filters:{pfiltro:'perane.estado',type:'string'},
 				id_grupo:1,
 				grid:true,
-				form:true
+				form:false
 		},
 		{
 			config:{
@@ -433,6 +444,7 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 		direction: 'DESC'
 	},
 	bdel:true,
+	btest:false,
 	//bsave:true,
 
 	tabsouth :[
@@ -460,7 +472,8 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 						this.getBoton('btnquitar_archivo').disable();
 						this.getBoton('btnVentana').disable();
 						this.getBoton('btnfinalizado').disable();
-						this.getBoton('btnreporte_general').enable();
+						this.getBoton('btnreporte_generalexcel').disable();
+						this.getBoton('btnreporte_generalpdf').disable();
 						Phx.vista.PeriodoAnexo.superclass.preparaMenu.call(this);
 						tb.items.get('b-edit-' + this.idContenedor).enable();
 					}
@@ -476,7 +489,8 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 							this.getBoton('btnInsertar_periodo').enable();
 							this.getBoton('btnVentana').enable();
 							this.getBoton('btnfinalizado').disable();
-							this.getBoton('btnreporte_general').enable();
+							this.getBoton('btnreporte_generalexcel').disable();
+							this.getBoton('btnreporte_generalpdf').disable();
 							Phx.vista.PeriodoAnexo.superclass.preparaMenu.call(this);
 							tb.items.get('b-edit-' + this.idContenedor).enable();
 						}
@@ -492,7 +506,8 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 								this.getBoton('btnInsertar_periodo').disable();
 								this.getBoton('btnVentana').enable();
 								this.getBoton('btnfinalizado').disable();
-								this.getBoton('btnreporte_general').disable();
+								this.getBoton('btnreporte_generalexcel').disable();
+								this.getBoton('btnreporte_generalpdf').disable();
 								Phx.vista.PeriodoAnexo.superclass.preparaMenu.call(this);
 								tb.items.get('b-edit-' + this.idContenedor).enable();
 							}
@@ -508,7 +523,8 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 								this.getBoton('btnquitar_archivo').disable();
 								this.getBoton('btnVentana').enable();
 								this.getBoton('btnfinalizado').enable();
-								this.getBoton('btnreporte_general').disable();
+								this.getBoton('btnreporte_generalexcel').enable();
+								this.getBoton('btnreporte_generalpdf').enable();
 								Phx.vista.PeriodoAnexo.superclass.preparaMenu.call(this);
 								tb.items.get('b-edit-' + this.idContenedor).enable();
 							}
@@ -524,7 +540,8 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 									this.getBoton('btnquitar_archivo').disable();
 									this.getBoton('btnVentana').enable();
 									this.getBoton('btnfinalizado').disable();
-									this.getBoton('btnreporte_general').enable();
+									this.getBoton('btnreporte_generalexcel').enable();
+									this.getBoton('btnreporte_generalpdf').enable();
 									Phx.vista.PeriodoAnexo.superclass.preparaMenu.call(this);
 									tb.items.get('b-edit-' + this.idContenedor).enable();
 								}
@@ -673,29 +690,22 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 			}
 	},
 
-	onButtonReporte: function() {
+	onButtonReporteExcel: function() {
 		Phx.CP.loadingShow();
 		var d = this.sm.getSelected().data;
-		console.log('codigo:',d.id_periodo_anexo);
+		var bo = this.tbar.items.items[15];		
 
 		Ext.Ajax.request({
 						url:'../../sis_kactivos_fijos/control/PeriodoAnexo/reporteGeneral',
-						params:{//id_anexo:d.id_anexo,
+						params:{
 										id_periodo_anexo:d.id_periodo_anexo,
 										nombre_periodo:d.nombre_periodo,
 										observaciones:d.observaciones,
 										fecha_ini:d.fecha_ini.dateFormat('d/m/Y'),
 										fecha_fin:d.fecha_fin.dateFormat('d/m/Y'),
-										desc_gestion: d.desc_gestion
+										desc_gestion: d.desc_gestion,
+										def:bo.def
 
-										/*numero:d.numero,
-										fecha:d.fecha.dateFormat('d/m/Y'),
-										fecha_ini:d.fecha_ini.dateFormat('d/m/Y'),
-										fecha_fin:d.fecha_fin.dateFormat('d/m/Y'),
-										codigo:d.codigo,
-										ruta:d.ruta,
-										office_id:d.office_id,
-										codigo_largo:d.codigo_largo*/
 
 									},
 						success: this.successExport,
@@ -705,6 +715,32 @@ Phx.vista.PeriodoAnexo=Ext.extend(Phx.gridInterfaz,{
 		});
 		console.log('LLEGA EL DATO',d.observaciones);
 	},
+
+	onButtonReportePdf: function() {
+		Phx.CP.loadingShow();
+		var d = this.sm.getSelected().data;
+		var bo = this.tbar.items.items[16];		
+
+		Ext.Ajax.request({
+						url:'../../sis_kactivos_fijos/control/PeriodoAnexo/reporteGeneral',
+						params:{
+										id_periodo_anexo:d.id_periodo_anexo,
+										nombre_periodo:d.nombre_periodo,
+										observaciones:d.observaciones,
+										fecha_ini:d.fecha_ini.dateFormat('d/m/Y'),
+										fecha_fin:d.fecha_fin.dateFormat('d/m/Y'),
+										desc_gestion: d.desc_gestion,
+										def:bo.def
+
+
+									},
+						success: this.successExport,
+						failure: this.conexionFailure,
+						timeout:this.timeout,
+						scope:this
+		});
+		console.log('LLEGA EL DATO',d.observaciones);
+	},	
 
 
 	onButtonExcel: function(){

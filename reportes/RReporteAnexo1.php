@@ -187,11 +187,11 @@ class RReporteAnexo1
         $this->docexcel->getActiveSheet()->getStyle('I8')->applyFromArray($styleBoa2);
         $this->docexcel->getActiveSheet()->getStyle('I8')->getAlignment()->setWrapText(true);
 
-        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9,8,'MONTO PAGADO AL SEGUNDO TRIMESTRE SEGUN SIGEP');
+        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9,8,'MONTO ACUMULADO PERIODOS ANTERIORES');
         $this->docexcel->getActiveSheet()->getStyle('J8')->applyFromArray($styleBoa2);
         $this->docexcel->getActiveSheet()->getStyle('J8')->getAlignment()->setWrapText(true);
 
-        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(10,8,'MONTO PAGADO AL TERCER TRIMESTRE SEGUN SIGEP');
+        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(10,8,'MONTO EN EL PERIODO');
         $this->docexcel->getActiveSheet()->getStyle('K8')->applyFromArray($styleBoa2);
         $this->docexcel->getActiveSheet()->getStyle('K8')->getAlignment()->setWrapText(true);
 
@@ -486,7 +486,7 @@ class RReporteAnexo1
             $valor=$value['desc_codigo'];
             $partida[]=$value['desc_nombre'];
             $montoContrato[]=$value['monto_contrato'];
-            $montoErp[]=$value['monto_erp'];
+            $montoErp[]=$value['monto_alta'];
             $montoTransito[]=$value['monto_transito'];
             $montoPagado[]=$value['monto_pagado'];
             $montoTercer[]=$value['monto_tercer'];
@@ -531,7 +531,7 @@ class RReporteAnexo1
             $this->docexcel->getActiveSheet()->getStyle("G$fila")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
             $this->docexcel->getActiveSheet()->getStyle("G$fila")->applyFromArray($styleContenido2);
 
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, $fila, $value['monto_erp']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, $fila, $value['monto_alta']);
             $this->docexcel->getActiveSheet()->getStyle("H$fila")->applyFromArray($bordes);
             $this->docexcel->getActiveSheet()->getStyle("H$fila")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
             $this->docexcel->getActiveSheet()->getStyle("H$fila")->applyFromArray($styleContenido2);

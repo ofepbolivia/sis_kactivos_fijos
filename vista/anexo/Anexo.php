@@ -57,8 +57,20 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 				}
 		);
 
+		this.load({params:{start:0, limit:this.tam_pag}});
+		
+		this.Cmp.monto_contrato.on('blur',function(cmp,rec,index){			
+			var mon_con = this.Cmp.monto_contrato.getValue();
+			var mon_alt   = this.Cmp.monto_alta.getValue(); 
+			this.Cmp.monto_transito.setValue(mon_con - mon_alt);
+		},this);
+				
+		this.Cmp.monto_alta.on('blur',function(){
+			var mon_alt = this.Cmp.monto_alta.getValue();
+			var mon_con = this.Cmp.monto_contrato.getValue();
+			this.Cmp.monto_transito.setValue(mon_con - mon_alt);
+		},this);
 
-		this.load({params:{start:0, limit:this.tam_pag}})
 	},
 
 
@@ -321,7 +333,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'monto_pagado',
-				fieldLabel: 'Monto Pagado al Segundo Trimestre',
+				fieldLabel: 'Mon/Acu. Periodo Ant',
         style: {
 							background: '#F1FFF0'
 					},
@@ -347,7 +359,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'monto_tercer',
-				fieldLabel: 'Monto Pagado al Tercer Trimestre',
+				fieldLabel: 'Monto En El Periodo',
         style: {
 							background: '#F1FFF0'
 					},
@@ -481,7 +493,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 					totalProperty: 'total',
 					fields: ['id_periodo_anexo','nombre_periodo'],
 					remoteSort: true,
-					baseParams: {par_filtro: 'perane.id_periodo_anexo#nombre_periodo'}
+					baseParams: {par_filtro: 'perane.id_periodo_anexo'}
 				}),
 				valueField: 'id_periodo_anexo',
 				displayField: 'nombre_periodo',
@@ -656,10 +668,14 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 		{name:'nombre_unidad', type: 'string'},
 		{name:'control', type: 'string'},
 		{name:'seleccionado', type: 'string'},
-		{name:'monto_alta', type: 'string'}
+		{name:'monto_alta', type: 'string'},
+		{name:'nombre_periodo',type:'string'},
+		{name:'nombre_partida',type:'string'}
 
 	],
-
+	sortInfo:{
+		field: 'id_anexo'		
+	},
 	bdel:true,
 	//bsave:true,
 	onButtonNew : function () {
@@ -686,20 +702,20 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 		this.Cmp.id_partida.store.setBaseParam('id_periodo_anexo',this.maestro.id_periodo_anexo);
 		this.Cmp.id_partida.modificado = true;
 		this.Cmp.id_partida.reset();
-		console.log('LLEGA AQUI',this.Cmp.id_partida);
+		
 		Phx.vista.Anexo.superclass.loadValoresIniciales.call(this);
 	},
 
 	oncellclick : function(grid, rowIndex, columnIndex, e) {
-		console.log('LLEGA AQUI',grid);
+		
 			var record = this.store.getAt(rowIndex),
 					fieldName = grid.getColumnModel().getDataIndex(columnIndex); // Get field name
-			if(fieldName == 'control') {
+			if(fieldName == 'control') {				
 					this.cambiarRevision(record);
 			}
 	},
 	cambiarRevision: function(record){
-			Phx.CP.loadingShow();
+			//Phx.CP.loadingShow();
 			var d = record.data;
 			Ext.Ajax.request({
 					url:'../../sis_kactivos_fijos/control/Anexo/controlSeleccionado',
@@ -709,7 +725,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 					timeout: this.timeout,
 					scope: this
 			});
-			this.reload();
+			//this.reload();
 	},
 	successRevision: function(resp){
 			Phx.CP.loadingHide();

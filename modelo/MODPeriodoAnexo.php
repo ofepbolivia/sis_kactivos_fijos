@@ -61,8 +61,7 @@ class MODPeriodoAnexo extends MODbase{
 		$this->setParametro('fecha_ini','fecha_ini','date');
 		$this->setParametro('fecha_fin','fecha_fin','date');
 		$this->setParametro('id_gestion','id_gestion','int4');
-		$this->setParametro('observaciones','observaciones','text');
-		$this->setParametro('estado','estado','varchar');
+		$this->setParametro('observaciones','observaciones','text');		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -86,7 +85,7 @@ class MODPeriodoAnexo extends MODbase{
 		$this->setParametro('fecha_fin','fecha_fin','date');
 		$this->setParametro('id_gestion','id_gestion','int4');
 		$this->setParametro('observaciones','observaciones','text');
-		$this->setParametro('estado','estado','varchar');
+		
 
 
 		//Ejecuta la instruccion
@@ -184,7 +183,7 @@ class MODPeriodoAnexo extends MODbase{
 		$this->captura('monto_transito','numeric');
 		$this->captura('monto_pagado','numeric');
 		$this->captura('detalle_c31','text');
-		$this->captura('monto_erp','numeric');
+		$this->captura('monto_alta','numeric');
 		$this->captura('fecha_reg','timestamp');
 		$this->captura('usuario_ai','varchar');
 		$this->captura('id_usuario_reg','int4');
@@ -260,7 +259,7 @@ class MODPeriodoAnexo extends MODbase{
 		$this->captura('id_partida','int4');
 		$this->captura('tipo_anexo','int4');
 		$this->captura('id_periodo_anexo','int4');
-		$this->captura('monto_sigep','numeric');
+		$this->captura('monto_erp','numeric');
 		$this->captura('estado_reg','varchar');
 		$this->captura('c31','varchar');
 		$this->captura('detalle_c31','text');

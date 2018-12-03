@@ -55,6 +55,8 @@ class MODAnexo extends MODbase{
 		$this->captura('control','varchar');
 		$this->captura('seleccionado','varchar');
 		$this->captura('monto_alta','numeric');
+		$this->captura('nombre_periodo','varchar');
+		$this->captura('nombre_partida','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();		
@@ -96,6 +98,8 @@ class MODAnexo extends MODbase{
 		$this->captura('desc_nombre','varchar');
 		$this->captura('control','varchar');
 		$this->captura('seleccionado','varchar');
+		$this->captura('nombre_periodo','varchar');
+		$this->captura('nombre_partida','varchar');
 
 
 		//Ejecuta la instruccion
@@ -160,6 +164,8 @@ class MODAnexo extends MODbase{
 		$this->captura('control','varchar');
 		$this->captura('seleccionado','varchar');
 		$this->captura('monto_erp','numeric');
+		$this->captura('nombre_periodo','varchar');
+		$this->captura('nombre_partida','varchar');		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -203,6 +209,8 @@ class MODAnexo extends MODbase{
 		$this->captura('desc_nombre','varchar');
 		$this->captura('control','varchar');
 		$this->captura('seleccionado','varchar');
+		$this->captura('nombre_periodo','varchar');
+		$this->captura('nombre_partida','varchar');		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -493,7 +501,7 @@ class MODAnexo extends MODbase{
 	function generaAnexoGeneral(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_anexo_ime';
-		$this->transaccion='KAF_GEGERAL_INS';
+		$this->transaccion='KAF_GEGERAL_MOD';
 		$this->tipo_procedimiento='IME';
 
 		//Define los parametros para la funcion

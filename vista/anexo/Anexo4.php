@@ -60,7 +60,19 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 				}
 		);
 
-		this.load({params:{start:0, limit:this.tam_pag}})
+		this.load({params:{start:0, limit:this.tam_pag}});
+		
+		this.Cmp.monto_erp.on('blur',function(){
+			var erp = this.Cmp.monto_erp.getValue();
+			var sigep = this.Cmp.monto_sigep.getValue();
+			this.Cmp.diferencia.setValue(erp - sigep);
+		},this);
+		
+		this.Cmp.monto_sigep.on('blur',function(){
+			var sigep = this.Cmp.monto_sigep.getValue();
+			var erp = this.Cmp.monto_erp.getValue();			
+			this.Cmp.diferencia.setValue(erp - sigep);
+		},this);		
 	},
 
 	preparaMenu: function () {
@@ -505,8 +517,13 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 		{name:'desc_nombre', type: 'string'},
 		{name:'control', type: 'string'},
 		{name:'seleccionado', type: 'string'},
+		{name:'nombre_periodo',type:'string'},
+		{name:'nombre_partida',type:'string'}		
 
 	],
+	sortInfo:{
+		field: 'id_anexo'		
+	},	
 	bdel:true,
 	//bsave:true,
 
@@ -534,11 +551,11 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 		this.Cmp.id_partida.store.setBaseParam('id_periodo_anexo',this.maestro.id_periodo_anexo);
 		this.Cmp.id_partida.modificado = true;
 		this.Cmp.id_partida.reset();
-		console.log('LLEGA AQUI',this.Cmp.id_partida);
+		
 		Phx.vista.Anexo.superclass.loadValoresIniciales.call(this);
 	},
 	oncellclick : function(grid, rowIndex, columnIndex, e) {
-		console.log('LLEGA AQUI',grid);
+		
 			var record = this.store.getAt(rowIndex),
 					fieldName = grid.getColumnModel().getDataIndex(columnIndex); // Get field name
 			if(fieldName == 'control') {
@@ -546,7 +563,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 			}
 	},
 	cambiarRevision: function(record){
-			Phx.CP.loadingShow();
+			//Phx.CP.loadingShow();
 			var d = record.data;
 			Ext.Ajax.request({
 					url:'../../sis_kactivos_fijos/control/Anexo/controlSeleccionado',
@@ -556,7 +573,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 					timeout: this.timeout,
 					scope: this
 			});
-			this.reload();
+			//this.reload();
 	},
 	successRevision: function(resp){
 			Phx.CP.loadingHide();

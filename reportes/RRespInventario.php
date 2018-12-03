@@ -128,6 +128,7 @@ class RRespInventario extends ReportePDF {
             $this->Cell(25, $height,'DEPTO.:', "", 0, 'L', false, '', 0, false, 'T', 'C');
             $this->SetFont('', '');
             $this->Cell($w = 100,$h = $hGlobal, $txt = $this->dataMaster['desc_depto'], $border = 0, $ln = 1, $align = 'L', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
+			$this->Ln(10);
         } else {
             //Responsable
             $this->SetFont('', 'B');
@@ -183,7 +184,17 @@ class RRespInventario extends ReportePDF {
         } else {
             $this->SetY(51);
         }
-		($inventa=='1')?$this->Ln(-4.5):$this->Ln(-9);
+		if ($inventa == '1'){
+			$this->Ln(-4.5);
+		}elseif ($inventa == '' and ($this->tipo=='lug' or $this->tipo=='lug_fun') and $this->columna == 'ambos'){
+			$this->Ln(4.5);
+		}elseif ($inventa == '' and ($this->tipo=='lug' or $this->tipo=='lug_fun')){
+			$this->Ln();
+		}	
+		else{
+			$this->Ln(-9);
+		}
+		
         foreach ($this->getDataSource() as $datarow) {
             $this->tablealigns=array('R','C','L','L','C','L','L','L','L','L');
             $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,0);

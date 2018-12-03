@@ -71,18 +71,21 @@ BEGIN
                         uo.nombre_unidad,
                         anex.seleccionado as control,
                         anex.seleccionado,
-                        anex.monto_alta
+                        anex.monto_alta,
+                        pe.nombre_periodo,
+                        par.nombre_partida
 						from kaf.tanexo anex
 						inner join segu.tusuario usu1 on usu1.id_usuario = anex.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = anex.id_usuario_mod
                         inner join pre.tpartida par on par.id_partida = anex.id_partida
                         left join orga.tuo uo on uo.id_uo = anex.id_uo
-				        where';            				
+                        inner join kaf.tperiodo_anexo pe on pe.id_periodo_anexo = anex.id_periodo_anexo
+				        where ';            				
             			
 
 			--Definicion de la respuesta
-			v_consulta:=v_consulta||v_parametros.filtro;
-			v_consulta:=v_consulta||' order by desc_codigo ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by par.codigo '|| v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 		--raise notice '%',v_consulta
 			--Devuelve la respuesta
 			return v_consulta;
@@ -123,17 +126,20 @@ BEGIN
                         par.codigo as desc_codigo,
                         par.nombre_partida as desc_nombre,
                         anex.seleccionado as control,
-                        anex.seleccionado
+                        anex.seleccionado,
+                        pe.nombre_periodo,
+                        par.nombre_partida
 						from kaf.tanexo anex
 						inner join segu.tusuario usu1 on usu1.id_usuario = anex.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = anex.id_usuario_mod
                         inner join pre.tpartida par on par.id_partida = anex.id_partida
+                        inner join kaf.tperiodo_anexo pe on pe.id_periodo_anexo = anex.id_periodo_anexo
 						where  ';            				
             			
 
 			--Definicion de la respuesta
-			v_consulta:=v_consulta||v_parametros.filtro;
-			v_consulta:=v_consulta||' order by desc_codigo ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by par.codigo '|| v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
@@ -174,18 +180,21 @@ BEGIN
 						uo.nombre_unidad,
                         anex.seleccionado as control,
                         anex.seleccionado,
-                        anex.monto_erp
+                        anex.monto_erp,
+                        pe.nombre_periodo,
+                        par.nombre_partida
 						from kaf.tanexo anex
 						inner join segu.tusuario usu1 on usu1.id_usuario = anex.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = anex.id_usuario_mod
                         inner join pre.tpartida par on par.id_partida = anex.id_partida
                         left join orga.tuo uo on uo.id_uo = anex.id_uo
+                        inner join kaf.tperiodo_anexo pe on pe.id_periodo_anexo = anex.id_periodo_anexo                        
 				        where  ';            				
             			
 
 			--Definicion de la respuesta
-			v_consulta:=v_consulta||v_parametros.filtro;
-			v_consulta:=v_consulta||' order by desc_codigo ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by par.codigo '|| v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
@@ -225,17 +234,20 @@ BEGIN
 						par.codigo as desc_codigo,
                         par.nombre_partida as desc_nombre,
                         anex.seleccionado as control,
-                        anex.seleccionado
+                        anex.seleccionado,
+                        pe.nombre_periodo,
+                        par.nombre_partida
 						from kaf.tanexo anex
 						inner join segu.tusuario usu1 on usu1.id_usuario = anex.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = anex.id_usuario_mod
                         inner join pre.tpartida par on par.id_partida = anex.id_partida
+                        inner join kaf.tperiodo_anexo pe on pe.id_periodo_anexo = anex.id_periodo_anexo                        
 				        where  ';            				
             			
 
 			--Definicion de la respuesta
-			v_consulta:=v_consulta||v_parametros.filtro;
-			v_consulta:=v_consulta||' order by desc_codigo ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by par.codigo '|| v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;

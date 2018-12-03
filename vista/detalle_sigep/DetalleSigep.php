@@ -23,7 +23,17 @@ Phx.vista.DetalleSigep=Ext.extend(Phx.gridInterfaz,{
 
 		//this.Cmp.id_periodo_anexo.store.setBaseParam('id_periodo_anexo',this.maestro.id_periodo_anexo);
 		//console.log('EL BASE PARAMS ES:',this.Cmp.id_periodo_anexo);
-		this.load({params:{start:0, limit:this.tam_pag}})
+		this.load({params:{start:0, limit:this.tam_pag}});
+		
+		this.addButton('btnRepDetSigep',
+				{				
+				text: 'Reporte Sigep',
+				iconCls: 'bpdf32',
+				disabled: false,
+				handler: this.repSigep,
+				tooltip: '<b>Reporte Sigep</b><br/>Reporte Detalle Sigep '
+				}
+		);			
 	},
 
 	Atributos:[
@@ -50,7 +60,8 @@ Phx.vista.DetalleSigep=Ext.extend(Phx.gridInterfaz,{
 				filters:{pfiltro:'detsig.nro_partida',type:'string'},
 				id_grupo:1,
 				grid:true,
-				form:true
+				form:true,
+				bottom_filter:true
 		},
 		{
 			config:{
@@ -85,11 +96,11 @@ Phx.vista.DetalleSigep=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 150,
 				renderer:function (value,p,record){
 					if(record.data.tipo_reg != 'summary'){
-						return  String.format('<div style="color:#004DFF; text-align:right;"><b>{0}</b></div>', Ext.util.Format.number(value,'0,000.00'));
+						return  String.format('<div style="color:#004DFF; text-align:right;"><b>{0}</b></div>', Ext.util.Format.number(value,'0.000,00/i'));
 					}
 
 					else{
-						return  String.format('<hr><div style="font-size:15px; float:right; color:#004DFF;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_sigep,'0,000.00'));
+						return  String.format('<hr><div style="font-size:15px; float:right; color:#004DFF;"><b><font>{0}</font><b></div>', Ext.util.Format.number(record.data.total_sigep,'0.000,00/i'));
 					}
 				},
 				maxLength:1310722
@@ -285,7 +296,24 @@ Phx.vista.DetalleSigep=Ext.extend(Phx.gridInterfaz,{
 	bdel:false,
 	bsave:false,
 	bedit:false,
-	bnew:false
+	bnew:false,
+	btest:false,
+	
+	repSigep:function(){
+    var rec = this.maestro;    
+		Ext.Ajax.request({
+			url:'../../sis_kactivos_fijos/control/DetalleSigep/repDetaSigep',
+			params:{'id_periodo_anexo':rec.id_periodo_anexo,
+					'fecha_ini':rec.fecha_ini.dateFormat('d/m/Y'),
+					'fecha_fin':rec.fecha_fin.dateFormat('d/m/Y')
+			},
+			success: this.successExport,
+			failure: this.conexionFailure,
+			timeout:this.timeout,
+			scope:this
+		});
+	}	
+	
 	}
 )
 </script>

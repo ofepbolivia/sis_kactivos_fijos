@@ -43,7 +43,7 @@ BEGIN
 
     	begin
     		--Sentencia de la consulta
-			v_consulta:='select
+			v_consulta:='select           				         
 						detsig.id_detalle_sigep,
 						detsig.estado_reg,
 					    detsig.nro_partida,
@@ -57,7 +57,7 @@ BEGIN
 						detsig.id_usuario_mod,
 						detsig.fecha_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod
+						usu2.cuenta as usr_mod                                               
 						from kaf.tdetalle_sigep detsig
 						inner join segu.tusuario usu1 on usu1.id_usuario = detsig.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = detsig.id_usuario_mod
@@ -97,6 +97,30 @@ BEGIN
 			return v_consulta;
 
 		end;
+	/*********************************
+ 	#TRANSACCION:  'KAF_REPDETSI_SEL'
+ 	#DESCRIPCION:	Reporte Sigep 
+ 	#AUTOR:		BVP
+ 	#FECHA:		23/11/2018
+	***********************************/
+
+	elsif(p_transaccion='KAF_REPDETSI_SEL')then
+
+		begin
+
+			v_consulta:='select		         
+                        detsig.nro_partida,
+                        detsig.c31,
+                        detsig.monto_sigep                                             
+                        from kaf.tdetalle_sigep detsig
+                        where  detsig.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'
+                        order by detsig.nro_partida asc ';
+
+			--Devuelve la respuesta
+			return v_consulta;
+
+		end;        
+        
 
 	else
 

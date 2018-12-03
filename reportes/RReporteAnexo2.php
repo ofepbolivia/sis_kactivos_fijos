@@ -47,7 +47,7 @@ class RReporteAnexo2
 
     function imprimeCabecera() {
         $this->docexcel->createSheet();
-        $this->docexcel->getActiveSheet()->setTitle('ANEXO 1');
+        $this->docexcel->getActiveSheet()->setTitle('ANEXO 2');
         $this->docexcel->setActiveSheetIndex(0);
 
 

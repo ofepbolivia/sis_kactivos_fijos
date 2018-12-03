@@ -22,11 +22,11 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 		this.addButton('btnGeneral',
 				{
 				//grupo: [0],
-				text: 'Generar Datos',
-				iconCls: 'bdocuments',
+				text: 'Actualizar importes',
+				iconCls: 'breload',
 				disabled: true,
 				handler: this.general,
-				tooltip: '<b>Cargar Archivo</b><br/>Carga un Archivo del tipo Excel.'
+				tooltip: '<b>Actulizar Importes</b>'
 				}
 		);	
 
@@ -83,7 +83,7 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 				tpl:'<tpl for="."><div class="x-combo-list-item"><p style="color:green;">({codigo}) {nombre_partida}- {gestion}</p><p>Tipo: {sw_movimiento}<p>Rubro: {tipo}</div></tpl>',
 		        renderer : function(value, p, record) {
 		          if(record.data.tipo_reg != 'summary'){
-		            return  String.format("<b style='color: red; font-weight:bold; font-size:12px;'>"+record.data['desc_codigo']+" </b>"+"- "+"<b style='font-size:12px; color:blue;'>"+record.data['desc_partida']+"</b>");
+		            return  String.format("<b style='color: red; font-weight:bold; font-size:12px;'>"+record.data['desc_codigo']+" </b>"+"- "+"<b style='font-size:12px; color:blue;'>"+record.data['nombre_partida']+"</b>");
 		
 		          }
 		          else{
@@ -283,7 +283,7 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'parper.estado_reg',type:'string'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:false
 		},
 		{
@@ -325,7 +325,7 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 			},
 			type: 'ComboBox',
 			id_grupo: 0,
-			filters: {pfiltro: 'nombre_periodo',type: 'string'},
+			filters: {pfiltro: 'ane.nombre_periodo',type: 'string'},
 			grid: false,
 			form: true
 		},
@@ -459,8 +459,9 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
-		{name:'desc_partida', type: 'string'},
+		{name:'nombre_partida', type: 'string'},
 		{name:'desc_codigo', type: 'string'},
+		{name:'nombre_periodo', type:'string'}
 
 
 	],
@@ -469,13 +470,11 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
+	btest:false,
 	//bsave:true,
 
 	onReloadPage:function (m) {
 		this.maestro = m;
-		if (this.maestro.estado != 'Finalizado'){			
-			this.getBoton('btnGeneral').disable();			
-		}
 		//this.store.baseParams=m;
 		this.store.baseParams = {id_periodo_anexo:this.maestro.id_periodo_anexo};
 		this.Cmp.id_partida.store.setBaseParam('gestion',this.maestro.id_gestion);
@@ -502,6 +501,16 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 		this.Cmp.id_periodo_anexo.hide();
 
 	},
+	onButtonEdit: function(){
+		Phx.vista.PartidaPeriodo.superclass.onButtonEdit.call(this);
+		this.Cmp.importe_anexo1.show();
+		this.Cmp.importe_anexo2.show();
+		this.Cmp.importe_anexo3.show();
+		this.Cmp.importe_anexo4.show();
+		this.Cmp.importe_anexo5.show();
+		this.Cmp.importe_total.show();
+		this.Cmp.id_periodo_anexo.hide();				
+	},
 	general: function () {		
 		var rec=this.maestro.id_periodo_anexo;	        
 	        Ext.Ajax.request({
@@ -523,8 +532,27 @@ Phx.vista.PartidaPeriodo=Ext.extend(Phx.gridInterfaz,{
 	    }else{
 	        alert('Ocurrió un error durante el proceso')
 	    }
-	},		
-
-	}
-);
+	},
+			
+	preparaMenu:function(n){
+		Phx.vista.PartidaPeriodo.superclass.preparaMenu.call(this,n);
+		if(this.maestro.estado ==  'Finalizado'){
+			this.getBoton('btnGeneral').disable();
+			this.getBoton('edit').disable();			
+			this.getBoton('del').disable();
+		}
+	},
+	liberaMenu: function() {
+		Phx.vista.PartidaPeriodo.superclass.liberaMenu.call(this);		
+		if(this.maestro.estado == 'Finalizado'){			
+			this.getBoton('btnGeneral').disable();
+			this.getBoton('edit').disable();
+			this.getBoton('new').disable();
+			this.getBoton('del').disable();			
+		}else if(this.maestro.estado=='Borrador' || this.maestro.estado == 'Cargado' || this.maestro.estado=='Insertado'){
+			this.getBoton('btnGeneral').disable();					
+		}
+	}	
+	
+});
 </script>

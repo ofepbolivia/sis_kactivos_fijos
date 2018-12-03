@@ -47,7 +47,7 @@ class RReporteAnexo3
 
     function imprimeCabecera() {
         $this->docexcel->createSheet();
-        $this->docexcel->getActiveSheet()->setTitle('ANEXO 1');
+        $this->docexcel->getActiveSheet()->setTitle('ANEXO 3');
         $this->docexcel->setActiveSheetIndex(0);
 
 
@@ -441,7 +441,7 @@ class RReporteAnexo3
         foreach($datos as $value){
             $valor=$value['desc_codigo'];
             $partida[]=$value['desc_nombre'];
-            $montoSigep[]=$value['monto_sigep'];
+            $montoSigep[]=$value['monto_erp'];
              if(!in_array($valor, $estacion)){
                  $estacion[]=$valor;
              }
@@ -477,7 +477,7 @@ class RReporteAnexo3
             $this->docexcel->getActiveSheet()->getStyle("I$fila")->getAlignment()->setWrapText(true);
             $this->docexcel->getActiveSheet()->getStyle("I$fila")->applyFromArray($styleContenido);
 
-            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, $fila, $value['monto_sigep']);
+            $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, $fila, $value['monto_erp']);
             $this->docexcel->getActiveSheet()->getStyle("J$fila")->applyFromArray($bordes);
             $this->docexcel->getActiveSheet()->getStyle("J$fila")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
             $this->docexcel->getActiveSheet()->getStyle("J$fila")->applyFromArray($styleContenido2);

@@ -111,7 +111,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 						}
 				},
 				type: 'TextField',
-				filters: {pfiltro: 'anex.seleccionado', type: 'string'},
+				filters: {pfiltro: 'planc.impreso', type: 'string'},
 				id_grupo: 0,
 				grid: true,
 				form: false
@@ -494,9 +494,14 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 		{name:'nombre_unidad', type: 'string'},
 		{name:'control', type: 'string'},
 		{name:'seleccionado', type: 'string'},
-		{name:'monto_erp', type: 'numeric'}
+		{name:'monto_erp', type: 'numeric'},
+		{name:'nombre_periodo',type:'string'},
+		{name:'nombre_partida',type:'string'}		
 
 	],
+	sortInfo:{
+		field: 'id_anexo'
+	},	
 	bdel:true,
 	//bsave:true,
 	onButtonNew : function () {
@@ -523,12 +528,12 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 		this.Cmp.id_partida.store.setBaseParam('id_periodo_anexo',this.maestro.id_periodo_anexo);
 		this.Cmp.id_partida.modificado = true;
 		this.Cmp.id_partida.reset();
-		console.log('LLEGA AQUI',this.Cmp.id_partida);
+		
 		Phx.vista.Anexo.superclass.loadValoresIniciales.call(this);
 	},
 
 	oncellclick : function(grid, rowIndex, columnIndex, e) {
-		console.log('LLEGA AQUI',grid);
+		
 			var record = this.store.getAt(rowIndex),
 					fieldName = grid.getColumnModel().getDataIndex(columnIndex); // Get field name
 			if(fieldName == 'control') {
@@ -536,7 +541,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 			}
 	},
 	cambiarRevision: function(record){
-			Phx.CP.loadingShow();
+			//Phx.CP.loadingShow();
 			var d = record.data;
 			Ext.Ajax.request({
 					url:'../../sis_kactivos_fijos/control/Anexo/controlSeleccionado',
@@ -546,7 +551,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 					timeout: this.timeout,
 					scope: this
 			});
-			this.reload();
+			//this.reload();
 	},
 	successRevision: function(resp){
 			Phx.CP.loadingHide();

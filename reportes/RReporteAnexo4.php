@@ -47,7 +47,7 @@ class RReporteAnexo4
 
     function imprimeCabecera() {
         $this->docexcel->createSheet();
-        $this->docexcel->getActiveSheet()->setTitle('ANEXO 1');
+        $this->docexcel->getActiveSheet()->setTitle('ANEXO 4');
         $this->docexcel->setActiveSheetIndex(0);
 
 
@@ -526,7 +526,7 @@ class RReporteAnexo4
     }
     $fila++;
     $total=($fila-1);
-    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(4, ($total), 'Total Anexo 2');
+    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(4, ($total), 'Total Anexo 4');
     $this->docexcel->getActiveSheet()->mergeCells("E$total:H$total");
     $this->docexcel->getActiveSheet()->getStyle("E$total:H$total")->applyFromArray($bordes);
     $this->docexcel->getActiveSheet()->getStyle("E$total:L$total")->applyFromArray($styleBoa4);

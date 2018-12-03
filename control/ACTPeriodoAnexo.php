@@ -11,6 +11,7 @@ require_once(dirname(__FILE__).'/../reportes/RReporteAnexo2.php');
 require_once(dirname(__FILE__).'/../reportes/RReporteAnexo3.php');
 require_once(dirname(__FILE__).'/../reportes/RReporteAnexo4.php');
 require_once(dirname(__FILE__).'/../reportes/RReporteAnexoGeneral.php');
+require_once(dirname(__FILE__).'/../reportes/RReporteAnexoGeneralPDF.php');
 include_once(dirname(__FILE__).'/../../lib/lib_general/ExcelInput.php');
 class ACTPeriodoAnexo extends ACTbase{
 
@@ -318,7 +319,7 @@ class ACTPeriodoAnexo extends ACTbase{
 						$this->objParam->addParametro('tipo', 'detalle');
 						$this->objFunc = $this->create('MODPeriodoAnexo');
 						$this->res = $this->objFunc->reporteGeneral($this->objParam);
-						$this->objParam->addParametro('informe', $this->res->datos);
+						$this->objParam->addParametro('informe', $this->res->datos);						
 
 
 						$this->objParam->addParametro('tipo', 'resumen');
@@ -343,20 +344,34 @@ class ACTPeriodoAnexo extends ACTbase{
 						$this->objParam->addParametro('anexo4', $this->res->datos);
 
 						//obtener titulo del reporte
-						$titulo = 'RepTiemposProcesoCompra';
+						$titulo = 'RepRporteGeneralAnexoSigep';
 
 						//Genera el nombre del archivo (aleatorio + titulo)
 						$nombreArchivo = uniqid(md5(session_id()) . $titulo);
-						$nombreArchivo .= '.xls';
-						$this->objParam->addParametro('nombre_archivo', $nombreArchivo);
-
-						$this->objReporteFormato = new RReporteAnexoGeneral($this->objParam);
-						$this->objReporteFormato->imprimeInforme();
-						$this->objReporteFormato->imprimeAnexo1();
-						$this->objReporteFormato->imprimeAnexo2();
-						$this->objReporteFormato->imprimeAnexo3();
-						$this->objReporteFormato->imprimeAnexo4();
-						
+												
+						if ($this->objParam->getParametro('def')=='pdf'){
+							$nombreArchivo .= '.pdf';
+							$this->objParam->addParametro('nombre_archivo', $nombreArchivo);
+							$this->objParam->addParametro('tamano','LETTER');
+							$this->objParam->addParametro('orientacion','L');							
+	
+							$this->objReporteFormato = new RReporteAnexoGeneralPDF($this->objParam);
+							$this->objReporteFormato->imprimeInforme();
+							$this->objReporteFormato->imprimeAnexo1();
+							$this->objReporteFormato->imprimeAnexo2();
+							$this->objReporteFormato->imprimeAnexo3();
+							$this->objReporteFormato->imprimeAnexo4();							
+						}else{
+							$nombreArchivo .= '.xls';
+							$this->objParam->addParametro('nombre_archivo', $nombreArchivo);
+	
+							$this->objReporteFormato = new RReporteAnexoGeneral($this->objParam);
+							$this->objReporteFormato->imprimeInforme();
+							$this->objReporteFormato->imprimeAnexo1();
+							$this->objReporteFormato->imprimeAnexo2();
+							$this->objReporteFormato->imprimeAnexo3();
+							$this->objReporteFormato->imprimeAnexo4();
+						}
 
 						$this->objReporteFormato->generarReporte();
 						$this->mensajeExito = new Mensaje();

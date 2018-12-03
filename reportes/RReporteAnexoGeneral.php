@@ -160,7 +160,7 @@ class RReporteAnexoGeneral
     $this->docexcel->getActiveSheet()->getStyle('G4:J4')->applyFromArray($styleBoa);
     $this->docexcel->getActiveSheet()->mergeCells('G4:J4');
 
-    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6,5,'INFORME');
+    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(6,5,'INFORME '.strtoupper($this->objParam->getParametro('nombre_periodo')));
     $this->docexcel->getActiveSheet()->getStyle('G5:J5')->applyFromArray($styleBoa);
     $this->docexcel->getActiveSheet()->mergeCells('G5:J5');
 
@@ -791,11 +791,11 @@ $this->docexcel->getActiveSheet()->getStyle("D$obser:L$obser")->getAlignment()->
     $this->docexcel->getActiveSheet()->getStyle('I8')->applyFromArray($styleBoa2);
     $this->docexcel->getActiveSheet()->getStyle('I8')->getAlignment()->setWrapText(true);
 
-    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9,8,'MONTO PAGADO AL SEGUNDO TRIMESTRE SEGUN SIGEP');
+    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9,8,'MONTO ACUMULADO PERIODOS ANTERIORES');
     $this->docexcel->getActiveSheet()->getStyle('J8')->applyFromArray($styleBoa2);
     $this->docexcel->getActiveSheet()->getStyle('J8')->getAlignment()->setWrapText(true);
 
-    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(10,8,'MONTO PAGADO AL TERCER TRIMESTRE SEGUN SIGEP');
+    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(10,8,'MONTO EN EL PERIODO');
     $this->docexcel->getActiveSheet()->getStyle('K8')->applyFromArray($styleBoa2);
     $this->docexcel->getActiveSheet()->getStyle('K8')->getAlignment()->setWrapText(true);
 
@@ -1090,7 +1090,7 @@ $this->docexcel->getActiveSheet()->getStyle("D$obser:L$obser")->getAlignment()->
         $valor=$value['desc_codigo'];
         $partida[]=$value['desc_nombre'];
         $montoContrato[]=$value['monto_contrato'];
-        $montoErp[]=$value['monto_erp'];
+        $montoErp[]=$value['monto_alta'];
         $montoTransito[]=$value['monto_transito'];
         $montoPagado[]=$value['monto_pagado'];
         $montoTercer[]=$value['monto_tercer'];
@@ -1135,7 +1135,7 @@ $this->docexcel->getActiveSheet()->getStyle("D$obser:L$obser")->getAlignment()->
         $this->docexcel->getActiveSheet()->getStyle("G$fila")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
         $this->docexcel->getActiveSheet()->getStyle("G$fila")->applyFromArray($styleContenido2);
 
-        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, $fila, $value['monto_erp']);
+        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(7, $fila, $value['monto_alta']);
         $this->docexcel->getActiveSheet()->getStyle("H$fila")->applyFromArray($bordes);
         $this->docexcel->getActiveSheet()->getStyle("H$fila")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
         $this->docexcel->getActiveSheet()->getStyle("H$fila")->applyFromArray($styleContenido2);
@@ -1175,7 +1175,7 @@ $this->docexcel->getActiveSheet()->getStyle("D$obser:L$obser")->getAlignment()->
     }
   }
 
-    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, 'Total Grupo '.$value1.':');
+    $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, 'Total Grupo '.$value1);
     // $this->docexcel->getActiveSheet()->getStyle("B$total:F$total")->applyFromArray($bordes);
     // $this->docexcel->getActiveSheet()->getStyle("B$total:F$total")->getAlignment()->setWrapText(true);
     $this->docexcel->getActiveSheet()->mergeCells("B$fila:F$fila");
@@ -2143,7 +2143,7 @@ $this->docexcel->getActiveSheet()->getStyle("H$total")->getNumberFormat()->setFo
     foreach($datos as $value){
         $valor=$value['desc_codigo'];
         $partida[]=$value['desc_nombre'];
-        $montoSigep[]=$value['monto_sigep'];
+        $montoSigep[]=$value['monto_erp'];
          if(!in_array($valor, $estacion)){
              $estacion[]=$valor;
          }
@@ -2179,7 +2179,7 @@ $this->docexcel->getActiveSheet()->getStyle("H$total")->getNumberFormat()->setFo
         $this->docexcel->getActiveSheet()->getStyle("I$fila")->getAlignment()->setWrapText(true);
         $this->docexcel->getActiveSheet()->getStyle("I$fila")->applyFromArray($styleContenido);
 
-        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, $fila, $value['monto_sigep']);
+        $this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(9, $fila, $value['monto_erp']);
         $this->docexcel->getActiveSheet()->getStyle("J$fila")->applyFromArray($bordes);
         $this->docexcel->getActiveSheet()->getStyle("J$fila")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat :: FORMAT_NUMBER_COMMA_SEPARATED1);
         $this->docexcel->getActiveSheet()->getStyle("J$fila")->applyFromArray($styleContenido2);
@@ -2706,7 +2706,7 @@ $this->docexcel->getActiveSheet()->getStyle("J$total")->getNumberFormat()->setFo
 	}
 	$fila++;
 	$total=($fila-1);
-	$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(4, ($total), 'Total Anexo 2');
+	$this->docexcel->getActiveSheet()->setCellValueByColumnAndRow(4, ($total), 'Total Anexo 4');
 	$this->docexcel->getActiveSheet()->mergeCells("E$total:H$total");
 	$this->docexcel->getActiveSheet()->getStyle("E$total:H$total")->applyFromArray($bordes);
 	$this->docexcel->getActiveSheet()->getStyle("E$total:L$total")->applyFromArray($styleBoa4);

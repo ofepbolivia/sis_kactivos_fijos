@@ -104,6 +104,28 @@ class MODDetalleSigep extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+	
+	function repDetalleSigep(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='kaf.ft_detalle_sigep_sel';
+		$this->transaccion='KAF_REPDETSI_SEL';
+		$this->tipo_procedimiento='SEL';
+		$this->setCount(false);
+
+		//Define los parametros para la funcion
+		$this->setParametro('id_periodo_anexo','id_periodo_anexo','int4');
+		
+		//Definicion de la lista del resultado del query			
+		$this->captura('nro_partida','varchar');
+		$this->captura('c31','varchar');		
+		$this->captura('monto_sigep','numeric');		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;		
+	}
 
 }
 ?>

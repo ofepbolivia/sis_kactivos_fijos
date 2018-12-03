@@ -60,11 +60,11 @@ BEGIN
 						perane.fecha_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
-                        ges.gestion as desc_gestion
+                        ges.gestion as desc_gestion 
 						from kaf.tperiodo_anexo perane
 						inner join segu.tusuario usu1 on usu1.id_usuario = perane.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = perane.id_usuario_mod
-                        inner join param.tgestion ges on ges.id_gestion = perane.id_gestion
+                        inner join param.tgestion ges on ges.id_gestion = perane.id_gestion				   
 				        where  ';
 
 			--Definicion de la respuesta
@@ -75,7 +75,7 @@ BEGIN
 			return v_consulta;
 
 		end;
-
+        
         /*********************************
  	#TRANSACCION:  'KAF_REPORT1_SEL'
  	#DESCRIPCION:	Consulta de datos
@@ -92,21 +92,21 @@ BEGIN
 						anex.id_anexo,
 						anex.id_partida,
 						anex.tipo_anexo,
-						anex.id_periodo_anexo,
+						anex.id_periodo_anexo,						
 						anex.monto_contrato,
 						anex.observaciones,
-						anex.estado_reg,
+						anex.estado_reg,						
 						anex.c31,
 						anex.monto_transito,
 						anex.monto_pagado,
 						anex.detalle_c31,
-						anex.monto_erp,
+						anex.monto_erp,	
 						anex.fecha_reg,
 						anex.usuario_ai,
 						anex.id_usuario_reg,
 						anex.id_usuario_ai,
 						anex.id_usuario_mod,
-						anex.fecha_mod,
+						anex.fecha_mod,						
                         anex.id_uo,
                         par.codigo as desc_codigo,
                         par.nombre_partida as desc_nombre,
@@ -114,25 +114,26 @@ BEGIN
                         uo.nombre_unidad,
                         anex.seleccionado as control,
                         anex.seleccionado
-						from kaf.tanexo anex
+						from kaf.tanexo anex						
                         inner join pre.tpartida par on par.id_partida = anex.id_partida
                         left join orga.tuo uo on uo.id_uo = anex.id_uo
-				        where anex.tipo_anexo = 1 AND anex.id_periodo_anexo = '||v_parametros.id_periodo_anexo;
-
+				        where anex.tipo_anexo = 1 AND anex.id_periodo_anexo = '||v_parametros.id_periodo_anexo;  
+                        
                         v_consulta:=v_consulta||'GROUP BY anex.id_anexo,
                         anex.id_partida,
                         par.codigo,
                         par.nombre_partida,
-                        uo.nombre_unidad';
-
-
-
+                        uo.nombre_unidad
+                        order by desc_codigo asc';
+                        
+                 
+			
 			--Devuelve la respuesta
             raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
 
 		end;
-
+        
             /*********************************
  	#TRANSACCION:  'KAF_REPORT2_SEL'
  	#DESCRIPCION:	Consulta de datos
@@ -151,12 +152,12 @@ BEGIN
 						anex.tipo_anexo,
 						anex.id_periodo_anexo,
                         anex.monto_sigep,
-						anex.observaciones,
-
+						anex.observaciones,						
+						
 						anex.estado_reg,
 						anex.diferencia,
-						anex.c31,
-						anex.monto_erp,
+						anex.c31,						
+						anex.monto_erp,			
 						anex.fecha_reg,
 						anex.usuario_ai,
 						anex.id_usuario_reg,
@@ -164,7 +165,7 @@ BEGIN
 						anex.id_usuario_mod,
 						anex.fecha_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod,
+						usu2.cuenta as usr_mod,               
                         par.codigo as desc_codigo,
                         par.nombre_partida as desc_nombre,
                         anex.seleccionado as control,
@@ -173,14 +174,15 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = anex.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = anex.id_usuario_mod
                         inner join pre.tpartida par on par.id_partida = anex.id_partida
-				        where anex.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'AND anex.tipo_anexo = 2';
-
+				        where anex.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'AND anex.tipo_anexo = 2
+                        order by desc_codigo asc ';  
+			
 			--Devuelve la respuesta
             --raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
 
 		end;
-
+        
         /*********************************
  	#TRANSACCION:  'KAF_REPORT3_SEL'
  	#DESCRIPCION:	Consulta de datos
@@ -198,10 +200,10 @@ BEGIN
 						anex.id_partida,
 						anex.tipo_anexo,
 						anex.id_periodo_anexo,
-                        anex.monto_sigep,
+                        anex.monto_sigep,						
 						anex.estado_reg,
 						anex.c31,
-                        anex.detalle_c31,
+                        anex.detalle_c31,                        
 						anex.fecha_reg,
 						anex.usuario_ai,
 						anex.id_usuario_reg,
@@ -210,7 +212,7 @@ BEGIN
 						anex.fecha_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
-                        anex.id_uo,
+                        anex.id_uo,                        
 						par.codigo as desc_codigo,
                         par.nombre_partida as desc_nombre,
 						uo.nombre_unidad,
@@ -221,14 +223,15 @@ BEGIN
 						left join segu.tusuario usu2 on usu2.id_usuario = anex.id_usuario_mod
                         inner join pre.tpartida par on par.id_partida = anex.id_partida
                         left join orga.tuo uo on uo.id_uo = anex.id_uo
-				        where anex.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'AND anex.tipo_anexo = 3';
-
+				        where anex.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'AND anex.tipo_anexo = 3
+                        order by desc_codigo asc ';  
+			
 			--Devuelve la respuesta
             --raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
 
 		end;
-
+        
         /*********************************
  	#TRANSACCION:  'KAF_REPORT4_SEL'
  	#DESCRIPCION:	Consulta de datos
@@ -247,11 +250,11 @@ BEGIN
 						anex.tipo_anexo,
 						anex.id_periodo_anexo,
                         anex.monto_sigep,
-                        anex.observaciones,
+                        anex.observaciones,						
 						anex.estado_reg,
                         anex.diferencia,
 						anex.c31,
-                        anex.monto_erp,
+                        anex.monto_erp,                        
 						anex.fecha_reg,
 						anex.usuario_ai,
 						anex.id_usuario_reg,
@@ -259,7 +262,7 @@ BEGIN
 						anex.id_usuario_mod,
 						anex.fecha_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod,
+						usu2.cuenta as usr_mod,                                           
 						par.codigo as desc_codigo,
                         par.nombre_partida as desc_nombre,
                         anex.seleccionado as control,
@@ -268,8 +271,9 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = anex.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = anex.id_usuario_mod
                         inner join pre.tpartida par on par.id_partida = anex.id_partida
-				        where anex.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'AND anex.tipo_anexo = 4';
-
+				        where anex.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'AND anex.tipo_anexo = 4
+                        order by desc_codigo asc ';  
+			
 			--Devuelve la respuesta
             --raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
@@ -313,8 +317,9 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = parper.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = parper.id_usuario_mod
                         inner join pre.tpartida par on par.id_partida = parper.id_partida
-				        where parper.id_periodo_anexo = '||v_parametros.id_periodo_anexo;
-
+				        where parper.id_periodo_anexo = '||v_parametros.id_periodo_anexo||'
+                        order by desc_codigo asc ';  
+			
 			--Devuelve la respuesta
             --raise notice 'v_consulta %',v_consulta;
 			return v_consulta;
@@ -337,7 +342,7 @@ BEGIN
 					    from kaf.tperiodo_anexo perane
 						inner join segu.tusuario usu1 on usu1.id_usuario = perane.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = perane.id_usuario_mod
-                        inner join param.tgestion ges on ges.id_gestion = perane.id_gestion
+                        inner join param.tgestion ges on ges.id_gestion = perane.id_gestion	
 					    where ';
 
 			--Definicion de la respuesta

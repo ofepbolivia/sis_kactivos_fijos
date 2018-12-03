@@ -6,6 +6,7 @@
 *@date 25-10-2018 15:35:31
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
+require_once(dirname(__FILE__).'/../reportes/RDetalleSigePDF.php');
 
 class ACTDetalleSigep extends ACTbase{
 
@@ -58,6 +59,35 @@ class ACTDetalleSigep extends ACTbase{
 		$this->res=$this->objFunc->eliminarDetalleSigep($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
+	function repDetaSigep(){
+
+		$nombreArchivo = 'DetalleSigep'.uniqid(md5(session_id())).'.pdf';
+        $this->objFunc=$this->create('MODDetalleSigep');
+        $this->res=$this->objFunc->repDetalleSigep($this->objParam);		
+	    
+        //parametros basicos
+        $tamano = 'LETTER';
+        $orientacion = 'P';
+        $titulo = 'Consolidado';
+
+
+        $this->objParam->addParametro('orientacion',$orientacion);
+        $this->objParam->addParametro('tamano',$tamano);
+        $this->objParam->addParametro('titulo_archivo',$titulo);
+        $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		
+		$this->objReporteFormato = new RDetalleSigePDF($this->objParam);
+		$this->objReporteFormato->setDatos($this->res->datos);
+		$this->objReporteFormato->generarReporte();
+		$this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
+
+		$this->mensajeExito=new Mensaje();
+		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+
+	}	
 
 }
 

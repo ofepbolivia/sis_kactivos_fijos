@@ -27,8 +27,8 @@ BEGIN
                           select par.codigo,
                           		 anex.c31
                       from kaf.tanexo anex 
-                      inner join pre.tpartida par on par.id_partida = anex.id_partida --and par.id_gestion = p_id_gestion
-                      where anex.id_periodo_anexo = p_id_periodo_anexo - 1 and anex.tipo_anexo = 1
+                      inner join pre.tpartida par on par.id_partida = anex.id_partida 
+                      where anex.id_periodo_anexo = (p_id_periodo_anexo - 1) and anex.tipo_anexo = 1
                       group by par.codigo,
                       			anex.c31
                           
@@ -38,7 +38,8 @@ BEGIN
                    select 
                          par.id_partida,
                          af.nro_cbte_asociado as c31,
-                         sum(af.monto_compra_orig_100) as monto_erp_100
+                         sum(af.monto_compra_orig_100) as monto_erp_100,
+                         af.id_uo as uni_solici
                          into
                          v_registro_anex3
                     from kaf.tactivo_fijo af
@@ -49,7 +50,8 @@ BEGIN
                     and af.estado='alta'
                     and af.fecha_ini_dep between p_fecha_ini and p_fecha_fin
                     group by par.id_partida,
-                    af.nro_cbte_asociado;
+                    af.nro_cbte_asociado,
+                    af.id_uo;
                              
 
         if v_registro_anex3.id_partida is not null then     
@@ -57,6 +59,7 @@ BEGIN
               (id_usuario_reg,
               id_periodo_anexo,
               id_partida,
+              id_uo,
               c31,
               monto_erp,
               tipo_anexo
@@ -65,6 +68,7 @@ BEGIN
               (p_id_usuario,
                p_id_periodo_anexo,
                v_registro_anex3.id_partida,
+               v_registro_anex3.uni_solici,
                v_anexo_1.c31,
                v_registro_anex3.monto_erp_100,
                3

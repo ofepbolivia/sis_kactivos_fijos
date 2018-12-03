@@ -32,7 +32,7 @@ BEGIN
 
     v_year = to_char(now(),'yyyy');
     
-    --MONTO  PAGADO AL SEGUNDO TRIMESTRE SEGÚN SIGEP GESTION ACTUAL
+    --MONTO ACUMULADO  PAGADO HASTA EL PERIODO ANTERIOR, SEGÚN SIGEP EN LA GESTION ACTUAL
     
         select  de.c31, 
 		        de.nro_partida, 
@@ -41,8 +41,8 @@ BEGIN
     			v_monto_sigep
                                   
         from kaf.tdetalle_sigep de 
-        where de.id_periodo_anexo = p_id_periodo_anexo - 1 
-        	 and de.c31 = p_c31 
+        where de.id_periodo_anexo < p_id_periodo_anexo
+        	 and de.c31 = p_c31  
         group by de.c31,
                  de.nro_partida;
                  
@@ -51,12 +51,14 @@ BEGIN
    
 		select mo.id_parti as id_partida,
            mo.c31,
-    	   round(sum(mo.monto_contrato),2) as monto_compra_100
+    	   round(sum(mo.monto_contrato),2) as monto_compra_100,
+           mo.id_unidad as uni_solici
          into 
          v_monto_contrato            
     from kaf.f_monto_contrato_c31(p_c31,p_partida,p_id_gestion) mo
     group by mo.id_parti,
-             mo.c31;
+             mo.c31,
+           mo.id_unidad;
              
                         
   if v_monto_contrato.id_partida is not null then
@@ -92,6 +94,7 @@ BEGIN
               (id_usuario_reg,
               id_periodo_anexo,
               id_partida,
+              id_uo,
               c31,
               monto_contrato,
               monto_alta,
@@ -104,6 +107,7 @@ BEGIN
               (p_id_usuario,
                p_id_periodo_anexo,
 			   v_monto_contrato.id_partida,
+               v_monto_contrato.uni_solici,
                v_monto_contrato.c31,
                v_monto_contrato.monto_compra_100,
                v_alta_erp.monto_erp_gestion,
@@ -114,7 +118,12 @@ BEGIN
             );
 	     end if;        
     end if;       
-  end if;   
+  end if;
+  
+	select ane.id_partida
+    from kaf.tanexo ane
+    where ane.id_periodo_anexo = p_id_periodo_anexo
+    and ane.tipo_anexo = 1;
      
   
 END;
