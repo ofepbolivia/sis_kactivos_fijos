@@ -1219,11 +1219,12 @@ BEGIN
                               fun.desc_funcionario1::varchar as funcionario,
                               dep.nombre::varchar as depto
 
-                      from kaf.tmovimiento mo
+                       from alm.tpreingreso pre
+                      left join wf.tproceso_wf pro on pro.id_proceso_wf = pre.id_proceso_wf
+                      left join kaf.tmovimiento mo on mo.id_proceso_wf_doc = pre.id_proceso_wf
                       left join orga.vfuncionario fun on fun.id_funcionario = mo.id_funcionario
-                      left join wf.tproceso_wf pro on pro.id_proceso_wf = mo.id_proceso_wf_doc
                       left join param.tdepto dep on dep.id_depto = mo.id_depto
-                          where mo.estado = ''pendiente'' and';
+                          where ';
 
 
          --raise exception 'acaaaa %', v_consulta;

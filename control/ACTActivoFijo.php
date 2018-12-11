@@ -646,6 +646,19 @@ class ACTActivoFijo extends ACTbase{
                     $this->objParam->addFiltro("mo.id_depto = ".$this->objParam->getParametro('id_depto'));
                 }
             }
+            //para el estado pre
+            if($this->objParam->getParametro('estado_pre')== 1){
+                $this->objParam->addFiltro("pre.estado  = ''borrador''");
+            }else if($this->objParam->getParametro('estado_pre')== 2){
+                $this->objParam->addFiltro("pre.estado = ''registrado''");
+            }else if($this->objParam->getParametro('estado_pre')== 3){
+                $this->objParam->addFiltro("pre.estado = ''finalizado''");
+            }
+
+            else {
+                $this->objParam->addFiltro("pre.estado in  (''borrador'', ''registrado'', ''finalizado'')");
+            }
+
 
         }
         if($this->objParam->getParametro('configuracion_reporte') == 'sin_asignacion') {
