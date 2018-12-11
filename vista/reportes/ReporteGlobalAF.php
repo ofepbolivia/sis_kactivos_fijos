@@ -681,6 +681,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             ['pglo','GLOSA'],
                             ['pnom','NOMBRE USUARIO'],
                             ['pdep','DEPARTAMENTO'],
+                            ['ptra','NUM. DE TRAMITE'],
 
                         ]
                     }),
@@ -730,15 +731,15 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config : {
                    // name : 'tipo_activo',
-                    name : 'estado_pre',
-                    fieldLabel : 'Estado PreIngreso',
+                    name : 'estado_mo',
+                    fieldLabel : 'Estado Mov.',
                     allowBlank : false,
                     triggerAction : 'all',
                     lazyRender : true,
                     mode : 'local',
                     store : new Ext.data.ArrayStore({
                         fields : ['id', 'valor'],
-                        data : [['1', 'Borrador'], ['2', 'Registrado'], ['3', 'Finalizado'], ['4', 'Todos']]
+                        data : [['1', 'Borrador'], ['2', 'Vbaf'], ['3', 'Finalizado'], ['4', 'Todos']]
                     }),
                     anchor : '70%',
                     valueField : 'id',
@@ -794,7 +795,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.id_clasificacion);
                     this.mostrarComponente(this.Cmp.id_lugar);
                     this.mostrarComponente(this.Cmp.tipo_activo);
-                    this.ocultarComponente(this.Cmp.estado_pre);
+                    this.ocultarComponente(this.Cmp.estado_mo);
 		            this.Cmp.gestion_multi.getStore().each(function(rec){
 		            	this.Cmp.gestion_multi.checkRecord(rec);
 		            },this);		            		            		            								
@@ -819,7 +820,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.id_clasificacion);
                     this.mostrarComponente(this.Cmp.id_lugar);
                     this.mostrarComponente(this.Cmp.tipo_activo);
-                    this.ocultarComponente(this.Cmp.estado_pre);
+                    this.ocultarComponente(this.Cmp.estado_mo);
                     this.Cmp.activo_multi.getStore().each(function(rec){
                         this.Cmp.activo_multi.checkRecord(rec);
                     },this);
@@ -844,7 +845,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.id_clasificacion);
                     this.ocultarComponente(this.Cmp.id_lugar);
                     this.ocultarComponente(this.Cmp.tipo_activo);
-                    this.mostrarComponente(this.Cmp.estado_pre);
+                    this.mostrarComponente(this.Cmp.estado_mo);
 
                     this.Cmp.rep_pendiente_aprobacion.getStore().each(function(rec){
                         this.Cmp.rep_pendiente_aprobacion.checkRecord(rec);
@@ -870,7 +871,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.id_clasificacion);
                     this.ocultarComponente(this.Cmp.id_lugar);
                     this.ocultarComponente(this.Cmp.tipo_activo);
-                    this.ocultarComponente(this.Cmp.estado_pre);
+                    this.ocultarComponente(this.Cmp.estado_mo);
 
                     this.Cmp.rep_sin_asignacion.getStore().each(function(rec){
                         this.Cmp.rep_sin_asignacion.checkRecord(rec);
@@ -933,8 +934,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.tipo_activo.modificado = true;
                     this.Cmp.nro_cbte_asociado.reset();
                     this.Cmp.nro_cbte_asociado.modificado = true;
-                    this.Cmp.estado_pre.reset();
-                    this.Cmp.estado_pre.modificado = true;
+                    this.Cmp.estado_mo.reset();
+                    this.Cmp.estado_mo.modificado = true;
 
                 }
 

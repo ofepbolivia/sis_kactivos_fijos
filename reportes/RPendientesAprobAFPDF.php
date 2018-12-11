@@ -40,15 +40,22 @@ class RPendientesAprobAFPDF extends  ReportePDF{
         $paglo = '';
         $panom = '';
         $padep = '';
+        $patra = '';
 
 
         //widths
+//        $tam1=22;
+//        $tam2=22;
+//        $tam3=50;
+//        $tam4=43;
+//        $tam5=32;
+//        $tam6=21;
         $tam1=20;
         $tam2=20;
-        $tam3=60;
+        $tam3=50;
         $tam4=40;
-        $tam5=40;
-
+        $tam5=30;
+        $tam6=20;
 
         $num = 0;
         $total = 0;
@@ -60,6 +67,7 @@ class RPendientesAprobAFPDF extends  ReportePDF{
                 case 'pglo': $paglo = 'glo'; break;
                 case 'pnom': $panom = 'nom'; break;
                 case 'pdep': $padep = 'dep'; break;
+                case 'ptra': $patra = 'tra'; break;
 
             }
         }
@@ -74,12 +82,14 @@ class RPendientesAprobAFPDF extends  ReportePDF{
             $tam4 = 0;
         }if ($padep=='') {
             $tam5 = 0;
+        }if ($patra=='') {
+            $tam6 = 0;
         }
 
         //tomamos los tamanios de las columnas no mostradas y las distribuimos a las otras presentes
         $xpage = 170;//∑ tam^n ai = an
         $cont = 0;
-        $resul = $tam1+$tam2+$tam3+$tam4+$tam5;
+        $resul = $tam1+$tam2+$tam3+$tam4+$tam5+$tam6;
         $alca = $xpage - $resul;
         $n = count($hiddes);
         //distribucion de tamanios
@@ -105,6 +115,7 @@ class RPendientesAprobAFPDF extends  ReportePDF{
         ($paglo=='glo')?$this->MultiCell($tam3+$total, $hGlobal, 'GLOSA', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
         ($panom=='nom')?$this->MultiCell($tam4+$total, $hGlobal, 'NOMBRE USUARIO', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
         ($padep=='dep')?$this->MultiCell($tam5+$total, $hGlobal, 'DEPARTAMENTO', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
+        ($patra=='tra')?$this->MultiCell($tam6+$total, $hGlobal, 'NUM. TRAMITE', 1,'C',false,0,'','',true,0,false,true,0,'T',false):'';
         }
 
     function setDatos($datos) {
@@ -135,12 +146,14 @@ class RPendientesAprobAFPDF extends  ReportePDF{
         $paglo = '';
         $panom = '';
         $padep = '';
+        $patra = '';
 
         $tam1=20;
         $tam2=20;
-        $tam3=60;
+        $tam3=50;
         $tam4=40;
-        $tam5=40;
+        $tam5=30;
+        $tam6=20;
 
 
         //asigna a cada variable su valor recibido desde la vista
@@ -151,6 +164,7 @@ class RPendientesAprobAFPDF extends  ReportePDF{
                 case 'pglo': $paglo = 'glo'; break;
                 case 'pnom': $panom = 'nom'; break;
                 case 'pdep': $padep = 'dep'; break;
+                case 'ptra': $patra = 'tra'; break;
             }
         }
         if ($paprc=='') {
@@ -163,11 +177,13 @@ class RPendientesAprobAFPDF extends  ReportePDF{
             $tam4 = 0;
         }if ($padep=='') {
             $tam5 = 0;
+        }if ($patra=='') {
+            $tam6 = 0;
         }
 
         $xpage = 170;//∑ tam^n ai = an
         $cont = 0;
-        $resul = $tam1+$tam2+$tam3+$tam4+$tam5;
+        $resul = $tam1+$tam2+$tam3+$tam4+$tam5+$tam6;
         $alca = $xpage - $resul;
         $n = count($hiddes);
 
@@ -188,21 +204,22 @@ class RPendientesAprobAFPDF extends  ReportePDF{
             'fpr'=>$tam2+$total,
             'glo'=>$tam3+$total,
             'nom'=>$tam4+$total,
-            'dep'=>$tam5+$total);
+            'dep'=>$tam5+$total,
+            'tra'=>$tam6+$total);
 
         $this->tablewidths=$this->filterArray($datos);
-        $tablenums0=array('t1'=>0,'prc'=>0,'fpr'=>0,'glo'=>0,'nom'=>0,'dep'=>0);  //1
-        $tablenums1=array('t1'=>0,'prc'=>0,'fpr'=>0,'glo'=>0,'nom'=>0,'dep'=>0);  //2
+        $tablenums0=array('t1'=>0,'prc'=>0,'fpr'=>0,'glo'=>0,'nom'=>0,'dep'=>0,'tra'=>0);  //1
+        $tablenums1=array('t1'=>0,'prc'=>0,'fpr'=>0,'glo'=>0,'nom'=>0,'dep'=>0,'tra'=>0);  //2
         $tablenums0Real = $this->filterArray($tablenums0);
         $tablenums1Real = $this->filterArray($tablenums1);
-        $this->tablealigns=array('C','C','R','L','C','C');
+        $this->tablealigns=array('C','C','R','L','C','C','C');
 //para el detalle
         foreach($this->datos as $record){
 //var_dump($this->datos);exit;
 
                 $this->SetFont('','',7);
 
-                    $this->tableborders = array('RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB');
+                    $this->tableborders = array('RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB');
 //                    $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,0);
                     $this->tablenumbers =$tablenums0Real;
                     $RowArray = array(
@@ -212,10 +229,11 @@ class RPendientesAprobAFPDF extends  ReportePDF{
                         's2' => $record['fecha_ini'] == '-' ? '-' : date("d/m/Y", strtotime($record['fecha_ini'])),
                         's3' => $record['glosa'],
                         's4' => $record['funcionario'],
-                        's5' => $record['depto']
+                        's5' => $record['depto'],
+                        's6' => $record['num_tramite']
 
                     );
-                    if ($padep==''){
+                    if ($paprc==''){
                         unset($RowArray['s1']);
                     }if ($pafpr==''){
                         unset($RowArray['s2']);
@@ -225,6 +243,8 @@ class RPendientesAprobAFPDF extends  ReportePDF{
                         unset($RowArray['s4']);
                     }if ($padep=='') {
                         unset($RowArray['s5']);
+                    }if ($patra=='') {
+                        unset($RowArray['s6']);
                     }
                     $this->MultiRow($RowArray);
 
@@ -244,6 +264,7 @@ class RPendientesAprobAFPDF extends  ReportePDF{
         $paglo = '';
         $panom = '';
         $padep = '';
+        $patra = '';
 
         //asigna a cada variable su valor recibido desde la vista
         for ($j=0; $j <count($hiddes) ; $j++) {
@@ -253,6 +274,7 @@ class RPendientesAprobAFPDF extends  ReportePDF{
                 case 'pglo': $paglo = 'glo'; break;
                 case 'pnom': $panom = 'nom'; break;
                 case 'pdep': $padep = 'dep'; break;
+                case 'ptra': $patra = 'tra'; break;
             }
         }
 
@@ -275,6 +297,9 @@ class RPendientesAprobAFPDF extends  ReportePDF{
             }
             if($padep==''){
                 unset($proces['dep']);
+            }
+            if($patra==''){
+                unset($proces['tra']);
             }
         }
         $resp=array();

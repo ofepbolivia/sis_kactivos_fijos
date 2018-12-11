@@ -108,6 +108,7 @@ class RPendientesAprobAFXls
         $paglo = '';
         $panom = '';
         $padep = '';
+        $patra = '';
 
         for ($i=0; $i <count($hiddes) ; $i++) {
             switch ($hiddes[$i]) {
@@ -116,25 +117,27 @@ class RPendientesAprobAFXls
                 case 'pglo': $paglo = 'glo'; break;
                 case 'pnom': $panom = 'nom'; break;
                 case 'pdep': $padep = 'dep'; break;
+                case 'ptra': $patra = 'tra'; break;
             }
         }
-        /////BVP
+        /////
         $sheet0->getColumnDimension('B')->setWidth(10);
         $sheet0->getColumnDimension('C')->setWidth(20);
         $sheet0->getColumnDimension('D')->setWidth(20);
         $sheet0->getColumnDimension('E')->setWidth(60);
         $sheet0->getColumnDimension('F')->setWidth(40);
-        $sheet0->getColumnDimension('G')->setWidth(40);
+        $sheet0->getColumnDimension('G')->setWidth(30);
+        $sheet0->getColumnDimension('H')->setWidth(20);
 
 
 
 
         //$this->docexcel->getActiveSheet()->mergeCells('A1:A3');
-        $sheet0->mergeCells('B1:G1');
+        $sheet0->mergeCells('B1:H1');
         $sheet0->setCellValue('B1', 'DEPARTAMENTO ACTIVOS FIJOS');
-        $sheet0->mergeCells('B2:G2');
+        $sheet0->mergeCells('B2:H2');
         $sheet0->setCellValue('B2', 'ACTIVOS FIJOS PENDIENTES DE APROBACIÓN');
-        $sheet0->mergeCells('B3:G3');
+        $sheet0->mergeCells('B3:H3');
         $sheet0->setCellValue('B3', 'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: PENDIENTE');
 
         $styleExtras=array(
@@ -203,14 +206,14 @@ class RPendientesAprobAFXls
         );
 
 
-        $sheet0->getStyle('B1:G3')->applyFromArray($styleCabeza);
+        $sheet0->getStyle('B1:H3')->applyFromArray($styleCabeza);
 
         $styleTitulos['fill']['color']['rgb'] = '808080';
         $styleTitulos['fill']['color']['rgb'] = 'd4d4d4';
 
         $sheet0->getRowDimension('4')->setRowHeight(35);
-        $sheet0->getStyle('B5:G5')->applyFromArray($styleTitulos);
-        $sheet0->getStyle('C5:G5')->getAlignment()->setWrapText(true);
+        $sheet0->getStyle('B5:H5')->applyFromArray($styleTitulos);
+        $sheet0->getStyle('C5:H5')->getAlignment()->setWrapText(true);
 
 
         //*************************************Cabecera*****************************************
@@ -226,6 +229,8 @@ class RPendientesAprobAFXls
         $sheet0->setCellValue('F5', 'NOMBRE USUARIO');
 
         $sheet0->setCellValue('G5', 'DEPARTAMENTO');
+
+        $sheet0->setCellValue('H5', 'NUM. TRAMITE');
 
 
 
@@ -243,6 +248,7 @@ class RPendientesAprobAFXls
         ($paglo=='glo')?'':$this->docexcel->getActiveSheet()->getColumnDimension('E')->setVisible(0);
         ($panom=='nom')?'':$this->docexcel->getActiveSheet()->getColumnDimension('F')->setVisible(0);
         ($padep=='dep')?'':$this->docexcel->getActiveSheet()->getColumnDimension('G')->setVisible(0);
+        ($patra=='tra')?'':$this->docexcel->getActiveSheet()->getColumnDimension('H')->setVisible(0);
         ///
 
         $tipo = $this->objParam->getParametro('tipo_reporte');
@@ -251,8 +257,8 @@ class RPendientesAprobAFXls
         foreach($datos as $value) {
 
 //                    $styleTitulos['fill']['color']['rgb'] = 'e6e8f4';
-                    $sheet0->getStyle('B' . $fila . ':G' . $fila)->applyFromArray($styleActivos);
-                    $sheet0->getStyle('B' . $fila . ':G' . $fila)->getAlignment()->setWrapText(true);
+                    $sheet0->getStyle('B' . $fila . ':H' . $fila)->applyFromArray($styleActivos);
+                    $sheet0->getStyle('B' . $fila . ':H' . $fila)->getAlignment()->setWrapText(true);
 
 
 
@@ -263,6 +269,7 @@ class RPendientesAprobAFXls
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, $value['glosa']);
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, $value['funcionario']);
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, $value['depto']);
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['num_tramite']);
 
                     $contador++;
                     $fila++;
