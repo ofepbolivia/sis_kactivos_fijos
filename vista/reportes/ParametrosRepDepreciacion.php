@@ -67,8 +67,10 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.cmbTipoMov.on('select',function(cmb,record,index){
 			if(record.data.tipo=='consoli'){						
 				this.cmbEstadoDepre.setVisible(false);
+				this.cmbEstadoDepre.setValue('');
 			}else{
 				this.cmbEstadoDepre.setVisible(true);
+				this.cmbEstadoDepre.setValue('');
 			}
 		},this);
 		//Responsable

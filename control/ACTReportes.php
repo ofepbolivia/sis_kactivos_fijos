@@ -9,6 +9,8 @@ require_once(dirname(__FILE__).'/../reportes/RDepreciacionActulizadoPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RDepreciacionPeriodoXls.php');
 require_once(dirname(__FILE__).'/../reportes/RDepreciacionActulizadaXls.php');
 require_once(dirname(__FILE__).'/../reportes/RDepreciacionActulizadaPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RKardexAFPDF.php');
+
 
 class ACTReportes extends ACTbase {
 
@@ -35,7 +37,12 @@ class ACTReportes extends ACTbase {
     }
 
     function reporteKardexAFXls(){
-        $nombreArchivo = uniqid(md5(session_id()).'KardexAF').'.xls';
+    	
+		if($this->objParam->getParametro('def')=='csv'){
+        	$nombreArchivo = uniqid(md5(session_id()).'KardexAF').'.xls';
+		}else{
+			$nombreArchivo = uniqid(md5(session_id()).'KardexAF').'.pdf';
+		}	
 
         //Recuperar datos
         $this->objFunc = $this->create('MODReportes');
@@ -54,10 +61,18 @@ class ACTReportes extends ACTbase {
         $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 
         //Generación de reporte
-        $reporte = new RKardexAFxls($this->objParam);
-        $reporte->setDataSet($dataSource->getDatos());
-        $reporte->datosHeader($dataSource->getDatos(), $this->objParam->getParametro('id_entrega'));
-        $reporte->generarReporte();
+        if($this->objParam->getParametro('def')=='csv'){
+        	$reporte = new RKardexAFxls($this->objParam);
+			$reporte->setDataSet($dataSource->getDatos());
+	        $reporte->datosHeader($dataSource->getDatos(), $this->objParam->getParametro('id_entrega'));
+	        $reporte->generarReporte();	
+					
+		}else{									
+            $this->objReporteFormato=new RKardexAFPDF($this->objParam);
+            $this->objReporteFormato->setDatos($dataSource->getDatos());
+            $this->objReporteFormato->generarReporte();
+            $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');						
+		}        
 
         $this->mensajeExito=new Mensaje();
         $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');

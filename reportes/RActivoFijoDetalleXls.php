@@ -54,10 +54,6 @@ class RActivoFijoDetalleXls
 
         $this->docexcel->getActiveSheet()->setTitle($this->objParam->getParametro('titulo_archivo'));
 
-        /*$this->docexcel->getActiveSheet()->getPageSetup()>setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-        $this->docexcel->getActiveSheet()->getPageSetup()>setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);*/
-
-
         $this->equivalencias=array(0=>'A',1=>'B',2=>'C',3=>'D',4=>'E',5=>'F',6=>'G',7=>'H',8=>'I',
             9=>'J',10=>'K',11=>'L',12=>'M',13=>'N',14=>'O',15=>'P',16=>'Q',17=>'R',
             18=>'S',19=>'T',20=>'U',21=>'V',22=>'W',23=>'X',24=>'Y',25=>'Z',
@@ -74,7 +70,6 @@ class RActivoFijoDetalleXls
 
     function setDatos ($param) {
         $this->datos = $param;
-		//var_dump($this->datos);exit;
     }
 
     function generarReporte(){
@@ -99,7 +94,7 @@ class RActivoFijoDetalleXls
         $this->docexcel->setActiveSheetIndex(0);
         $sheet0 = $this->docexcel->getActiveSheet();
 
-        $sheet0->setTitle('Reporte Activos en Detalle');
+        $sheet0->setTitle('Reporte de Activos en Detalle');
 
         //$datos = $this->objParam->getParametro('datos');
 
@@ -115,6 +110,7 @@ class RActivoFijoDetalleXls
 		$sheet0->getColumnDimension('K')->setWidth(20);
 		$sheet0->getColumnDimension('L')->setWidth(30);
 		$sheet0->getColumnDimension('M')->setWidth(35);
+		$sheet0->getColumnDimension('N')->setWidth(35);
 		
 		
 		
@@ -122,10 +118,10 @@ class RActivoFijoDetalleXls
 
 
         //$this->docexcel->getActiveSheet()->mergeCells('A1:A3');
-        $sheet0->mergeCells('B1:M1');
+        $sheet0->mergeCells('B1:N1');
         $sheet0->setCellValue('B1', 'DEPARTAMENTO ACTIVOS EN DETALLE');
-        $sheet0->mergeCells('B2:M2');
-        $sheet0->setCellValue('B2', 'Reporte Activos en Detalle');
+        $sheet0->mergeCells('B2:N2');
+        $sheet0->setCellValue('B2', 'Reporte de Activos en Detalle');
         //$sheet0->mergeCells('B3:L3');
        // $sheet0->setCellValue('B3', 'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: '.$this->objParam->getParametro('estado'));
 
@@ -200,16 +196,14 @@ class RActivoFijoDetalleXls
                 )
             )
         );
-        $sheet0->getStyle('B1:M3')->applyFromArray($styleCabeza);
-        /*$sheet0->getStyle('B2:L2')->applyFromArray($styleTitulos);
-        $sheet0->getStyle('B3:L3')->applyFromArray($styleTitulos);*/
+        $sheet0->getStyle('B1:N3')->applyFromArray($styleCabeza);        
 
         $styleTitulos['fill']['color']['rgb'] = '8DB4E2';
         $styleTitulos['fill']['color']['rgb'] = 'CCBBAA';
 
         $sheet0->getRowDimension('5')->setRowHeight(35);
-        $sheet0->getStyle('B5:M5')->applyFromArray($styleCa);
-        $sheet0->getStyle('C5:M5')->getAlignment()->setWrapText(true);
+        $sheet0->getStyle('B5:N5')->applyFromArray($styleCa);
+        $sheet0->getStyle('C5:N5')->getAlignment()->setWrapText(true);
 
 
         //*************************************Cabecera*****************************************
@@ -223,9 +217,10 @@ class RActivoFijoDetalleXls
 		$sheet0->setCellValue('H5', 'SERIAL');
 		$sheet0->setCellValue('I5', 'ESTADO');
 		$sheet0->setCellValue('J5', 'ESTADO FUNCIONAL');
-		$sheet0->setCellValue('K5', 'C31');
-		$sheet0->setCellValue('L5', 'UBICACION');
-		$sheet0->setCellValue('M5', 'RESPONSABLE');
+		$sheet0->setCellValue('K5', 'FECHA COMPRA');
+		$sheet0->setCellValue('L5', 'C31');
+		$sheet0->setCellValue('M5', 'UBICACION');
+		$sheet0->setCellValue('N5', 'RESPONSABLE');
 
 
         //*************************************Fin Cabecera*****************************************
@@ -252,8 +247,8 @@ class RActivoFijoDetalleXls
 		$sum=0;
         foreach($datos as $value) {
  
-	    $sheet0->getStyle('B'.$fila.':M'.$fila)->applyFromArray($styleTitulos);
-        $sheet0->getStyle('B'.$fila.':M'.$fila)->getAlignment()->setWrapText(true);
+	    $sheet0->getStyle('B'.$fila.':N'.$fila)->applyFromArray($styleTitulos);
+        $sheet0->getStyle('B'.$fila.':N'.$fila)->getAlignment()->setWrapText(true);
 			
 					$valor = "=\"" . $value['subtipo']. "\"";  
 					$sheet0->getStyle('A'.$fila)->getNumberFormat()->setFormatCode('');
@@ -263,14 +258,13 @@ class RActivoFijoDetalleXls
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, $value['descripcion']);
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, $value['denominacion']);
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, $value['marca']);
-					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['nombre']);		
-					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['estado_funcional']);
-					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, $value['fecha_compra']);
-					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $value['c31']);
-					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $value['ubicacion']);
-					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, $value['responsable']);						
-                    /*$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, '');
-					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, '');*/
+					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['nro_serie']);
+					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['estado']);		
+					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, $value['estado_funcional']);
+					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila, $value['fecha_compra']);
+					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $value['c31']);
+					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, $value['ubicacion']);
+					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(13, $fila, $value['responsable']);						                    
  
                     $fila ++;
                 }

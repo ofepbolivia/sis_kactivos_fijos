@@ -39,6 +39,8 @@ DECLARE
     first       varchar='niv.codigo';
     v_filtro      varchar='';
     ord					text;
+    v_nivel     integer;
+    v_agregate  varchar;     
 BEGIN
 
   v_nombre_funcion = 'kaf.ft_activo_fijo_sel';
@@ -767,6 +769,7 @@ BEGIN
       --Devuelve la respuesta
       return v_consulta;
         end;
+
     /*********************************
     #TRANSACCION:  'SKA_REP_ACTEDET_SEL'
     #DESCRIPCION:   Reporte De Activo por detalle
@@ -777,20 +780,33 @@ BEGIN
 
       begin
 
-        v_consulta:= '
-        with recursive niveles (nivel, id_clasificacion, id_clasificacion_fk, codigo, nombre, camino, codigo_completo, tipo_activo)
+              select 
+                 ar.nivel
+                 into v_nivel
+            from kaf.vclasificacion_arbol ar 
+            where ar.id_clasificacion::varchar in (v_parametros.id_clasificacion)
+            limit 1;
+            
+             if v_nivel = 1 then              
+              v_agregate = 'where tcc.id_clasificacion_fk in ('||v_parametros.id_clasificacion||')
+                     union all 
+                     select padre.nivel+1, hijo.id_clasificacion, hijo.id_clasificacion_fk,
+                      hijo.codigo, hijo.nombre, padre.camino || ''.'' || hijo.codigo::TEXT, hijo.codigo_completo_tmp, 
+                      hijo.tipo_activo 
+                     from kaf.tclasificacion hijo, niveles padre 
+                     where hijo.id_clasificacion_fk = padre.id_clasificacion';
+             elsif v_nivel=2 then         
+              v_agregate= 'where tcc.id_clasificacion_fk in ('||v_parametros.id_clasificacion||')';
+         elsif v_nivel=3 then 
+               v_agregate= ' where tcc.id_clasificacion in ('||v_parametros.id_clasificacion||')';
+             end if;
+    v_consulta:= ' with recursive niveles (nivel,id_clasificacion, id_clasificacion_fk, codigo, nombre, camino, codigo_completo, tipo_activo)
               as
                   (
-                     select 0, tcc.id_clasificacion, tcc.id_clasificacion_fk, tcc.codigo, tcc.nombre,
+                     select 0,tcc.id_clasificacion, tcc.id_clasificacion_fk, tcc.codigo, tcc.nombre,
                      tcc.codigo::TEXT as camino, tcc.codigo_completo_tmp, tcc.tipo_activo
                      from kaf.tclasificacion tcc
-                     where tcc.id_clasificacion_fk in ('||v_parametros.id_clasificacion||')
-                     union all
-                     select padre.nivel+1, hijo.id_clasificacion, hijo.id_clasificacion_fk,
-                      hijo.codigo, hijo.nombre, padre.camino || ''.'' || hijo.codigo::TEXT, hijo.codigo_completo_tmp,
-                      hijo.tipo_activo
-                     from kaf.tclasificacion hijo, niveles padre
-                     where hijo.id_clasificacion_fk = padre.id_clasificacion
+          '||v_agregate||'
                   )
                select
               substr(niv.codigo_completo,1,2)::varchar as tipo,
@@ -805,16 +821,15 @@ BEGIN
                coalesce(taf.fecha_compra::varchar, ''-'')::varchar as fecha_compra,
                coalesce(taf.nro_cbte_asociado, ''-'')::varchar as c31,
                (tlug.nombre||''-''||tof.nombre)::varchar as ubicacion,
-               vf.desc_funcionario2::varchar as responsable
+               vf.desc_funcionario2::varchar as responsable,
+               taf.nro_serie
                from niveles niv
                left join kaf.tactivo_fijo taf on taf.id_clasificacion = niv.id_clasificacion
                left join param.tcatalogo cat on cat.id_catalogo = taf.id_cat_estado_fun
                left join orga.vfuncionario vf on vf.id_funcionario = taf.id_funcionario
                left join orga.toficina tof on tof.id_oficina = taf.id_oficina
                left join param.tlugar tlug on tlug.id_lugar = tof.id_lugar
-               order by niv.codigo_completo';
-
-        --raise notice 'v_consulta%',v_consulta;
+               order by niv.codigo_completo,taf.codigo ';  
         return v_consulta;
         end;
     /*********************************
@@ -1214,20 +1229,22 @@ BEGIN
         --raise exception 'entra aca SKA_REPPENAPROB_SEL';
 
         v_consulta:='select   pro.nro_tramite,
-                              pro.fecha_ini::date,
+                              mo.fecha_mov as fecha_ini,
                               mo.glosa::varchar,
                               fun.desc_funcionario1::varchar as funcionario,
-                              dep.nombre::varchar as depto
-
-                      from kaf.tmovimiento mo
+                              dep.nombre::varchar as depto,
+                              mo.num_tramite::varchar
+                                      
+                      from kaf.tmovimiento mo 
                       left join orga.vfuncionario fun on fun.id_funcionario = mo.id_funcionario
                       left join wf.tproceso_wf pro on pro.id_proceso_wf = mo.id_proceso_wf_doc
                       left join param.tdepto dep on dep.id_depto = mo.id_depto
-                          where mo.estado = ''pendiente'' and';
+                          where ';
 
 
          --raise exception 'acaaaa %', v_consulta;
          v_consulta:=v_consulta||v_parametros.filtro;
+         v_consulta:=v_consulta||' order by mo.fecha_mov' ;
 
          --raise notice '%', v_consulta;
             return v_consulta;

@@ -29,39 +29,20 @@ header("content-type: text/javascript; charset=UTF-8");
             //this.tooltipSubmit.destroy();
             //console.log(typeof(t));
             this.init();
-
-            this.addButton('btnImp', {
-                text : 'impReporte',
-                id_grupo:0,
-                iconCls : 'bprint',
-                disabled : false,
-                //id_grupo : 0,
-                menu: [{
-                    text: 'Activos por Grupo',
-
-                    //iconCls: 'bpdf',
-                    argument: {
-                        'news': true,
-                        def: 'pdf'
-                    },
-                    handler:this.imprimirTotales,
-                    scope: this
-                }, {
-                    text: 'Activos en Detalle',
-                    //iconCls: 'bpdf',
-                    argument: {
-                        'news': true,
-                        def: 'csv'
-                    },
-                    handler: this.imprimirDetalle,
-                    scope:this
-                }],
-                tooltip : '<b>Reporte</b><br/>Imprimir Reporte Activo Fijo'
-            });
-
-
-            //console.log('barra',this);
-
+			this.addButton('btnImp1',{
+				text:'Activo Grupo',
+				iconCls : 'bprint',
+				disabled : false,
+				handler: this.imprimirTotales,
+				title :'Reporte Activos por Grupo'
+			});
+			this.addButton('btnImp2',{
+			text:'Activo Detalle',
+			iconCls : 'bprint',
+			disabled : false,
+			handler: this.imprimirDetalle,
+			title: 'Reporte Activos en Detalle'
+			});
         },
 
         Atributos : [
@@ -73,44 +54,35 @@ header("content-type: text/javascript; charset=UTF-8");
                     allowBlank:false,
                     emptyText:'Elija una opción...',
                     store: new Ext.data.JsonStore({
-                        url: '../../sis_kactivos_fijos/control/ActivoFijo/ListaDetActivo',
+                        url: '../../sis_kactivos_fijos/control/Clasificacion/listarClasificacionActivo',
                         id: 'id_clasificacion',
                         root: 'datos',
-                        sortInfo:{
-                            field: 'codigo',
+                        sortInfo: {
+                            field: 'orden',
                             direction: 'ASC'
                         },
                         totalProperty: 'total',
-                        fields: ['id_clasificacion','codigo','nombre'],
+                        fields: ['id_clasificacion','clasificacion', 'id_clasificacion_fk'],
                         remoteSort: true,
-                        baseParams:{par_filtro:'cla.codigo#nombre'}
+                        baseParams: {
+                            par_filtro:'claf.clasificacion'
+                        }
                     }),
                     valueField: 'id_clasificacion',
-                    displayField: 'nombre',
-                    //tpl:'<tpl for="."><div class="x-combo-list-item"><p style="color: black">{codigo}: {nombre}</p></div></tpl>',
-                    tpl: new Ext.XTemplate([
-                        '<tpl for=".">',
-                        '<div class="x-combo-list-item">',
-                        '<div class="awesomecombo-item {checked}">',
-                        '<p><b>Código: {codigo}</b></p>',
-                        '</div><p><b>Nombre: </b> <span style="color: green;">{nombre}</span></p>',
-                        '</div></tpl>'
-                    ]),
+                    displayField: 'clasificacion',
+                    gdisplayField: 'clasificacion',
                     hiddenName: 'id_clasificacion',
-                    //forceSelection:true,
-                    typeAhead: false,
+                    mode: 'remote',
                     triggerAction: 'all',
-                    lazyRender:true,
-                    //mode:'remote',
-                    pageSize:15,
-                    queryDelay:1000,
-                    listWidth:600,
-                    resizable:true,
-                    anchor:'120%',
-                    minChars:2,
+                    typeAhead: false,
+                    lazyRender: true,
+                    pageSize: 15,
+                    queryDelay: 1000,
+                    minChars: 2,
+                    ancho:'100%',
+                    width:400,                    
+                    lastWidth:350,                               
                     enableMultiSelect:true,
-
-
                 },
                 type:'AwesomeCombo',
                 form:true
@@ -142,9 +114,8 @@ header("content-type: text/javascript; charset=UTF-8");
         topBar : true,
         imprimirTotales: function(){
             if(this.Cmp.id_clasificacion.getValue()==''||this.Cmp.formato_reporte.getValue()==''){
-                alert('Seleccione Dato')
-            }else{
-                //console.log(this.Cmp.formato_reporte.getValue());
+                alert('Debe seleccionar alguno de los dos criterios.')
+            }else{                
                 Phx.CP.loadingShow();
 
                 Ext.Ajax.request({
@@ -157,11 +128,11 @@ header("content-type: text/javascript; charset=UTF-8");
                     scope: this
                 });
 
-            }},
+            }}, 
         imprimirDetalle: function(){
             if(this.Cmp.id_clasificacion.getValue()==''|| this.Cmp.formato_reporte.getValue()==''){
-                alert('Seleccione Dato')
-            }else{
+                alert('Debe seleccionar alguno de los dos criterios.')
+            }else{            	
                 Phx.CP.loadingShow();
                 Ext.Ajax.request({
                     url: '../../sis_kactivos_fijos/control/ActivoFijo/ReporteActivoEnDetalle',

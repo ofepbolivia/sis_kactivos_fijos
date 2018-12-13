@@ -28,7 +28,7 @@ $body$
     v_record          record;
     v_desc_nombre     varchar;
     v_resp            varchar;
-    v_peti        numeric(18,2);
+    v_peti			  numeric(18,2);
         
     BEGIN
 
@@ -348,7 +348,9 @@ $body$
         id_moneda_act INTEGER,
         id_activo_fijo_valor_original INTEGER
       )on commit drop;
-                        
+      
+	if total_consol = 'consol' then 
+    
             insert into tt_detalle_depreciacion_totales_actu
             select            
             codigo_padre,
@@ -443,17 +445,86 @@ $body$
             999,
             0,
             'total'
-            from tt_detalle_depreciacion_actu;          
-      
-  return query
-         select 
+            from tt_detalle_depreciacion_actu;                      
+	else 
+            insert into tt_detalle_depreciacion_totales_actu
+            select            
+            codigo_padre,
+            denominacion_padre,
+            null,
+            sum(monto_vigente_orig_100),
+            sum(monto_vigente_orig),
+            sum(inc_actualiz),
+            sum(monto_actualiz),
+            null,
+            null,
+            sum(depreciacion_acum_gest_ant),
+            sum(depreciacion_acum_actualiz_gest_ant),
+            sum(depreciacion_per),
+            sum(depreciacion_acum),
+            sum(monto_vigente),
+            replace(codigo_padre,'RE','')::integer,
+            0,
+            'clasif'
+            from tt_detalle_depreciacion_actu
+            group by codigo_padre, denominacion_padre;
+     
+                                           
+            --Inserta el detalle
+    insert into tt_detalle_depreciacion_totales_actu            
+            select                             
+            de.codigo,                  
+            de.denominacion,
+            de.fecha_ini_dep,          
+            sum(de.monto_vigente_orig_100),
+            sum(de.monto_vigente_orig),            
+            sum(de.inc_actualiz),
+            sum(de.monto_actualiz),
+            null,
+            null,        
+            sum(de.depreciacion_acum_gest_ant),                            
+            sum(de.depreciacion_acum_actualiz_gest_ant),                                                                                                          
+            sum(de.depreciacion_per),                            
+            sum(de.depreciacion_acum),                            
+            sum(de.monto_vigente),
+            de.codigo_padre::integer,                            
+			replace(replace(replace(replace(replace(replace(de.codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
+            'detalle'
+            from tt_detalle_depreciacion_actu de
+            group by de.codigo,de.denominacion,de.fecha_ini_dep,
+            de.codigo_padre;
+
+            --Inserta los totales finales
+    insert into tt_detalle_depreciacion_totales_actu
+            select
+            'TOTAL FINAL',
+            null,
+            null,
+            sum(monto_vigente_orig_100),
+            sum(monto_vigente_orig),
+            sum(inc_actualiz),
+            sum(monto_actualiz),
+            null,
+            null,
+            sum(depreciacion_acum_gest_ant),
+            sum(depreciacion_acum_actualiz_gest_ant),
+            sum(depreciacion_per),
+            sum(depreciacion_acum),
+            sum(monto_vigente),
+            999,
+            0,
+            'total'
+            from tt_detalle_depreciacion_actu;         
+    end if;	    
+	return query
+    	   select 
            codigo,
           (monto_actualiz - monto_vigente_orig)::numeric(18,2) as inc_actualiz,
           color
           from tt_detalle_depreciacion_totales_actu
           where tipo in ('total','detalle','clasif')
           order by codigo, orden; 
-  return;
+	return;
     end; 
     END;
 $body$

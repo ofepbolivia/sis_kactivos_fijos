@@ -83,7 +83,7 @@ Phx.vista.ParametrosRepKardex = {
 		this.configElement(this.lblMontoSup,false,true);
 		this.configElement(this.txtNroCbteAsociado,false,true);
 		this.configElement(this.cmpMontos,false,true);
-		this.configElement(this.cmbMoneda,true,false);
+		this.configElement(this.cmbMoneda,false,true);
 		this.configElement(this.radGroupEstadoMov,true,false);
 		this.configElement(this.cmpFechaCompra,false,true);
 		this.configElement(this.txtNroCbteAsociado,false,true);

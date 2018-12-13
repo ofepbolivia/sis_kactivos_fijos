@@ -15,7 +15,7 @@ class RActivoFijoPDF extends  ReportePDF{
         $this->Cell(40, $height, '', 0, 0, 'C', false, '', 0, false, 'T', 'C');
         $this->SetFontSize(16);
         $this->SetFont('','B');
-        $this->Cell(105, $height, 'CUADRO RESUMEN', 0, 0, 'C', false, '', 0, false, 'T', 'C');
+        $this->Cell(105, $height, 'REPORTE DE ACTIVOS POR GRUPO', 0, 0, 'C', false, '', 0, false, 'T', 'C');
         $this->Ln();
     }
 	

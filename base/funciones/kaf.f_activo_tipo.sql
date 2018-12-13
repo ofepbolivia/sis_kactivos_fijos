@@ -15,14 +15,16 @@ BEGIN
         select codigo
         into resp
         from kaf.tactivo_fijo_valores
-        where id_activo_fijo_valor=code and tipo='alta';
+        where id_activo_fijo_valor=code and tipo='alta'
+        limit 1;
         
     if resp is not null then 
     	if tipe = 'reval' then 
           select monto_vigente_orig_100
           into rev 
           from kaf.tactivo_fijo_valores
-          where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%reval%';
+          where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%reval%'
+          and id_moneda=1 ;
           dev = rev;
         
     	elsif tipe = 'ajuste' then
@@ -30,7 +32,8 @@ BEGIN
        	  select monto_vigente_orig_100
           into rev 
           from kaf.tactivo_fijo_valores
-          where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%ajuste%';
+          where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%ajuste%'
+          and id_moneda=1 ;
           dev = rev;    
           
    		elsif tipe = 'baja'then
@@ -38,7 +41,8 @@ BEGIN
           select monto_vigente_orig_100
           into rev 
           from kaf.tactivo_fijo_valores
-          where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%baja%';
+          where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%baja%'
+          and id_moneda=1 ;
           dev = rev;  
             
 		elsif tipe = 'transito' then
@@ -46,7 +50,8 @@ BEGIN
           select monto_vigente_orig_100
           into rev 
           from kaf.tactivo_fijo_valores
-          where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%transito%';
+          where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%transito%'
+          and id_moneda=1 ;
           dev = rev;
         
         elsif tipe = 'leasing' then
@@ -54,7 +59,8 @@ BEGIN
           select monto_vigente_orig_100
           into rev 
           from kaf.tactivo_fijo_valores
-          where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%leasing%';
+          where kaf.f_tam_codigo(codigo)=resp  and  tipo like '%leasing%'
+          and id_moneda=1 ;
           dev = rev;
           
         else 

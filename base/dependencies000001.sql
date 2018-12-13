@@ -2018,3 +2018,49 @@ ALTER TABLE kaf.tactivo_fijo_historico
 
 /***********************************F-DEP-MAY-KAF-1-09/11/2018*****************************************/
 
+/***********************************I-DEP-BVP-KAF-1-13/12/2018*****************************************/
+CREATE VIEW kaf.vlista_clasifi (
+    clasificacion,
+    id_clasificacion,
+    id_clasificacion_fk,
+    codigo,
+    orden,
+    nivel,
+    ruta)
+AS
+ WITH RECURSIVE niveles(nivel, id_clasificacion, id_clasificacion_fk, codigo,
+     nombre, orden, codigo_completo) AS (
+SELECT 1,
+            tcc.id_clasificacion,
+            tcc.id_clasificacion_fk,
+            tcc.codigo,
+            tcc.nombre,
+            tcc.codigo::text AS camino,
+            tcc.codigo_completo_tmp
+FROM kaf.tclasificacion tcc
+WHERE tcc.id_clasificacion_fk IS NULL
+UNION ALL
+SELECT padre.nivel + 1,
+            hijo.id_clasificacion,
+            hijo.id_clasificacion_fk,
+            hijo.codigo,
+            hijo.nombre,
+            (padre.orden || '.'::text) || hijo.codigo::text,
+            hijo.codigo_completo_tmp
+FROM kaf.tclasificacion hijo,
+            niveles padre
+WHERE hijo.id_clasificacion_fk = padre.id_clasificacion
+        )
+    SELECT ((((repeat('
+        --->'::text, niv.nivel - 1) || ' '::text) || niv.codigo_completo::text) || ' - '::text) || niv.nombre::text)::character varying AS clasificacion,
+    niv.id_clasificacion,
+    niv.id_clasificacion_fk,
+    niv.codigo,
+    niv.codigo_completo AS orden,
+    niv.nivel,
+    niv.nombre AS ruta
+    FROM niveles niv
+    ORDER BY niv.orden;
+/***********************************F-DEP-BVP-KAF-1-13/12/2018*****************************************/
+
+

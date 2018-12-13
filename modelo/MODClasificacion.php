@@ -212,6 +212,29 @@ class MODClasificacion extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+	
+	function listarClasificacionActivo(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='kaf.ft_clasificacion_sel';
+		$this->transaccion='SKA_CLALIACT_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+				
+		//Definicion de la lista del resultado del query
+		$this->captura('id_clasificacion','int4');
+		$this->captura('id_clasificacion_fk','int4');
+		$this->captura('clasificacion','varchar');
+		$this->captura('nivel','integer');
+		$this->captura('tipo_activo','varchar');
+		$this->captura('depreciable','varchar');
+		$this->captura('vida_util','integer');
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();		
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}	
 			
 }
 ?>

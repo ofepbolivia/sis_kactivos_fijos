@@ -68,6 +68,13 @@ class MODReportes extends MODbase{
         $this->captura('depreciacion_per','NUMERIC');
         $this->captura('depreciacion_acum','NUMERIC');
         $this->captura('monto_vigente','NUMERIC');
+		$this->captura('nro_pro_tramite','varchar');
+		$this->captura('desc_uo_solic','varchar');
+		$this->captura('monto_compra_orig_100','numeric');
+		$this->captura('ciudad','varchar');
+		$this->captura('nro_factura','varchar');
+		$this->captura('descripcion','varchar');
+		$this->captura('desc_funcionario1','text');		
 
         //Ejecuta la instruccion
         $this->armarConsulta();

@@ -29,13 +29,23 @@ Phx.vista.ReporteKardex=Ext.extend(Phx.gridInterfaz,{
 				tipo_salida: 'grid'
 			}
 		});
-		this.addButton('btnSelect', {
+		this.actualizarBaseParams();
+		this.addButton('btnExc', {
             text: 'Reporte',
-            iconCls: 'bpdf32',
+            iconCls: 'bexcel',
+            def: 'csv',
             disabled: false,
             handler: this.imprimirReporte,
             tooltip: '<b>Imprimir reporte</b><br/>Genera el reporte en el formato para impresión.'
          });
+		this.addButton('btnPdf', {
+            text: 'Reporte',
+            iconCls: 'bpdf32',
+            def: 'pdf',
+            disabled: false,
+            handler: this.imprimirReporte,
+            tooltip: '<b>Imprimir reporte</b><br/>Genera el reporte en el formato para impresión.'
+         });         
 
 		//Eventos
 		//Grid
@@ -66,25 +76,27 @@ Phx.vista.ReporteKardex=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 100
 			},
 			type:'TextField',
-			filters:{pfiltro:'depaf.codigo',type:'string'},
+			filters:{pfiltro:'proc.descripcion',type:'string'},
 			id_grupo:1,
 			grid:true,
-			form:true
+			form:true,
+			bottom_filter:true
 		},
 		{
 			config:{
 				name: 'num_tramite',
-				fieldLabel: 'Nro.',
+				fieldLabel: 'Nro. Tramite',
 				gwidth: 160,
 				renderer: function(value,p,record){
 					return String.format('{0}','<i class="fa fa-reply-all" aria-hidden="true"></i> '+record.data['num_tramite']);
 				}
 			},
 			type:'TextField',
-			filters:{pfiltro:'depaf.codigo',type:'string'},
+			filters:{pfiltro:'mov.num_tramite',type:'string'},
 			id_grupo:1,
 			grid:true,
-			form:true
+			form:true,
+			bottom_filter:true
 		},
 		
 		{
@@ -204,7 +216,8 @@ Phx.vista.ReporteKardex=Ext.extend(Phx.gridInterfaz,{
 			filters:{pfiltro:'fun.desc_funcionario2',type:'string'},
 			id_grupo:1,
 			grid:true,
-			form:true
+			form:true,
+			bottom_filter:true
 		},
 		{
 			config:{
@@ -277,7 +290,10 @@ Phx.vista.ReporteKardex=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'monto_vigente_orig',
 				fieldLabel: 'Monto Compra Orig.(87%)',
-				gwidth: 140
+				gwidth: 140,
+				renderer:function (value,p,record){
+					return  String.format('{0}', Ext.util.Format.number(record.data.monto_vigente_orig,'0.000,00/i'));
+				}				
 			},
 			type:'TextField',
 			filters:{pfiltro:'depaf.codigo',type:'string'},
@@ -289,7 +305,10 @@ Phx.vista.ReporteKardex=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'monto_vigente_orig_100',
 				fieldLabel: 'Monto Compra Orig.(100%)',
-				gwidth: 150
+				gwidth: 150,
+				renderer:function(valur,p,record){
+					return String.format('{0}',Ext.util.Format.number(record.data.monto_vigente_orig_100,'0.000,00/i'));
+				}				
 			},
 			type:'TextField',
 			filters:{pfiltro:'depaf.codigo',type:'string'},
@@ -426,7 +445,7 @@ Phx.vista.ReporteKardex=Ext.extend(Phx.gridInterfaz,{
 	bsave: false,
 	bnew: false,
 	bedit: false,
-	imprimirReporte: function(){
+	imprimirReporte: function(w,resp){		
 	    Phx.CP.loadingShow();
         Ext.Ajax.request({
             url:'../../sis_kactivos_fijos/control/Reportes/reporteKardexAF',
@@ -438,7 +457,8 @@ Phx.vista.ReporteKardex=Ext.extend(Phx.gridInterfaz,{
 				id_moneda: this.maestro.paramsRep.id_moneda,
 				desc_moneda: this.maestro.paramsRep.desc_moneda,
 				af_estado_mov: this.maestro.paramsRep.af_estado_mov,
-				tipo_salida: 'reporte'
+				tipo_salida: 'reporte',
+				def : w.def
             },
             success: this.successExport,
             failure: this.conexionFailure,

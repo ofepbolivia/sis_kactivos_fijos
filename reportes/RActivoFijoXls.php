@@ -91,32 +91,22 @@ class RActivoFijoXls
     function imprimeDatos(){
 
         $datos = $this->datos;
-        $columnas = 0;
-
-
-        //$numberFormat = '#,#0.##;[Red]-#,#0.##';
+        $columnas = 0;        
 
         $this->docexcel->setActiveSheetIndex(0);
         $sheet0 = $this->docexcel->getActiveSheet();
 
-        $sheet0->setTitle('Reporte Activos por Grupo');
-
-        //$datos = $this->objParam->getParametro('datos');
+        $sheet0->setTitle('Reporte de Activos por Grupo');        
 
         $sheet0->getColumnDimension('B')->setWidth(20);
         $sheet0->getColumnDimension('C')->setWidth(35);
         $sheet0->getColumnDimension('D')->setWidth(20);
         $sheet0->getColumnDimension('E')->setWidth(20);
-
-
-
-        //$this->docexcel->getActiveSheet()->mergeCells('A1:A3');
+		        
         $sheet0->mergeCells('B1:E1');
         $sheet0->setCellValue('B1', 'DEPARTAMENTO ACTIVOS FIJOS');
         $sheet0->mergeCells('B2:E2');
-        $sheet0->setCellValue('B2', 'Reporte Activos por Grupo');
-        //$sheet0->mergeCells('B3:L3');
-       // $sheet0->setCellValue('B3', 'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: '.$this->objParam->getParametro('estado'));
+        $sheet0->setCellValue('B2', 'Reporte de Activos por Grupo');       
 
 
         $styleTitulos = array(
@@ -140,6 +130,27 @@ class RActivoFijoXls
                     'style' => PHPExcel_Style_Border::BORDER_THIN
                 )
             ));
+       $styleTotales = array(
+            'font' => array(
+                'bold' => true,
+                'size' => 10,
+                'name' => 'Arial'
+            ),
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+            ),
+            'fill' => array(
+                'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                'color' => array(
+                    'rgb' => '768290'
+                )
+            ),
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                )
+            ));			
 
         $styleCabeza = array(
             'font' => array(
@@ -188,8 +199,7 @@ class RActivoFijoXls
 
 
         $sheet0->getStyle('B1:E3')->applyFromArray($styleCabeza);
-        $sheet0->getStyle('B2:E2')->applyFromArray($styleCabeza);
-        //$sheet0->getStyle('B3:E3')->applyFromArray($styleTitulos);
+        $sheet0->getStyle('B2:E2')->applyFromArray($styleCabeza);        
 
         $styleTitulos['fill']['color']['rgb'] = '8DB4E2';
         $styleTitulos['fill']['color']['rgb'] = 'CCBBAA';
@@ -228,16 +238,14 @@ class RActivoFijoXls
 
         //************************************************Detalle***********************************************
 
-
-        //$tipo = $this->objParam->getParametro('tipo_reporte');
+        
         $sheet0->getRowDimension('15')->setRowHeight(35);
 	
 		$sum=0;
         foreach($datos as $value) {
         	if($value['nivel']==2){
         		$sum += $value['hijos'];
-        	}
-	    //$styleTitulos['fill']['color']['rgb'] = '4b9bd1';
+        	}	    
         $sheet0->getStyle('B'.$fila.':E'.$fila)->applyFromArray($styleTitulos);
         $sheet0->getStyle('B'.$fila.':E'.$fila)->getAlignment()->setWrapText(true);
 		
@@ -251,15 +259,13 @@ class RActivoFijoXls
                     	$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3, $fila, $value['hijos']);
 					}else{
 						$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, $value['hijos']);						
-					}
-
-                    /*$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, '');
-					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, '');*/
+					}                    
  
                     $fila ++;
                 }
 						
 					$sheet0->getStyle('B'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+					$sheet0->getStyle('B'.$fila.':E'.$fila)->applyFromArray($styleTotales);
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1,$fila, '');
                     $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2,$fila,'TOTAL');
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$fila, '');				

@@ -147,8 +147,8 @@ Ext.define('Phx.vista.ParametrosBase', {
             lazyRender:true,
             mode:'remote',               
             pageSize:15,
-            queryDelay:1000,                        
-            anchor:'100%',
+            queryDelay:1000,                                    
+            width:654,
             minChars:2,
             style: this.setBackgroundColor('cmbClasificacionMulti'),
             enableMultiSelect:true

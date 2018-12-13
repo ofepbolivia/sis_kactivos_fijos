@@ -795,6 +795,7 @@ class MODActivoFijo extends MODbase{
         $this->captura('c31','varchar');
         $this->captura('ubicacion','varchar');
         $this->captura('responsable','varchar');
+		$this->captura('nro_serie','varchar');
         //Ejecuta la instruccion
         $this->armarConsulta();
         //var_dump($this->consulta);exit;
