@@ -1229,7 +1229,7 @@ BEGIN
 
          --raise exception 'acaaaa %', v_consulta;
          v_consulta:=v_consulta||v_parametros.filtro;
-         v_consulta:=v_consulta||' order by pro.nro_tramite' ;
+         v_consulta:=v_consulta||' order by mo.fecha_mov' ;
 
          --raise notice '%', v_consulta;
             return v_consulta;

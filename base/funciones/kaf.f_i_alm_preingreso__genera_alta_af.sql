@@ -148,7 +148,6 @@ BEGIN
 
             --Inserción del movimiento
             v_id_movimiento_af = kaf.f_insercion_movimiento_af(p_id_usuario, hstore(v_rec_af_det));
-            --v_id_movimiento_af = kaf.f_insercion_movimiento_af(p_id_usuario);
 
         end loop;
 
