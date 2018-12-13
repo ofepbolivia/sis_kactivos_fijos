@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION kaf.ft_clasificacion_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -240,6 +238,60 @@ BEGIN
             return v_consulta;
 
         end;
+    /*********************************    
+    #TRANSACCION:  'SKA_CLALIACT_SEL'
+    #DESCRIPCION:   Devuelve listado recursivo de toda la clasificación con niveles
+    #AUTOR:         BVP
+    #FECHA:         12/12/2018
+    ***********************************/
+
+    elsif(p_transaccion='SKA_CLALIACT_SEL')then
+                    
+        begin
+            --Sentencia de la consulta
+            v_consulta:='select
+                            claf.id_clasificacion,
+                            claf.id_clasificacion_fk,
+                            claf.clasificacion,
+                            claf.nivel,
+                            cla.tipo_activo,
+                            cla.depreciable,
+                            cla.vida_util
+                            from kaf.vlista_clasifi claf
+                            inner join kaf.tclasificacion cla
+                            on cla.id_clasificacion = claf.id_clasificacion    
+                        where  ';
+            
+            --Definicion de la respuesta
+            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+            --Devuelve la respuesta
+            return v_consulta;
+                        
+        end;
+    /*********************************    
+    #TRANSACCION:  'SKA_CLALIACT_CONT'
+    #DESCRIPCION:   Conteo de registros
+    #AUTOR:         BVP
+    #FECHA:         12/12/2018
+    ***********************************/
+
+    elsif(p_transaccion='SKA_CLALIACT_CONT')then
+
+        begin
+            --Sentencia de la consulta de conteo de registros
+            v_consulta:='select count(1)
+                        from kaf.vlista_clasifi claf
+                        where  ';
+            
+            --Definicion de la respuesta            
+            v_consulta:=v_consulta||v_parametros.filtro;
+
+            --Devuelve la respuesta
+            return v_consulta;
+
+        end;        
 					
 	else
 					     
