@@ -627,17 +627,7 @@ class ACTActivoFijo extends ACTbase{
 
         if($this->objParam->getParametro('configuracion_reporte') == 'pendientes_aprobacion') {
             //fecha
-//            if ($this->objParam->getParametro('fecha_ini') != '' && $this->objParam->getParametro('fecha_fin') != '') {
-//                $this->objParam->addFiltro("(pro.fecha_ini::date  BETWEEN ''%" . $this->objParam->getParametro('fecha_ini') . "%''::date  and ''%" . $this->objParam->getParametro('fecha_fin') . "%''::date)");
-//            }
-//
-//            if ($this->objParam->getParametro('fecha_ini') != '' && $this->objParam->getParametro('fecha_fin') == '') {
-//                $this->objParam->addFiltro("(pro.fecha_ini  >= ''%" . $this->objParam->getParametro('fecha_ini') . "%''::date)");
-//            }
-//
-//            if ($this->objParam->getParametro('fecha_ini') == '' && $this->objParam->getParametro('fecha_fin') != '') {
-//                $this->objParam->addFiltro("(pro.fecha_ini  <= ''%" . $this->objParam->getParametro('fecha_fin') . "%''::date)");
-//            }
+//          
             if ($this->objParam->getParametro('fecha_ini') != '' && $this->objParam->getParametro('fecha_fin') != '') {
                 $this->objParam->addFiltro("(mo.fecha_mov::date  BETWEEN ''%" . $this->objParam->getParametro('fecha_ini') . "%''::date  and ''%" . $this->objParam->getParametro('fecha_fin') . "%''::date)");
             }

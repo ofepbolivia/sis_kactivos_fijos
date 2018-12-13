@@ -1002,7 +1002,7 @@ class MODActivoFijo extends MODbase{
 
         //Definicion de la lista del resultado del query
         $this->captura('nro_tramite','varchar');
-        $this->captura('fecha_ini','varchar');
+        $this->captura('fecha_ini','date');
         $this->captura('glosa','varchar');
         $this->captura('funcionario','varchar');
         $this->captura('depto','varchar');

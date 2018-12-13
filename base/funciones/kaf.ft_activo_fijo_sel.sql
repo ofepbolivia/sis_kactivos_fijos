@@ -1213,8 +1213,8 @@ BEGIN
         begin
         --raise exception 'entra aca SKA_REPPENAPROB_SEL';
 
-         v_consulta:='select   pro.nro_tramite,
-                              COALESCE(pro.fecha_ini::varchar, ''-'')::varchar as fecha_ini,
+        v_consulta:='select   pro.nro_tramite,
+                              mo.fecha_mov as fecha_ini,
                               mo.glosa::varchar,
                               fun.desc_funcionario1::varchar as funcionario,
                               dep.nombre::varchar as depto,
@@ -1229,6 +1229,7 @@ BEGIN
 
          --raise exception 'acaaaa %', v_consulta;
          v_consulta:=v_consulta||v_parametros.filtro;
+         v_consulta:=v_consulta||' order by pro.nro_tramite' ;
 
          --raise notice '%', v_consulta;
             return v_consulta;

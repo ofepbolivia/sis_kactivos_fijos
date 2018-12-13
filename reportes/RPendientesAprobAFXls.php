@@ -230,7 +230,7 @@ class RPendientesAprobAFXls
 
         $sheet0->setCellValue('G5', 'DEPARTAMENTO');
 
-        $sheet0->setCellValue('H5', 'NUM. TRAMITE');
+        $sheet0->setCellValue('H5', 'TRAMITE');
 
 
 
