@@ -1234,8 +1234,7 @@ BEGIN
                               fun.desc_funcionario1::varchar as funcionario,
                               dep.nombre::varchar as depto,
                               mo.num_tramite::varchar
-                                      
-                      from kaf.tmovimiento mo 
+                      from kaf.tmovimiento mo
                       left join orga.vfuncionario fun on fun.id_funcionario = mo.id_funcionario
                       left join wf.tproceso_wf pro on pro.id_proceso_wf = mo.id_proceso_wf_doc
                       left join param.tdepto dep on dep.id_depto = mo.id_depto

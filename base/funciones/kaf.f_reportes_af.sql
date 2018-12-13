@@ -12,7 +12,7 @@ $body$
  DESCRIPCION:    Funcion que devuelve conjunto de datos para reportes de activos fijos
  AUTOR:          RCM
  FECHA:          09/05/2016
- COMENTARIOS:   
+ COMENTARIOS:
 ***************************************************************************/
 
 DECLARE
@@ -28,7 +28,7 @@ DECLARE
     v_ids_depto       varchar;
     v_sql             varchar;
     v_aux             varchar;
-    
+
     v_lugar           varchar = '';
     v_filtro          varchar;
     v_record          record;
@@ -37,21 +37,21 @@ DECLARE
     v_campos          record;
 
 BEGIN
- 
+
     v_nombre_funcion='kaf.f_reportes_af';
     v_parametros=pxp.f_get_record(p_tabla);
-  
-    /*********************************   
+
+    /*********************************
      #TRANSACCION:  'SKA_RESDEP_SEL'
      #DESCRIPCION:  Reporte de depreciacion
      #AUTOR:        RCM
      #FECHA:        09/05/2016
     ***********************************/
-  
+
     if(p_transaccion='SKA_RESDEP_SEL') then
 
         begin
-            
+
             --------------------------------
             -- 0. VALIDACION DE PARAMETROS
             --------------------------------
@@ -90,7 +90,7 @@ BEGIN
                 inner join kaf.tmovimiento_af_dep mafdep
                 on mafdep.id_movimiento_af = maf.id_movimiento_af
                 where maf.id_movimiento = p_id_movimiento;
-            
+
             else
 
                 v_sql = 'insert into tt_kaf_rep_dep (id_activo_fijo,id_activo_fijo_valor,id_movimiento_af_dep)
@@ -112,14 +112,14 @@ BEGIN
                 execute(v_sql);
 
             end if;
-            
+
             ---------------------------------------
             -- 2. CONSULTA EN FORMATO DEL REPORTE
             ---------------------------------------
             v_consulta = 'select
                     actval.codigo, af.denominacion, actval.fecha_ini_dep as ''fecha_inc'', actval.monto_vigente_orig as ''valor_original'',
                     mafdep.monto_actualiz - actval.monto_vigente_orig as ''inc_actualiz'', mafdep.monto_actualiz as ''valor_actualiz'',
-                    actval.vida_util_orig, mafdep.vida_util, 
+                    actval.vida_util_orig, mafdep.vida_util,
                     (select o_dep_acum_ant from kaf.f_get_datos_deprec_ant(mafdep.id_activo_fijo_valor,mafdep.fecha)) as ''dep_acum_gestion_ant'',
                     (select o_inc_dep_actualiz from kaf.f_get_datos_deprec_ant(mafdep.id_activo_fijo_valor,mafdep.fecha)) as ''dep_acum_gestion_ant_actualiz'',
                     (mafdep.depreciacion_aum - select o_dep_acum_ant from kaf.f_get_datos_deprec_ant(mafdep.id_activo_fijo_valor,mafdep.fecha)) as dep_gestion,
@@ -132,18 +132,18 @@ BEGIN
                     on actval.id_activo_fijo_valor = rep.id_activo_fijo_valor
                     inner join kaf.tmovimiento_af_dep mafdep
                     on mafdep.id_movimiento_af_dep = rep.id_movimiento_af_dep';
-            
 
-            return v_consulta;  
+
+            return v_consulta;
         end;
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_KARD_SEL'
      #DESCRIPCION:  Reporte de kardex de activo fijo
      #AUTOR:        RCM
      #FECHA:        27/07/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_KARD_SEL') then
 
         begin
@@ -173,7 +173,7 @@ BEGIN
                         param.f_get_tipo_cambio(3,af.fecha_compra,''O'') as ufv_fecha_compra,
                         fun.desc_funcionario2 as responsable,
                         orga.f_get_cargo_x_funcionario_str(coalesce(mov.id_funcionario_dest,coalesce(mov.id_funcionario,af.id_funcionario)),now()::date) as cargo,
-                        mov.fecha_mov, mov.num_tramite, 
+                        mov.fecha_mov, mov.num_tramite,
                         proc.descripcion as desc_mov,
                         proc.codigo as codigo_mov,
                         param.f_get_tipo_cambio(3,mov.fecha_mov,''O'') as ufv_mov,
@@ -251,13 +251,13 @@ BEGIN
 
         end;
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_KARD_CONT'
      #DESCRIPCION:  Reporte de kardex de activo fijo
      #AUTOR:        RCM
      #FECHA:        27/07/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_KARD_CONT') then
 
         begin
@@ -308,19 +308,19 @@ BEGIN
                 --Definicion de la respuesta
                 v_consulta:=v_consulta||' and '||v_parametros.filtro;
             end if;
-            
+
 
             return v_consulta;
 
         end;
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_GRALAF_SEL'
      #DESCRIPCION:  Reporte Gral de activos fijos con el filtro general
      #AUTOR:        RCM
      #FECHA:        27/07/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_GRALAF_SEL') then
 
         begin
@@ -454,13 +454,13 @@ BEGIN
 
         end;
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_GRALAF_CONT'
      #DESCRIPCION:  Reporte de kardex de activo fijo
      #AUTOR:        RCM
      #FECHA:        27/07/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_GRALAF_CONT') then
 
         begin
@@ -531,13 +531,13 @@ BEGIN
 
         end;
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_DEPDEPTO_SEL'
      #DESCRIPCION:  Reporte de kardex de activo fijo
      #AUTOR:        RCM
      #FECHA:        15/09/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_DEPDEPTO_SEL') then
 
         begin
@@ -565,22 +565,22 @@ BEGIN
 
         end;
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_RASIG_SEL'
      #DESCRIPCION:  Reporte Gral de activos fijos con el filtro general
      #AUTOR:        RCM
      #FECHA:        05/10/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_RASIG_SEL') then
 
         begin
-            
-            select tl.nombre 
+
+            select tl.nombre
             into v_lugar
-            from param.tlugar tl 
+            from param.tlugar tl
             where id_lugar = v_parametros.id_lugar::integer;
-        
+
             if (v_lugar is null) then
                 v_lugar = '';
             end if;
@@ -589,27 +589,27 @@ BEGIN
             create temp table tt_af_filtro (
                 id_activo_fijo integer
             ) on commit drop;
-            
+
             v_consulta = 'insert into tt_af_filtro
                         select afij.id_activo_fijo
                         from kaf.tactivo_fijo afij
                         inner join kaf.tclasificacion cla
                         on cla.id_clasificacion = afij.id_clasificacion
                         where '||v_parametros.filtro;
-            
+
             execute(v_consulta);
-            
+
             if(v_parametros.tipo = 'lug_fun')then
                 v_filtro = ' afij.id_funcionario in (SELECT tf.id_funcionario
                                                      FROM orga.vfuncionario_cargo_lugar tf
                                                      where  (tf.fecha_finalizacion > now()::date or tf.fecha_finalizacion is null) and tf.id_oficina in (select id_oficina from orga.toficina where id_lugar = '||v_parametros.id_lugar||'))
-                            and afij.en_deposito = ''no'' and afij.id_depto = '||v_parametros.id_depto; 
+                            and afij.en_deposito = ''no'' and afij.id_depto = '||v_parametros.id_depto;
             else
                 v_filtro = ' afij.id_activo_fijo in (select id_activo_fijo
                                                         from tt_af_filtro)
                             and afij.en_deposito = ''no''';
             end if;
-            
+
             --Consulta
             v_consulta = 'select
                             afij.codigo,
@@ -631,7 +631,7 @@ BEGIN
                             case when '''||v_parametros.columna||''' = '''' then ''ambos''::varchar else '''||v_parametros.columna||'''::varchar end as tipo_columna,
                             cat.descripcion as cat_desc,
                             afij.ubicacion as ubi_fisica_ante,
-                            afij.prestamo                         
+                            afij.prestamo
                             from kaf.tactivo_fijo afij
                             inner join kaf.tclasificacion cla on cla.id_clasificacion = afij.id_clasificacion
                             left join orga.vfuncionario fun on fun.id_funcionario = afij.id_funcionario
@@ -639,7 +639,7 @@ BEGIN
                             inner join param.tdepto dep on dep.id_depto = afij.id_depto
                             inner join param.tcatalogo cat on cat.id_catalogo=afij.id_cat_estado_fun
                             where '||v_filtro;
-            
+
             v_consulta:=v_consulta||' order by fun.desc_funcionario2, ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion;
             --raise EXCEPTION 'v_consulta: %', v_consulta;
             --Devuelve la respuesta
@@ -647,22 +647,22 @@ BEGIN
 
         end;
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_RASIG_CONT'
      #DESCRIPCION:  Reporte Gral de activos fijos con el filtro general
      #AUTOR:        RCM
      #FECHA:        05/10/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_RASIG_CONT') then
 
         begin
-        
-            select tl.nombre 
+
+            select tl.nombre
             into v_lugar
-            from param.tlugar tl 
+            from param.tlugar tl
             where id_lugar = v_parametros.id_lugar::integer;
-            
+
             if (v_lugar is null) then
                 v_lugar = '';
             end if;
@@ -680,12 +680,12 @@ BEGIN
                         where '||v_parametros.filtro;
 
             execute(v_consulta);
-            
+
             if(v_parametros.tipo = 'lug_fun')then
                 v_filtro = ' afij.id_funcionario in (SELECT tf.id_funcionario
                                                      FROM orga.vfuncionario_cargo_lugar tf
                                                      where (tf.fecha_finalizacion > now()::date or tf.fecha_finalizacion is null) and tf.id_oficina in (select id_oficina from orga.toficina where id_lugar = '||v_parametros.id_lugar||'))
-                            and afij.en_deposito = ''no''and afij.id_depto = '||v_parametros.id_depto;      
+                            and afij.en_deposito = ''no''and afij.id_depto = '||v_parametros.id_depto;
             else
                 v_filtro = ' afij.id_activo_fijo in (select id_activo_fijo
                                                         from tt_af_filtro)
@@ -711,13 +711,13 @@ BEGIN
 
         end;
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_RSINASIG_SEL'
      #DESCRIPCION:  Reporte de Activos Fijos sin Asignar
      #AUTOR:        RCM
      #FECHA:        05/10/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_RSINASIG_SEL') then
 
         begin
@@ -765,13 +765,13 @@ BEGIN
 
         end;
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_RSINASIG_CONT'
      #DESCRIPCION:  Reporte de Activos Fijos en Depósito
      #AUTOR:        RCM
      #FECHA:        05/10/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_RSINASIG_CONT') then
 
         begin
@@ -810,13 +810,13 @@ BEGIN
 
         end;
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_RENDEP_SEL'
      #DESCRIPCION:  Reporte activos fijos asignados en Depósito
      #AUTOR:        RCM
      #FECHA:        05/10/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_RENDEP_SEL') then
 
         begin
@@ -866,13 +866,13 @@ BEGIN
 
         end;
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_RENDEP_CONT'
      #DESCRIPCION:  Reporte activos fijos asignados en Depósito
      #AUTOR:        RCM
      #FECHA:        05/10/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_RENDEP_CONT') then
 
         begin
@@ -912,13 +912,13 @@ BEGIN
         end;
 
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_RDETDEP_SEL'
      #DESCRIPCION:  Reporte del Detalle de depreciación
      #AUTOR:        RCM
      #FECHA:        16/10/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_RDETDEP_SEL') then
 
         begin
@@ -939,51 +939,51 @@ BEGIN
 
 
             --Consulta
-            v_consulta:=' SELECT 
+            v_consulta:=' SELECT
                               daf.id_moneda_dep,
                               mod.descripcion as desc_moneda,
                               daf.gestion_final::INTEGER,
                               daf.tipo,
                               cr.nombre_raiz,
-                              daf.fecha_ini_dep, 
+                              daf.fecha_ini_dep,
                               daf.id_movimiento,
                               daf.id_movimiento_af,
                               daf.id_activo_fijo_valor,
                               daf.id_activo_fijo,
                               daf.codigo,
-                              daf.id_clasificacion,  
-                              daf.descripcion,  
+                              daf.id_clasificacion,
+                              daf.descripcion,
                               daf.monto_vigente_orig,
                               daf.monto_vigente_inicial,
-                              daf.monto_vigente_final,  
+                              daf.monto_vigente_final,
                               daf.monto_actualiz_inicial,
                               daf.monto_actualiz_final,
                               daf.depreciacion_acum_inicial,
-                              daf.depreciacion_acum_final,  
+                              daf.depreciacion_acum_final,
                               daf.aitb_activo,
                               daf.aitb_depreciacion_acumulada,
                               daf.vida_util_orig,
                               daf.vida_util_inicial,
                               daf.vida_util_final,
-                              daf.vida_util_orig - daf.vida_util_final as vida_util_trans,  
+                              daf.vida_util_orig - daf.vida_util_final as vida_util_trans,
                               cr.codigo_raiz,
-                              cr.id_claificacion_raiz,                              
+                              cr.id_claificacion_raiz,
                               daf.depreciacion_per_final,
                               daf.depreciacion_per_actualiz_final
-                            
+
                           FROM kaf.vdetalle_depreciacion_activo daf
                           INNER  JOIN kaf.vclaificacion_raiz cr on cr.id_clasificacion = daf.id_clasificacion
                           INNER JOIN kaf.tmoneda_dep mod on mod.id_moneda_dep = daf.id_moneda_dep
                           WHERE daf.id_activo_fijo in (select id_activo_fijo
                                                         from tt_af_filtro)
                         and daf.id_moneda = ' ||v_parametros.id_moneda||'
-                          ORDER BY 
-                              daf.id_moneda_dep,   
-                              daf.gestion_final, 
-                              daf.tipo,   
-                              cr.id_claificacion_raiz, 
+                          ORDER BY
+                              daf.id_moneda_dep,
+                              daf.gestion_final,
+                              daf.tipo,
+                              cr.id_claificacion_raiz,
                               daf.id_clasificacion,
-                              id_activo_fijo_valor ,                                
+                              id_activo_fijo_valor ,
                               daf.fecha_ini_dep';
 
 
@@ -994,13 +994,13 @@ BEGIN
 
         end;
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_RDETDEP_CONT'
      #DESCRIPCION:  Reporte Detalle de depreciación
      #AUTOR:        RCM
      #FECHA:        16/10/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_RDETDEP_CONT') then
 
         begin
@@ -1034,18 +1034,18 @@ BEGIN
         end;
 
 
-    /*********************************   
+    /*********************************
      #TRANSACCION:  'SKA_RDEPREC_SEL'
      #DESCRIPCION:  Reporte del Detalle de depreciación
      #AUTOR:        RCM
      #FECHA:        18/10/2017
     ***********************************/
-  
+
     elsif(p_transaccion='SKA_RDEPREC_SEL') then
 
-        begin 
+        begin
 
-            --raise exception 'v_parametros.filtro: %', v_parametros.filtro;                       
+            --raise exception 'v_parametros.filtro: %', v_parametros.filtro;
             --Creacion de tabla temporal de los actios fijos a filtrar
             create temp table tt_af_filtro (
                 id_activo_fijo integer
@@ -1057,12 +1057,12 @@ BEGIN
                         inner join kaf.tclasificacion cla
                         on cla.id_clasificacion = afij.id_clasificacion
                         where '||v_parametros.filtro;
-                                                                       
+
               --Grover activos del exterior
                /*afij.id_activo_fijo in (
-                        
+
             Select af.id_activo_fijo
-            --,af.codigo, af.denominacion, af.descripcion, 
+            --,af.codigo, af.denominacion, af.descripcion,
             --of.nombre, param.f_get_id_lugar_pais(of.id_lugar)
             from kaf.tactivo_fijo af
             inner join orga.tfuncionario fun on fun.id_funcionario=af.id_funcionario
@@ -1070,13 +1070,13 @@ BEGIN
             inner join orga.tcargo car on car.id_cargo=uf.id_cargo
             inner join orga.toficina of on of.id_oficina=car.id_oficina
             where param.f_get_id_lugar_pais(of.id_lugar)<>1)
-            
+
             and */
-                        
-            
+
+
             execute(v_consulta);
-            
-            
+
+
             --Creación de la tabla con los datos de la depreciación
             create temp table tt_detalle_depreciacion (
                 id_activo_fijo_valor integer,
@@ -1116,9 +1116,9 @@ BEGIN
                 upper(af.descripcion)
                 when v_parametros.desc_nombre='nombre' or v_parametros.desc_nombre='' then
                 upper(af.denominacion)
-                else 
+                else
                 upper(af.denominacion||' / '||chr(10)||af.descripcion)
-            end,            
+            end,
             --af.descripcion,
             --afv.fecha_ini_dep,
             case coalesce(afv.id_activo_fijo_valor_original,0)
@@ -1136,7 +1136,7 @@ BEGIN
                 else (select monto_vigente_orig from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original)
             end as monto_vigente_orig,
             --(coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0)) as inc_actualiz,
-            case 
+            case
                 when (coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0)) < 0 then 0
                 else (coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0))
             end as inc_actualiz,
@@ -1167,8 +1167,8 @@ BEGIN
             and af.id_activo_fijo in (select id_activo_fijo from tt_af_filtro)
                                                             --and afv.codigo not like '%-G%'
             and af.estado <> 'eliminado';
-            
-        
+
+
             insert into tt_detalle_depreciacion(
             id_activo_fijo_valor,codigo, denominacion ,fecha_ini_dep,monto_vigente_orig_100,monto_vigente_orig,inc_actualiz,
             monto_actualiz,vida_util_orig,vida_util,
@@ -1182,14 +1182,14 @@ BEGIN
                 upper(af.descripcion)
                 when v_parametros.desc_nombre='nombre' or v_parametros.desc_nombre='' then
                 upper(af.denominacion)
-                else 
+                else
                 upper(af.denominacion||' / '||chr(10)||af.descripcion)
             end,
             afv.fecha_ini_dep,
             afv.monto_vigente_orig_100,
             afv.monto_vigente_orig,
             --(coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0)) as inc_actualiz,
-            case 
+            case
                   when (coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0)) < 0 then 0
                   else (coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0))
             end as inc_actualiz,
@@ -1234,8 +1234,8 @@ BEGIN
             and afv.id_activo_fijo_valor not in (select id_activo_fijo_valor
                                                 from tt_detalle_depreciacion)
             and af.estado <> 'eliminado'
-            and af.fecha_baja >= v_parametros.fecha_hasta::date;     
-            
+            and af.fecha_baja >= v_parametros.fecha_hasta::date;
+
             --------------------------------
             --------------------------------
             insert into tt_detalle_depreciacion(
@@ -1251,7 +1251,7 @@ BEGIN
                 upper(af.descripcion)
                 when v_parametros.desc_nombre='nombre' or v_parametros.desc_nombre='' then
                 upper(af.denominacion)
-                else 
+                else
                 upper(af.denominacion||' / '||chr(10)||af.descripcion)
             end,
             --afv.fecha_ini_dep,
@@ -1270,7 +1270,7 @@ BEGIN
                 else (select monto_vigente_orig from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original)
             end as monto_vigente_orig,
             --(coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0)) as inc_actualiz,
-            case 
+            case
                 when (coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0)) < 0 then 0
                 else (coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0))
             end as inc_actualiz,
@@ -1301,7 +1301,7 @@ BEGIN
             and mdep.fecha = (select max(fecha) from kaf.tmovimiento_af_dep mdep1
                                 where mdep1.id_activo_fijo_valor = afv.id_activo_fijo_valor
                                 and fecha between ('01-01-'||extract(year from mdep.fecha))::date and v_parametros.fecha_hasta::date)
-            
+
             and mdep.id_moneda_dep = coalesce(v_parametros.id_moneda,1)
             and af.id_activo_fijo in (select id_activo_fijo from tt_af_filtro)
                                                             --and afv.codigo not like '%-G%'
@@ -1309,8 +1309,8 @@ BEGIN
                                                 from tt_detalle_depreciacion);
             --------------------------------
             --------------------------------
-            
-                   
+
+
 
             ----
             /*insert into tt_detalle_depreciacion(
@@ -1363,7 +1363,7 @@ BEGIN
                                                 from tt_detalle_depreciacion)
                                                 and afv.codigo not like '%-G%'
             and af.estado <> 'eliminado';*/
-            
+
             --Obtiene los datos de gestion anterior
             /*update tt_detalle_depreciacion set
             depreciacion_acum_gest_ant = coalesce((
@@ -1380,7 +1380,7 @@ BEGIN
                 and id_moneda_dep = v_parametros.id_moneda
                 and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_parametros.fecha_hasta)::integer -1 )::date)
             ),0);*/
-            
+
             --Obtiene los datos de gestion anterior
             update tt_detalle_depreciacion set
             depreciacion_acum_gest_ant = coalesce((
@@ -1397,7 +1397,7 @@ BEGIN
                             and id_moneda_dep = coalesce(v_parametros.id_moneda,1)
                             and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_parametros.fecha_hasta)::integer -1 )::date)
                         ),0));
-                        
+
             --Si la depreciación anterior es cero, busca la depreciación de su activo fijo valor original si es que tuviese
             update tt_detalle_depreciacion set
             depreciacion_acum_gest_ant = coalesce((
@@ -1418,7 +1418,7 @@ BEGIN
                         ),0))
             where coalesce(depreciacion_acum_gest_ant,0) = 0
             and id_activo_fijo_valor_original is not null;
-            
+
 
             --Verifica si hay reg con tipo = ajuste_restar, y le cambia el signo
             update tt_detalle_depreciacion set
@@ -2151,7 +2151,7 @@ BEGIN
 
     	end;
     else
-        raise exception 'Transacción inexistente';  
+        raise exception 'Transacción inexistente';
     end if;
 EXCEPTION
   WHEN OTHERS THEN

@@ -627,17 +627,19 @@ class ACTActivoFijo extends ACTbase{
 
         if($this->objParam->getParametro('configuracion_reporte') == 'pendientes_aprobacion') {
             //fecha
+//          
             if ($this->objParam->getParametro('fecha_ini') != '' && $this->objParam->getParametro('fecha_fin') != '') {
-                $this->objParam->addFiltro("(pro.fecha_ini::date  BETWEEN ''%" . $this->objParam->getParametro('fecha_ini') . "%''::date  and ''%" . $this->objParam->getParametro('fecha_fin') . "%''::date)");
+                $this->objParam->addFiltro("(mo.fecha_mov::date  BETWEEN ''%" . $this->objParam->getParametro('fecha_ini') . "%''::date  and ''%" . $this->objParam->getParametro('fecha_fin') . "%''::date)");
             }
 
             if ($this->objParam->getParametro('fecha_ini') != '' && $this->objParam->getParametro('fecha_fin') == '') {
-                $this->objParam->addFiltro("(pro.fecha_ini  >= ''%" . $this->objParam->getParametro('fecha_ini') . "%''::date)");
+                $this->objParam->addFiltro("(mo.fecha_mov  >= ''%" . $this->objParam->getParametro('fecha_ini') . "%''::date)");
             }
 
             if ($this->objParam->getParametro('fecha_ini') == '' && $this->objParam->getParametro('fecha_fin') != '') {
-                $this->objParam->addFiltro("(pro.fecha_ini  <= ''%" . $this->objParam->getParametro('fecha_fin') . "%''::date)");
+                $this->objParam->addFiltro("(mo.fecha_mov  <= ''%" . $this->objParam->getParametro('fecha_fin') . "%''::date)");
             }
+
             if($this->objParam->getParametro('id_depto')!=''){
                 if($this->objParam->getParametro('id_depto')==3){
                     $this->objParam->addFiltro("mo.id_depto in (7,47)");
@@ -646,6 +648,19 @@ class ACTActivoFijo extends ACTbase{
                     $this->objParam->addFiltro("mo.id_depto = ".$this->objParam->getParametro('id_depto'));
                 }
             }
+            //para el estado pre
+            if($this->objParam->getParametro('estado_mo')== 1){
+                $this->objParam->addFiltro("mo.estado  = ''borrador''");
+            }else if($this->objParam->getParametro('estado_mo')== 2){
+                $this->objParam->addFiltro("mo.estado = ''vbaf''");
+            }else if($this->objParam->getParametro('estado_mo')== 3){
+                $this->objParam->addFiltro("mo.estado = ''finalizado''");
+            }
+
+            else {
+                $this->objParam->addFiltro("mo.estado in  (''borrador'', ''vbaf'', ''finalizado'')");
+            }
+
 
         }
         if($this->objParam->getParametro('configuracion_reporte') == 'sin_asignacion') {

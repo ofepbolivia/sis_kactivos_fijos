@@ -1007,6 +1007,7 @@ class MODActivoFijo extends MODbase{
         $this->captura('glosa','varchar');
         $this->captura('funcionario','varchar');
         $this->captura('depto','varchar');
+        $this->captura('num_tramite','varchar');
 
 
 

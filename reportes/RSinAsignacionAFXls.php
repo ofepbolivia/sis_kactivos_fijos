@@ -155,12 +155,12 @@ class RSinAsignacionAFXls
 
 
         //$this->docexcel->getActiveSheet()->mergeCells('A1:A3');
-        $sheet0->mergeCells('B1:G1');
+        $sheet0->mergeCells('B1:J1');
         $sheet0->setCellValue('B1', 'DEPARTAMENTO ACTIVOS FIJOS');
-        $sheet0->mergeCells('B2:G2');
+        $sheet0->mergeCells('B2:J2');
         $sheet0->setCellValue('B2', 'ACTIVOS FIJOS SIN ASIGNACIÓN');
-        $sheet0->mergeCells('B3:G3');
-        $sheet0->setCellValue('B3', 'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: PENDIENTE');
+        $sheet0->mergeCells('B3:J3');
+        $sheet0->setCellValue('B3', 'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin'));
 
         $styleExtras=array(
             'font' => array(
