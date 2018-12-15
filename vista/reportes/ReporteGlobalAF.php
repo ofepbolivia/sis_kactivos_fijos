@@ -26,7 +26,8 @@ header("content-type: text/javascript; charset=UTF-8");
                         data : [['compras_gestion', 'Compras de Gestion'],
                                 ['detalle_af', 'Detalle Activos Fijos'],
                                 ['pendientes_aprobacion', 'Pendientes de Aprobación'],
-                                ['sin_asignacion', 'Sin Asignación']]
+                                ['sin_asignacion', 'Sin Asignación'],
+                                ['acti_fun_dep','Activos x Deposito']]
                     }),
                     anchor : '100%',
                     valueField : 'tipo',
@@ -299,6 +300,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     queryDelay: 1000,
                     minChars: 2,
                     anchor : '70%',
+                    width : 200,
                     enableMultiSelect: true
                 },
 
@@ -345,7 +347,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					pageSize: 15,
 					queryDelay: 1000,
 					anchor: '70%',
-					gwidth: 150,
+					width: 260,
 					minChars: 2,
 					enableMultiSelect:true
 				},
@@ -394,7 +396,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	                resizable:true,
 	                anchor:'70%',
 	                minChars:2,
-	                gwidth : 150,
+	                width : 260,
 	                enableMultiSelect:true,	            	               
 	            },
 				type:'AwesomeCombo',			
@@ -748,7 +750,77 @@ header("content-type: text/javascript; charset=UTF-8");
                 type : 'ComboBox',
                 id_grupo : 1,
                 form : true
+            },{
+                config : {
+                    name : 'rep_acti_fun_dep',
+                    fieldLabel : 'Reporte X Deposito',
+                    allowBlank : true,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'local',
+                    store: new Ext.data.ArrayStore({
+                        id: '',
+                        fields: [
+                            'key',
+                            'value'
+                        ],
+                        data: [
+                            ['dcod','CODIGO'],
+                            ['dcla','CLASIFICACION'],
+                            ['dden','DENOMINACION'],
+                            ['ddes','DESCRIPCION'],
+                            ['dest','ESTADO ACT.FIJ']
+                        ]
+                    }),
+                    valueField: 'key',
+                    displayField: 'value',
+                    width : 200,
+                    enableMultiSelect:true
+                },
+                type : 'AwesomeCombo',
+                id_grupo : 0,
+                form : true
             },
+			{
+                config : {
+                    name : 'id_funcionario',
+                    fieldLabel : 'Funcionario',
+                    allowBlank : true,
+                    emptyText : 'Estación...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_kactivos_fijos/control/Deposito/listarDeposito',
+                        id: 'id_funcionario',
+                        root: 'datos',
+                        fields: ['id_funcionario','nombre','funcionario'],
+                        totalProperty: 'total',
+                        sortInfo: {
+                            field: 'id_funcionario',
+                            direction: 'ASC'
+                        },
+                        baseParams:{par_filtro:'fun.desc_funcionario2'}
+                    }),                    
+
+                    valueField: 'id_funcionario',
+                    displayField: 'funcionario',
+                    forceSelection: false,
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 15,
+                    queryDelay: 1000,
+                    minChars: 2,
+                    anchor : '70%',
+                    listWidth:220,
+                    width:250,
+                    enableMultiSelect: true
+                },
+
+                type : 'ComboBox',
+                id_grupo : 1,
+                grid : true,
+                form : true
+            },            
         ],
         title : 'Reporte Global Activos Fijos',
         ActSave : '../../sis_kactivos_fijos/control/ActivoFijo/reportesAFGlobal',
@@ -769,11 +841,15 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getComponente('rep_sin_asignacion').setVisible(false);
             this.getComponente('txtMontoInf').setVisible(false);
             this.getComponente('txtMontoSup').setVisible(false);
-            this.getComponente('valor_actual').setVisible(false);                        
+            this.getComponente('valor_actual').setVisible(false);
+            this.getComponente('rep_acti_fun_dep').setVisible(false);
+            this.getComponente('estado_mo').setVisible(false);
+            this.getComponente('id_funcionario').setVisible(false);                        
         },
 
         iniciarEventos:function(){        	        	
-        	this.Cmp.configuracion_reporte.on('select',function(cmb,rec,ind){        		        		        	
+        	this.Cmp.configuracion_reporte.on('select',function(cmb,rec,ind){
+        		console.log('selected',rec.data.tipo);        		        		        	
         		if (rec.data.tipo == 'compras_gestion'){
 		            this.ocultarComponente(this.Cmp.activo_multi);      			
 		            this.mostrarComponente(this.Cmp.gestion_multi);
@@ -796,6 +872,10 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.id_lugar);
                     this.mostrarComponente(this.Cmp.tipo_activo);
                     this.ocultarComponente(this.Cmp.estado_mo);
+                    this.ocultarComponente(this.Cmp.id_funcionario);
+                    this.mostrarComponente(this.Cmp.fecha_ini);
+                    this.mostrarComponente(this.Cmp.fecha_fin);
+                    this.mostrarComponente(this.Cmp.id_depto);
 		            this.Cmp.gestion_multi.getStore().each(function(rec){
 		            	this.Cmp.gestion_multi.checkRecord(rec);
 		            },this);		            		            		            								
@@ -821,6 +901,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.id_lugar);
                     this.mostrarComponente(this.Cmp.tipo_activo);
                     this.ocultarComponente(this.Cmp.estado_mo);
+                    this.ocultarComponente(this.Cmp.id_funcionario);
                     this.Cmp.activo_multi.getStore().each(function(rec){
                         this.Cmp.activo_multi.checkRecord(rec);
                     },this);
@@ -846,7 +927,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.id_lugar);
                     this.ocultarComponente(this.Cmp.tipo_activo);
                     this.mostrarComponente(this.Cmp.estado_mo);
-
+					this.ocultarComponente(this.Cmp.id_funcionario);
                     this.Cmp.rep_pendiente_aprobacion.getStore().each(function(rec){
                         this.Cmp.rep_pendiente_aprobacion.checkRecord(rec);
                     },this);
@@ -872,10 +953,41 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.id_lugar);
                     this.ocultarComponente(this.Cmp.tipo_activo);
                     this.ocultarComponente(this.Cmp.estado_mo);
-
+					this.ocultarComponente(this.Cmp.id_funcionario);
+					this.mostrarComponente(this.Cmp.fecha_ini);
+					this.mostrarComponente(this.Cmp.fecha_fin);
+					this.mostrarComponente(this.Cmp.id_depto);					
                     this.Cmp.rep_sin_asignacion.getStore().each(function(rec){
                         this.Cmp.rep_sin_asignacion.checkRecord(rec);
                     },this);
+                }else if(rec.data.tipo == 'acti_fun_dep'){
+                	this.ocultarComponente(this.Cmp.activo_multi);
+                	this.ocultarComponente(this.Cmp.gestion_multi);
+                	this.ocultarComponente(this.Cmp.rep_pendiente_aprobacion);
+                	this.ocultarComponente(this.Cmp.rep_sin_asignacion);
+                	this.ocultarComponente(this.Cmp.rep_acti_fun_dep);
+                	
+                    //OCULTAR CAMPOS
+                    this.ocultarComponente(this.Cmp.tipo_reporte);
+                    this.ocultarComponente(this.Cmp.estado);
+                    this.ocultarComponente(this.Cmp.id_cat_estado_fun);
+                    this.ocultarComponente(this.Cmp.desc_nombre);
+                    this.ocultarComponente(this.Cmp.ubicacion);
+                    this.ocultarComponente(this.Cmp.nro_cbte_asociado);
+                    this.ocultarComponente(this.Cmp.column_busque);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.nr_factura);
+                    this.ocultarComponente(this.Cmp.tramite_compra);
+                    this.ocultarComponente(this.Cmp.nro_serie);
+                    this.ocultarComponente(this.Cmp.id_oficina);
+                    this.ocultarComponente(this.Cmp.id_clasificacion);
+                    this.ocultarComponente(this.Cmp.id_lugar);
+                    this.ocultarComponente(this.Cmp.tipo_activo);
+                    this.ocultarComponente(this.Cmp.estado_mo);
+                    this.ocultarComponente(this.Cmp.id_depto);
+                    this.ocultarComponente(this.Cmp.fecha_ini);
+                    this.ocultarComponente(this.Cmp.fecha_fin);
+                    this.mostrarComponente(this.Cmp.id_funcionario);                	
                 }
             },this);
         	
@@ -936,7 +1048,52 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.nro_cbte_asociado.modificado = true;
                     this.Cmp.estado_mo.reset();
                     this.Cmp.estado_mo.modificado = true;
+                    this.Cmp.id_funcionario.reset();
+                    this.Cmp.id_funcionario.modificado = true;
 
+                }else if(rec.data.tipo == 'acti_fun_dep'){
+                    this.Cmp.tipo_reporte.reset();
+                    this.Cmp.tipo_reporte.modificado = true;
+                    this.Cmp.estado.reset();
+                    this.Cmp.estado.modificado = true;
+                    this.Cmp.id_cat_estado_fun.reset();
+                    this.Cmp.id_cat_estado_fun.modificado = true;
+                    this.Cmp.desc_nombre.reset();
+                    this.Cmp.desc_nombre.modificado = true;
+                    this.Cmp.ubicacion.reset();
+                    this.Cmp.ubicacion.modificado = true;
+                    this.Cmp.nro_cbte_asociado.reset();
+                    this.Cmp.nro_cbte_asociado.modificado = true;
+                    this.Cmp.column_busque.reset();
+                    this.Cmp.column_busque.modificado = true;
+                    this.Cmp.id_depto.reset();
+                    this.Cmp.id_depto.modificado = true;
+                    this.Cmp.id_proveedor.reset();
+                    this.Cmp.id_proveedor.modificado = true;
+                    this.Cmp.nr_factura.reset();
+                    this.Cmp.nr_factura.modificado = true;
+                    this.Cmp.tramite_compra.reset();
+                    this.Cmp.tramite_compra.modificado = true;
+                    this.Cmp.nro_serie.reset();
+                    this.Cmp.nro_serie.modificado = true;
+                    this.Cmp.id_oficina.reset();
+                    this.Cmp.id_oficina.modificado = true;
+                    this.Cmp.id_clasificacion.reset();
+                    this.Cmp.id_clasificacion.modificado = true;
+                    this.Cmp.id_lugar.reset();
+                    this.Cmp.id_lugar.modificado = true;
+                    this.Cmp.tipo_activo.reset();
+                    this.Cmp.tipo_activo.modificado = true;
+                    this.Cmp.nro_cbte_asociado.reset();
+                    this.Cmp.nro_cbte_asociado.modificado = true;
+                    this.Cmp.estado_mo.reset();
+                    this.Cmp.estado_mo.modificado = true;
+                    this.Cmp.id_funcionario.reset();
+                    this.Cmp.id_funcionario.modificado = true;
+                    this.Cmp.fecha_ini.reset();
+                    this.Cmp.fecha_ini.modificado = true;
+                    this.Cmp.fecha_fin.reset();
+                    this.Cmp.fecha_fin.modificado = true;                                                                            
                 }
 
             }, this);

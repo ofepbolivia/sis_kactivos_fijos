@@ -22,6 +22,8 @@ require_once(dirname(__FILE__).'/../reportes/RPendientesAprobAFPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RPendientesAprobAFXls.php');
 require_once(dirname(__FILE__).'/../reportes/RSinAsignacionAFPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RSinAsignacionAFXls.php');
+require_once(dirname(__FILE__).'/../reportes/RActiDepaPFunFPDF.php');
+require_once(dirname(__FILE__).'/../reportes/RActiDepaPFunAFXls.php');
 
 
 class ACTActivoFijo extends ACTbase{
@@ -690,7 +692,6 @@ class ACTActivoFijo extends ACTbase{
 
         //
 
-
         //Llamada al Modelo, consulta BD
         $this->objFunc = $this->create('MODActivoFijo');
         $this->res = $this->objFunc->reportesAFGlobal($this->objParam);
@@ -708,8 +709,11 @@ class ACTActivoFijo extends ACTbase{
         $this->objFunc = $this->create('MODActivoFijo');
         $this->res5 = $this->objFunc->reportesSinAsignacion($this->objParam);
 
+        //ACTIVOS POR DEPOSITO        
+        $this->objFunc = $this->create('MODActivoFijo');
+        $this->res6 = $this->objFunc->reporteActiDepoFuncio($this->objParam);	        
+		//var_dump($this->res6->datos);exit;	
         //Configuracion Reporte
-
         if($this->objParam->getParametro('configuracion_reporte')  == 'compras_gestion'){
 
             if($this->objParam->getParametro('formato_reporte')=='pdf'){
@@ -745,6 +749,14 @@ class ACTActivoFijo extends ACTbase{
             else{
                 $nombreArchivo = uniqid(md5(session_id()).'[Reporte - Sin Asignacion]').'.xls';
             }
+        }
+        else if($this->objParam->getParametro('configuracion_reporte')=='acti_fun_dep'){
+            if($this->objParam->getParametro('formato_reporte')=='pdf'){
+                $nombreArchivo = uniqid(md5(session_id()).'[Reporte - Activos en Deposito]').'.pdf';
+            }
+            else{
+                $nombreArchivo = uniqid(md5(session_id()).'[Reporte - Activos en Deposito').'.xls';
+            }            
         }
 
         //Definicion de parametros adicionales para el reporte.
@@ -810,6 +822,20 @@ class ACTActivoFijo extends ACTbase{
                 $reporte->generarReporte();
             }
         }
+        else if($this->objParam->getParametro('configuracion_reporte') == 'acti_fun_dep'){        			
+            if ($this->objParam->getParametro('formato_reporte') == 'pdf') {
+                //Orientacion Hoja Documento.
+                $this->objParam->addParametro('orientacion','L');
+                $this->objReporteFormato = new RActiDepaPFunFPDF ($this->objParam);
+                $this->objReporteFormato->setDatos($this->res6->datos);
+                $this->objReporteFormato->generarReporte();
+                $this->objReporteFormato->output($this->objReporteFormato->url_archivo, 'F');
+            } else {
+                $reporte = new RActiDepaPFunAFXls($this->objParam);
+                $reporte->setDatos($this->res6->datos);
+                $reporte->generarReporte();
+            }
+        }		
 
         $this->mensajeExito=new Mensaje();
         $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',

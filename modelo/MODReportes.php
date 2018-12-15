@@ -74,7 +74,8 @@ class MODReportes extends MODbase{
 		$this->captura('ciudad','varchar');
 		$this->captura('nro_factura','varchar');
 		$this->captura('descripcion','varchar');
-		$this->captura('desc_funcionario1','text');		
+		$this->captura('desc_funcionario1','text');
+		$this->captura('meses','integer');		
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -392,6 +393,7 @@ class MODReportes extends MODbase{
 		$this->captura('leasing','numeric');
 		$this->captura('inc_ac_acum','numeric');
 		$this->captura('color','varchar');
+		$this->captura('val_acu_perido','numeric');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

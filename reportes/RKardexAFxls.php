@@ -345,7 +345,7 @@ class RKardexAFxls
 				if($celda!=''){
 					$this->cell($sheet,$monto,"$celda$f",$numero,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
 				}
-				$this->cell($sheet,$this->dataSet[$fil]['vida_util'],"R$f",17,$f,"center",false,$this->tam_letra_detalle,Arial,true,true);
+				$this->cell($sheet,$this->dataSet[$fil]['meses'],"R$f",17,$f,"center",false,$this->tam_letra_detalle,Arial,true,true);
 			}
 		}
 		//Borde a la caja

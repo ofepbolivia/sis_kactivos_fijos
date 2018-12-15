@@ -86,7 +86,7 @@ BEGIN
             and cat.codigo = 'alta';
     end IF;
 
- raise exception '%',v_id_cat_movimiento ;
+ --raise exception '%',v_id_cat_movimiento ;
 
     if v_id_cat_movimiento is null then
         raise exception 'No se encuentra registrado el Proceso de Alta. Comuníquese con el administrador del sistema.';

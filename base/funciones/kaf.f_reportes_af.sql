@@ -204,8 +204,9 @@ BEGIN
                         af.monto_compra_orig_100,
                         lu.nombre as ciudad,
                         af.documento as nro_factura,
-                        af.descripcion,
-                        fucal.desc_funcionario1
+                        upper(af.descripcion)::varchar as  descripcion,
+                        fucal.desc_funcionario1,
+                        movaf.vida_util as meses
                         from kaf.tmovimiento_af movaf
                         inner join kaf.tmovimiento mov
                         on mov.id_movimiento = movaf.id_movimiento
@@ -2020,7 +2021,8 @@ BEGIN
                                             de.transito,
                                             de.leasing,
                                             ac.inc_ac as inc_ac_acum,
-                                            ac.color    
+                                            ac.color,
+                                            (de.monto_vigente - ac.inc_ac - de.monto_vigente_orig)::numeric(18,2) as val_acu_perido    
                                             from tt_detalle_depreciacion_totales de 
                                             inner join tt_actuli_acumulado ac on ac.code=de.codigo
                                             where tipo in '||v_where||'                       

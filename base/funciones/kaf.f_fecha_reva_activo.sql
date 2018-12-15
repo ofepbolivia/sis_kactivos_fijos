@@ -17,7 +17,7 @@ caso contrario devuelve la fecha del activo con su fecha inicio depreciacion
     from kaf.tactivo_fijo_valores acv
     where acv.id_activo_fijo = (select ac.id_activo_fijo
                                 from kaf.tactivo_fijo ac 
-                                where ac.codigo=pruebas.f_tam_codigo(code))
+                                where ac.codigo=kaf.f_tam_codigo(code))
     and acv.tipo like '%reval%'
     limit 1;
 
@@ -30,7 +30,9 @@ caso contrario devuelve la fecha del activo con su fecha inicio depreciacion
       from kaf.tactivo_fijo_valores acv
       where acv.id_activo_fijo = (select ac.id_activo_fijo
                                   from kaf.tactivo_fijo ac 
-                                  where ac.codigo=code);				                                  
+                                  where ac.codigo=kaf.f_tam_codigo(code))
+                         and acv.tipo like '%alta%'
+                         limit 1;				                                  
 		resp = fec_sin_rev;
     end if;        
     return resp;

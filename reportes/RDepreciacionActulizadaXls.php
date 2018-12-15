@@ -296,8 +296,8 @@ class RDepreciacionActulizadaXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, '-');
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, $value['monto_vigente_orig_100']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, $value['monto_vigente_orig']);
-				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['inc_actualiz']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['monto_actualiz']);
+				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['inc_ac_acum']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['val_acu_perido']);
 				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, $value['monto_vigente']);				                
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila,'-');
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila,'-');
@@ -354,8 +354,8 @@ class RDepreciacionActulizadaXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, date("d/m/Y", strtotime($value['fecha_ini_dep'])));
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, $value['monto_vigente_orig_100']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, $value['monto_vigente_orig']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['inc_actualiz']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['monto_actualiz']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['inc_ac_acum']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['val_acu_perido']);
 				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, $value['monto_vigente']);				                              			
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila,$value['vida_util_orig']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila,$value['vida_util']);
@@ -408,8 +408,8 @@ class RDepreciacionActulizadaXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4, $fila, '');
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5, $fila, $value['monto_vigente_orig_100']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, $value['monto_vigente_orig']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['inc_actualiz']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['monto_actualiz']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['inc_ac_acum']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['val_acu_perido']);
 				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila, $value['monto_vigente']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila,'');
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila,'');
