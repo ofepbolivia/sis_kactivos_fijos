@@ -1881,7 +1881,7 @@ BEGIN
                         from kaf.f_depre_ges_ant(v_parametros.filtro,coalesce(v_parametros.id_moneda,1),v_fecha_actu,v_parametros.total_consol);    
 
                 else ----consolidado----para gestion actual
-                                                    
+                          
                         insert into tt_detalle_depreciacion_totales
                         select
                         codigo_padre,
@@ -2142,7 +2142,8 @@ BEGIN
                           transito,
                           leasing,
                           0.00 as inc_ac_acum, --para completar el modelo no valido
-                          ''-''::varchar as color
+                          ''-''::varchar as color,
+                          0.00 as val_acu_perido
                           from tt_detalle_depreciacion_totales
                           where tipo in '||v_where||'                       
                           order by codigo, orden';

@@ -40,7 +40,8 @@ DECLARE
     v_filtro      varchar='';
     ord					text;
     v_nivel     integer;
-    v_agregate  varchar;     
+    v_agregate  varchar;
+    v_id_depo   integer;     
 BEGIN
 
   v_nombre_funcion = 'kaf.ft_activo_fijo_sel';

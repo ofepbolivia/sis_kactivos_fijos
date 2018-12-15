@@ -1,7 +1,8 @@
 CREATE OR REPLACE FUNCTION kaf.f_depre_ges_ant (
   filtro text,
   moneda integer,
-  fecha_enviada date
+  fecha_enviada date,
+  total_consol varchar
 )
 RETURNS TABLE (
   cod varchar,
@@ -349,8 +350,8 @@ $body$
         id_activo_fijo_valor_original INTEGER
       )on commit drop;
       
-	if total_consol = 'consol' then 
-    
+	if total_consol = 'consoli' then 
+
             insert into tt_detalle_depreciacion_totales_actu
             select            
             codigo_padre,

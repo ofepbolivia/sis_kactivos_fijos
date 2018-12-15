@@ -186,7 +186,7 @@ class RKardexAFPDF extends  ReportePDF{
 	                's5' => ($this->datos[$fil]['codigo_mov']=='reval')?$monto:'',
 	                's6' => ($this->datos[$fil]['codigo_mov']=='ajuste')?$monto:'',
 	                's7' => ($this->datos[$fil]['codigo_mov']=='retiro')?$monto:'',
-	                's8' => ''
+	                's8' => $this->datos[$fil]['meses']
 	            	);                
 	        	$this->MultiRowHeader($RowArray,false,1);
 	        	$this->tablewidths = $this->tablewidthsHD;
