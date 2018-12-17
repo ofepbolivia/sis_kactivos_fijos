@@ -254,7 +254,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			style: this.setBackgroundColor('dteFechaIniDep')
 		});
 		this.cmbEstado = new Ext.form.ComboBox({
-			fieldLabel: 'Estado',
+			fieldLabel: 'Estado Del Activo',
 			anchor: '100%',
 			emptyText : 'Estado...',
 			store : new Ext.data.JsonStore({
