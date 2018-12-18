@@ -108,8 +108,8 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
                     's4' => $record['monto_vigente_orig_100']!=''?$record['monto_vigente_orig_100']:0,
                     's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
                     's6' => $record['inc_ac_acum']!=0.00?$record['inc_ac_acum']:0,
-                    's7' => $record['monto_actualiz']!=''?$record['val_acu_perido']:0,//inc_actualiz	
-                    's8' => $record['monto_vigente']!=''?$record['monto_vigente']:0,
+                    's7' => $record['val_acu_perido']!=''?$record['val_acu_perido']:0,//inc_actualiz	
+                    's8' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
                     's9' => '',
                     's10' => '',
                     's11' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
@@ -141,8 +141,8 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
                     's4' => $record['monto_vigente_orig_100']!=''?$record['monto_vigente_orig_100']:0,
                     's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
                     's6' => $record['inc_ac_acum']!=0.00?$record['inc_ac_acum']:0,
-                    's7' => $record['monto_actualiz']!=''?$record['val_acu_perido']:0,//inc_actualiz
-                    's8' => $record['monto_vigente']!=''?$record['monto_vigente']:0,
+                    's7' => $record['val_acu_perido']!=''?$record['val_acu_perido']:0,//inc_actualiz
+                    's8' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
                     's9' => substr($record['codigo'], 0,2)=='01'?'-':$record['vida_util_orig'],
                     's10' => $record['vida_util'],
                     's11' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
@@ -171,8 +171,8 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
                     's4' => $record['monto_vigente_orig_100']!=''?$record['monto_vigente_orig_100']:0,
                     's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
                     's6' => $record['inc_ac_acum']!=0.00?$record['inc_ac_acum']:0,
-                    's7' => $record['monto_actualiz']!=''?$record['val_acu_perido']:0,//inc_actualiz
-                    's8' => $record['monto_vigente']!=''?$record['monto_vigente']:0,
+                    's7' => $record['val_acu_perido']!=''?$record['val_acu_perido']:0,//inc_actualiz
+                    's8' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
                     's9' => '',
                     's10' => '',
                     's11' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,

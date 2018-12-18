@@ -448,74 +448,71 @@ $body$
             'total'
             from tt_detalle_depreciacion_actu;                      
 	else 
-            insert into tt_detalle_depreciacion_totales_actu
-            select            
-            codigo_padre,
-            denominacion_padre,
-            null,
-            sum(monto_vigente_orig_100),
-            sum(monto_vigente_orig),
-            sum(inc_actualiz),
-            sum(monto_actualiz),
-            null,
-            null,
-            sum(depreciacion_acum_gest_ant),
-            sum(depreciacion_acum_actualiz_gest_ant),
-            sum(depreciacion_per),
-            sum(depreciacion_acum),
-            sum(monto_vigente),
-            replace(codigo_padre,'RE','')::integer,
-            0,
-            'clasif'
-            from tt_detalle_depreciacion_actu
-            group by codigo_padre, denominacion_padre;
-     
-                                           
-            --Inserta el detalle
-    insert into tt_detalle_depreciacion_totales_actu            
-            select                             
-            de.codigo,                  
-            de.denominacion,
-            de.fecha_ini_dep,          
-            sum(de.monto_vigente_orig_100),
-            sum(de.monto_vigente_orig),            
-            sum(de.inc_actualiz),
-            sum(de.monto_actualiz),
-            null,
-            null,        
-            sum(de.depreciacion_acum_gest_ant),                            
-            sum(de.depreciacion_acum_actualiz_gest_ant),                                                                                                          
-            sum(de.depreciacion_per),                            
-            sum(de.depreciacion_acum),                            
-            sum(de.monto_vigente),
-            de.codigo_padre::integer,                            
-			replace(replace(replace(replace(replace(replace(de.codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
-            'detalle'
-            from tt_detalle_depreciacion_actu de
-            group by de.codigo,de.denominacion,de.fecha_ini_dep,
-            de.codigo_padre;
+insert into tt_detalle_depreciacion_totales_actu
+       select
+       codigo_padre,
+       denominacion_padre,
+       null,
+       sum(monto_vigente_orig_100),
+       sum(monto_vigente_orig),
+       sum(inc_actualiz),
+       sum(monto_actualiz),
+       null,
+       null,
+       sum(depreciacion_acum_gest_ant),
+       sum(depreciacion_acum_actualiz_gest_ant),
+       sum(depreciacion_per),
+       sum(depreciacion_acum),
+       sum(monto_vigente),
+       replace(codigo_padre,'RE','')::integer,
+       0,
+       'clasif'
+       from tt_detalle_depreciacion_actu         
+       group by codigo_padre, denominacion_padre;
 
-            --Inserta los totales finales
-    insert into tt_detalle_depreciacion_totales_actu
-            select
-            'TOTAL FINAL',
-            null,
-            null,
-            sum(monto_vigente_orig_100),
-            sum(monto_vigente_orig),
-            sum(inc_actualiz),
-            sum(monto_actualiz),
-            null,
-            null,
-            sum(depreciacion_acum_gest_ant),
-            sum(depreciacion_acum_actualiz_gest_ant),
-            sum(depreciacion_per),
-            sum(depreciacion_acum),
-            sum(monto_vigente),
-            999,
-            0,
-            'total'
-            from tt_detalle_depreciacion_actu;         
+       --Inserta el detalle
+       insert into tt_detalle_depreciacion_totales_actu
+       select
+       codigo,
+       denominacion,
+       fecha_ini_dep,
+       monto_vigente_orig_100,
+       monto_vigente_orig,
+       inc_actualiz,
+       monto_actualiz,
+       vida_util_orig,
+       vida_util,
+       depreciacion_acum_gest_ant,
+       depreciacion_acum_actualiz_gest_ant,
+       depreciacion_per,
+       depreciacion_acum,
+       monto_vigente,
+       codigo_padre::integer,            
+       replace(replace(replace(replace(replace(replace(codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
+       'detalle'
+       from tt_detalle_depreciacion_actu;
+
+       --Inserta los totales finales
+       insert into tt_detalle_depreciacion_totales_actu
+       select
+       'TOTAL FINAL',
+       null,
+       null,
+       sum(monto_vigente_orig_100),
+       sum(monto_vigente_orig),
+       sum(inc_actualiz),
+       sum(monto_actualiz),
+       null,
+       null,
+       sum(depreciacion_acum_gest_ant),
+       sum(depreciacion_acum_actualiz_gest_ant),
+       sum(depreciacion_per),
+       sum(depreciacion_acum),
+       sum(monto_vigente),
+       999,
+       0,
+       'total'
+       from tt_detalle_depreciacion_actu;         
     end if;	    
 	return query
     	   select 

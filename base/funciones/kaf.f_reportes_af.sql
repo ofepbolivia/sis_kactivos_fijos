@@ -2022,7 +2022,7 @@ BEGIN
                                             de.leasing,
                                             ac.inc_ac as inc_ac_acum,
                                             ac.color,
-                                            (de.monto_vigente - ac.inc_ac - de.monto_vigente_orig)::numeric(18,2) as val_acu_perido    
+                                            (de.monto_actualiz - ac.inc_ac - de.monto_vigente_orig)::numeric(18,2) as val_acu_perido    
                                             from tt_detalle_depreciacion_totales de 
                                             inner join tt_actuli_acumulado ac on ac.code=de.codigo
                                             where tipo in '||v_where||'                       
@@ -2033,83 +2033,136 @@ BEGIN
 
     else ---------detalle depreciacion nuevo reporte creado 
 
-                    --Inserta los totales por clasificacióm
-                    insert into tt_detalle_depreciacion_totales
-                    select
-                    codigo_padre,
-                    denominacion_padre,
-                    null,
-                    sum(monto_vigente_orig_100),
-                    sum(monto_vigente_orig),
-                    sum(inc_actualiz),
-                    sum(monto_actualiz),
-                    null,
-                    null,
-                    sum(depreciacion_acum_gest_ant),
-                    sum(depreciacion_acum_actualiz_gest_ant),
-                    sum(depreciacion_per),
-                    sum(depreciacion_acum),
-                    sum(monto_vigente),
-                    replace(codigo_padre,'RE','')::integer,
-                    0,
-                    'clasif'
-                    from tt_detalle_depreciacion
-                    group by codigo_padre, denominacion_padre;
 
-                    --Inserta el detalle
-                    insert into tt_detalle_depreciacion_totales
-                    select
-                    codigo,
-                    denominacion,
-                    fecha_ini_dep,
-                    monto_vigente_orig_100,
-                    monto_vigente_orig,
-                    inc_actualiz,
-                    monto_actualiz,
-                    vida_util_orig,
-                    vida_util,
-                    depreciacion_acum_gest_ant,
-                    depreciacion_acum_actualiz_gest_ant,
-                    depreciacion_per,
-                    depreciacion_acum,
-                    monto_vigente,
-                    codigo_padre::integer,            
-                    replace(replace(replace(replace(replace(replace(codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
-                    'detalle',
-                    kaf.f_activo_tipo(id_activo_fijo_valor,'reval'),
-                    kaf.f_activo_tipo(id_activo_fijo_valor,'ajuste'),
-                    kaf.f_activo_tipo(id_activo_fijo_valor,'baja'),
-                    kaf.f_activo_tipo(id_activo_fijo_valor,'transito'),   
-                    kaf.f_activo_tipo(id_activo_fijo_valor,'leasing')    
-                    from tt_detalle_depreciacion
-                    where tipo='alta';
+        --          raise exception 'consolidado';
+        
+                            CREATE temp TABLE tt_detalle_depreciacion_periodo (
+                              id_activo_fijo_valor INTEGER,
+                              codigo VARCHAR(50),
+                              denominacion VARCHAR(500),
+                              fecha_ini_dep DATE,
+                              monto_vigente_orig_100 NUMERIC(18,2),
+                              monto_vigente_orig NUMERIC(18,2),
+                              inc_actualiz NUMERIC(18,2),
+                              monto_actualiz NUMERIC(18,2),
+                              vida_util_orig INTEGER,
+                              vida_util INTEGER,
+                              depreciacion_acum_gest_ant NUMERIC(18,2),
+                              depreciacion_acum_actualiz_gest_ant NUMERIC(18,2),
+                              depreciacion_per NUMERIC(18,2),
+                              depreciacion_acum NUMERIC(18,2),
+                              monto_vigente NUMERIC(18,2),
+                              codigo_padre VARCHAR(15),
+                              denominacion_padre VARCHAR(100),
+                              tipo VARCHAR(50),
+                              tipo_cambio_fin NUMERIC,
+                              id_moneda_act INTEGER,
+                              id_activo_fijo_valor_original INTEGER
+                            )on commit drop;
+                    
+                            insert into tt_detalle_depreciacion_totales
+                            select
+                            codigo_padre,
+                            denominacion_padre,
+                            null,
+                            sum(monto_vigente_orig_100),
+                            sum(monto_vigente_orig),
+                            sum(inc_actualiz),
+                            sum(monto_actualiz),
+                            null,
+                            null,
+                            sum(depreciacion_acum_gest_ant),
+                            sum(depreciacion_acum_actualiz_gest_ant),
+                            sum(depreciacion_per),
+                            sum(depreciacion_acum),
+                            sum(monto_vigente),
+                            replace(codigo_padre,'RE','')::integer,
+                            0,
+                            'clasif'
+                            from tt_detalle_depreciacion
+                            group by codigo_padre, denominacion_padre;
 
-                    --Inserta los totales finales
-                    insert into tt_detalle_depreciacion_totales
-                    select
-                    'TOTAL FINAL',
-                    null,
-                    null,
-                    sum(monto_vigente_orig_100),
-                    sum(monto_vigente_orig),
-                    sum(inc_actualiz),
-                    sum(monto_actualiz),
-                    null,
-                    null,
-                    sum(depreciacion_acum_gest_ant),
-                    sum(depreciacion_acum_actualiz_gest_ant),
-                    sum(depreciacion_per),
-                    sum(depreciacion_acum),
-                    sum(monto_vigente),
-                    999,
-                    0,
-                    'total',
-                    sum(kaf.f_activo_tipo(id_activo_fijo_valor,'reval')),
-                    sum(kaf.f_activo_tipo(id_activo_fijo_valor,'ajuste')),
-                    sum(kaf.f_activo_tipo(id_activo_fijo_valor,'baja')),
-                    sum(kaf.f_activo_tipo(id_activo_fijo_valor,'transito')), 
-                    sum(kaf.f_activo_tipo(id_activo_fijo_valor,'leasing')) 
-                    from tt_detalle_depreciacion;
+                    insert into tt_detalle_depreciacion_periodo
+                          select
+                          id_activo_fijo_valor,
+                          kaf.f_tam_codigo(codigo),
+                          denominacion,                
+                          kaf.f_fecha_reva_activo(codigo),      
+                          monto_vigente_orig_100,
+                          monto_vigente_orig,            
+                          inc_actualiz,
+                          monto_actualiz,                              
+                          vida_util_orig,
+                          vida_util,
+                          depreciacion_acum_gest_ant,                            
+                          depreciacion_acum_actualiz_gest_ant,                                                                
+                          depreciacion_per,                            
+                          depreciacion_acum,                            
+                          monto_vigente,                            
+                          codigo_padre,
+                          denominacion_padre,
+                          tipo,
+                          tipo_cambio_fin,
+                          id_moneda_act,
+                          id_activo_fijo_valor_original
+                          from tt_detalle_depreciacion;   
+                                                           
+                            --Inserta el detalle
+                            insert into tt_detalle_depreciacion_totales            
+                            select     
+                            de.codigo,                  
+                            de.denominacion,
+                            de.fecha_ini_dep,          
+                            sum(de.monto_vigente_orig_100),
+                            sum(de.monto_vigente_orig),            
+                            sum(de.inc_actualiz),
+                            sum(de.monto_actualiz),
+                            ac.vida_util_orig,
+                            ac.vida_util,       
+                            sum(de.depreciacion_acum_gest_ant),                            
+                            sum(de.depreciacion_acum_actualiz_gest_ant),                                                                                                          
+                            sum(de.depreciacion_per),                            
+                            sum(de.depreciacion_acum),                            
+                            sum(de.monto_vigente),
+                            de.codigo_padre::integer,                            
+                            replace(replace(replace(replace(replace(replace(de.codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
+                            'detalle',
+                            kaf.f_activo_tipo(de.codigo,'reval',v_parametros.fecha_hasta),
+                            kaf.f_activo_tipo(de.codigo,'ajuste',v_parametros.fecha_hasta),
+                            kaf.f_activo_tipo(de.codigo,'baja',v_parametros.fecha_hasta),
+                            kaf.f_activo_tipo(de.codigo,'transito',v_parametros.fecha_hasta),   
+                            kaf.f_activo_tipo(de.codigo,'leasing',v_parametros.fecha_hasta)                               
+                            from tt_detalle_depreciacion_periodo de
+                            inner join tt_detalle_depreciacion ac on ac.codigo=de.codigo                        
+                            group by de.codigo,de.denominacion,de.fecha_ini_dep,
+                            de.codigo_padre,ac.vida_util_orig,ac.vida_util;
+
+                            --Inserta los totales finales
+                            insert into tt_detalle_depreciacion_totales
+                            select
+                            'TOTAL FINAL',
+                            null,
+                            null,
+                            sum(monto_vigente_orig_100),
+                            sum(monto_vigente_orig),
+                            sum(inc_actualiz),
+                            sum(monto_actualiz),
+                            null,
+                            null,
+                            sum(depreciacion_acum_gest_ant),
+                            sum(depreciacion_acum_actualiz_gest_ant),
+                            sum(depreciacion_per),
+                            sum(depreciacion_acum),
+                            sum(monto_vigente),
+                            999,
+                            0,
+                            'total',
+                            sum(kaf.f_activo_tipo(codigo,'reval',v_parametros.fecha_hasta)),
+                            sum(kaf.f_activo_tipo(codigo,'ajuste',v_parametros.fecha_hasta)),
+                            sum(kaf.f_activo_tipo(codigo,'baja',v_parametros.fecha_hasta)),
+                            sum(kaf.f_activo_tipo(codigo,'transito',v_parametros.fecha_hasta)),   
+                            sum(kaf.f_activo_tipo(codigo,'leasing',v_parametros.fecha_hasta))                            
+                            from tt_detalle_depreciacion;
               
 
     end if;     

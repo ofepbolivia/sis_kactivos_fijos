@@ -366,6 +366,7 @@ class MODReportes extends MODbase{
 		$this->setParametro('total_consol','total_consol','varchar');
 		$this->setParametro('estado_depre','estado_depre','varchar');
 		$this->setParametro('tipo_repo','tipo_repo','varchar');
+		$this->setParametro('actu_perido','actu_perido','varchar');
 
 		//Definicion de la lista del resultado del query
 		$this->captura('codigo','varchar(50)');

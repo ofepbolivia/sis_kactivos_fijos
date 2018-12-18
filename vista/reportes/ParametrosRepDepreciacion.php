@@ -73,6 +73,17 @@ header("content-type: text/javascript; charset=UTF-8");
 				this.cmbEstadoDepre.setValue('');
 			}
 		},this);
+		this.cmbTipoRep.on('select',function(cmb,record,index){			
+			if(record.data.tipo=='geac'){
+				this.cmbPeriodo.setVisible(true);
+				this.cmbPeriodo.setValue('');
+				this.configElement(this.cmbPeriodo,true,false);			
+			}else{
+				this.configElement(this.cmbPeriodo,false,true);
+				this.cmbPeriodo.setVisible(false);
+				this.cmbPeriodo.setValue('');				
+			}
+		},this);
 		//Responsable
 		this.cmbResponsable.on('select',function(combo,record,index){
 			this.repResponsable = record.data['desc_funcionario1'];
@@ -99,10 +110,10 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         definirParametros: function(report){
             this.inicializarParametros();
-			this.configElement(this.cmbTipoRep,false,false);
+			this.configElement(this.cmbTipoRep,false,false);			
             this.configElement(this.dteFechaDesde,false,true);
             this.configElement(this.dteFechaHasta,false,false);
-            this.configElement(this.cmbActivo,false,true);
+            this.configElement(this.cmbActivo,false,true);            
 
 		this.configElement(this.cmbClasificacion,false,true);
 		this.configElement(this.cmbClasificacionMulti,false,true);		
@@ -111,6 +122,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.configElement(this.dteFechaCompra,true,true);
 		this.configElement(this.dteFechaIniDep,false,true);
 		this.configElement(this.cmbEstadoDepre,false,true);
+		this.configElement(this.cmbTipoRep,false,true);
 		this.configElement(this.cmbEstado,false,true);
 		this.configElement(this.cmbCentroCosto,false,true);
 		this.configElement(this.txtUbicacionFisica,false,true);
@@ -195,8 +207,10 @@ header("content-type: text/javascript; charset=UTF-8");
 		},
 		detalleDepreciacion:function(cmp,event){						
 			this.cmbTipoRep.setVisible(true);
+			this.cmbPeriodo.setVisible(false);
 			this.cmbTipoMov.setVisible(true);
 			this.cmbEstadoDepre.setVisible(true);
+			this.cmbTipoRep.setVisible(true);
 			this.cmbEstado.setVisible(true);
 			this.dteFechaHasta.setVisible(true);
 			this.cmpFechas.setVisible(true);
@@ -226,8 +240,10 @@ header("content-type: text/javascript; charset=UTF-8");
 		},
 		detalleDepPeriodo:function(cmp,event){
 	      this.cmbTipoRep.setValue('');
+	      this.cmbPeriodo.setValue('');
 	      this.cmbTipoMov.setValue('');
 	      this.cmbEstadoDepre.setValue('');
+	      this.cmbTipoRep.setValue('');
 	      this.dteFechaHasta.setValue('');
 	      this.cmbClasificacion.setValue('');       
 	      this.cmbClasificacionMulti.reset();
@@ -239,8 +255,10 @@ header("content-type: text/javascript; charset=UTF-8");
 	      this.cmbEstado.setValue('');	
 	      					
 			this.cmbTipoRep.setVisible(false);
+			this.cmbPeriodo.setVisible(false);
 			this.cmbTipoMov.setVisible(false);
 			this.cmbEstadoDepre.setVisible(false);
+			this.cmbTipoRep.setVisible(false);
 			this.dteFechaHasta.setVisible(true);
 			this.cmpFechas.setVisible(true);
 			this.cmbClasificacion.setVisible(true);

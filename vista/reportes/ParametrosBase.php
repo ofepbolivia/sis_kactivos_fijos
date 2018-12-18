@@ -77,7 +77,23 @@ Ext.define('Phx.vista.ParametrosBase', {
 			valueField : 'tipo',
 			displayField : 'valor',
 			style: this.setBackgroundColor('cmbTipoRep')
-		});		
+		});
+		this.cmbPeriodo = new Ext.form.ComboBox({
+			name : 'actu_perido',
+			fieldLabel : 'Perido',
+			allowBlank : true,
+			triggerAction : 'all',
+			lazyRender : true,
+			mode : 'local',
+			store : new Ext.data.ArrayStore({
+				fields : ['tipo', 'valor'],
+				data : [['mes', 'Mensual'], ['anio', 'Anual']]
+			}),
+			anchor : '40%',
+			valueField : 'tipo',
+			displayField : 'valor',
+			style: this.setBackgroundColor('cmbPeriodo')
+		});				
 		this.cmpFechas = new Ext.form.CompositeField({
         	fieldLabel: 'Fechas',
         	items: [this.lblDesde,this.dteFechaDesde,this.lblHasta,this.dteFechaHasta]
@@ -628,7 +644,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.fieldSetGeneral = new Ext.form.FieldSet({
         	collapsible: true,
         	title: 'General',
-        	items: [this.cmbTipoRep,this.cmpFechas,this.cmbClasificacion,this.cmbClasificacionMulti,this.cmbTipoMov,this.cmbEstadoDepre,this.cmbActivo,this.txtDenominacion,this.cmbMoneda,this.cmpFechaCompra,this.cmpMontos,this.cmbTipo,this.cmbLugar,this.txtNroCbteAsociado,
+        	items: [this.cmbTipoRep,this.cmbPeriodo,this.cmpFechas,this.cmbClasificacion,this.cmbClasificacionMulti,this.cmbTipoMov,this.cmbEstadoDepre,this.cmbActivo,this.txtDenominacion,this.cmbMoneda,this.cmpFechaCompra,this.cmpMontos,this.cmbTipo,this.cmbLugar,this.txtNroCbteAsociado,
         		this.dteFechaIniDep,this.cmbEstado,this.cmbCentroCosto,this.txtUbicacionFisica,
 				this.cmbOficina,this.cmbResponsable,this.cmbDepto, this.cmbInventa, this.descNombre, this.cmbDeposito,this.radGroupDeprec]
         });
@@ -800,6 +816,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.txtNroCbteAsociado.setValue('');
 		this.radGroupDeprec.setValue('completo');
 		this.cmbTipo.setValue('');
+		this.cmbPeriodo.setValue('');
 
 		this.cmbClasificacion.selectedIndex=-1;
 		this.cmbClasificacionMulti.selectedIndex=-1;
@@ -882,7 +899,8 @@ Ext.define('Phx.vista.ParametrosBase', {
 			id_clasificacion_multi: this.cmbClasificacionMulti.getValue(),
 			total_consol : this.cmbTipoMov.getValue(),
 			estado_depre : this.cmbEstadoDepre.getValue(),
-			tipo_repo : this.cmbTipoRep.getValue(),			
+			tipo_repo : this.cmbTipoRep.getValue(),
+			actu_perido:this.cmbPeriodo.getValue(),		
 		};
 
 		Ext.apply(params,this.getExtraParams());
@@ -979,6 +997,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.configElement(this.cmbDeposito,false,true);
 		this.configElement(this.lblDesde,false,true);
 		this.configElement(this.lblHasta,false,true);
+		this.configElement(this.cmbPeriodo,false,true);
 		this.configElement(this.cmpFechas,false,true);
 		this.configElement(this.txtMontoInf,false,true);
 		this.configElement(this.txtMontoSup,false,true);

@@ -1,5 +1,6 @@
 CREATE OR REPLACE FUNCTION kaf.f_mes_anterior (
-  fecha date
+  fecha date,
+  perido varchar
 )
 RETURNS text AS
 $body$
@@ -31,7 +32,7 @@ BEGIN
           dia=to_char(fecha,'dd'); 
           mes=to_char(fecha,'mm');
           anno=to_char(fecha,'yyyy');
-
+if perido='mes' then 
     if mes in (5,7,10,12) then
           v_dia = 30;
       elsif mes in (1,2,4,6,8,9,11) then
@@ -51,7 +52,9 @@ BEGIN
     end loop;
     
     v_fecha = (v_dia::varchar||'/'||mes_new::varchar||'/'||anno_new::varchar)::varchar;
-  
+elsif perido='anio' then     
+	v_fecha = '31/12/'||anno::varchar::integer -1;
+end if;    
     return v_fecha;          
 END;
 $body$
