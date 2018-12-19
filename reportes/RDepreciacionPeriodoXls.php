@@ -337,8 +337,8 @@ class RDepreciacionPeriodoXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(19, $fila, $value['depreciacion_acum_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(20, $fila, $value['depreciacion_acum_actualiz_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(21, $fila, $value['depreciacion_per']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(22, $fila, $value['depreciacion_acum']);
-				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(23, $fila, '');
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(22, $fila, '');
+				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(23, $fila, $value['depreciacion_acum']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(24, $fila, $value['monto_vigente']);
 
                 $contador++;
@@ -409,8 +409,8 @@ class RDepreciacionPeriodoXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(19, $fila, $value['depreciacion_acum_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(20, $fila, $value['depreciacion_acum_actualiz_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(21, $fila, $value['depreciacion_per']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(22, $fila, $value['depreciacion_acum']);
-				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(23, $fila, '');
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(22, $fila, '');
+				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(23, $fila, $value['depreciacion_acum']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(24, $fila, $value['monto_vigente']);
 				
             }

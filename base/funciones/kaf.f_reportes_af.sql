@@ -1865,7 +1865,7 @@ BEGIN
                         'total'
                         from tt_detalle_depreciacion;
                         
-                        v_fecha_actu = kaf.f_mes_anterior(v_parametros.fecha_hasta);                         
+                        v_fecha_actu = kaf.f_mes_anterior(v_parametros.fecha_hasta,v_parametros.actu_perido);                         
 
                         create temp table tt_actuli_acumulado (
                             code    VARCHAR(100),
@@ -1878,7 +1878,7 @@ BEGIN
                         cod,
                         inc_act,
                         col
-                        from kaf.f_depre_ges_ant(v_parametros.filtro,coalesce(v_parametros.id_moneda,1),v_fecha_actu,v_parametros.total_consol);    
+                        from kaf.f_depre_ges_ant(v_parametros.filtro,coalesce(v_parametros.id_moneda,1),v_fecha_actu,v_parametros.total_consol,v_parametros.af_deprec);    
 
                 else ----consolidado----para gestion actual
                           
@@ -1977,7 +1977,7 @@ BEGIN
                         'total'
                         from tt_detalle_depreciacion;
                                         
-                        v_fecha_actu = kaf.f_mes_anterior(v_parametros.fecha_hasta);                         
+                        v_fecha_actu = kaf.f_mes_anterior(v_parametros.fecha_hasta,v_parametros.actu_perido);                         
 
                         create temp table tt_actuli_acumulado (
                             code    VARCHAR(100),
@@ -1990,7 +1990,7 @@ BEGIN
                         cod,
                         inc_act,
                         col
-                        from kaf.f_depre_ges_ant(v_parametros.filtro,coalesce(v_parametros.id_moneda,1),v_fecha_actu,v_parametros.total_consol);    
+                        from kaf.f_depre_ges_ant(v_parametros.filtro,coalesce(v_parametros.id_moneda,1),v_fecha_actu,v_parametros.total_consol,v_parametros.af_deprec);    
                     end if;                                              
                                v_where = '(''total'',''detalle'',''clasif'')';
                                if v_parametros.af_deprec = 'clasif' then
@@ -2163,6 +2163,59 @@ BEGIN
                             sum(kaf.f_activo_tipo(codigo,'transito',v_parametros.fecha_hasta)),   
                             sum(kaf.f_activo_tipo(codigo,'leasing',v_parametros.fecha_hasta))                            
                             from tt_detalle_depreciacion;
+
+                        v_fecha_actu = kaf.f_mes_anterior(v_parametros.fecha_hasta,v_parametros.actu_perido);                         
+
+                        create temp table tt_actuli_acumulado (
+                            code    VARCHAR(100),
+                            inc_ac  numeric(18,2),
+                            color   varchar(2)
+                        ) on commit drop;
+                                        
+                        insert into tt_actuli_acumulado
+                        select 
+                        cod,
+                        inc_act,
+                        col
+                        from kaf.f_depre_ges_ant(v_parametros.filtro,coalesce(v_parametros.id_moneda,1),v_fecha_actu,'consoli',v_parametros.af_deprec);                              
+
+                              v_where = '(''total'',''detalle'',''clasif'')';
+                               if v_parametros.af_deprec = 'clasif' then
+                                v_where = '(''total'',''clasif'')';
+                               end if; 
+
+                                    v_consulta = 'select
+                                            de.codigo,
+                                            de.denominacion,
+                                            de.fecha_ini_dep,                       
+                                            de.monto_vigente_orig_100,                      
+                                            de.monto_vigente_orig,
+                                            (de.monto_actualiz - de.monto_vigente_orig)::numeric(18,2) as inc_actualiz,
+                                            de.monto_actualiz,
+                                            de.vida_util_orig,
+                                            de.vida_util,
+                                            de.depreciacion_acum_gest_ant,
+                                            de.depreciacion_acum_actualiz_gest_ant,
+                                            de.depreciacion_acum - de.depreciacion_acum_gest_ant - de.depreciacion_acum_actualiz_gest_ant,--depreciacion_per,
+                                            de.depreciacion_acum,
+                                            de.monto_vigente,
+                                            de.nivel,
+                                            de.orden,
+                                            de.tipo,
+                                            de.reval,
+                                            de.ajust,
+                                            de.baja,
+                                            de.transito,
+                                            de.leasing,
+                                            ac.inc_ac as inc_ac_acum,
+                                            ac.color,
+                                            (de.monto_actualiz - ac.inc_ac - de.monto_vigente_orig)::numeric(18,2) as val_acu_perido    
+                                            from tt_detalle_depreciacion_totales de 
+                                            inner join tt_actuli_acumulado ac on ac.code=de.codigo
+                                            where tipo in '||v_where||'                       
+                                            order by codigo, orden';
+                                --Devuelve la respuesta                                
+                                return v_consulta;                            
               
 
     end if;     

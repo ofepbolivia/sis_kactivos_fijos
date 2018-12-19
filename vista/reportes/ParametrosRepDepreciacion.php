@@ -255,7 +255,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	      this.cmbEstado.setValue('');	
 	      					
 			this.cmbTipoRep.setVisible(false);
-			this.cmbPeriodo.setVisible(false);
+			this.configElement(this.cmbPeriodo,true,false);
 			this.cmbTipoMov.setVisible(false);
 			this.cmbEstadoDepre.setVisible(false);
 			this.cmbTipoRep.setVisible(false);

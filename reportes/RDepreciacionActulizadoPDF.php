@@ -123,8 +123,8 @@ class RDepreciacionActulizadoPDF extends  ReportePDF{
                     's18' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
                     's19' => $record['depreciacion_acum_actualiz_gest_ant']!=''?$record['depreciacion_acum_actualiz_gest_ant']:0,
                     's20' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,
-                    's21' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
-                    's22' => '',
+                    's21' => '',
+                    's22' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
                     's23' => $record['monto_vigente']!=''?$record['monto_vigente']:0
                 );
 
@@ -160,8 +160,8 @@ class RDepreciacionActulizadoPDF extends  ReportePDF{
                     's18' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
                     's19' => $record['depreciacion_acum_actualiz_gest_ant']!=''?$record['depreciacion_acum_actualiz_gest_ant']:0,
                     's20' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,
-                    's21' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
-                    's22' => '',
+                    's21' => '',
+                    's22' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
                     's23' => $record['monto_vigente']!=''?$record['monto_vigente']:0
                 );
 

@@ -75,7 +75,8 @@ class MODReportes extends MODbase{
 		$this->captura('nro_factura','varchar');
 		$this->captura('descripcion','varchar');
 		$this->captura('desc_funcionario1','text');
-		$this->captura('meses','integer');		
+		$this->captura('meses','integer');
+		$this->captura('importe','numeric');		
 
         //Ejecuta la instruccion
         $this->armarConsulta();

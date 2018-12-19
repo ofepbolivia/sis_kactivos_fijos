@@ -176,7 +176,7 @@ class RKardexAFPDF extends  ReportePDF{
 		for ($fil=0; $fil < count($this->datos); $fil++) {			
 			if($this->datos[$fil]['codigo_mov']=='reval'||$this->datos[$fil]['codigo_mov']=='mejora'||$this->datos[$fil]['codigo_mov']=='ajuste'||$this->datos[$fil]['codigo_mov']=='retiro') {
 				$con++;
-				$monto=number_format($this->datos[$fil]['monto_vigente_orig'],2,',','.');											
+				$monto=number_format($this->datos[$fil]['importe'],2,',','.');											
 	            $RowArray = array(
 	                's0' => $con,
 	                's1' => date("d/m/Y",strtotime($this->datos[$fil]['fecha_mov'])),

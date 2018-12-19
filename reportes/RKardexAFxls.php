@@ -322,7 +322,7 @@ class RKardexAFxls
 				$this->cell($sheet,$this->dataSet[$fil]['ufv_mov'],"L$f",11,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
 				$this->cell($sheet,$this->dataSet[$fil]['num_tramite'],"M$f",12,$f,"center",false,$this->tam_letra_detalle,Arial,true,true);
 				//Escoge en que celda colocar el importe
-				$monto=number_format($this->dataSet[$fil]['monto_vigente_orig'],2,',','.');
+				$monto=number_format($this->dataSet[$fil]['importe'],2,',','.');
 				$celda='';
 				$numero='';
 				if($this->dataSet[$fil]['codigo_mov']=='mejora'){

@@ -2,7 +2,8 @@ CREATE OR REPLACE FUNCTION kaf.f_depre_ges_ant (
   filtro text,
   moneda integer,
   fecha_enviada date,
-  total_consol varchar
+  total_consol varchar,
+  af_deprec varchar
 )
 RETURNS TABLE (
   cod varchar,
@@ -513,15 +514,28 @@ insert into tt_detalle_depreciacion_totales_actu
        0,
        'total'
        from tt_detalle_depreciacion_actu;         
-    end if;	    
-	return query
-    	   select 
-           codigo,
-          (monto_actualiz - monto_vigente_orig)::numeric(18,2) as inc_actualiz,
-          color
-          from tt_detalle_depreciacion_totales_actu
-          where tipo in ('total','detalle','clasif')
-          order by codigo, orden; 
+    end if;	 
+       
+    if af_deprec = 'clasif' then 
+		return query
+	    	   select 
+	           codigo,
+	          (monto_actualiz - monto_vigente_orig)::numeric(18,2) as inc_actualiz,
+	          color
+	          from tt_detalle_depreciacion_totales_actu
+	          where tipo in ('total','clasif')
+	          order by codigo, orden;     
+    else 
+		return query
+	    	   select 
+	           codigo,
+	          (monto_actualiz - monto_vigente_orig)::numeric(18,2) as inc_actualiz,
+	          color
+	          from tt_detalle_depreciacion_totales_actu
+	          where tipo in ('total','detalle','clasif')
+	          order by codigo, orden;     
+    end if; 
+          
 	return;
     end; 
     END;
