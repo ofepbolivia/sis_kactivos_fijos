@@ -100,7 +100,7 @@ class RDepreciacionActulizadoPDF extends  ReportePDF{
                 $this->SetFillColor(255, 255, 255);
                 $this->SetTextColor(0);                
                 $this->tableborders=array('LB','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR');
-                $this->tablenumbers=array(0,0,0,0,2,2,0,0,2,2,2,2,2,2,0,2,0,0,2,2,2,2,0,2);
+                $this->tablenumbers=array(0,0,0,0,2,2,0,0,2,2,2,2,2,2,2,2,0,0,2,2,2,0,2,2);
                 $RowArray = array(
                     's0'  => $contador,
                     's1' => $record['codigo'],
@@ -115,8 +115,8 @@ class RDepreciacionActulizadoPDF extends  ReportePDF{
                     's10' => $record['baja']!=''?$record['baja']:0,
                     's11' => $record['transito']!=''?$record['transito']:0,
                     's12' => $record['leasing']!=''?$record['leasing']:0,
-                    's13' => $record['inc_actualiz']!=''?$record['inc_actualiz']:0,
-                    's14' => '',
+                    's13' => $record['inc_ac_acum']!=''?$record['inc_ac_acum']:0,
+                    's14' => $record['val_acu_perido']!=''?$record['val_acu_perido']:0,
                     's15' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
                     's16' => substr($record['codigo'], 0,2)=='01'?'-':$record['vida_util_orig'],
                     's17' => $record['vida_util'],
@@ -133,7 +133,7 @@ class RDepreciacionActulizadoPDF extends  ReportePDF{
             }else if($record['tipo'] == 'total') {
 
                 $this->tableborders=array('LB','B','B','B','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLB','BLR','BLR','BLR','BLR','BLR','BLR');
-                $this->tablenumbers=array(0,0,0,0,2,2,0,0,2,2,2,2,2,2,0,2,0,0,2,2,2,2,0,2);
+                $this->tablenumbers=array(0,0,0,0,2,2,0,0,2,2,2,2,2,2,2,2,0,0,2,2,2,0,2,2);
                 $this->SetFont('','B',4);
                 $this->SetFillColor(224, 235, 255);
 
@@ -152,8 +152,8 @@ class RDepreciacionActulizadoPDF extends  ReportePDF{
                     's10' => $record['baja']!=''?$record['baja']:0,
                     's11' => $record['transito']!=''?$record['transito']:0,
                     's12' => $record['leasing']!=''?$record['leasing']:0,
-                    's13' => $record['inc_actualiz']!=''?$record['inc_actualiz']:0,
-                    's14' => '',
+                    's13' => $record['inc_ac_acum']!=''?$record['inc_ac_acum']:0,
+                    's14' => $record['val_acu_perido']!=''?$record['val_acu_perido']:0,
                     's15' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
                     's16' => '',
                     's17' => '',

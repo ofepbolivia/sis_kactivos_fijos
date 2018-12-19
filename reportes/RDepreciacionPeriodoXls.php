@@ -329,8 +329,8 @@ class RDepreciacionPeriodoXls
 				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $value['baja']);
 				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, $value['transito']);
 				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(13, $fila, $value['leasing']);				
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14, $fila, $value['inc_actualiz']);
-				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(15, $fila, '');
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14, $fila, $value['inc_ac_acum']);
+				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(15, $fila, $value['val_acu_perido']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(16, $fila, $value['monto_actualiz']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(17, $fila,substr($value['codigo'], 0,2)=='01'?'-':$value['vida_util_orig']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(18, $fila,$value['vida_util']);
@@ -401,8 +401,8 @@ class RDepreciacionPeriodoXls
 				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $value['baja']);
 				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, $value['transito']);
 				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(13, $fila, $value['leasing']);				                
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14, $fila, $value['inc_actualiz']);
-				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(15, $fila, '');
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14, $fila, $value['inc_ac_acum']);
+				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(15, $fila, $value['val_acu_perido']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(16, $fila, $value['monto_actualiz']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(17, $fila,'');
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(18, $fila,'');
