@@ -383,7 +383,7 @@ class RMovimiento2 extends ReportePDF {
         $cad = $texto;
         if($len > $lim){
             $cad = substr($texto, 0, $lim).' ...';
-        } 
+        }
         return $cad;
     }
    
@@ -434,7 +434,7 @@ class RMovimiento2 extends ReportePDF {
                
 				
 				$this->tablealigns=array('L','L','L','L','L','L','R','R','L');
-		        $this->tablenumbers=array(0,0,0,0,0,0,1,1);
+//		        $this->tablenumbers=array(0,0,0,0,0,0,1,1);
 		        $this->tableborders=array('RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB');
 	            $this->tabletextcolor=array();
 				
@@ -445,8 +445,8 @@ class RMovimiento2 extends ReportePDF {
 	                        's4' => $datarow['marca'],
 	                        's5' => $datarow['nro_serie'],
 	                        's6' => $datarow['estado_fun'] ,  
-	                        's7' => $datarow['vida_util'] , 
-	                        's8' => $datarow['importe'] 
+	                        's7' => $datarow['vida_util'] ,
+	                        's8' => number_format($datarow['importe'],2,',','.'),
 	                        );
 				
 
@@ -465,8 +465,8 @@ class RMovimiento2 extends ReportePDF {
 	                        's4' => $datarow['marca'],
 	                        's5' => $datarow['nro_serie'],
 	                        's6' => $datarow['estado_fun'] ,  
-	                        's7' => $datarow['monto_compra'] , 
-	                        's8' => $datarow['importe']  
+	                        's7' => number_format($datarow['monto_compra'],2,',','.'),
+	                        's8' => number_format($datarow['importe'],2,',','.')
 	                        );
 				
 
@@ -510,7 +510,7 @@ class RMovimiento2 extends ReportePDF {
                     
                             
                 $this->tablealigns=array('L','L','L','L','L','C','R','R','L','L');
-                $this->tablenumbers=array(0,0,0,0,0,0,1,1,0,0);
+//                $this->tablenumbers=array(0,0,0,0,0,0,1,1,0,0);
                 $this->tableborders=array('RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB');
                 $this->tabletextcolor=array();
                 //totales de montos
@@ -524,8 +524,8 @@ class RMovimiento2 extends ReportePDF {
                             's3' => $datarow['denominacion'],
                             's4' => $datarow['descripcion'],
                             's5' => date("d/m/Y",strtotime($datarow['fecha_ini_dep'])),
-                            's6' => $datarow['monto_compra_orig'],
-                            's7' => $datarow['monto_compra_orig_100'],
+                            's6' => number_format($datarow['monto_compra_orig'],2,',','.'),
+                            's7' => number_format($datarow['monto_compra_orig_100'],2,',','.'),
                             's8' => $datarow['nro_cbte_asociado'],
                             's9' => ''
                             );
@@ -575,7 +575,7 @@ class RMovimiento2 extends ReportePDF {
         }
 		if($tipo=='alta'){
             $this->tablealigns=array('L','L','L','L','L','C','R','R','L','L');
-            $this->tablenumbers=array(0,0,0,0,0,0,1,1,0,0);
+//            $this->tablenumbers=array(0,0,0,0,0,0,1,1,0,0);
             $this->tableborders=array('','','','','','','RLTB','RLTB','','');
             $this->tabletextcolor=array();
             $RowArray = array(
@@ -585,8 +585,8 @@ class RMovimiento2 extends ReportePDF {
                 's3' => '',
                 's4' => '',
                 's5' => 'TOTALES:',
-                's6' => $totalAF,
-                's7' => $totalCompra,
+                's6' => number_format($totalAF,2,',','.'),
+                's7' => number_format($totalCompra,2,',','.'),
                 's8' => '',
                 's9' => ''
             );
