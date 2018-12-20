@@ -124,7 +124,7 @@ class RDepreciacionActulizadaXls
         $sheet0->mergeCells('B1:R1');
         $sheet0->setCellValue('B1', 'BOLIVIANA DE AVIACIÓN');
         $sheet0->mergeCells('B2:R2');
-        $sheet0->setCellValue('B2', 'DETALLE DE DEPRECIACION DE ACTIVOS FIJOS AJUSTES Y REVALORIZACIONES');
+        $sheet0->setCellValue('B2', 'DETALLE DE DEPRECIACION DE ACTIVOS FIJOS ');
         $sheet0->mergeCells('B3:R3');
         $sheet0->setCellValue('B3', ' Al: '.date_format(date_create($this->objParam->getParametro('fecha_hasta')), 'd/m/Y'));
 

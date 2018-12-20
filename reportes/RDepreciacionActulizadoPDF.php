@@ -19,13 +19,13 @@ class RDepreciacionActulizadoPDF extends  ReportePDF{
 
         $this->SetFont('','B',10);
         $this->Cell(0,5,"BOLIVIANA DE AVIACION",0,1,'C');
-        $this->Cell(0,5,"DETALLE DE DEPRECIACION DE ACTIVOS FIJOS AJUSTES Y REVALORIZACIONES",0,1,'C');
+        $this->Cell(0,5,"DETALLE DE DEPRECIACION DE ACTIVOS FIJOS ",0,1,'C');
 
         $this->SetFont('','B',5);
         $this->Cell(0,3,' Al: '.date_format(date_create($this->objParam->getParametro('fecha_hasta')), 'd/m/Y'),0,1,'C');
 
         $moneda = '';
-        if($this->objParam->getParametro('id_moneda') == 1){
+        if($this->objParam->getParametro('id_moneda') == 1 or $this->objParam->getParametro('id_moneda')==''){
             $moneda = 'Bolivianos';
         }else if($this->objParam->getParametro('id_moneda')== 2){
             $moneda = 'Dolares Americanos';
