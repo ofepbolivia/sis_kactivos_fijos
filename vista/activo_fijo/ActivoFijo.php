@@ -2678,9 +2678,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('btnPhoto').enable();
             Ext.getCmp(this.idContenedor+'_vida_util_real_af').disable();
 
-            //diapra eventos de clasificaciones selecionada
-            this.actualizarSegunClasificacion(data.tipo_activo, data.depreciable);
-
             if(data.estado!='registrado') {
                 Ext.getCmp(this.idContenedor+'_fecha_ini_dep').disable();
                 Ext.getCmp(this.idContenedor+'_id_moneda_orig').disable();
@@ -2702,6 +2699,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 Ext.getCmp(this.idContenedor+'_id_clasificacion').enable();
                 Ext.getCmp(this.idContenedor+'_id_deposito').enable();
             }
+            //diapra eventos de clasificaciones selecionada
+            this.actualizarSegunClasificacion(data.tipo_activo, data.depreciable);
 
         },
 
