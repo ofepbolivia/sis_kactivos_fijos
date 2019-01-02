@@ -206,7 +206,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			});
 		},
 		detalleDepreciacion:function(cmp,event){						
-			this.cmbTipoRep.setVisible(true);
+			//this.cmbTipoRep.setVisible(true);
+			this.configElement(this.cmbTipoRep,true,false);
 			this.cmbPeriodo.setVisible(false);
 			this.cmbTipoMov.setVisible(true);
 			this.cmbEstadoDepre.setVisible(true);

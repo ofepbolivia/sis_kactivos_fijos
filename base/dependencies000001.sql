@@ -2062,5 +2062,44 @@ WHERE hijo.id_clasificacion_fk = padre.id_clasificacion
     FROM niveles niv
     ORDER BY niv.orden;
 /***********************************F-DEP-BVP-KAF-1-13/12/2018*****************************************/
+/***********************************I-DEP-BVP-KAF-1-02/01/2019****************************************/
+CREATE VIEW kaf.vmax_id_movi_af_dep (
+    id_activo_fijo_valor,
+    id_movimiento_af_dep)
+AS
+SELECT z.id_activo_fijo_valor,
+    max(z.id_movimiento_af_dep) AS id_movimiento_af_dep
+FROM kaf.tmovimiento_af_dep z
+GROUP BY z.id_activo_fijo_valor;
 
+
+CREATE OR REPLACE VIEW kaf.vista_dep_acti_prin(
+    id_activo_fijo_valor,
+    monto_vigente,
+    vida_util,
+    fecha,
+    depreciacion_acum,
+    depreciacion_per,
+    depreciacion_acum_ant,
+    monto_actualiz,
+    id_moneda_dep,
+    estado)
+AS
+  SELECT afd.id_activo_fijo_valor,
+         afd.monto_vigente,
+         afd.vida_util,
+         afd.fecha,
+         afd.depreciacion_acum,
+         afd.depreciacion_per,
+         afd.depreciacion_acum_ant,
+         afd.monto_actualiz,
+         afd.id_moneda_dep,
+         mov.estado
+  FROM kaf.tmovimiento_af_dep afd
+       --JOIN kaf.tafdep m ON m.id_af_dep = afd.id_movimiento_af_dep
+       inner join kaf.vmax_id_movi_af_dep m on m.id_movimiento_af_dep = afd.id_movimiento_af_dep
+       JOIN kaf.tmovimiento_af maf ON maf.id_movimiento_af =
+         afd.id_movimiento_af
+       JOIN kaf.tmovimiento mov ON mov.id_movimiento = maf.id_movimiento;
+/***********************************F-DEP-BVP-KAF-1-02/01/2019*****************************************/
 

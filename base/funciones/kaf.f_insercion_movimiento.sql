@@ -257,6 +257,9 @@ BEGIN
                   p_id_usuario,
                   null
                 );
+            --else
+            	--raise exception 'La validacion de insercion de movimientos de activos fijos devuelve false. v_id_movimiento: %, v_registros_mov.id_activo_fijo: %. ',v_id_movimiento,v_registros_mov.id_activo_fijo;
+                
            end if;
           
         end loop;

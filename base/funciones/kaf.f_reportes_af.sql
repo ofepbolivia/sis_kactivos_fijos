@@ -206,7 +206,8 @@ BEGIN
                         af.documento as nro_factura,
                         upper(af.descripcion)::varchar as  descripcion,
                         fucal.desc_funcionario1,
-                        movaf.vida_util as meses
+                        movaf.vida_util as meses,
+                        movaf.importe
                         from kaf.tmovimiento_af movaf
                         inner join kaf.tmovimiento mov
                         on mov.id_movimiento = movaf.id_movimiento
@@ -1149,7 +1150,16 @@ BEGIN
             afv.vida_util_orig, mdep.vida_util,
             mdep.depreciacion_per,
             mdep.depreciacion_acum,
-            mdep.monto_vigente,
+            case when mdep.monto_vigente <=1 then
+            	case when substr(af.codigo,1,2)='11' then
+    	            0.00
+                else 
+	    	        1.00
+                end    
+            else
+            mdep.monto_vigente
+            end,            
+            --mdep.monto_vigente,
             substr(afv.codigo,1, position('.' in afv.codigo)-1) as codigo_padre,
             (select nombre from kaf.tclasificacion where codigo_completo_tmp = substr(afv.codigo,1, position('.' in afv.codigo)-1)) as denominacion_padre,
             afv.tipo,
@@ -1202,7 +1212,16 @@ BEGIN
             afv.vida_util_orig, mdep.vida_util,
             mdep.depreciacion_per,
             mdep.depreciacion_acum,
-            mdep.monto_vigente,
+            case when mdep.monto_vigente <=1 then
+            	case when substr(af.codigo,1,2)='11' then
+    	            0.00
+                else 
+	    	        1.00
+                end    
+            else
+            mdep.monto_vigente
+            end,            
+            --mdep.monto_vigente,
             substr(afv.codigo,1, position('.' in afv.codigo)-1) as codigo_padre,
             (select nombre from kaf.tclasificacion where codigo_completo_tmp = substr(afv.codigo,1, position('.' in afv.codigo)-1)) as denominacion_padre,
             afv.tipo,
@@ -1283,7 +1302,16 @@ BEGIN
             afv.vida_util_orig, mdep.vida_util,
             mdep.depreciacion_per,
             mdep.depreciacion_acum,
-            mdep.monto_vigente,
+            case when mdep.monto_vigente <=1 then
+            	case when substr(af.codigo,1,2)='11' then
+    	            0.00
+                else 
+	    	        1.00
+                end    
+            else
+            mdep.monto_vigente
+            end,            
+            --mdep.monto_vigente,
             substr(afv.codigo,1, position('.' in afv.codigo)-1) as codigo_padre,
             (select nombre from kaf.tclasificacion where codigo_completo_tmp = substr(afv.codigo,1, position('.' in afv.codigo)-1)) as denominacion_padre,
             afv.tipo,
@@ -2009,7 +2037,13 @@ BEGIN
                                             de.vida_util,
                                             de.depreciacion_acum_gest_ant,
                                             de.depreciacion_acum_actualiz_gest_ant,
-                                            de.depreciacion_acum - de.depreciacion_acum_gest_ant - de.depreciacion_acum_actualiz_gest_ant,--depreciacion_per,
+                          case when 
+                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant) <=0 then
+                                  0.00
+                          else
+                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant)
+                          end as depreciacion_per,                                            
+                                            --de.depreciacion_acum - de.depreciacion_acum_gest_ant - de.depreciacion_acum_actualiz_gest_ant,--depreciacion_per,
                                             de.depreciacion_acum,
                                             de.monto_vigente,
                                             de.nivel,
@@ -2196,7 +2230,13 @@ BEGIN
                                             de.vida_util,
                                             de.depreciacion_acum_gest_ant,
                                             de.depreciacion_acum_actualiz_gest_ant,
-                                            de.depreciacion_acum - de.depreciacion_acum_gest_ant - de.depreciacion_acum_actualiz_gest_ant,--depreciacion_per,
+					                          case when 
+					                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant) <=0 then
+					                                  0.00
+					                          else
+					                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant)
+					                          end as depreciacion_per,                                            
+                                            --de.depreciacion_acum - de.depreciacion_acum_gest_ant - de.depreciacion_acum_actualiz_gest_ant,--depreciacion_per,
                                             de.depreciacion_acum,
                                             de.monto_vigente,
                                             de.nivel,
@@ -2236,7 +2276,13 @@ BEGIN
                           vida_util,
                           depreciacion_acum_gest_ant,
                           depreciacion_acum_actualiz_gest_ant,
-                          depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant,--depreciacion_per,
+                          case when 
+                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant) <=0 then
+                                  0.00
+                          else
+                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant)
+                          end as depreciacion_per,                          
+                          --depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant,--depreciacion_per,
                           depreciacion_acum,
                           monto_vigente,
                           nivel,
