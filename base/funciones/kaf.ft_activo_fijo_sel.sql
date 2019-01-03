@@ -645,7 +645,7 @@ BEGIN
     elsif(p_transaccion='SKA_COMPRAS_GEST_SEL')then
 
         begin
- 			if(v_parametros.id_cat_estado_fun = 412) then
+ 			if(v_parametros.id_cat_estado_fun = 411) then
                 v_est_fun_tod = 'taf.id_cat_estado_fun in (select distinct(af.id_cat_estado_fun)
                     from kaf.tactivo_fijo af
                     where af.id_cat_estado_fun is not null) and ';

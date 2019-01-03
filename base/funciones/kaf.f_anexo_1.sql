@@ -120,12 +120,6 @@ BEGIN
     end if;       
   end if;
   
-	select ane.id_partida
-    from kaf.tanexo ane
-    where ane.id_periodo_anexo = p_id_periodo_anexo
-    and ane.tipo_anexo = 1;
-     
-  
 END;
 $body$
 LANGUAGE 'plpgsql'
