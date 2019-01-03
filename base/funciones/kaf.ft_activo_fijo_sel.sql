@@ -41,7 +41,8 @@ DECLARE
     ord					text;
     v_nivel     integer;
     v_agregate  varchar;
-    v_id_depo   integer;     
+    v_id_depo   integer;
+    v_est_fun_tod		varchar = '';      
 BEGIN
 
   v_nombre_funcion = 'kaf.ft_activo_fijo_sel';
@@ -644,6 +645,13 @@ BEGIN
     elsif(p_transaccion='SKA_COMPRAS_GEST_SEL')then
 
         begin
+ 			if(v_parametros.id_cat_estado_fun = 412) then
+                v_est_fun_tod = 'taf.id_cat_estado_fun in (select distinct(af.id_cat_estado_fun)
+                    from kaf.tactivo_fijo af
+                    where af.id_cat_estado_fun is not null) and ';
+            else 
+				v_est_fun_tod='taf.id_cat_estado_fun ='||v_parametros.id_cat_estado_fun||' and ';
+            end if;        
         --raise exception 'parama: %', pxp.f_existe_parametro(p_tabla, 'ubicacion');
           if(pxp.f_existe_parametro(p_tabla, 'ubicacion'))then
 
@@ -709,7 +717,7 @@ BEGIN
               left join param.tlugar tlug on tlug.id_lugar = tof.id_lugar
               left join param.tcatalogo cat on cat.id_catalogo = taf.id_cat_estado_fun
               left join orga.tuo tu on tu.id_uo= taf.id_uo
-              where '||v_condicion||'(
+              where '||v_condicion||' '||v_est_fun_tod||'(
             ';
 
             --Definicion de la respuesta
