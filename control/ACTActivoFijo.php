@@ -572,7 +572,7 @@ class ACTActivoFijo extends ACTbase{
             $this->objParam->addFiltro("taf.nro_cbte_asociado = "."''".$this->objParam->getParametro('nro_cbte_asociado')."''");
         }
         if($this->objParam->getParametro('id_cat_estado_fun')!=''){
-            if($this->objParam->getParametro('id_cat_estado_fun')==412){
+            if($this->objParam->getParametro('id_cat_estado_fun')==411){
             }else{
                 $this->objParam->addFiltro("taf.id_cat_estado_fun =".$this->objParam->getParametro('id_cat_estado_fun'));
             }
