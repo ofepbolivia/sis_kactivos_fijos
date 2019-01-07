@@ -659,7 +659,7 @@ class MODActivoFijo extends MODbase{
         $this->setParametro('desc_nombre','desc_nombre','varchar');
         $this->setParametro('id_clasificacion','id_clasificacion','varchar');
         $this->setParametro('ubicacion','ubicacion','INT4');
-		$this->setParametro('id_cat_estado_fun','id_cat_estado_fun','INT4');
+		
 		
 
         //Definicion de la lista del resultado del query

@@ -571,6 +571,12 @@ class ACTActivoFijo extends ACTbase{
         if($this->objParam->getParametro('nro_cbte_asociado')!=''){
             $this->objParam->addFiltro("taf.nro_cbte_asociado = "."''".$this->objParam->getParametro('nro_cbte_asociado')."''");
         }
+        if($this->objParam->getParametro('id_cat_estado_fun')!=''){
+            if($this->objParam->getParametro('id_cat_estado_fun')==412){
+            }else{
+                $this->objParam->addFiltro("taf.id_cat_estado_fun =".$this->objParam->getParametro('id_cat_estado_fun'));
+            }
+        }
         /*para motos de monto_compra kaf.activo_fijo*/
         if($this->objParam->getParametro('column_busque')!=''){
             if($this->objParam->getParametro('column_busque')=='1'){
