@@ -42,7 +42,7 @@ DECLARE
     v_nivel     integer;
     v_agregate  varchar;
     v_id_depo   integer;
-    v_est_fun_tod		varchar = '';      
+    v_est_fun_tod		varchar = '';
 BEGIN
 
   v_nombre_funcion = 'kaf.ft_activo_fijo_sel';
@@ -782,24 +782,24 @@ BEGIN
 
       begin
 
-              select 
+              select
                  ar.nivel
                  into v_nivel
-            from kaf.vclasificacion_arbol ar 
+            from kaf.vclasificacion_arbol ar
             where ar.id_clasificacion::varchar in (v_parametros.id_clasificacion)
             limit 1;
-            
-             if v_nivel = 1 then              
+
+             if v_nivel = 1 then
               v_agregate = 'where tcc.id_clasificacion_fk in ('||v_parametros.id_clasificacion||')
-                     union all 
+                     union all
                      select padre.nivel+1, hijo.id_clasificacion, hijo.id_clasificacion_fk,
-                      hijo.codigo, hijo.nombre, padre.camino || ''.'' || hijo.codigo::TEXT, hijo.codigo_completo_tmp, 
-                      hijo.tipo_activo 
-                     from kaf.tclasificacion hijo, niveles padre 
+                      hijo.codigo, hijo.nombre, padre.camino || ''.'' || hijo.codigo::TEXT, hijo.codigo_completo_tmp,
+                      hijo.tipo_activo
+                     from kaf.tclasificacion hijo, niveles padre
                      where hijo.id_clasificacion_fk = padre.id_clasificacion';
-             elsif v_nivel=2 then         
+             elsif v_nivel=2 then
               v_agregate= 'where tcc.id_clasificacion_fk in ('||v_parametros.id_clasificacion||')';
-         elsif v_nivel=3 then 
+         elsif v_nivel=3 then
                v_agregate= ' where tcc.id_clasificacion in ('||v_parametros.id_clasificacion||')';
              end if;
     v_consulta:= ' with recursive niveles (nivel,id_clasificacion, id_clasificacion_fk, codigo, nombre, camino, codigo_completo, tipo_activo)
@@ -831,7 +831,7 @@ BEGIN
                left join orga.vfuncionario vf on vf.id_funcionario = taf.id_funcionario
                left join orga.toficina tof on tof.id_oficina = taf.id_oficina
                left join param.tlugar tlug on tlug.id_lugar = tof.id_lugar
-               order by niv.codigo_completo,taf.codigo ';  
+               order by niv.codigo_completo,taf.codigo ';
         return v_consulta;
         end;
     /*********************************
@@ -1208,7 +1208,7 @@ BEGIN
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-
+			v_consulta:=v_consulta||' order by afh.fecha_reg' ;
 
             --v_consulta:=v_consulta;
 
@@ -1299,22 +1299,22 @@ BEGIN
 
                 return v_consulta;
         end;
-	    /*********************************   
+	    /*********************************
 	     #TRANSACCION:  'SKA_ACDEPXFUN_SEL'
-	     #DESCRIPCION:  Reporte de activos fijos 
-	     				por almacen 
+	     #DESCRIPCION:  Reporte de activos fijos
+	     				por almacen
 	     #AUTOR:        BVP
 	     #FECHA:        12/12/2018
 	    ***********************************/
-	    elsif(p_transaccion='SKA_ACDEPXFUN_SEL')then 
-	    
-	    	begin   
+	    elsif(p_transaccion='SKA_ACDEPXFUN_SEL')then
+
+	    	begin
             select depo.id_deposito
-            	into 
+            	into
                 v_id_depo
-            from kaf.tdeposito depo 
-            where depo.id_funcionario = v_parametros.id_funcionario;  
-            
+            from kaf.tdeposito depo
+            where depo.id_funcionario = v_parametros.id_funcionario;
+
 		v_consulta:= 'select af.codigo,
                       af.denominacion,
                       af.descripcion,
@@ -1323,7 +1323,7 @@ BEGIN
                       dep.nombre as almacen,
                       mov.fecha_mov,
                       fun.desc_funcionario1 as encargado
-              from kaf.tmovimiento_af movaf 
+              from kaf.tmovimiento_af movaf
               inner join kaf.tmovimiento mov on mov.id_movimiento=movaf.id_movimiento
               inner join kaf.tactivo_fijo af on af.id_activo_fijo = movaf.id_activo_fijo
               inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
@@ -1335,7 +1335,7 @@ BEGIN
               and dep.id_funcionario = '||v_parametros.id_funcionario||'
               and ';
         v_consulta:=v_consulta||v_parametros.filtro;
-        v_consulta:=v_consulta||'order by af.codigo';      
+        v_consulta:=v_consulta||'order by af.codigo';
 
         return v_consulta;
 	end;

@@ -2657,6 +2657,7 @@ header("content-type: text/javascript; charset=UTF-8");
         onButtonNew: function() {
             this.crearVentana();
             this.abrirVentana('new');
+            var data = this.getSelectedData();
             Ext.getCmp(this.idContenedor+'_fecha_ini_dep').enable();
             Ext.getCmp(this.idContenedor+'_id_moneda_orig').enable();
             Ext.getCmp(this.idContenedor+'_monto_compra_orig').enable();
@@ -2670,6 +2671,17 @@ header("content-type: text/javascript; charset=UTF-8");
             Ext.getCmp(this.idContenedor+'_vida_util_original').clearInvalid();
             Ext.getCmp(this.idContenedor+'_vida_util_original_anios').clearInvalid();
             Ext.getCmp(this.idContenedor+'_cantidad_af').clearInvalid();
+            if(data.tipo_activo== 'tangible'){
+
+                Ext.getCmp('fecha_inicio').disable();
+                Ext.getCmp('fecha_fin').disable();
+
+            } else {
+
+                Ext.getCmp('fecha_inicio').enable();
+                Ext.getCmp('fecha_fin').enable();
+            }
+
         },
         onButtonEdit: function() {
             this.crearVentana();
@@ -2698,6 +2710,16 @@ header("content-type: text/javascript; charset=UTF-8");
                 Ext.getCmp(this.idContenedor+'_id_depto').enable();
                 Ext.getCmp(this.idContenedor+'_id_clasificacion').enable();
                 Ext.getCmp(this.idContenedor+'_id_deposito').enable();
+            }
+            if(data.tipo_activo== 'tangible'){
+
+                Ext.getCmp('fecha_inicio').disable();
+                Ext.getCmp('fecha_fin').disable();
+
+            } else {
+
+                Ext.getCmp('fecha_inicio').enable();
+                Ext.getCmp('fecha_fin').enable();
             }
             //diapra eventos de clasificaciones selecionada
             this.actualizarSegunClasificacion(data.tipo_activo, data.depreciable);
@@ -2732,17 +2754,22 @@ header("content-type: text/javascript; charset=UTF-8");
         btriguerreturn:false,
 
         actualizarSegunClasificacion: function(tipo_activo, depreciable){
-            console.log('actualizar',tipo_activo, depreciable)
+            // console.log('actualizar',tipo_activo, depreciable)
             if(tipo_activo == 'tangible'){
                 Ext.getCmp(this.idContenedor + 'af_pestaña_hist').disable();
-                Ext.getCmp(this.idContenedor+'_id_deposito').enable();
+               Ext.getCmp(this.idContenedor+'_id_deposito').enable();
                 Ext.getCmp(this.idContenedor+'_nro_serie').enable();
                 Ext.getCmp(this.idContenedor+'_marca').enable();
+                Ext.getCmp('fecha_inicio').disable();
+                Ext.getCmp('fecha_fin').disable();
+
             } else {
                 Ext.getCmp(this.idContenedor + 'af_pestaña_hist').enable();
                 Ext.getCmp(this.idContenedor+'_id_deposito').disable();
                 Ext.getCmp(this.idContenedor+'_nro_serie').disable();
                 Ext.getCmp(this.idContenedor+'_marca').disable();
+                Ext.getCmp('fecha_inicio').enable();
+                Ext.getCmp('fecha_fin').enable();
             }
 
             if(depreciable == 'si'){
@@ -2756,6 +2783,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 Ext.getCmp(this.idContenedor+'_vida_util_real_af').disable();
                 Ext.getCmp(this.idContenedor+'_monto_rescate').disable();
             }
+
             Ext.getCmp(this.idContenedor + '_estado').disable();
             Ext.getCmp(this.idContenedor + '_reval').disable();
             Ext.getCmp(this.idContenedor + '_cantidad_revaloriz').disable();
