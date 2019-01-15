@@ -3223,6 +3223,15 @@ header("content-type: text/javascript; charset=UTF-8");
                                         allowBlank: true,
                                         id: 'fecha_fin',
                                         width: 140
+                                    },
+                                    {
+                                        xtype: 'numberfield',
+                                        hidden:true,
+                                        value:0,
+                                        name: 'renova',
+                                        allowBlank: true,
+                                        id: 'renova',
+                                        width: 140
                                     }
 
                                 ]

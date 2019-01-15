@@ -256,6 +256,7 @@ class MODActivoFijo extends MODbase{
         $this->setParametro('fecha_fin','fecha_fin','date');
 
         $this->setParametro('fecha_cbte_asociado_hist','fecha_cbte_asociado','date');
+        $this->setParametro('renova','renova','numeric');
 
 
 
