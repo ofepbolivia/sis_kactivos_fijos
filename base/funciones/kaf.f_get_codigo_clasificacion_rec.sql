@@ -18,7 +18,7 @@ BEGIN
         for v_rec in execute('select *
                             from kaf.tclasificacion
                             where id_clasificacion in ('||v_ids||')
-                            order by id_clasificacion') loop
+                            order by codigo_completo_tmp asc') loop
             v_loc = v_loc || '.'|| coalesce(v_rec.codigo,'S/C');
         
         end loop;

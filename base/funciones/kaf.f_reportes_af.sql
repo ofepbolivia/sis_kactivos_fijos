@@ -2038,7 +2038,7 @@ BEGIN
                                             de.depreciacion_acum_gest_ant,
                                             de.depreciacion_acum_actualiz_gest_ant,
                           case when 
-                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant) <=0 then
+                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant) <=0.01 then
                                   0.00
                           else
                           (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant)
@@ -2069,134 +2069,173 @@ BEGIN
 
 
         --          raise exception 'consolidado';
-        
-                            CREATE temp TABLE tt_detalle_depreciacion_periodo (
-                              id_activo_fijo_valor INTEGER,
-                              codigo VARCHAR(50),
-                              denominacion VARCHAR(500),
-                              fecha_ini_dep DATE,
-                              monto_vigente_orig_100 NUMERIC(18,2),
-                              monto_vigente_orig NUMERIC(18,2),
-                              inc_actualiz NUMERIC(18,2),
-                              monto_actualiz NUMERIC(18,2),
-                              vida_util_orig INTEGER,
-                              vida_util INTEGER,
-                              depreciacion_acum_gest_ant NUMERIC(18,2),
-                              depreciacion_acum_actualiz_gest_ant NUMERIC(18,2),
-                              depreciacion_per NUMERIC(18,2),
-                              depreciacion_acum NUMERIC(18,2),
-                              monto_vigente NUMERIC(18,2),
-                              codigo_padre VARCHAR(15),
-                              denominacion_padre VARCHAR(100),
-                              tipo VARCHAR(50),
-                              tipo_cambio_fin NUMERIC,
-                              id_moneda_act INTEGER,
-                              id_activo_fijo_valor_original INTEGER
-                            )on commit drop;
-                    
-                            insert into tt_detalle_depreciacion_totales
-                            select
-                            codigo_padre,
-                            denominacion_padre,
-                            null,
-                            sum(monto_vigente_orig_100),
-                            sum(monto_vigente_orig),
-                            sum(inc_actualiz),
-                            sum(monto_actualiz),
-                            null,
-                            null,
-                            sum(depreciacion_acum_gest_ant),
-                            sum(depreciacion_acum_actualiz_gest_ant),
-                            sum(depreciacion_per),
-                            sum(depreciacion_acum),
-                            sum(monto_vigente),
-                            replace(codigo_padre,'RE','')::integer,
-                            0,
-                            'clasif'
-                            from tt_detalle_depreciacion
-                            group by codigo_padre, denominacion_padre;
+                          insert into tt_detalle_depreciacion_totales
 
-                    insert into tt_detalle_depreciacion_periodo
-                          select
-                          id_activo_fijo_valor,
-                          kaf.f_tam_codigo(codigo),
-                          denominacion,                
-                          kaf.f_fecha_reva_activo(codigo),      
-                          monto_vigente_orig_100,
-                          monto_vigente_orig,            
-                          inc_actualiz,
-                          monto_actualiz,                              
-                          vida_util_orig,
-                          vida_util,
-                          depreciacion_acum_gest_ant,                            
-                          depreciacion_acum_actualiz_gest_ant,                                                                
-                          depreciacion_per,                            
-                          depreciacion_acum,                            
-                          monto_vigente,                            
-                          codigo_padre,
-                          denominacion_padre,
-                          tipo,
-                          tipo_cambio_fin,
-                          id_moneda_act,
-                          id_activo_fijo_valor_original
-                          from tt_detalle_depreciacion;   
-                                                           
-                            --Inserta el detalle
-                            insert into tt_detalle_depreciacion_totales            
-                            select     
-                            de.codigo,                  
-                            de.denominacion,
-                            de.fecha_ini_dep,          
-                            sum(de.monto_vigente_orig_100),
-                            sum(de.monto_vigente_orig),            
-                            sum(de.inc_actualiz),
-                            sum(de.monto_actualiz),
-                            ac.vida_util_orig,
-                            ac.vida_util,       
-                            sum(de.depreciacion_acum_gest_ant),                            
-                            sum(de.depreciacion_acum_actualiz_gest_ant),                                                                                                          
-                            sum(de.depreciacion_per),                            
-                            sum(de.depreciacion_acum),                            
-                            sum(de.monto_vigente),
-                            de.codigo_padre::integer,                            
-                            replace(replace(replace(replace(replace(replace(de.codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
-                            'detalle',
-                            kaf.f_activo_tipo(de.codigo,'reval',v_parametros.fecha_hasta),
-                            kaf.f_activo_tipo(de.codigo,'ajuste',v_parametros.fecha_hasta),
-                            kaf.f_activo_tipo(de.codigo,'baja',v_parametros.fecha_hasta),
-                            kaf.f_activo_tipo(de.codigo,'transito',v_parametros.fecha_hasta),   
-                            kaf.f_activo_tipo(de.codigo,'leasing',v_parametros.fecha_hasta)                               
-                            from tt_detalle_depreciacion_periodo de
-                            inner join tt_detalle_depreciacion ac on ac.codigo=de.codigo                        
-                            group by de.codigo,de.denominacion,de.fecha_ini_dep,
-                            de.codigo_padre,ac.vida_util_orig,ac.vida_util;
+                          select dedep.codigo_padre,
+                                 dedep.denominacion_padre,
+                                 null,
+                                 sum(dedep.monto_vigente_orig_100),
+                                 sum(dedep.monto_vigente_orig),
+                                 sum(dedep.inc_actualiz),
+                                 sum(dedep.monto_actualiz),
+                                 null,
+                                 null,
+                                 sum(dedep.depreciacion_acum_gest_ant),
+                                 sum(dedep.depreciacion_acum_actualiz_gest_ant),
+                                 sum(dedep.depreciacion_per),
+                                 sum(dedep.depreciacion_acum),
+                                 sum(dedep.monto_vigente),
+                                 replace(dedep.codigo_padre,'RE','')::integer,
+                                 0,
+                                 'clasif',
+                                sum((select sum(dev.monto_vigente_orig)
+                                  from tt_detalle_depreciacion dev
+                                  where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo='reval'
+                                )),
+                                sum((select sum(dev.monto_vigente_orig)
+                                    from tt_detalle_depreciacion dev
+                                    where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo like '%ajuste%'
+                                )),
+                                sum((select sum(dev.monto_vigente_orig)
+                                    from tt_detalle_depreciacion dev
+                                    where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo='baja'
+                                )),
+                                sum((select sum(dev.monto_vigente_orig)
+                                    from tt_detalle_depreciacion dev
+                                    where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo='transito'
+                                )),
+                                sum((select sum(dev.monto_vigente_orig)
+                                    from tt_detalle_depreciacion dev
+                                    where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo='leasing'
+                                ))
+                            from tt_detalle_depreciacion dedep
+                            where dedep.tipo='alta'
+                            group by dedep.codigo_padre, dedep.denominacion_padre;
 
-                            --Inserta los totales finales
-                            insert into tt_detalle_depreciacion_totales
-                            select
-                            'TOTAL FINAL',
-                            null,
-                            null,
-                            sum(monto_vigente_orig_100),
-                            sum(monto_vigente_orig),
-                            sum(inc_actualiz),
-                            sum(monto_actualiz),
-                            null,
-                            null,
-                            sum(depreciacion_acum_gest_ant),
-                            sum(depreciacion_acum_actualiz_gest_ant),
-                            sum(depreciacion_per),
-                            sum(depreciacion_acum),
-                            sum(monto_vigente),
-                            999,
-                            0,
-                            'total',
-                            sum(kaf.f_activo_tipo(codigo,'reval',v_parametros.fecha_hasta)),
-                            sum(kaf.f_activo_tipo(codigo,'ajuste',v_parametros.fecha_hasta)),
-                            sum(kaf.f_activo_tipo(codigo,'baja',v_parametros.fecha_hasta)),
-                            sum(kaf.f_activo_tipo(codigo,'transito',v_parametros.fecha_hasta)),   
-                            sum(kaf.f_activo_tipo(codigo,'leasing',v_parametros.fecha_hasta))                            
-                            from tt_detalle_depreciacion;
+
+
+
+                          insert into tt_detalle_depreciacion_totales
+
+                          select dedep.codigo,
+                                 dedep.denominacion,
+                                 dedep.fecha_ini_dep,
+                                 dedep.monto_vigente_orig_100,
+                                 dedep.monto_vigente_orig ,
+                                 dedep.inc_actualiz + coalesce(
+                                        (select sum(dev.inc_actualiz)
+                                         from tt_detalle_depreciacion dev
+                                     where dedep.codigo = kaf.f_tam_codigo(dev.codigo)
+                                     and dev.tipo <> 'alta'
+                                 ),0),
+                                 dedep.monto_actualiz + coalesce(
+                                        (select sum(dev.monto_actualiz)
+                                         from tt_detalle_depreciacion dev
+                                     where dedep.codigo = kaf.f_tam_codigo(dev.codigo)
+                                     and dev.tipo <> 'alta'
+                                 ),0),
+                                 dedep.vida_util_orig,
+                                 dedep.vida_util,
+                                 dedep.depreciacion_acum_gest_ant + coalesce(
+                                        (select sum(dev.depreciacion_acum_gest_ant)
+                                         from tt_detalle_depreciacion dev
+                                     where dedep.codigo = kaf.f_tam_codigo(dev.codigo)
+                                     and dev.tipo <> 'alta'
+                                 ),0),
+                                 dedep.depreciacion_acum_actualiz_gest_ant + coalesce(
+                                        (select sum(dev.depreciacion_acum_actualiz_gest_ant)
+                                         from tt_detalle_depreciacion dev
+                                     where dedep.codigo = kaf.f_tam_codigo(dev.codigo)
+                                     and dev.tipo <> 'alta'
+                                 ),0),
+                                 dedep.depreciacion_per + coalesce(
+                                        (select sum(dev.depreciacion_per)
+                                         from tt_detalle_depreciacion dev
+                                     where dedep.codigo = kaf.f_tam_codigo(dev.codigo)
+                                     and dev.tipo <> 'alta'
+                                 ),0),
+                                 dedep.depreciacion_acum + coalesce(
+                                        (select sum(dev.depreciacion_acum)
+                                         from tt_detalle_depreciacion dev
+                                     where dedep.codigo = kaf.f_tam_codigo(dev.codigo)
+                                     and dev.tipo <> 'alta'
+                                 ),0),
+                                 dedep.monto_vigente + coalesce(
+                                        (select sum(dev.monto_vigente)
+                                         from tt_detalle_depreciacion dev
+                                     where dedep.codigo = kaf.f_tam_codigo(dev.codigo)
+                                     and dev.tipo <> 'alta'
+                                 ),0),
+                                 dedep.codigo_padre::integer,
+                                 replace(replace(replace(replace(replace(replace(codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
+                                 'detalle',
+                                (select sum(dev.monto_vigente_orig)
+                                  from tt_detalle_depreciacion dev
+                                  where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo='reval'
+                                ),
+                                (select sum(dev.monto_vigente_orig)
+                                    from tt_detalle_depreciacion dev
+                                    where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo like '%ajuste%'
+                                ),
+                                (select sum(dev.monto_vigente_orig)
+                                    from tt_detalle_depreciacion dev
+                                    where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo='baja'
+                                ),
+                                (select sum(dev.monto_vigente_orig)
+                                    from tt_detalle_depreciacion dev
+                                    where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo='transito'
+                                ),
+                                (select sum(dev.monto_vigente_orig)
+                                    from tt_detalle_depreciacion dev
+                                    where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo='leasing'
+                                )
+                            from tt_detalle_depreciacion dedep
+                            where dedep.tipo='alta';
+
+
+
+                          insert into tt_detalle_depreciacion_totales
+
+                          select 'TOTAL FINAL',
+                                 null,
+                                 null,
+                                 sum(dedep.monto_vigente_orig_100),
+                                 sum(dedep.monto_vigente_orig),
+                                 sum(dedep.inc_actualiz),
+                                 sum(dedep.monto_actualiz),
+                                 null,
+                                 null,
+                                 sum(dedep.depreciacion_acum_gest_ant),
+                                 sum(dedep.depreciacion_acum_actualiz_gest_ant),
+                                 sum(dedep.depreciacion_per),
+                                 sum(dedep.depreciacion_acum),
+                                 sum(dedep.monto_vigente),
+                                 999,
+                                 0,
+                                 'total',
+                                sum((select sum(dev.monto_vigente_orig)
+                                  from tt_detalle_depreciacion dev
+                                  where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo='reval'
+                                )),
+                                sum((select sum(dev.monto_vigente_orig)
+                                    from tt_detalle_depreciacion dev
+                                    where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo like '%ajuste%'
+                                )),
+                                sum((select sum(dev.monto_vigente_orig)
+                                    from tt_detalle_depreciacion dev
+                                    where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo='baja'
+                                )),
+                                sum((select sum(dev.monto_vigente_orig)
+                                    from tt_detalle_depreciacion dev
+                                    where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo='transito'
+                                )),
+                                sum((select sum(dev.monto_vigente_orig)
+                                    from tt_detalle_depreciacion dev
+                                    where dedep.codigo = kaf.f_tam_codigo(dev.codigo) and dev.tipo='leasing'
+                                ))
+                            from tt_detalle_depreciacion_totales dedep
+                            where dedep.tipo='detalle';
+
 
                         v_fecha_actu = kaf.f_mes_anterior(v_parametros.fecha_hasta,v_parametros.actu_perido);                         
 
@@ -2231,7 +2270,7 @@ BEGIN
                                             de.depreciacion_acum_gest_ant,
                                             de.depreciacion_acum_actualiz_gest_ant,
 					                          case when 
-					                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant) <=0 then
+					                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant) <=0.01 then
 					                                  0.00
 					                          else
 					                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant)
@@ -2277,7 +2316,7 @@ BEGIN
                           depreciacion_acum_gest_ant,
                           depreciacion_acum_actualiz_gest_ant,
                           case when 
-                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant) <=0 then
+                          (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant) <=0.01 then
                                   0.00
                           else
                           (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant)

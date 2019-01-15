@@ -45,6 +45,11 @@ DECLARE
     v_tipo_activo			varchar;
     v_fecha_compra_hist		date;
     v_codigo_hist			varchar;
+    v_reg_masivo    		boolean;
+      v_id_movimiento			INTEGER;
+      vida_util_new			integer;
+      v_rec_af_intag			record;
+    v_id_movimiento_af      integer;
 
 
 BEGIN
@@ -214,6 +219,37 @@ BEGIN
             IF (v_parametros.fecha_inicio > v_parametros.fecha_fin) THEN
                 raise exception 'La Fecha Inicio es mayor a la Fecha Fin';
             END IF;
+            v_reg_masivo = false;
+
+            select
+            coalesce(127,null) as id_cat_movimiento,
+            coalesce(now(),null) as fecha_mov,
+            coalesce(47,null) as id_depto,
+            coalesce('RENOVACION DE ACTIVO INTAGIBLE',null) as glosa,
+            coalesce(19,null) as id_movimiento_motivo,
+            v_reg_masivo as reg_masivo
+            into v_rec_af;
+            v_id_movimiento = kaf.f_insercion_movimiento(p_id_usuario, hstore(v_rec_af));
+
+            select ((date_part('year', age) * 12) + date_part('month', age))+1
+            into vida_util_new
+            from (select age(v_parametros.fecha_fin, v_parametros.fecha_inicio)) foodate;
+
+            select into v_rec_af_intag
+                coalesce(v_id_movimiento,null) as id_movimiento,
+                coalesce(afij.id_activo_fijo,null) as id_activo_fijo,
+                coalesce(19,null) as id_movimiento_motivo,
+                coalesce(v_parametros.monto_compra_orig,null) as importe,
+                coalesce(vida_util_new,null) as vida_util,
+                coalesce(v_parametros._nombre_usuario_ai,null) as _nombre_usuario_ai,
+                coalesce(v_parametros._id_usuario_ai,null) as _id_usuario_ai,
+                coalesce(afij.depreciacion_acum,null) as depreciacion_acum,
+                coalesce(afij.monto_compra,null) as importe_ant,
+                coalesce(afij.vida_util,null) as vida_util_ant
+            from kaf.tactivo_fijo afij
+            where  afij.id_activo_fijo=v_parametros.id_activo_fijo AND afij.id_depto = 47 AND afij.estado = 'alta';
+
+            v_id_movimiento_af = kaf.f_insercion_movimiento_af(p_id_usuario, hstore(v_rec_af_intag));
 
 			--Definicion de la respuesta
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos Fijos almacenado(a) con exito (id_activo_fijo'||v_id_activo_fijo||')');

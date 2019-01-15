@@ -895,15 +895,13 @@ BEGIN
                                               af.codigo,
                                               af.cantidad_revaloriz,
                                               av.monto_vigente_real_af,
-                                              av.vida_util_real_af,
-                                              av.monto_actualiz_real,
-                                              av.depreciacion_acum_real_af
+                                              av.vida_util_real_af
                                               from kaf.tmovimiento_af maf
                                               inner join kaf.tmovimiento mov
                                               on mov.id_movimiento = maf.id_movimiento
                                               inner join kaf.tactivo_fijo af
                                               on af.id_activo_fijo = maf.id_activo_fijo
-                                              inner join kaf.vactivo_fijo_vigente1 av
+                                              inner join kaf.vactivo_fijo_vigente av
                                               on av.id_activo_fijo = maf.id_activo_fijo
                                               and av.id_moneda = v_id_moneda_base
                                               where maf.id_movimiento = v_movimiento.id_movimiento) loop
@@ -967,9 +965,7 @@ BEGIN
                                                           v_registros_af_mov.id_activo_fijo,
                                                           v_registros_af_mov.id_movimiento_af,
                                                           v_registros_af_mov.vida_util,
-                                                          v_registros_af_mov.fecha_mov,
-                                                          v_registros_af_mov.monto_actualiz_real,
-                                                          v_registros_af_mov.depreciacion_acum_real_af);
+                                                          v_registros_af_mov.fecha_mov);
 
                                 --Creación de los nuevos AFV para la revalorización en todas las monedas
                                 v_fun = kaf.f_afv_crear(p_id_usuario,
@@ -1480,15 +1476,13 @@ BEGIN
                                               af.codigo,
                                               af.cantidad_revaloriz,
                                               av.monto_vigente_real_af,
-                                              av.vida_util_real_af,
-                                              av.monto_actualiz_real,
-                                              av.depreciacion_acum_real_af
+                                              av.vida_util_real_af
                                               from kaf.tmovimiento_af maf
                                               inner join kaf.tmovimiento mov
                                               on mov.id_movimiento = maf.id_movimiento
                                               inner join kaf.tactivo_fijo af
                                               on af.id_activo_fijo = maf.id_activo_fijo
-                                              inner join kaf.vactivo_fijo_vigente1 av
+                                              inner join kaf.vactivo_fijo_vigente av
                                               on av.id_activo_fijo = maf.id_activo_fijo
                                               and av.id_moneda = v_id_moneda_base
                                               where maf.id_movimiento = v_movimiento.id_movimiento) loop
@@ -1544,9 +1538,7 @@ BEGIN
                                                           v_registros_af_mov.id_activo_fijo,
                                                           v_registros_af_mov.id_movimiento_af,
                                                           v_registros_af_mov.vida_util,
-                                                          v_registros_af_mov.fecha_mov,
-                                                          v_registros_af_mov.monto_actualiz_real,
-                                                          v_registros_af_mov.depreciacion_acum_real_af);
+                                                          v_registros_af_mov.fecha_mov);
 
                                 --Creación de los nuevos AFV para la mejora en todas las monedas
                                 v_fun = kaf.f_afv_crear(p_id_usuario,
