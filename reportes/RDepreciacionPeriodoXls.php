@@ -184,14 +184,14 @@ class RDepreciacionPeriodoXls
         );
 
 
-        $sheet0->getStyle('B1:Y3')->applyFromArray($styleCabeza);        
+        $sheet0->getStyle('B1:X3')->applyFromArray($styleCabeza);
 
         $styleTitulos['fill']['color']['rgb'] = '8DB4E2';
         $styleTitulos['fill']['color']['rgb'] = 'CCBBAA';
 
         $sheet0->getRowDimension('5')->setRowHeight(35);
-        $sheet0->getStyle('B5:Y5')->applyFromArray($styleTitulos);
-        $sheet0->getStyle('C5:Y5')->getAlignment()->setWrapText(true);
+        $sheet0->getStyle('B5:X5')->applyFromArray($styleTitulos);
+        $sheet0->getStyle('C5:X5')->getAlignment()->setWrapText(true);
 
 		$descnom=$this->objParam->getParametro('desc_nombre');
 		switch ($descnom) {
@@ -199,8 +199,8 @@ class RDepreciacionPeriodoXls
 			case 'nombre' :$desno='DENOMINACIÓN';break;
 			case 'ambos':$desno='NOMBRE/DESC.';break;
 			default:$desno='DENOMINACIÓN';break;
-		}	
-				
+		}
+
         //*************************************Cabecera*****************************************
 
         $sheet0->setCellValue('B5', 'Nº');
@@ -245,11 +245,11 @@ class RDepreciacionPeriodoXls
 
         $sheet0->setCellValue('V5', 'DEP. GESTIÓN');
 
-        $sheet0->setCellValue('W5', 'DEP. DEL PERIODO');
+        //$sheet0->setCellValue('W5', 'DEP. DEL PERIODO');
 
-        $sheet0->setCellValue('X5', 'DEP. ACUM.');
+        $sheet0->setCellValue('W5', 'DEP. ACUM.');
 
-        $sheet0->setCellValue('Y5', 'VAL. RESI.');
+        $sheet0->setCellValue('X5', 'VAL. RESI.');
 		
 
 
@@ -275,8 +275,8 @@ class RDepreciacionPeriodoXls
 			if($value['tipo'] == 'detalle'){
                 
                 $styleTitulos['fill']['color']['rgb'] = 'e6e8f4';
-                $sheet0->getStyle('B'.$fila.':Y'.$fila)->applyFromArray($styleTitulos);
-                $sheet0->getStyle('B'.$fila.':Y'.$fila)->getAlignment()->setWrapText(true);
+                $sheet0->getStyle('B'.$fila.':X'.$fila)->applyFromArray($styleTitulos);
+                $sheet0->getStyle('B'.$fila.':X'.$fila)->getAlignment()->setWrapText(true);
                 $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
                 $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
                 $sheet0->getStyle('E'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -299,7 +299,7 @@ class RDepreciacionPeriodoXls
 				$sheet0->getStyle('V'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 				$sheet0->getStyle('W'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 				$sheet0->getStyle('X'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-				$sheet0->getStyle('Y'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+				//$sheet0->getStyle('Y'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 				
                 $sheet0->getStyle('F'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
                 $sheet0->getStyle('G'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
@@ -314,7 +314,7 @@ class RDepreciacionPeriodoXls
 				$sheet0->getStyle('U'.$fila)->getNumberFormat()->setFormatCode($numberFormat);			
 				$sheet0->getStyle('V'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
 				$sheet0->getStyle('W'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
-				$sheet0->getStyle('Y'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+				//$sheet0->getStyle('Y'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
 
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, $contador);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, $value['codigo']);
@@ -337,17 +337,16 @@ class RDepreciacionPeriodoXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(19, $fila, $value['depreciacion_acum_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(20, $fila, $value['depreciacion_acum_actualiz_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(21, $fila, $value['depreciacion_per']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(22, $fila, '');
-				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(23, $fila, $value['depreciacion_acum']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(24, $fila, $value['monto_vigente']);
+				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(22, $fila, $value['depreciacion_acum']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(23, $fila, $value['monto_vigente']);
 
                 $contador++;
 
                 $codigo = $value['codigo_completo'];
             }else if($value['tipo'] == 'total') {
                 $styleTitulos['fill']['color']['rgb'] = '4b9bd1';
-                $sheet0->getStyle('B'.$fila.':Y'.$fila)->applyFromArray($styleTitulos);
-                $sheet0->getStyle('B'.$fila.':Y'.$fila)->getAlignment()->setWrapText(true);
+                $sheet0->getStyle('B'.$fila.':X'.$fila)->applyFromArray($styleTitulos);
+                $sheet0->getStyle('B'.$fila.':X'.$fila)->getAlignment()->setWrapText(true);
 
                 $sheet0->getStyle('C'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
                 $sheet0->getStyle('D'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
@@ -371,7 +370,7 @@ class RDepreciacionPeriodoXls
 				$sheet0->getStyle('V'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 				$sheet0->getStyle('W'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 				$sheet0->getStyle('X'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-				$sheet0->getStyle('Y'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+				//$sheet0->getStyle('Y'.$fila)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 				
                 $sheet0->getStyle('F'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
                 $sheet0->getStyle('G'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
@@ -386,7 +385,7 @@ class RDepreciacionPeriodoXls
 				$sheet0->getStyle('U'.$fila)->getNumberFormat()->setFormatCode($numberFormat);			
 				$sheet0->getStyle('V'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
 				$sheet0->getStyle('W'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
-				$sheet0->getStyle('Y'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
+				//$sheet0->getStyle('Y'.$fila)->getNumberFormat()->setFormatCode($numberFormat);
 
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1, $fila, '');
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2, $fila, 'TOTAL FINAL');
@@ -409,9 +408,8 @@ class RDepreciacionPeriodoXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(19, $fila, $value['depreciacion_acum_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(20, $fila, $value['depreciacion_acum_actualiz_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(21, $fila, $value['depreciacion_per']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(22, $fila, '');
-				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(23, $fila, $value['depreciacion_acum']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(24, $fila, $value['monto_vigente']);
+				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(22, $fila, $value['depreciacion_acum']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(23, $fila, $value['monto_vigente']);
 				
             }
 

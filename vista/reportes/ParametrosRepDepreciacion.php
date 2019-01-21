@@ -57,12 +57,17 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.cmbActivo.on('select',function(){
 			this.cmbClasificacion.setValue('');
 		},this);
-		this.cmbClasificacion.on('select',function(){			
+		this.cmbClasificacion.on('select',function(){
+		    var definido = this.cmbTipoMov.store.data.items[0].data.tipo;
 			this.cmbActivo.setValue('');
-			this.configElement(this.cmbClasificacionMulti,false,true);									
+			this.configElement(this.cmbClasificacionMulti,false,true);
+            this.cmbTipoMov.setValue(definido);
+
 		},this);
 		this.cmbClasificacionMulti.on('select',function(){
+		    var definido = this.cmbTipoMov.store.data.items[0].data.tipo;
 			this.configElement(this.cmbClasificacion,false,true);
+			this.cmbTipoMov.setValue(definido);
 		},this);
 		this.cmbTipoMov.on('select',function(cmb,record,index){
 			if(record.data.tipo=='consoli'){						
@@ -101,7 +106,12 @@ header("content-type: text/javascript; charset=UTF-8");
             this.repOficina = '%'
             this.cmbOficina.on('select',function(combo,record,index){
                 this.repOficina = record.data['nombre'];
-            }, this);            
+            }, this);
+
+        this.radGroupDeprec.on('change', function () {
+            var definido = this.cmbTipoMov.store.data.items[0].data.tipo;
+            this.cmbTipoMov.setValue(definido);
+        },this);
         },
         definicionRutareporte: function(report){
             this.rutaReporte = '../../../sis_kactivos_fijos/vista/reportes/ReporteDepreciacion.php';
@@ -205,7 +215,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				scope:this
 			});
 		},
-		detalleDepreciacion:function(cmp,event){						
+		detalleDepreciacion:function(cmp,event){
 			//this.cmbTipoRep.setVisible(true);
 			this.configElement(this.cmbTipoRep,true,false);
 			this.cmbPeriodo.setVisible(false);
