@@ -939,8 +939,8 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
     		}
     	} else if(this.maestro.cod_movimiento=='mejora') {
     		//Validación de mínimos específica
-    		this.Cmp.importe.setMinValue(parseFloat(this.Cmp.res_monto_vigente_real.getValue())+1);
-    		this.Cmp.vida_util.setMinValue(parseInt(this.Cmp.res_vida_util_real.getValue()));
+    		//this.Cmp.importe.setMinValue(parseFloat(this.Cmp.res_monto_vigente_real.getValue())+1);
+    		//this.Cmp.vida_util.setMinValue(parseInt(this.Cmp.res_vida_util_real.getValue()));
 
     		//Obtener saldo real de la revalorización
     		if(this.Cmp.importe.getValue()){
@@ -953,10 +953,10 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 
     		//Validacion de importe post cálculo de inc. o dec.
     		if(this.Cmp.res_saldo_importe.getValue()<=0){
-    			this.Cmp.res_saldo_importe.markInvalid('El importe de la mejora debe incrementar el valor');
+    			//this.Cmp.res_saldo_importe.markInvalid('El importe de la mejora debe incrementar el valor');
     		}
     		if(this.Cmp.res_saldo_vida_util.getValue()<0){
-    			this.Cmp.res_saldo_vida_util.markInvalid('La vida útil de la mejora debe incrementar a la actual');
+    			//this.Cmp.res_saldo_vida_util.markInvalid('La vida útil de la mejora debe incrementar a la actual');
     		}
     	} else if(this.maestro.cod_movimiento=='ajuste'){
     		//Obtener saldo real de la revalorización
