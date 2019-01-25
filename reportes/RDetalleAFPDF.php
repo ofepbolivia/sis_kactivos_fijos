@@ -247,6 +247,7 @@ EOF;
 
         //variables para la tabla
         $codigo = '';
+        $nombre = '';
         $contador = 0;
 
         $cont_87 = 0;
@@ -397,6 +398,9 @@ EOF;
                     $total_general_87 = $total_general_87 + $cont_87;
                     $total_general_100 = $total_general_100 + $cont_100;
                     $total_general_actual = $total_general_actual + $cont_actual;
+                if ($tipo == 1) {
+                	
+                
                     $this->SetFillColor(224, 235, 255);
 
                     $this->SetTextColor(0);
@@ -446,6 +450,7 @@ EOF;
 							unset($RowArray['s13']);
 						}								
                     $this->MultiRow($RowArray,true,1);
+                }
                     $total_grupo_100 += $cont_100;
                     $total_grupo_87 += $cont_87;
                     $total_grupo_actual += $cont_actual;
@@ -453,6 +458,9 @@ EOF;
                     $cont_87 = 0;
                     $cont_actual = 0;
                     if($record['nivel'] == 0 && $codigo != $record['codigo_completo']){
+                    	if ($tipo == 1) {
+                    		
+                    	
                         $RowArray = array(
                             's0'  => '',
                             's1' => '',
@@ -497,12 +505,68 @@ EOF;
 							unset($RowArray['s13']);
 						}												
                         $this->MultiRow($RowArray,true,1);
+                    }else{
+                    $this->SetFillColor(224, 235, 255);
+
+                    $this->SetTextColor(0);
+                    $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','B','RB');
+                    $this->tablenumbers=$tablenums0Real;
+                $RowArray = array(
+                    's0'  => '',
+                    's1' => $codigo,
+                    's2' => $nombre,
+                    's3' => '',
+                    's4' => '',
+                    's5' => '',
+                    's6' => $total_grupo_87,
+                    's7' => $total_grupo_100,
+                    's8' => $total_grupo_actual,
+                    's9' => '',
+                    's10' => '',
+                    's11' => '',
+                    's12' => '',
+                    's13' => ''
+                );
+					if ($ascod==''){						
+						unset($RowArray['s1']);
+					}if ($asdes==''){
+						unset($RowArray['s2']);
+					}if ($asest=='') {
+						unset($RowArray['s3']);
+					}if ($asesf=='') {
+						unset($RowArray['s4']);
+					}if ($asfec=='') {
+						unset($RowArray['s5']);
+					}if ($asmon=='') {
+						unset($RowArray['s6']);
+					}if ($asimp=='') {
+						unset($RowArray['s7']);
+					}if ($asval=='') {
+						unset($RowArray['s8']);
+					}if ($asc31=='') {
+						unset($RowArray['s9']);
+					}if ($asf31==''){
+						unset($RowArray['s10']);
+					}if ($asubi==''){
+						unset($RowArray['s11']);
+					}if ($asres=='') {
+						unset($RowArray['s12']);
+					}if ($asuco==''){
+						unset($RowArray['s13']);
+					}	
+                $this->MultiRow($RowArray,true,1);                    
+
+
+                    }
                         $total_grupo_100 = 0;
                         $total_grupo_87 = 0;
                         $total_grupo_actual = 0;
                     }
                 }
 
+                if ($tipo == 1) {
+                	
+                
                 $this->SetFillColor(79, 91, 147);
 
                 $this->SetTextColor(0);
@@ -552,11 +616,15 @@ EOF;
 						unset($RowArray['s13']);
 					}	
                 $this->MultiRow($RowArray,true,1);
+            }
                 if($record['nivel'] == 0){
                     $codigo = $record['codigo_completo'];
+                    $nombre = $record['nombre'];
                 }
             }else{
-
+            if ($tipo == 1) {
+            	
+            
                 $this->SetFont('','',6);
                 $this->tableborders=array('RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB','RLB');
                 $this->tablenumbers=$tablenums2Real;
@@ -606,6 +674,7 @@ EOF;
                 $this->MultiRow($RowArray);
 
                 $i++;
+            }
                 $cont_100 += $record['monto_compra_orig_100'];
                 $cont_87  += $record['monto_compra_orig'];
                 $cont_actual  +=  $record['monto_compra'];
@@ -622,6 +691,9 @@ EOF;
         $this->SetTextColor(0);
         $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','B','RB');
         $this->tablenumbers=$tablenums3Real;
+        if ($tipo == 1) {
+        	
+        
         $RowArray = array(
             's0'  => '',
             's1' => '',
@@ -712,6 +784,57 @@ EOF;
 				unset($RowArray['s13']);
 			}			
         $this->MultiRow($RowArray,true,1);
+    }else{
+                    $this->SetFillColor(224, 235, 255);
+
+                    $this->SetTextColor(0);
+                    $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','B','RB');
+                    $this->tablenumbers=$tablenums0Real;
+                $RowArray = array(
+                    's0'  => '',
+                    's1' => $codigo,
+                    's2' => $nombre,
+                    's3' => '',
+                    's4' => '',
+                    's5' => '',
+		            's6' => $total_grupo_87+$cont_87,
+		            's7' => $total_grupo_100+$cont_100,
+		            's8' => $total_grupo_actual+$cont_actual,
+                    's9' => '',
+                    's10' => '',
+                    's11' => '',
+                    's12' => '',
+                    's13' => ''
+                );
+					if ($ascod==''){						
+						unset($RowArray['s1']);
+					}if ($asdes==''){
+						unset($RowArray['s2']);
+					}if ($asest=='') {
+						unset($RowArray['s3']);
+					}if ($asesf=='') {
+						unset($RowArray['s4']);
+					}if ($asfec=='') {
+						unset($RowArray['s5']);
+					}if ($asmon=='') {
+						unset($RowArray['s6']);
+					}if ($asimp=='') {
+						unset($RowArray['s7']);
+					}if ($asval=='') {
+						unset($RowArray['s8']);
+					}if ($asc31=='') {
+						unset($RowArray['s9']);
+					}if ($asf31==''){
+						unset($RowArray['s10']);
+					}if ($asubi==''){
+						unset($RowArray['s11']);
+					}if ($asres=='') {
+						unset($RowArray['s12']);
+					}if ($asuco==''){
+						unset($RowArray['s13']);
+					}	
+                $this->MultiRow($RowArray,true,1);        	
+    }
 
         //$this->SetFillColor(79, 91, 147);
         $this->tableborders=array('LB','B','B','B','B','B','B','B','B','B','B','B','B','RB');
