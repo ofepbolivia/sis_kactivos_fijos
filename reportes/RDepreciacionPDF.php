@@ -15,7 +15,7 @@ class RDepreciacionPDF extends  ReportePDF{
         //cabecera del reporte
         $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 16,5,40,20);
         $this->ln(3);
-        $this->SetMargins(10, 36, 5);
+        $this->SetMargins(5, 36, 5);
 
         $this->SetFont('','B',10);
         $this->Cell(0,5,"BOLIVIANA DE AVIACION",0,1,'C');
@@ -45,7 +45,7 @@ class RDepreciacionPDF extends  ReportePDF{
 		}		
         //primera linea
         $this->Cell(10,3,'','',0,'C');
-        $this->Cell(20,3,'','',0,'C');
+        $this->Cell(25,3,'','',0,'C');
         $this->Cell(36,3,'','',0,'C');        
         $this->Cell(15,3,'','',0,'C');
 
@@ -66,7 +66,7 @@ class RDepreciacionPDF extends  ReportePDF{
 
         //segunda linea
         $this->Cell(10,3,'NUM','TBRL',0,'C');
-        $this->Cell(20,3,'CODIGO','TBRL',0,'C');
+        $this->Cell(25,3,'CODIGO','TBRL',0,'C');
         $this->Cell(36,3,$desno,'BTRL',0,'C');
         $this->Cell(15,3,'INICIO DEP.','TBRL',0,'C');
 
@@ -99,7 +99,7 @@ class RDepreciacionPDF extends  ReportePDF{
     {
 
         $this->AddPage();
-        $this->SetMargins(10, 80, 5);
+        $this->SetMargins(5, 80, 5);
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
         $this->Ln();
 
@@ -110,7 +110,7 @@ class RDepreciacionPDF extends  ReportePDF{
         $codigo = '';
         $contador=1;
 
-        $this->tablewidths=array(10,20,36,15,18,18,20,20,11,11,17,17,17,17,19);
+        $this->tablewidths=array(10,25,36,15,18,18,20,20,11,11,17,17,17,17,19);
         $this->tablealigns=array('C','L','L','C','R','R','R','R','R','R','R','R','R','R','R');
 
         foreach($this->datos as $record){
