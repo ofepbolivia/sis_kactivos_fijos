@@ -173,11 +173,7 @@ EOF;
 					      
 	        $cont = 1;
 			
-			$total_mon_cotrato = 0;
-			$total_mon_alt_erp = 0;
-			$total_mon_transi  = 0;
-			$total_mon_pagado  = 0;
-			$total_mon_actual  = 0;
+
 			
 			$total_grupo_con   = 0;
 			$total_grupo_alt   = 0;
@@ -195,7 +191,12 @@ EOF;
          }         
        }			
 			
-		foreach ($estacion as $value) {					
+		foreach ($estacion as $value) {
+            $total_mon_cotrato = 0;
+            $total_mon_alt_erp = 0;
+            $total_mon_transi  = 0;
+            $total_mon_pagado  = 0;
+            $total_mon_actual  = 0;
 	        foreach( $datos as $record){	        	
 	        	if($record["desc_codigo"]==$value){	        	
 	            $tbl .='<tr style="font-size: 8pt;">
@@ -216,7 +217,7 @@ EOF;
 			$total_mon_alt_erp += $record["monto_alta"];
 			$total_mon_transi  += $record["monto_transito"];
 			$total_mon_pagado  += $record["monto_pagado"];
-			$total_mon_actual  += $record["importe_tercer"];
+			$total_mon_actual  += $record["monto_tercer"];
 	            $cont++;
 	        }
 	       }
@@ -303,9 +304,7 @@ EOF;
                 </tr>';
 	        $cont = 1;
 		
-			$total_mon_sigep   = 0;
-			$total_mon_erp     = 0;
-			$total_mon_dife    = 0;						
+
 			
 			$total_grupo_sigep = 0;
 			$total_grupo_erp   = 0;
@@ -321,7 +320,10 @@ EOF;
 		         }         
 		       }			
 					
-				foreach ($estacion as $value) {					
+				foreach ($estacion as $value) {
+                    $total_mon_sigep   = 0;
+                    $total_mon_erp     = 0;
+                    $total_mon_dife    = 0;
 			        foreach( $datos as $record){	        	
 			        	if($record["desc_codigo"]==$value){	        	
 			            $tbl .='<tr style="font-size: 8pt;">
@@ -415,7 +417,7 @@ EOF;
                 </tr>';
 	        $cont = 1;
 		
-			$total_monto  	   = 0;
+
 			$total_grupo_mon   = 0;			
 			
    
@@ -428,7 +430,8 @@ EOF;
 		         }         
 		       }			
 					
-				foreach ($estacion as $value) {					
+				foreach ($estacion as $value) {
+                    $total_monto  	   = 0;
 			        foreach( $datos as $record){	        	
 			        	if($record["desc_codigo"]==$value){	        	
 			            $tbl .='<tr style="font-size: 8pt;">
@@ -511,10 +514,7 @@ EOF;
                 	<td style="width:26%;"><b>OBSERVACIONES</b></td>                	
                 </tr>';
 	        $cont = 1;
-		
-			$total_mon_sigep   = 0;
-			$total_mon_erp     = 0;
-			$total_mon_dife    = 0;						
+
 			
 			$total_grupo_sigep = 0;
 			$total_grupo_erp   = 0;
@@ -529,10 +529,13 @@ EOF;
 		             $estacion[]=$valor;
 		         }         
 		       }			
-					
-				foreach ($estacion as $value) {				
-			        foreach( $datos as $record){	        	
-			        	if($record["desc_codigo"]==$value){	        	
+
+				foreach ($estacion as $value1) {
+                    $total_mon_sigep   = 0;
+                    $total_mon_erp     = 0;
+                    $total_mon_dife    = 0;
+			        foreach( $datos as $record){
+			        	if($record["desc_codigo"]==$value1){
 			            $tbl .='<tr style="font-size: 8pt;">
 			                <td style="width:3%; text-align: center;">'.$cont.'</td>	            
 				            <td style="width:5%;">&nbsp;'. $record["desc_codigo"].'</td>
@@ -543,17 +546,15 @@ EOF;
 							<td style="text-align:right; width:10%;">'. $record["diferencia"].'</td>																				
 							<td style="text-align:right; width:26%;">'. $record["observaciones"].'</td>							
 			            </tr>';
-						
-					$total_mon_sigep += $record["monto_sigep"];
-					$total_mon_erp   += $record["monto_erp"];
-					$total_mon_dife  += $record["diferencia"];					
-										
+                            $total_mon_sigep += $record["monto_sigep"];
+                            $total_mon_erp   += $record["monto_erp"];
+                            $total_mon_dife  += $record["diferencia"];
 			            $cont++;
 			        }
-			       }					
+                    }
 			        $tbl.='
 						<tr style="font-size:10pt;">                
-				            <td style="text-align:center;  width:419.5px;">TOTAL GRUPO '.$value.'</td>
+				            <td style="text-align:center;  width:419.5px;">TOTAL GRUPO '.$value1.'</td>
 				            <td style="text-align:right; width:10%;">'. $total_mon_sigep.'</td>
 				            <td style="text-align:right; width:10%;">'. $total_mon_erp.'</td>
 				            <td style="text-align:right; width:10%;">'. $total_mon_dife.'</td>														
