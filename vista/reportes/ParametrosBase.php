@@ -71,7 +71,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			mode : 'local',
 			store : new Ext.data.ArrayStore({
 				fields : ['tipo', 'valor'],
-				data : [['gepa', 'Gestion Pasada'], ['geac', 'Gestion Actual']]
+				data : [['gepa', 'Formato Reporte Pasada'], ['geac', 'Formato Reporte Actual']]
 			}),
 			anchor : '40%',
 			valueField : 'tipo',
@@ -172,7 +172,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		});
 		this.cmbTipoMov = new Ext.form.ComboBox({
 			name : 'total_consol',
-			fieldLabel : 'Tipo Movimiento',
+			fieldLabel : 'Agrupador',
 			allowBlank : false,
 			triggerAction : 'all',
 			lazyRender : true,
@@ -195,7 +195,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			mode : 'local',
 			store : new Ext.data.ArrayStore({
 				fields : ['tipo','valor'],
-				data : [['alta','Alta'],['reval','Revalorizado'],['ajuste','Ajuste']]
+				data : [['alta','Alta'],['reval','Revalorizado'],['ajuste','Ajuste'],['mejora','Mejora'],['','Todos']]
 			}),
 			anchor : '40%',
 			valueField : 'tipo',

@@ -127,12 +127,18 @@ class RDepreciacionXls
 
 
         //$this->docexcel->getActiveSheet()->mergeCells('A1:A3');
+        $title = "DETALLE DE DEPRECIACION DE ACTIVOS FIJOS";
+        $codigo = $datos[0]['codigo'];
+        $codigo == "11" && $title = "DETALLE DE AMORTIZACION DE ACTIVOS FIJOS INTANGIBLES";
+
         $sheet0->mergeCells('B1:P1');
         $sheet0->setCellValue('B1', 'BOLIVIANA DE AVIACIÓN');
         $sheet0->mergeCells('B2:P2');
-        $sheet0->setCellValue('B2', 'DETALLE DE DEPRECIACION DE ACTIVOS FIJOS');
+        $sheet0->setCellValue('B2', $title);
         $sheet0->mergeCells('B3:P3');
         $sheet0->setCellValue('B3', ' Al: '.date_format(date_create($this->objParam->getParametro('fecha_hasta')), 'd/m/Y'));
+        $sheet0->mergeCells('B4:P4');
+        $sheet0->setCellValue('B4', 'Formato Reporte Antiguo');
 
 
         $styleTitulos = array(
@@ -194,16 +200,16 @@ class RDepreciacionXls
         );
 
 
-        $sheet0->getStyle('B1:P3')->applyFromArray($styleCabeza);
+        $sheet0->getStyle('B1:P4')->applyFromArray($styleCabeza);
         /*$sheet0->getStyle('B2:L2')->applyFromArray($styleTitulos);
         $sheet0->getStyle('B3:L3')->applyFromArray($styleTitulos);*/
 
         $styleTitulos['fill']['color']['rgb'] = '8DB4E2';
         $styleTitulos['fill']['color']['rgb'] = 'CCBBAA';
 
-        $sheet0->getRowDimension('5')->setRowHeight(35);
-        $sheet0->getStyle('B5:P5')->applyFromArray($styleTitulos);
-        $sheet0->getStyle('C5:P5')->getAlignment()->setWrapText(true);
+        $sheet0->getRowDimension('6')->setRowHeight(35);
+        $sheet0->getStyle('B6:P6')->applyFromArray($styleTitulos);
+        $sheet0->getStyle('C6:P6')->getAlignment()->setWrapText(true);
 
 		$descnom=$this->objParam->getParametro('desc_nombre');
 		switch ($descnom) {
@@ -213,41 +219,51 @@ class RDepreciacionXls
 			default:$desno='DENOMINACIÓN';break;
 		}
         //*************************************Cabecera*****************************************
+        $depre_acu = 'DEP. ACUM. GEST. ANT.';
+        $actu_acu  = 'ACT. DEPREC. GEST. ANT.';
+        $depre_ges = 'DEP. GESTIÓN.';
+        $depre_a = 'DEP. ACUM.';
+        if ($codigo == "11"){
+            $depre_acu = 'AMOR. ACUM. GEST. ANT.';
+            $actu_acu = 'ACT. AMOR. GEST. ANT.';
+            $depre_ges = 'AMOR. GESTIÓN';
+            $depre_a = 'AMOR. ACUM';
 
-        $sheet0->setCellValue('B5', 'Nº');
+        }
+        $sheet0->setCellValue('B6', 'Nº');
 
-        $sheet0->setCellValue('C5', 'CODIGO');
+        $sheet0->setCellValue('C6', 'CODIGO');
 
-        $sheet0->setCellValue('D5', $desno);
+        $sheet0->setCellValue('D6', $desno);
 
-        $sheet0->setCellValue('E5', 'INICIO DEP.');
+        $sheet0->setCellValue('E6', 'INICIO DEP.');
 
-        $sheet0->setCellValue('F5', 'VALOR COMPRA');
+        $sheet0->setCellValue('F6', 'VALOR COMPRA');
 
-        $sheet0->setCellValue('G5', 'COSTO AF');
+        $sheet0->setCellValue('G6', 'COSTO AF');
 
-        $sheet0->setCellValue('H5', 'INC. X ACTUALIZ');
+        $sheet0->setCellValue('H6', 'INC. X ACTUALIZ');
 
-        $sheet0->setCellValue('I5', 'VALOR ACTUALIZ');
+        $sheet0->setCellValue('I6', 'VALOR ACTUALIZ');
 
-        $sheet0->setCellValue('J5', 'VU. ORIGINAL');
+        $sheet0->setCellValue('J6', 'VU. ORIGINAL');
 
-        $sheet0->setCellValue('K5', 'VU. RESIDUAL');
+        $sheet0->setCellValue('K6', 'VU. RESIDUAL');
 
-        $sheet0->setCellValue('L5', 'DEP. ACUM. GEST.');
+        $sheet0->setCellValue('L6', $depre_acu);
 
-        $sheet0->setCellValue('M5', 'ACT. DEPREC. GEST.');
+        $sheet0->setCellValue('M6', $actu_acu);
 
-        $sheet0->setCellValue('N5', 'DEP. GESTIÓN');
+        $sheet0->setCellValue('N6', $depre_ges);
 
-        $sheet0->setCellValue('O5', 'DEP. ACUM.');
+        $sheet0->setCellValue('O6', $depre_a);
 
-        $sheet0->setCellValue('P5', 'VALOR RESIDUAL');
+        $sheet0->setCellValue('P6', 'VALOR RESIDUAL');
 
 
         //*************************************Fin Cabecera*****************************************
 
-        $fila = 6;
+        $fila = 7;
         $codigo = '';
 
         $cont_87 = 0;
@@ -260,7 +276,7 @@ class RDepreciacionXls
 
 
 
-        $sheet0->getRowDimension('5')->setRowHeight(35);
+        $sheet0->getRowDimension('6')->setRowHeight(35);
         /*$sheet0->getStyle('B5:L5')->applyFromArray($styleTitulos);
         $sheet0->getStyle('C5:L5')->getAlignment()->setWrapText(true);*/
         foreach($datos as $value) {
@@ -313,6 +329,8 @@ class RDepreciacionXls
 
             }else if($value['tipo'] == 'detalle'){
                 //$fecha_dep =  $value['fecha_ini_dep'] != '' ?date_format(date_create($value['fecha_ini_dep']), 'd/m/Y'):'';
+                $codigo_1=substr($value['codigo'],0,2);
+                $codigo_11=substr($value['codigo'],0,9);
 
                 $styleTitulos['fill']['color']['rgb'] = 'e6e8f4';
                 $sheet0->getStyle('B'.$fila.':P'.$fila)->applyFromArray($styleTitulos);
@@ -348,8 +366,8 @@ class RDepreciacionXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6, $fila, $value['monto_vigente_orig']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7, $fila, $value['inc_actualiz']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8, $fila, $value['monto_actualiz']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila,substr($value['codigo'], 0,2)=='01'?'-':$value['vida_util_orig']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila,$value['vida_util']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9, $fila,($codigo_1=='01' || $codigo_11 == '11.01.05.')?'-':$value['vida_util_orig']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10, $fila,($codigo_1=='01' || $codigo_11 == '11.01.05.')?'-':$value['vida_util']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11, $fila, $value['depreciacion_acum_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(12, $fila, $value['depreciacion_acum_actualiz_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(13, $fila, $value['depreciacion_per']);

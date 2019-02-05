@@ -15,11 +15,14 @@ class RDepreciacionPDF extends  ReportePDF{
         //cabecera del reporte
         $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 16,5,40,20);
         $this->ln(3);
-        $this->SetMargins(5, 36, 5);
+        $this->SetMargins(5, 38.5, 5);
+        $title = "DETALLE DE DEPRECIACION DE ACTIVOS FIJOS";
+        $codigo = $this->datos[0]['codigo'];
+        $codigo == "11" && $title = "DETALLE DE AMORTIZACION DE ACTIVOS FIJOS INTANGIBLES";
 
         $this->SetFont('','B',10);
         $this->Cell(0,5,"BOLIVIANA DE AVIACION",0,1,'C');
-        $this->Cell(0,5,"DETALLE DE DEPRECIACION DE ACTIVOS FIJOS",0,1,'C');
+        $this->Cell(0,5,$title,0,1,'C');
 
         $this->SetFont('','B',6);
         $this->Cell(0,3,' Al: '.date_format(date_create($this->objParam->getParametro('fecha_hasta')), 'd/m/Y'),0,1,'C');
@@ -33,6 +36,7 @@ class RDepreciacionPDF extends  ReportePDF{
             $moneda = 'UFV';
         }
         $this->Cell(0,2,'(Expresado en '.$moneda.')',0,1,'C');
+        $this->Cell(0,2,'Formato Reporte Antiguo',0,1,'C');
 
         $this->SetFont('','B',6);
         $this->Ln(3);
@@ -42,7 +46,17 @@ class RDepreciacionPDF extends  ReportePDF{
 			case 'nombre' :$desno='DENOMINACIÓN';break;
 			case 'ambos':$desno='NOMBRE/DESC.';break;
 			default:$desno='DENOMINACIÓN';break;
-		}		
+		}
+
+		$depre_acu = 'DEP. ACUM.';
+        $actu_acu  = 'ACT. DEPREC.';
+        $depre_ges = 'DEP. GESTION';
+		if ($codigo == "11"){
+		    $depre_acu = 'AMOR. ACUM.';
+		    $actu_acu = 'ACT. AMOR.';
+		    $depre_ges = 'AMOR. GESTION';
+
+        }
         //primera linea
         $this->Cell(10,3,'','',0,'C');
         $this->Cell(25,3,'','',0,'C');
@@ -57,8 +71,8 @@ class RDepreciacionPDF extends  ReportePDF{
 
 
         $this->Cell(22,3,'VIDA','TRL',0,'C');
-        $this->Cell(17,3,'DEP. ACUM.','TRL',0,'C');
-        $this->Cell(17,3,'ACT. DEPREC.','TRL',0,'C');
+        $this->Cell(17,3,$depre_acu,'TRL',0,'C');
+        $this->Cell(17,3,$actu_acu,'TRL',0,'C');
 
         $this->Cell(17,3,'','',0,'C');
         $this->Cell(17,3,'','',0,'C');
@@ -81,8 +95,8 @@ class RDepreciacionPDF extends  ReportePDF{
         $this->Cell(17,3,'GESTION ANT.','BRL',0,'C');
         $this->Cell(17,3,'GESTION ANT.','BRL',0,'C');
 
-        $this->Cell(17,3,'DEP. GESTION','TBRL',0,'C');
-        $this->Cell(17,3,'DEP. ACUM.','TBRL',0,'C');
+        $this->Cell(17,3,$depre_ges,'TBRL',0,'C');
+        $this->Cell(17,3,$depre_acu,'TBRL',0,'C');
         $this->Cell(19,3,'VALOR RESIDUAL','TBRL',0,'C');
 
 
@@ -152,6 +166,8 @@ class RDepreciacionPDF extends  ReportePDF{
                 //$fecha_dep =  $record['fecha_ini_dep'] != '' ?date_format(date_create($record['fecha_ini_dep']), 'd/m/Y'):'';
                 $this->tableborders=array('LB','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','RB');
                 $this->tablenumbers=array(0,0,0,0,2,2,2,2,0,0,2,2,2,2,2);
+                $codigo_1=substr($record['codigo'],0,2);
+                $codigo_11=substr($record['codigo'],0,9);
                 $RowArray = array(
                     's0'  => $contador,
                     's1' => $record['codigo'],
@@ -161,8 +177,8 @@ class RDepreciacionPDF extends  ReportePDF{
                     's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
                     's6' => $record['inc_actualiz']!=''?$record['inc_actualiz']:0,
                     's7' => $record['monto_actualiz']!=''?$record['monto_actualiz']:0,
-                    's8' => substr($record['codigo'], 0,2)=='01'?'-':$record['vida_util_orig'],
-                    's9' => $record['vida_util'],
+                    's8' => ($codigo_1=='01' || $codigo_11 == '11.01.05.')?'-':$record['vida_util_orig'],
+                    's9' => ($codigo_1=='01' || $codigo_11 == '11.01.05.')?'-':$record['vida_util'],
                     's10' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
                     's11' => $record['depreciacion_acum_actualiz_gest_ant']!=''?$record['depreciacion_acum_actualiz_gest_ant']:0,
                     's12' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,

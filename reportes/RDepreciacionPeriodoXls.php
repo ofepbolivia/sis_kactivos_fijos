@@ -120,11 +120,15 @@ class RDepreciacionPeriodoXls
 		$sheet0->getColumnDimension('W')->setWidth(10);
 		$sheet0->getColumnDimension('X')->setWidth(10);
 
-        
+
+        $title = "DETALLE DE DEPRECIACION DE ACTIVOS FIJOS";
+        $codigo = $datos[0]['codigo'];
+        $codigo == "11" && $title = "DETALLE DE AMORTIZACION DE ACTIVOS FIJOS INTANGIBLES";
+
         $sheet0->mergeCells('B1:P1');
         $sheet0->setCellValue('B1', 'BOLIVIANA DE AVIACIÓN');
         $sheet0->mergeCells('B2:P2');
-        $sheet0->setCellValue('B2', 'DETALLE DE DEPRECIACION DE ACTIVOS FIJOS ');
+        $sheet0->setCellValue('B2', $title);
         $sheet0->mergeCells('B3:P3');
         $sheet0->setCellValue('B3', ' Al: '.date_format(date_create($this->objParam->getParametro('fecha_hasta')), 'd/m/Y'));
 
@@ -203,6 +207,18 @@ class RDepreciacionPeriodoXls
 
         //*************************************Cabecera*****************************************
 
+        $depre_acu = 'DEP. ACUM. GEST. ANT.';
+        $actu_acu  = 'ACT. DEPREC. GEST. ANT.';
+        $depre_ges = 'DEP. GESTIÓN.';
+        $depre_a = 'DEP. ACUM.';
+        if ($codigo == "11"){
+            $depre_acu = 'AMOR. ACUM. GEST. ANT.';
+            $actu_acu = 'ACT. AMOR. GEST. ANT.';
+            $depre_ges = 'AMOR. GESTIÓN';
+            $depre_a = 'AMOR. ACUM';
+
+        }
+
         $sheet0->setCellValue('B5', 'Nº');
 
         $sheet0->setCellValue('C5', 'CODIGO');
@@ -239,15 +255,15 @@ class RDepreciacionPeriodoXls
 
         $sheet0->setCellValue('S5', 'VIDA RESI');
 
-        $sheet0->setCellValue('T5', 'DEP. ACUM. GEST. ANT.');
+        $sheet0->setCellValue('T5', $depre_acu);
 
-        $sheet0->setCellValue('U5', 'ACT. ACUM. GEST. ANT.');
+        $sheet0->setCellValue('U5', $actu_acu);
 
-        $sheet0->setCellValue('V5', 'DEP. GESTIÓN');
+        $sheet0->setCellValue('V5', $depre_ges);
 
         //$sheet0->setCellValue('W5', 'DEP. DEL PERIODO');
 
-        $sheet0->setCellValue('W5', 'DEP. ACUM.');
+        $sheet0->setCellValue('W5', $depre_a);
 
         $sheet0->setCellValue('X5', 'VAL. RESI.');
 		
@@ -255,7 +271,7 @@ class RDepreciacionPeriodoXls
 
         //*************************************Fin Cabecera*****************************************
 
-        $fila = 5;
+        $fila = 6;
         $codigo = '';
 
         $cont_87 = 0;
@@ -273,6 +289,8 @@ class RDepreciacionPeriodoXls
         foreach($datos as $value) {
 
 			if($value['tipo'] == 'detalle'){
+                $codigo_1=substr($value['codigo'],0,2);
+                $codigo_11=substr($value['codigo'],0,9);
                 
                 $styleTitulos['fill']['color']['rgb'] = 'e6e8f4';
                 $sheet0->getStyle('B'.$fila.':X'.$fila)->applyFromArray($styleTitulos);
@@ -332,8 +350,8 @@ class RDepreciacionPeriodoXls
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14, $fila, $value['inc_ac_acum']);
 				$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(15, $fila, $value['val_acu_perido']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(16, $fila, $value['monto_actualiz']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(17, $fila,substr($value['codigo'], 0,2)=='01'?'-':$value['vida_util_orig']);
-                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(18, $fila,$value['vida_util']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(17, $fila,($codigo_1=='01' || $codigo_11 == '11.01.05.')?'-':$value['vida_util_orig']);
+                $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(18, $fila,($codigo_1=='01' || $codigo_11 == '11.01.05.')?'-':$value['vida_util']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(19, $fila, $value['depreciacion_acum_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(20, $fila, $value['depreciacion_acum_actualiz_gest_ant']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(21, $fila, $value['depreciacion_per']);
