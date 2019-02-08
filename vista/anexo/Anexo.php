@@ -243,8 +243,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 						else{
 								return '<hr><center><b><p style=" color:green; font-size:15px;">Total: </p></b></center>';
 						}
-				},
-				maxLength:200
+				}
 			},
 				type:'TextField',
 				filters:{pfiltro:'anex.detalle_c31',type:'string'},
@@ -396,9 +395,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 
 						return  String.format('<b style="color:#000000; ">{0}</b>', record.data['observaciones']);
 
-			},
-				maxLength:200
-
+			    },
 			},
 				type:'TextArea',
 				filters:{pfiltro:'anex.observaciones',type:'string'},

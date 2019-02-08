@@ -300,9 +300,7 @@ Phx.vista.Anexo=Ext.extend(Phx.gridInterfaz,{
 
 						return  String.format('<b style="color:#000000; ">{0}</b>', record.data['observaciones']);
 
-			},
-				maxLength:200
-
+			    }
 			},
 				type:'TextArea',
 				filters:{pfiltro:'anex.observaciones',type:'string'},
