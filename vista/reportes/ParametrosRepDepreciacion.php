@@ -59,15 +59,27 @@ header("content-type: text/javascript; charset=UTF-8");
 		},this);
 		this.cmbClasificacion.on('select',function(){
 		    var definido = this.cmbTipoMov.store.data.items[0].data.tipo;
+            var id_clasdificacion = this.cmbClasificacion.getValue();
 			this.cmbActivo.setValue('');
 			this.configElement(this.cmbClasificacionMulti,false,true);
             this.cmbTipoMov.setValue(definido);
+            console.log('bbbbbb',this.cmbTipoMov.hidden );
+            if (this.cmbTipoMov.hidden == false) {
+
+                (id_clasdificacion == 133)? this.configElement(this.cmbBajaReti, true, true):this.configElement(this.cmbBajaReti, false, true);
+            }
 
 		},this);
 		this.cmbClasificacionMulti.on('select',function(){
 		    var definido = this.cmbTipoMov.store.data.items[0].data.tipo;
+		    var id_clasdificacion = this.cmbClasificacionMulti.getValue();
 			this.configElement(this.cmbClasificacion,false,true);
 			this.cmbTipoMov.setValue(definido);
+            if (this.cmbTipoMov.hidden == false) {
+
+                (id_clasdificacion == 133)? this.configElement(this.cmbBajaReti, true, true):this.configElement(this.cmbBajaReti, false, true);
+            }
+
 		},this);
 		this.cmbTipoMov.on('select',function(cmb,record,index){
 			if(record.data.tipo=='consoli'){						
@@ -127,7 +139,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		this.configElement(this.cmbClasificacion,false,true);
 		this.configElement(this.cmbClasificacionMulti,false,true);		
-		this.configElement(this.cmbTipoMov,false,false)					
+		this.configElement(this.cmbTipoMov,false,false);					
 		this.configElement(this.txtDenominacion,false,true);
 		this.configElement(this.dteFechaCompra,true,true);
 		this.configElement(this.dteFechaIniDep,false,true);
@@ -145,6 +157,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.configElement(this.radGroupTangible,false,true);
 		this.configElement(this.cmbDepto,false,true);
 		this.configElement(this.descNombre,false,true);
+		this.configElement(this.cmbBajaReti,false,true);
 		this.configElement(this.cmbDeposito,false,true);
 		this.configElement(this.lblDesde,false,true);
 		this.configElement(this.lblHasta,true,true);
@@ -228,9 +241,10 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.cmbClasificacion.setVisible(true);
 			this.cmbClasificacionMulti.setVisible(true);
 			this.cmbMoneda.setVisible(false);
-			this.cmpMontos.setVisible(true);
-			this.dteFechaIniDep.setVisible(true);
+			this.cmpMontos.setVisible(false);
+			this.dteFechaIniDep.setVisible(false);
 			this.descNombre.setVisible(true);
+			this.cmbBajaReti.setVisible(false);
 			this.radGroupDeprec.setVisible(true);
 			this.radGroupTangible.setVisible(true);
 			this.cmbEstado.setValue('');	
@@ -261,6 +275,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	      this.cmbMoneda.setValue('');
 	      this.dteFechaIniDep.setValue('');
 	      this.descNombre.setValue('');
+	      this.cmbBajaReti.setValue('');
 	      this.radGroupDeprec.setValue('completo');
 	      this.radGroupTangible.setValue('ambos');
 	      this.cmbEstado.setValue('');	
@@ -271,12 +286,13 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.cmbEstadoDepre.setVisible(false);
 			this.cmbTipoRep.setVisible(false);
 			this.dteFechaHasta.setVisible(true);
-			this.cmpFechas.setVisible(true);
+			this.cmbBajaReti.setVisible(false);
+            this.cmpFechas.setVisible(true);
 			this.cmbClasificacion.setVisible(true);
 			this.cmbClasificacionMulti.setVisible(true);
 			this.cmbMoneda.setVisible(false);
-			this.cmpMontos.setVisible(true);
-			this.dteFechaIniDep.setVisible(true);
+			this.cmpMontos.setVisible(false);
+			this.dteFechaIniDep.setVisible(false);
 			this.descNombre.setVisible(true);
 			this.radGroupDeprec.setVisible(true);
 			this.radGroupTangible.setVisible(true);

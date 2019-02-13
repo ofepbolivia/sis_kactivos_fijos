@@ -1630,6 +1630,118 @@ header("content-type: text/javascript; charset=UTF-8");
         frameForm: false,
         paddingForm: '5 5 5 5',
 
+        onButtonDel: function() {
+            data = this.sm.getSelected().data;
+            if (data.estado == 'eliminado'){
+                alert('El activo con codigo: '+data.codigo+ ' tiene estado eliminado');
+            }else {
+                this.crearVentanaEliminar();
+                this.abrirVentanaDel('del');
+                this.actualizarSegunClasificacion(data.tipo_activo, data.depreciable);
+                Ext.getCmp(this.idContenedor + '_codigo_ant').disable();
+            }
+        },
+
+        crearVentanaEliminar: function() {
+            if(this.afWindow){
+                this.form.destroy();
+                this.afWindow.destroy();
+            }
+
+            this.form = new Ext.form.FormPanel({
+                id: this.idContenedor + '_af_form',
+                items: [{
+                    region: 'center',
+                    layout: 'column',
+                    border: false,
+                    autoScroll: false,
+                    items: [{
+                        xtype: 'tabpanel',
+                        plain: true,
+                        activeTab: 0,
+                        height: 515,
+                        deferredRender: false,
+                        defaults: {
+                            bodyStyle: 'padding:10px'
+                        },
+                        items: [{
+                            title: 'Motivo',
+                            layout: 'form',
+                            defaults: {
+                                width: 200
+                            },
+                            autoScroll: false,
+                            defaultType: 'textfield',
+                            items: [{
+                                name: 'id_activo_fijo',
+                                hidden: true,
+                                id: this.idContenedor + '_id_activo_fijo'
+                            },
+                                {
+                                    fieldLabel: 'Código',
+                                    name: 'codigo',
+                                    disabled: true,
+                                    id: this.idContenedor+'_codigo'
+                                },
+                                {
+                                    xtype: 'textarea',
+                                    fieldLabel: 'Registro Motivo',
+                                    name: 'motivo',
+                                    id: this.idContenedor + '_motivo'
+                                }
+                                ]
+                        }]
+                    }]
+                }],
+                //fileUpload: me.fileUpload,
+                padding: this.paddingForm,
+                bodyStyle: this.bodyStyleForm,
+                border: this.borderForm,
+                frame: this.frameForm,
+                autoScroll: false,
+                autoDestroy: true,
+                autoScroll: false,
+                region: 'center'
+            });
+
+            this.afWindow = new Ext.Window({
+                width: 500,
+                height: 300,
+                modal: true,
+                closeAction: 'hide',
+                labelAlign: 'top',
+                title: 'Activos Fijos',
+                bodyStyle: 'padding:5px',
+                layout: 'border',
+                items: [{
+                    items: [{
+                        id: 'img-detail-panel',
+                        region: 'north'
+                    }, {
+                        id: 'img-qr-panel'+this.idContenedor,
+                        region: 'center'
+                    }]
+                },this.form],
+                buttons: [{
+                    text: 'Guardar',
+                    handler: this.onSubmitDel,
+                    scope: this
+                }, {
+                    text: 'Declinar',
+                    handler: function() {
+                        this.afWindow.hide();
+                    },
+                    scope: this
+                }]
+            });
+        },
+        abrirVentanaDel: function(){
+            this.cargaFormulario(this.sm.getSelected().data);
+            data = this.sm.getSelected().data;
+            //Renderea la imagen, abre la ventana
+            this.afWindow.show();
+        },
+
         crearVentana: function() {
             if(this.afWindow){
                 this.form.destroy();
@@ -2561,6 +2673,27 @@ header("content-type: text/javascript; charset=UTF-8");
                 Ext.MessageBox.alert('Validación','Existen datos inválidos en el formulario. Corrija y vuelva a intentarlo');
             }
         },
+        onSubmitDel: function (o, x, force){
+            Phx.CP.loadingShow();
+            formData = this.dataSubmit();
+            Ext.Ajax.request({
+                url: '../../sis_kactivos_fijos/control/ActivoFijo/eliminarActivoFijo',
+                params: this.dataSubmit,
+                isUpload: false,
+                success: function(a,b,c){
+                    this.store.rejectChanges();
+                    Phx.CP.loadingHide();
+                    this.afWindow.hide();
+                    this.reload();
+                },
+                argument: this.argumentSave,
+                failure: this.conexionFailure,
+                timeout: this.timeout,
+                scope: this
+            });
+        },
+
+
         dataSubmit: function(){
             var submit={};
             Ext.each(this.form.getForm().items.keys, function(element, index){

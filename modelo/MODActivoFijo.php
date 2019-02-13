@@ -276,6 +276,7 @@ class MODActivoFijo extends MODbase{
 
         //Define los parametros para la funcion
         $this->setParametro('id_activo_fijo','id_activo_fijo','int4');
+        $this->setParametro('motivo','motivo','text');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

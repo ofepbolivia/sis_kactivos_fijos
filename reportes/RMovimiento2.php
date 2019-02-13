@@ -606,7 +606,7 @@ class RMovimiento2 extends ReportePDF {
 		///////////////////////////////////////
 		if($tipo=='baja'){
             
-	          $this->tablewidthsHD=array(10,35,100,70,50,20,20);			  
+	          $this->tablewidthsHD=array(10,35,80,50,50,20,20);
 	          $this->tablealignsHD=array('C','C','C','C','C','C','C');
 		      $this->tablenumbersHD=array(0,0,0,0,0,0,0);
 		      $this->tablebordersHD=array('TB','TB','TB','TB','TB','TB','TB');

@@ -65,6 +65,7 @@ Phx.vista.ReporteDepreciacion=Ext.extend(Phx.gridInterfaz,{
             desc_nombre : this.maestro.paramsRep.desc_nombre,
             id_clasificacion_multi : this.maestro.paramsRep.id_clasificacion_multi,
             total_consol : this.maestro.paramsRep.total_consol,
+            baja_retiro : this.maestro.paramsRep.baja_retiro,
             estado_depre : this.maestro.paramsRep.estado_depre,
             tipo_repo : this.maestro.paramsRep.tipo_repo,
             actu_perido : this.maestro.paramsRep.actu_perido         
