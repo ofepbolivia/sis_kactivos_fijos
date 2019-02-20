@@ -704,7 +704,7 @@ BEGIN
               cat.descripcion as estado_fun
 
               from niveles  niv
-              left join kaf.tactivo_fijo taf on taf.id_clasificacion = niv.id_clasificacion
+              left join kaf.tactivo_fijo taf on taf.id_clasificacion = niv.id_clasificacion and taf.estado not in (''eliminado'',''retiro'')
               left join orga.vfuncionario vf on vf.id_funcionario = taf.id_funcionario
               left join orga.toficina tof on tof.id_oficina = taf.id_oficina
               left join param.tlugar tlug on tlug.id_lugar = tof.id_lugar

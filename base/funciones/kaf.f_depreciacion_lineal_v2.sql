@@ -353,7 +353,7 @@ BEGIN
                 v_rec_tc.o_tc_factor,
                 v_rec.id_activo_fijo_valor, --25
                 v_mes_dep,
-                coalesce(0,round(v_ant_monto_actualiz,2)),
+                round(v_ant_monto_actualiz,2),
                 v_rec.id_moneda,
                 v_rec.id_moneda_dep
                 ) RETURNING id_movimiento_af_dep into v_id_movimiento_af_dep;

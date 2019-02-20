@@ -200,7 +200,23 @@ Ext.define('Phx.vista.ParametrosBase', {
 			valueField : 'tipo',
 			displayField : 'valor',
 			style: this.setBackgroundColor('cmbBajaReti')
-		});		
+		});
+		this.cmbUbiacion = new Ext.form.ComboBox({
+			name : 'ubicacion',
+			fieldLabel : 'Ubicacion A.F',
+			allowBlank : false,
+			triggerAction : 'all',
+			lazyRender : true,
+			mode : 'local',
+			store : new Ext.data.ArrayStore({
+				fields : ['tipo', 'valor'],
+				data : [['nacional', 'nacional'],['internaci', 'internacional'],['ambos','Ambos']]
+			}),
+			anchor : '50%',
+			valueField : 'tipo',
+			displayField : 'valor',
+			style: this.setBackgroundColor('cmbUbiacion')
+		});				
 		this.cmbEstadoDepre = new Ext.form.ComboBox({
 			name : 'estado_depre',
 			fieldLabel : 'Estado/Depre',
@@ -660,7 +676,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.fieldSetGeneral = new Ext.form.FieldSet({
         	collapsible: true,
         	title: 'General',
-        	items: [this.cmbTipoRep,this.cmbPeriodo,this.cmpFechas,this.cmbClasificacion,this.cmbClasificacionMulti,this.cmbTipoMov,this.cmbBajaReti,this.cmbEstadoDepre,this.cmbActivo,this.txtDenominacion,this.cmbMoneda,this.cmpFechaCompra,this.cmpMontos,this.cmbTipo,this.cmbLugar,this.txtNroCbteAsociado,
+        	items: [this.cmbTipoRep,this.cmbPeriodo,this.cmpFechas,this.cmbClasificacion,this.cmbClasificacionMulti,this.cmbTipoMov,this.cmbBajaReti,this.cmbUbiacion,this.cmbEstadoDepre,this.cmbActivo,this.txtDenominacion,this.cmbMoneda,this.cmpFechaCompra,this.cmpMontos,this.cmbTipo,this.cmbLugar,this.txtNroCbteAsociado,
         		this.dteFechaIniDep,this.cmbEstado,this.cmbCentroCosto,this.txtUbicacionFisica,
 				this.cmbOficina,this.cmbResponsable,this.cmbDepto, this.cmbInventa, this.descNombre, this.cmbDeposito,this.radGroupDeprec]
         });
@@ -806,6 +822,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.cmbClasificacionMulti.reset();					
 		this.cmbTipoMov.setValue('');
 		this.cmbBajaReti.setValue('');
+		this.cmbUbiacion.setValue('');
 		this.cmbEstadoDepre.setValue('');				
 		this.txtDenominacion.setValue('');
 		this.dteFechaCompra.setValue('');
@@ -916,6 +933,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			id_clasificacion_multi: this.cmbClasificacionMulti.getValue(),
 			total_consol : this.cmbTipoMov.getValue(),
 			baja_retiro : this.cmbBajaReti.getValue(),
+			ubi_nac_inter: this.cmbUbiacion.getValue(),
 			estado_depre : this.cmbEstadoDepre.getValue(),
 			tipo_repo : this.cmbTipoRep.getValue(),
 			actu_perido:this.cmbPeriodo.getValue(),		
@@ -996,7 +1014,8 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.configElement(this.cmbClasificacionMulti,false,true);
 		this.configElement(this.cmbEstadoDepre,false,true);
 		this.configElement(this.cmbTipoMov,false,true);
-		this.configElement(this.cmbBajaReti,false,true);				
+		this.configElement(this.cmbBajaReti,false,true);
+		this.configElement(this.cmbUbiacion,false,true);				
 		this.configElement(this.txtDenominacion,false,true);
 		this.configElement(this.dteFechaCompra,false,true);
 		this.configElement(this.dteFechaIniDep,false,true);

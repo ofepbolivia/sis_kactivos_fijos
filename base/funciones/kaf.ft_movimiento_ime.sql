@@ -1499,14 +1499,14 @@ BEGIN
                         end if;
 
                         --Caso en función del valor vigente
-                        if v_registros_af_mov.monto_vigente_real_af <= 1 then
+                        --if v_registros_af_mov.monto_vigente_real_af <= 1 then
                             ----------
                             --Caso 1
                             ----------
                             --Finalización de AFV(s) vigentes (seteando fecha_fin)
-                            v_fun = kaf.f_afv_finalizar(p_id_usuario,
+                            /*v_fun = kaf.f_afv_finalizar(p_id_usuario,
                                                         v_registros_af_mov.id_activo_fijo,
-                                                        v_registros_af_mov.fecha_mov);
+                                                        v_registros_af_mov.fecha_mov);*/
 
                             --Creación de los nuevos AFV para la mejora en todas las monedas
                             v_fun = kaf.f_afv_crear(p_id_usuario,
@@ -1522,7 +1522,7 @@ BEGIN
 
                             --TODO: ¿¿Matar depreciación??
 
-                        else
+                        /*else
 
                             if v_monto_inc_dec_real > 0 then
                                 ----------
@@ -1560,7 +1560,7 @@ BEGIN
 
                             end if;
 
-                        end if;
+                        end if;*/
 
                     end loop;
 

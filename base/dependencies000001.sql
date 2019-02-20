@@ -2102,4 +2102,29 @@ AS
          afd.id_movimiento_af
        JOIN kaf.tmovimiento mov ON mov.id_movimiento = maf.id_movimiento;
 /***********************************F-DEP-BVP-KAF-1-02/01/2019*****************************************/
-
+/***********************************I-DEP-BVP-KAF-1-20/02/2019*****************************************/
+CREATE OR REPLACE VIEW kaf.vactivo_fijo_vigente_real(
+    id_activo_fijo,
+    monto_vigente_real_af,
+    vida_util_real_af,
+    fecha_ult_dep_real_af,
+    depreciacion_acum_real_af,
+    depreciacion_per_real_af,
+    monto_actualiz_real_af,
+    id_moneda,
+    id_moneda_dep)
+AS
+  SELECT afd.id_activo_fijo,
+         sum(afd.monto_vigente_real) AS monto_vigente_real_af,
+         max(afd.vida_util_real) AS vida_util_real_af,
+         max(afd.fecha_ult_dep_real) AS fecha_ult_dep_real_af,
+         sum(afd.depreciacion_acum_real) AS depreciacion_acum_real_af,
+         sum(afd.depreciacion_per_real) AS depreciacion_per_real_af,
+         sum(afd.monto_actualiz_real) AS monto_actualiz_real_af,
+         afd.id_moneda,
+         afd.id_moneda_dep
+  FROM kaf.vactivo_fijo_valor afd
+  GROUP BY afd.id_activo_fijo,
+           afd.id_moneda,
+           afd.id_moneda_dep;
+/***********************************F-DEP-BVP-KAF-1-20/02/2019*****************************************/

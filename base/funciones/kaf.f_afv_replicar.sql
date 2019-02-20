@@ -38,20 +38,20 @@ BEGIN
     tipo, estado, principal, monto_rescate,
     id_movimiento_af, codigo, id_moneda_dep, id_moneda,
     fecha_inicio, deducible, id_activo_fijo_valor_original,
-    monto_vigente_orig_100
+    monto_vigente_orig_100,monto_vigente_actualiz_inicial
     )
     select
     p_id_usuario,
     now(),
     'activo',
     afv.id_activo_fijo,
-    av.monto_vigente_real_af,
+    av.monto_actualiz_real_af,
     p_vida_util,
     p_fecha,
     0,
     0,
-    0,
-    av.monto_vigente_real_af,
+    av.depreciacion_acum_real_af,
+    av.monto_actualiz_real_af,
     p_vida_util,
     afv.tipo,
     afv.estado,
@@ -64,9 +64,10 @@ BEGIN
     p_fecha,
     afv.deducible,
     afv.id_activo_fijo_valor,
-    av.monto_vigente_real_af
+    av.monto_actualiz_real_af,
+    av.monto_actualiz_real_af
     from kaf.tactivo_fijo_valores afv
-    inner join kaf.vactivo_fijo_vigente av
+    inner join kaf.vactivo_fijo_vigente_real av
     on av.id_activo_fijo = afv.id_activo_fijo
     and afv.id_moneda_dep = av.id_moneda_dep
     where afv.id_activo_fijo = p_id_activo_fijo;

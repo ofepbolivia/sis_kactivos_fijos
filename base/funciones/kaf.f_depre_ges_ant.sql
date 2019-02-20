@@ -42,11 +42,9 @@ $body$
             ) on commit drop;
 
             v_consulta = 'insert into tt_af_filtro_actu
-                        select afij.id_activo_fijo
-                        from kaf.tactivo_fijo afij
-                        inner join kaf.tclasificacion cla
-                        on cla.id_clasificacion = afij.id_clasificacion
-                        where '||filtro;                                                                                               
+                        select afij.id_activo_fijo_valor
+                        from kaf.tactivo_fijo_valores afij
+                        where afij.id_activo_fijo_valor in ('||filtro||')';                                                                                               
             
             execute(v_consulta);
             
@@ -126,7 +124,7 @@ $body$
             on mon.id_moneda =  afv.id_moneda_dep
             where date_trunc('month',mdep.fecha) = date_trunc('month',fecha_enviada::date)
             and mdep.id_moneda_dep = moneda
-            and af.id_activo_fijo in (select id_activo_fijo from tt_af_filtro_actu)
+            and afv.id_activo_fijo_valor in (select id_activo_fijo from tt_af_filtro_actu)
                                                             
             and af.estado <> 'eliminado';
             
@@ -182,7 +180,7 @@ $body$
                                                     and date_trunc('month',fecha) < date_trunc('month',fecha_enviada::date) 
                                                 )
             and mdep.id_moneda_dep = moneda
-            and af.id_activo_fijo in (select id_activo_fijo from tt_af_filtro_actu)
+            and afv.id_activo_fijo_valor in (select id_activo_fijo from tt_af_filtro_actu)
             and afv.id_activo_fijo_valor not in (select id_activo_fijo_valor
                                                 from tt_detalle_depreciacion_actu)
             and af.estado <> 'eliminado'
@@ -244,7 +242,7 @@ $body$
                                 and fecha between ('01-01-'||extract(year from mdep.fecha))::date and fecha_enviada::date)
             
             and mdep.id_moneda_dep = moneda
-            and af.id_activo_fijo in (select id_activo_fijo from tt_af_filtro_actu)
+            and afv.id_activo_fijo_valor in (select id_activo_fijo from tt_af_filtro_actu)
                                                             --and afv.codigo not like '%-G%'
             and afv.id_activo_fijo_valor not in (select id_activo_fijo_valor
                                                 from tt_detalle_depreciacion_actu);
@@ -419,7 +417,7 @@ $body$
             sum(de.depreciacion_acum),                            
             sum(de.monto_vigente),
             de.codigo_padre::integer,                            
-			replace(replace(replace(replace(replace(replace(de.codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
+			replace(replace(replace(replace(replace(replace(replace(de.codigo,'A0',''),'AJ',''),'G',''),'RE',''),'ME',''),'.',''),'-','')::bigint,
             'detalle',
             kaf.f_activo_si_no_rev(de.codigo)    
             from tt_detalle_depreciacion_consol_actuali de
@@ -489,7 +487,7 @@ insert into tt_detalle_depreciacion_totales_actu
        depreciacion_acum,
        monto_vigente,
        codigo_padre::integer,            
-       replace(replace(replace(replace(replace(replace(codigo,'A0',''),'AJ',''),'G',''),'RE',''),'.',''),'-','')::bigint,
+       replace(replace(replace(replace(replace(replace(replace(codigo,'A0',''),'AJ',''),'G',''),'RE',''),'ME',''),'.',''),'-','')::bigint,
        'detalle'
        from tt_detalle_depreciacion_actu;
 

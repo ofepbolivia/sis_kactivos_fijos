@@ -1313,3 +1313,13 @@ ALTER TABLE kaf.tactivo_fijo
 ALTER TABLE kaf.tactivo_fijo
   ADD COLUMN fecha_fin DATE;
 /***********************************F-SCP-MAY-KAF-1-10/11/2018****************************************/
+/***********************************I-SCP-BVP-KAF-1-20/02/2019****************************************/
+CREATE TABLE kaf.tmotivo_eliminacion_af (
+  id_motivo_eliminacion SERIAL NOT NULL,
+  id_activo_fijo INTEGER NOT NULL,
+  motivo_eliminacion TEXT NOT NULL,
+  PRIMARY KEY(id_motivo_eliminacion)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+/***********************************F-SCP-BVP-KAF-1-20/02/2019****************************************/

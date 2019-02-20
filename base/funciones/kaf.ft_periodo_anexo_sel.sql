@@ -200,7 +200,7 @@ BEGIN
 						anex.id_partida,
 						anex.tipo_anexo,
 						anex.id_periodo_anexo,
-                        anex.monto_sigep,						
+                        anex.monto_erp,						
 						anex.estado_reg,
 						anex.c31,
                         anex.detalle_c31,                        

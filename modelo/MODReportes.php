@@ -369,6 +369,7 @@ class MODReportes extends MODbase{
 		$this->setParametro('tipo_repo','tipo_repo','varchar');
 		$this->setParametro('actu_perido','actu_perido','varchar');
 		$this->setParametro('baja_retiro','baja_retiro','varchar');
+		$this->setParametro('ubi_nac_inter','ubi_nac_inter','varchar');
 
 		//Definicion de la lista del resultado del query
 		$this->captura('codigo','varchar(50)');
@@ -400,6 +401,7 @@ class MODReportes extends MODbase{
 
         //Ejecuta la instruccion
         $this->armarConsulta();
+		//echo $this->consulta;exit;
         $this->ejecutarConsulta();
 
         //echo $this->consulta;exit;

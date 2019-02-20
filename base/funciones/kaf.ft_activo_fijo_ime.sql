@@ -205,7 +205,7 @@ BEGIN
                   v_parametros.id_uo,
                   v_parametros.fecha_inicio,
                   v_parametros.fecha_fin,
-                  v_parametros.id_usuario_reg,
+                  --v_parametros.id_usuario_reg,
                   p_id_usuario,
                   now(),
                   null,
@@ -591,18 +591,47 @@ BEGIN
 
 		end;
 
-	/*********************************
- 	#TRANSACCION:  'SKA_AFIJ_ELI'
- 	#DESCRIPCION:	Eliminacion de registros
- 	#AUTOR:		admin
- 	#FECHA:		29-10-2015 03:18:45
-	***********************************/
+  /*********************************
+  #TRANSACCION:  'SKA_AFIJ_ELI'
+  #DESCRIPCION: Eliminacion de registros
+  #AUTOR:   admin
+  #FECHA:   29-10-2015 03:18:45
+  ***********************************/
 
-	elsif(p_transaccion='SKA_AFIJ_ELI')then
+  elsif(p_transaccion='SKA_AFIJ_ELI')then
 
-		begin --RAISE EXCEPTION 'LLEGA %', v_parametros.id_activo_fijo;
-			--Sentencia de la eliminacion
-			delete from kaf.tactivo_fijo
+    begin 
+       -- RAISE EXCEPTION 'LLEGA %',v_parametros.id_activo_fijo;
+        
+          --Sentencia de la insercion
+          insert into kaf.tmotivo_eliminacion_af(
+            
+            id_activo_fijo,
+            motivo_eliminacion,            
+            estado_reg,                       
+            id_usuario_reg,
+            fecha_reg,
+            id_usuario_ai,
+            usuario_ai,
+            id_usuario_mod,
+            fecha_mod
+                  ) values(
+            v_parametros.id_activo_fijo,
+            v_parametros.motivo,
+            'activo',           
+            p_id_usuario,
+            now(),
+            v_parametros._id_usuario_ai,
+            v_parametros._nombre_usuario_ai,
+            null,
+            null            
+            );
+                    
+      --Sentencia de la eliminacion
+            update kaf.tactivo_fijo set 
+            estado = 'eliminado',
+            fecha_mod = now()            
+      --delete from kaf.tactivo_fijo
             where id_activo_fijo=v_parametros.id_activo_fijo;
 
             --Definicion de la respuesta
@@ -612,7 +641,7 @@ BEGIN
             --Devuelve la respuesta
             return v_resp;
 
-		end;
+    end;
 
     /*********************************
  	#TRANSACCION:  'SKA_AFCOD_MOD'

@@ -180,7 +180,7 @@ BEGIN
         coalesce(v_activo_fijo.fecha_cbte_asociado,(p_parametros->'fecha_cbte_asociado')::date),
         (p_parametros->'id_cotizacion_det')::integer,
         (p_parametros->'id_preingreso_det')::integer,
-        v_activo_fijo.subtipo,
+        coalesce((p_parametros->'subtipo')::varchar, v_activo_fijo.subtipo),
         v_activo_fijo.id_proceso_wf,
         v_activo_fijo.nro_tramite,
         coalesce(v_activo_fijo.id_uo,(p_parametros->'id_uo')::integer)
