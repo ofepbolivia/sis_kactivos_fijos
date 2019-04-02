@@ -2111,7 +2111,8 @@ BEGIN
                                             case when ac.inc_ac is null then 
                                             (de.monto_actualiz - de.monto_vigente_orig)::numeric(18,2)
                                             else
-                                            (de.monto_actualiz - ac.inc_ac - de.monto_vigente_orig)::numeric(18,2) end as val_acu_perido
+                                            (de.monto_actualiz - ac.inc_ac - de.monto_vigente_orig)::numeric(18,2) end as val_acu_perido,
+                                            0.00 as porce_depre    
                                             from tt_detalle_depreciacion_totales de 
                                             left join tt_actuli_acumulado ac on ac.code=de.codigo
                                             where tipo in '||v_where||'                       
@@ -2347,7 +2348,8 @@ BEGIN
                                             de.leasing,
                                             ac.inc_ac as inc_ac_acum,
                                             ac.color,
-                                            (de.monto_actualiz - ac.inc_ac - de.monto_vigente_orig)::numeric(18,2) as val_acu_perido    
+                                            (de.monto_actualiz - ac.inc_ac - de.monto_vigente_orig)::numeric(18,2) as val_acu_perido,
+                                            0.00 as porce_depre        
                                             from tt_detalle_depreciacion_totales de 
                                             inner join tt_actuli_acumulado ac on ac.code=de.codigo
                                             where tipo in '||v_where||'                       
@@ -2397,7 +2399,8 @@ BEGIN
                           leasing,
                           0.00 as inc_ac_acum, --para completar el modelo no valido
                           ''-''::varchar as color,
-                          0.00 as val_acu_perido
+                          0.00 as val_acu_perido,
+                          (100/(vida_util_orig::numeric/12)) as porce_depre
                           from tt_detalle_depreciacion_totales
                           where tipo in '||v_where||'                       
                           order by codigo, orden';
