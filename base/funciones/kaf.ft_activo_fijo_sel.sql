@@ -1038,7 +1038,8 @@ BEGIN
             v_consulta:='select uo.id_uo,
                             uo.nombre_unidad
                               from orga.tuo uo
-                  where  ';
+                  where uo.id_uo not in (67,365,714,74,294,716,28,307,717,27,7,3,
+					9441,15,255,726,720,305,306,715,14,719,718,9,39,10,253,525,13,292,53,52,9453) and ';
             v_consulta:=v_consulta||v_parametros.filtro;
             v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
             return v_consulta;
@@ -1058,7 +1059,8 @@ BEGIN
             --Sentencia de la consulta de conteo de registros
             v_consulta:='select count(uo.id_uo)
                               from orga.tuo uo
-                  where  ';
+                  where uo.id_uo not in (67,365,714,74,294,716,28,307,717,27,7,3,
+					9441,15,255,726,720,305,306,715,14,719,718,9,39,10,253,525,13,292,53,52,9453) and  ';
             v_consulta:=v_consulta||v_parametros.filtro;
             return v_consulta;
 
@@ -1361,3 +1363,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION kaf.ft_activo_fijo_sel (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;

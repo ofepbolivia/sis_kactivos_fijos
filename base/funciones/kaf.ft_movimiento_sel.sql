@@ -371,7 +371,8 @@ BEGIN
                                 mov.prestamo,
                                 dpto.codigo as codigo_depto,
 							    fun_r.desc_funcionario2::varchar as func_resp_dep,
-                              fun_r.descripcion_cargo as func_cargo_dep
+                              fun_r.descripcion_cargo as func_cargo_dep,
+                              coalesce(dep.nombre, (select nombre from kaf.tdeposito where id_funcionario = fun1.id_funcionario)) as deposito
                          from kaf.tmovimiento mov
                               inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
                               inner join param.tdepto dpto on dpto.id_depto = mov.id_depto
@@ -385,6 +386,7 @@ BEGIN
                               '||v_inner||'
                               left join segu.vpersona per on per.id_persona = mov.id_persona
                               left join param.tlugar lug on lug.id_lugar = ofi.id_lugar
+                              left join kaf.tdeposito dep on dep.id_deposito = mov.id_deposito
                        WHERE  id_movimiento = '||v_parametros.id_movimiento;
 
 			      --Devuelve la respuesta
@@ -428,7 +430,8 @@ BEGIN
                           left join param.tcatalogo cat2 on cat2.id_catalogo = af.id_cat_estado_fun
                           left join kaf.tmovimiento_motivo mmot on mmot.id_movimiento_motivo =  maf.id_movimiento_motivo
                           inner join kaf.tclasificacion cla on cla.id_clasificacion = af.id_clasificacion
-                     where maf.id_movimiento = '||v_parametros.id_movimiento;
+                     where maf.id_activo_fijo not in (select id_activo_fijo from kaf.tmotivo_eliminacion_af)
+                     and maf.id_movimiento = '||v_parametros.id_movimiento;
 
 
 			v_consulta = v_consulta||' order by af.codigo asc';

@@ -742,7 +742,7 @@ BEGIN
       
       for v_partidas_per in        
               SELECT pa.id_partida,
-          coalesce(pa.importe_sigep,0)-(coalesce(pa.importe_anexo1,0))-(-(coalesce(pa.importe_anexo2,0)))-(-(coalesce(pa.importe_anexo4,0))) as total
+          coalesce(pa.importe_sigep,0)-(-(coalesce(pa.importe_anexo1,0)))-(-(coalesce(pa.importe_anexo2,0)))-(-(coalesce(pa.importe_anexo4,0))) as total
               FROM kaf.tpartida_periodo pa 
               where pa.id_periodo_anexo = v_parametros.id_periodo_anexo
       loop 
@@ -939,3 +939,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION kaf.ft_anexo_ime (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;

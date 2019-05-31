@@ -50,7 +50,7 @@ DECLARE
       vida_util_new			integer;
       v_rec_af_intag			record;
     v_id_movimiento_af      integer;
-
+    v_del_activo			integer;
 
 BEGIN
 
@@ -634,6 +634,20 @@ BEGIN
       --delete from kaf.tactivo_fijo
             where id_activo_fijo=v_parametros.id_activo_fijo;
 
+            select va.id_activo_fijo_valor
+            	into v_del_activo
+            from kaf.tactivo_fijo_valores va 
+            where va.id_activo_fijo = v_parametros.id_activo_fijo;
+            
+            if v_del_activo is not null then 
+              if EXISTS(select 1 from kaf.tmovimiento_af_dep dep where dep.id_activo_fijo_valor = v_del_activo)then
+              	raise exception 'El Activo Que Intenta Eliminar Se Encuentra Depreciado';
+              else 
+              	delete from kaf.tactivo_fijo_valores 
+                where id_activo_fijo_valor = v_del_activo;
+              end if;
+            end if;
+            
             --Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Activos Fijos eliminado(a)');
             v_resp = pxp.f_agrega_clave(v_resp,'id_activo_fijo',v_parametros.id_activo_fijo::varchar);
@@ -1087,3 +1101,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION kaf.ft_activo_fijo_ime (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;

@@ -255,6 +255,7 @@ class MODMovimiento extends MODbase{
 	    $this->captura('codigo_depto','varchar');
 	    $this->captura('func_resp_dep','varchar');
 	    $this->captura('func_cargo_dep','varchar');
+        $this->captura('deposito', 'varchar');        
 
 
 
@@ -416,7 +417,7 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('id_funcionario_dest','id_funcionario_dest','integer');
 		$this->setParametro('direccion','direccion','varchar');
 		$this->setParametro('id_oficina','id_oficina','integer');
-		$this->setParametro('ids_af','ids_af','varchar');
+        $this->setParametro('ids_af','ids_af','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

@@ -287,7 +287,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				config: {
 					name: 'id_deposito',
 					fieldLabel: 'Deposito',
-					allowBlank: true,
+					allowBlank: false,
 					emptyText: 'Elija un deposito...',
 					hidden: true,
 					store: new Ext.data.JsonStore({

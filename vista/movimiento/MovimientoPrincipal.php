@@ -317,7 +317,7 @@ Phx.vista.MovimientoPrincipal = {
         swTipoMovimiento=false;
     		h=600;
     	} else if(mov=='devol'){
-    		swDireccion=false;
+    		swDireccion=true;
     		swFechaHasta=false;
     		swFuncionario=true;
     		swOficina=false;
