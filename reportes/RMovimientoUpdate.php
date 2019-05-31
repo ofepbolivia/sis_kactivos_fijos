@@ -888,10 +888,10 @@ class RMovimientoUpdate extends  ReportePDF {
                 if($this->dataMaster[0]['id_funcionario_dest']==null){
                     if($this->dataMaster[0]['codigo_depto'] == 'DAF-TI' && $this->tipoMov == 'devol'){
                         $descripcion = 'RECIBÍ CONFORME';
-                        $cargo = 'ENCARGADO DE DEPOSÍTO';
+                        $cargo = 'ENCARGADO DE DEPÓSITO';
                     }else{                        
                         $descripcion = 'RECIBÍ CONFORME';
-                        $cargo = 'ENCARGADO DE DEPOSÍTO';
+                        $cargo = 'ENCARGADO DE DEPÓSITO';
                         $responsable = '';
                         //$responsable = $this->dataMaster[0]['responsable_depto'];
                         //$cargo = strtoupper($this->dataMaster[0]['cargo_jefe']);
@@ -966,10 +966,10 @@ class RMovimientoUpdate extends  ReportePDF {
                 }else{                    
                     if($this->dataMaster[0]['codigo_depto'] == 'DAF-TI' && $this->tipoMov == 'devol'){
                         $descripcion = 'RECIBÍ CONFORME';
-                        $cargo = 'ENCARGADO DE DEPOSÍTO';
+                        $cargo = 'ENCARGADO DE DEPÓSITO';
                     }else{
                         $descripcion = 'RECIBÍ CONFORME';
-                        $cargo = 'ENCARGADO DE DEPOSÍTO';
+                        $cargo = 'ENCARGADO DE DEPÓSITO';
                         $responsable = '';
                         //$responsable = $this->dataMaster[0]['responsable_dest'];
                         //$cargo = strtoupper($this->dataMaster[0]['nombre_cargo_dest']);
@@ -1046,11 +1046,11 @@ class RMovimientoUpdate extends  ReportePDF {
                 if($this->dataMaster[0]['id_funcionario_dest']==null) {                    
                     if($this->dataMaster[0]['codigo_depto'] == 'DAF-TI' && $this->tipoMov == 'devol'){                        
                         $descripcion = 'RECIBÍ CONFORME';
-                        $cargo = 'ENCARGADO DE DEPOSÍTO';
+                        $cargo = 'ENCARGADO DE DEPÓSITO';
                     }else{                        
                         $descripcion = 'RECIBÍ CONFORME';                        
                         $responsable = '';                        
-                        $cargo = 'ENCARGADO DE DEPOSÍTO';
+                        $cargo = 'ENCARGADO DE DEPÓSITO';
                     }
                     $tbl = '<table>
                         <tr>
@@ -1111,11 +1111,11 @@ class RMovimientoUpdate extends  ReportePDF {
                 }else{                    
                     if($this->dataMaster[0]['codigo_depto'] == 'DAF-TI' && $this->tipoMov == 'devol'){                        
                         $descripcion = 'RECIBÍ CONFORME';
-                        $cargo = 'ENCARGADO DE DEPOSÍTO';
+                        $cargo = 'ENCARGADO DE DEPÓSITO';
                     }else{
                         $descripcion = 'RECIBÍ CONFORME';                        
                         $responsable = '';                        
-                        $cargo = 'ENCARGADO DE DEPOSÍTO';
+                        $cargo = 'ENCARGADO DE DEPÓSITO';
                     }
                     $tbl = '<table>
                         <tr>
