@@ -14,6 +14,11 @@ Phx.vista.MovimientoRapido = Ext.define('Phx.vista.MovimientoRapido', {
         this.personalizarCabecera();
         this.cargarDatosCabecera();
         this.cargarDatosPaneles();
+        this.id_depto.on('select', function(cmp,rec,el){        
+            this.cmpId_deposito.reset();
+            this.cmpId_deposito.modificado=true;
+            this.cmpId_deposito.store.baseParams.id_depto=rec.data.id_depto;
+        }, this);        
     },
     cargarDatosCabecera: function(){
         var tipoMov = this.tipoMov,
@@ -111,7 +116,7 @@ Phx.vista.MovimientoRapido = Ext.define('Phx.vista.MovimientoRapido', {
                 fields: ['id_funcionario','codigo','desc_person','ci','documento','telefono','celular','correo'],
                 // turn on remote sorting
                 remoteSort: true,
-                baseParams:{par_filtro:'funcio.codigo#nombre_completo1'}
+                baseParams:{par_filtro:'funcio.codigo#nombre_completo1#estado_func'}
             }),
             tpl:'<tpl for="."><div class="x-combo-list-item"><p>{codigo} - Sis: {codigo_sub} </p><p>{desc_person}</p><p>CI:{ci}</p> </div></tpl>',
             valueField: 'id_funcionario',
@@ -128,6 +133,78 @@ Phx.vista.MovimientoRapido = Ext.define('Phx.vista.MovimientoRapido', {
             listWidth: 280,
             allowBlank: false
         });
+        this.id_depto = new Ext.form.ComboBox({
+            fieldLabel:'* Dpto',
+            emptyText:'Seleccione un registro...',
+            store: new Ext.data.JsonStore({
+                url : '../../sis_parametros/control/Depto/listarDepto',
+                id: 'id_depto',
+                root: 'datos',
+                sortInfo:{
+                    field: 'nombre',
+                    direction: 'ASC'
+                },
+                totalProperty: 'total',
+                fields : ['id_depto', 'nombre', 'codigo'],
+                remoteSort : true,
+						baseParams : {
+							start: 0,
+							limit: 10,
+							sort: 'codigo',
+							dir: 'ASC',
+							codigo_subsistema: 'KAF',
+							par_filtro:'DEPPTO.codigo#DEPPTO.nombre'
+						}                                
+            }),            
+            valueField: 'id_depto',
+            tpl : '<tpl for="."><div class="x-combo-list-item"><p>Nombre: {nombre}</p><p>Código: {codigo}</p></div></tpl>',
+            displayField: 'nombre',
+            forceSelection:false,
+            typeAhead: false,
+            triggerAction: 'all',
+            lazyRender: true,
+            mode: 'remote',
+            pageSize: 10,
+            queryDelay: 1000,
+            minChars: 2,
+            width: 250,
+            listWidth: 280,
+            allowBlank: false
+        });        
+        this.cmpId_deposito = new Ext.form.ComboBox({
+            fieldLabel:'* Deposito devolucion',
+            emptyText:'Seleccione un registro...',
+            store: new Ext.data.JsonStore({
+                url: '../../sis_kactivos_fijos/control/Deposito/listarDeposito',
+                id: 'id_deposito',
+                root: 'datos',
+                sortInfo:{
+                    field: 'desc_person',
+                    direction: 'ASC'
+                },
+                totalProperty: 'total',
+                fields: ['id_deposito','codigo','nombre'],
+                totalProperty: 'total',
+						sortInfo: {
+							field: 'codigo',
+							direction: 'ASC'
+						},
+                baseParams:{par_filtro:'dep.codigo#dep.nombre'}
+            }),            
+            valueField: 'id_deposito',
+            displayField: 'nombre',
+            forceSelection:false,
+            typeAhead: false,
+            triggerAction: 'all',
+            lazyRender: true,
+            mode: 'remote',
+            pageSize: 10,
+            queryDelay: 1000,
+            minChars: 2,
+            width: 250,
+            listWidth: 280,
+            allowBlank: false
+        });        
         this.cmpDireccion = new Ext.form.TextArea({
             fieldLabel: '* Nueva Dirección',
             maxLength: 500,
@@ -303,6 +380,8 @@ Phx.vista.MovimientoRapido = Ext.define('Phx.vista.MovimientoRapido', {
                         this.cmpFecha,
                         this.cmpGlosa,
                         this.cmpFuncionario,
+                        this.id_depto,
+                        this.cmpId_deposito,
                         this.cmpFuncionarioDest,
                         this.cmpDireccion,
                         this.cmpOficina
@@ -508,8 +587,11 @@ Phx.vista.MovimientoRapido = Ext.define('Phx.vista.MovimientoRapido', {
             this.cmpFuncionario.hide();
             this.cmpFuncionario.allowBlank=true;
             size.height = 595;
+            this.id_depto.hide();
+            this.cmpId_deposito.hide();
         } else if(tipoMov=='transf'){
-
+            this.id_depto.hide();
+            this.cmpId_deposito.hide();
         } else if(tipoMov=='devol'){
             this.cmpFuncionarioDest.hide();
             this.cmpOficina.hide();
@@ -526,6 +608,7 @@ Phx.vista.MovimientoRapido = Ext.define('Phx.vista.MovimientoRapido', {
         this.winForm.setSize(size.width,size.height);
     },
     obtenerDescripcionFuncionario: function(data){
+        console.log('value =>',data);
         var idFuncionario=0,
             funcionario='',
             cont=0,
@@ -558,6 +641,8 @@ Phx.vista.MovimientoRapido = Ext.define('Phx.vista.MovimientoRapido', {
             fecha_mov: this.cmpFecha.getValue(),
             glosa: this.cmpGlosa.getValue(),
             id_funcionario: this.cmpFuncionario.getValue(),
+            id_depto : this.id_depto.getValue(),
+            id_deposito: this.cmpId_deposito.getValue(),
             id_funcionario_dest: this.cmpFuncionarioDest.getValue(),
             direccion: this.cmpDireccion.getValue(),
             id_oficina: this.cmpOficina.getValue(),

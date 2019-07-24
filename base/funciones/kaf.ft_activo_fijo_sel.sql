@@ -43,6 +43,7 @@ DECLARE
     v_agregate  varchar;
     v_id_depo   integer;
     v_est_fun_tod		varchar = '';
+    v_rec_depo			record;
 BEGIN
 
   v_nombre_funcion = 'kaf.ft_activo_fijo_sel';
@@ -714,9 +715,10 @@ BEGIN
             ';
 
             --Definicion de la respuesta
-            v_consulta:=v_consulta||v_parametros.filtro||' and kaf.f_verificar_hijos (niv.nivel,niv.id_clasificacion, coalesce(taf.id_activo_fijo, 0),'''||v_parametros.fecha_ini||''','''||v_parametros.fecha_fin||'''))';
+            v_consulta:=v_consulta||v_parametros.filtro;
+            --||' and kaf.f_verificar_hijos (niv.nivel,niv.id_clasificacion, coalesce(taf.id_activo_fijo, 0),'''||v_parametros.fecha_ini||''','''||v_parametros.fecha_fin||'''))';
             v_consulta = v_consulta||' order by niv.camino, taf.codigo';
-      raise notice 'v_consulta: %',v_consulta;
+      raise notice 'v_consulta: %',v_parametros.filtro;
             --Devuelve la respuesta
             return v_consulta;
 
@@ -1309,33 +1311,64 @@ BEGIN
 	     #FECHA:        12/12/2018
 	    ***********************************/
 	    elsif(p_transaccion='SKA_ACDEPXFUN_SEL')then
-
-	    	begin
-            select depo.id_deposito
+		
+        begin 
+            select depo.id_deposito,
+                   depo.nombre,
+            	   f.desc_funcionario1
             	into
-                v_id_depo
+                v_rec_depo
             from kaf.tdeposito depo
+			inner join orga.vfuncionario f on f.id_funcionario = depo.id_funcionario
             where depo.id_funcionario = v_parametros.id_funcionario;
-
-		v_consulta:= 'select af.codigo,
-                      af.denominacion,
-                      af.descripcion,
-                      af.ubicacion,
-                      cata.descripcion as cat_desc,
-                      dep.nombre as almacen,
-                      mov.fecha_mov,
-                      fun.desc_funcionario1 as encargado
-              from kaf.tmovimiento_af movaf
-              inner join kaf.tmovimiento mov on mov.id_movimiento=movaf.id_movimiento
-              inner join kaf.tactivo_fijo af on af.id_activo_fijo = movaf.id_activo_fijo
-              inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
-              inner join kaf.tdeposito dep on dep.id_deposito = coalesce(mov.id_deposito,af.id_deposito)
-              inner join orga.vfuncionario fun on fun.id_funcionario = dep.id_funcionario
-              inner join param.tcatalogo cata on cata.id_catalogo = af.id_cat_estado_fun
-              where cat.codigo in (''devol'',''alta'') and  af.codigo is not null and af.en_deposito=''si''
-              and	dep.id_deposito = '||v_id_depo||'
-              and dep.id_funcionario = '||v_parametros.id_funcionario||'
-              and ';
+            
+		v_consulta:= '
+                      with recursive deposito (id,fecha) as 
+                      (
+                            select maf.id_activo_fijo,
+                                   max(mov.fecha_mov),
+                                   max(mov.id_movimiento)
+                            from kaf.tmovimiento mov
+                              inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
+                              left join wf.testado_wf ew on ew.id_estado_wf = mov.id_estado_wf
+                              left join wf.ttipo_estado tew on tew.id_tipo_estado = ew.id_tipo_estado
+                              left join kaf.tdeposito depo on depo.id_deposito = mov.id_deposito
+                              left join kaf.tdeposito depodest on depodest.id_deposito = mov.id_deposito_dest
+                              left join kaf.tmovimiento_af maf on maf.id_movimiento = mov.id_movimiento
+                             where coalesce(mov.id_deposito, mov.id_deposito_dest) = '||v_rec_depo.id_deposito||'
+                             and cat.id_catalogo in (116, 130)
+                             and tew.codigo = ''finalizado''
+       				  		 and maf.id_activo_fijo not in (
+                             select  maf.id_activo_fijo
+                              from kaf.tmovimiento mov
+                                inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
+                                left join wf.testado_wf ew on ew.id_estado_wf = mov.id_estado_wf
+                                left join wf.ttipo_estado tew on tew.id_tipo_estado = ew.id_tipo_estado
+                                left join kaf.tdeposito depo on depo.id_deposito = mov.id_deposito
+                                left join kaf.tdeposito depodest on depodest.id_deposito = mov.id_deposito_dest
+                                left join kaf.tmovimiento_af maf on maf.id_movimiento = mov.id_movimiento
+                                left join kaf.tactivo_fijo af on af.id_activo_fijo = maf.id_activo_fijo
+                               where coalesce(mov.id_deposito, mov.id_deposito_dest) <> '||v_rec_depo.id_deposito||'
+                               and cat.id_catalogo in (116, 130)
+                               and tew.codigo = ''finalizado''
+                               and mov.fecha_reg >= ''01-05-2019''::date           
+       													)                             
+                            group by maf.id_activo_fijo
+                      )
+                      select 
+                          af.codigo,
+                          af.denominacion,
+                          af.descripcion,
+                          af.ubicacion,
+                          cat.descripcion as cat_desc,
+                          '''||v_rec_depo.nombre||'''::varchar as almacen,
+                          b.fecha as fecha_mov,
+                          '''||v_rec_depo.desc_funcionario1||'''::text as encargado
+                      from kaf.tactivo_fijo af 
+                      inner join param.tcatalogo cat on cat.id_catalogo = af.id_cat_estado_fun
+                      inner join deposito b on b.id = af.id_activo_fijo                      
+                      where      ';
+                      
         v_consulta:=v_consulta||v_parametros.filtro;
         v_consulta:=v_consulta||'order by af.codigo';
 
@@ -1363,6 +1396,3 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
-
-ALTER FUNCTION kaf.ft_activo_fijo_sel (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
-  OWNER TO postgres;

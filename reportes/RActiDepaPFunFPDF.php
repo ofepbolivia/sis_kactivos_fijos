@@ -160,7 +160,7 @@ class RActiDepaPFunFPDF extends ReportePDF {
                         's2' => $datarow['denominacion'],
                         's3' => $datarow['descripcion'],
                         's4' => $datarow['cat_desc'],
-                        's5' => date("d/m/Y",strtotime($this->$datarow['fecha_mov'])),
+                        's5' => date("d/m/Y",strtotime($datarow['fecha_mov'])),
                         's6' => $datarow['ubicacion']                       
                     );    
 					$i++;        	

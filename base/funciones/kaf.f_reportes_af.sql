@@ -645,7 +645,7 @@ BEGIN
                             left join orga.vfuncionario fun on fun.id_funcionario = afij.id_funcionario
                             inner join orga.toficina ofi on ofi.id_oficina = afij.id_oficina
                             inner join param.tdepto dep on dep.id_depto = afij.id_depto
-                            inner join param.tcatalogo cat on cat.id_catalogo=afij.id_cat_estado_fun
+                            left join param.tcatalogo cat on cat.id_catalogo=afij.id_cat_estado_fun
                             where '||v_filtro;
 
             v_consulta:=v_consulta||' order by fun.desc_funcionario2, ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion;

@@ -429,8 +429,8 @@ BEGIN
                           inner join kaf.tactivo_fijo af on af.id_activo_fijo = maf.id_activo_fijo
                           left join param.tcatalogo cat2 on cat2.id_catalogo = af.id_cat_estado_fun
                           left join kaf.tmovimiento_motivo mmot on mmot.id_movimiento_motivo =  maf.id_movimiento_motivo
-                          inner join kaf.tclasificacion cla on cla.id_clasificacion = af.id_clasificacion
-                     where maf.id_activo_fijo not in (select id_activo_fijo from kaf.tmotivo_eliminacion_af)
+                          inner join kaf.tclasificacion cla on cla.id_clasificacion = af.id_clasificacion                     
+                     where maf.id_activo_fijo not in (select id_activo_fijo from kaf.tmotivo_eliminacion_af where id_activo_fijo <> 17090)
                      and maf.id_movimiento = '||v_parametros.id_movimiento;
 
 

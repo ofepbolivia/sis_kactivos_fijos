@@ -88,6 +88,7 @@ DECLARE
     v_monto_compra_100            numeric;
     v_id_conf                     integer;
     v_reg_masivo                  boolean;
+    v_id_movi_motivo			  integer;
 
 BEGIN
 
@@ -850,7 +851,8 @@ BEGIN
                     id_funcionario = mov.id_responsable_depto,
                     id_persona = null,
                     fecha_asignacion = mov.fecha_mov,
-                    ubicacion = 'Depósito'
+                    ubicacion = 'Depósito',
+                    id_deposito = mov.id_deposito
                     from kaf.tmovimiento_af movaf
                     inner join kaf.tmovimiento mov
                     on mov.id_movimiento = movaf.id_movimiento
@@ -1970,12 +1972,14 @@ BEGIN
 
           --Obtención del id del movimiento a realizar
           select
-          cat.id_catalogo, cat.codigo, cat.descripcion
+          cat.id_catalogo, cat.codigo, cat.descripcion,mom.id_movimiento_motivo
           into
-          v_id_cat_movimiento, v_cod_movimiento, v_desc_movimiento
+          v_id_cat_movimiento, v_cod_movimiento, v_desc_movimiento,v_id_movi_motivo
           from param.tcatalogo_tipo ctip
           inner join param.tcatalogo cat
           on cat.id_catalogo_tipo = ctip.id_catalogo_tipo
+          inner join kaf.tmovimiento_motivo mom 
+          on mom.id_cat_movimiento = cat.id_catalogo
           where ctip.tabla = 'tmovimiento__id_cat_movimiento'
           and cat.codigo = v_parametros.tipo_movimiento;
 
@@ -1992,6 +1996,9 @@ BEGIN
               coalesce(v_parametros.id_funcionario_dest,null) as id_funcionario_dest,
               coalesce(v_parametros.direccion,null) as direccion,
               coalesce(v_parametros.id_oficina,null) as id_oficina,
+              coalesce(v_parametros.id_depto, null) as id_depto,
+              coalesce(v_parametros.id_deposito, null) as id_deposito,
+              coalesce(v_id_movi_motivo, null) as id_movimiento_motivo,              
               v_id_cat_movimiento as id_cat_movimiento,
               v_rec.id_depto as id_depto,
               false as reg_masivo

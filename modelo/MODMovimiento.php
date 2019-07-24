@@ -418,6 +418,8 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('direccion','direccion','varchar');
 		$this->setParametro('id_oficina','id_oficina','integer');
         $this->setParametro('ids_af','ids_af','varchar');
+        $this->setParametro('id_depto','id_depto','integer');
+        $this->setParametro('id_deposito','id_deposito','integer');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

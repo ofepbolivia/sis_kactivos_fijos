@@ -605,7 +605,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             par_filtro : 'pro.desc_proveedor'                                                       
                         }
                     }),
-                    valueField : 'idproveedor_',
+                    valueField : 'id_proveedor',
                     displayField : 'provee',
                     gdisplayField : 'provee',
                     hiddenName : 'id_proveedor',
@@ -928,6 +928,12 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.tipo_activo);
                     this.mostrarComponente(this.Cmp.estado_mo);
 					this.ocultarComponente(this.Cmp.id_funcionario);
+                    this.ocultarComponente(this.Cmp.valor_actual);
+                    this.ocultarComponente(this.Cmp.txtMontoSup);
+                    this.ocultarComponente(this.Cmp.txtMontoInf);
+					this.mostrarComponente(this.Cmp.fecha_ini);
+					this.mostrarComponente(this.Cmp.fecha_fin);                    
+                    this.mostrarComponente(this.Cmp.id_depto);
                     this.Cmp.rep_pendiente_aprobacion.getStore().each(function(rec){
                         this.Cmp.rep_pendiente_aprobacion.checkRecord(rec);
                     },this);
@@ -956,7 +962,10 @@ header("content-type: text/javascript; charset=UTF-8");
 					this.ocultarComponente(this.Cmp.id_funcionario);
 					this.mostrarComponente(this.Cmp.fecha_ini);
 					this.mostrarComponente(this.Cmp.fecha_fin);
-					this.mostrarComponente(this.Cmp.id_depto);					
+					this.mostrarComponente(this.Cmp.id_depto);
+                    this.ocultarComponente(this.Cmp.valor_actual);					
+                    this.ocultarComponente(this.Cmp.txtMontoSup);
+                    this.ocultarComponente(this.Cmp.txtMontoInf);
                     this.Cmp.rep_sin_asignacion.getStore().each(function(rec){
                         this.Cmp.rep_sin_asignacion.checkRecord(rec);
                     },this);
@@ -988,6 +997,9 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.fecha_ini);
                     this.ocultarComponente(this.Cmp.fecha_fin);
                     this.mostrarComponente(this.Cmp.id_funcionario);                	
+                    this.ocultarComponente(this.Cmp.valor_actual);
+                    this.ocultarComponente(this.Cmp.txtMontoSup);
+                    this.ocultarComponente(this.Cmp.txtMontoInf);
                 }
             },this);
         	
@@ -1050,6 +1062,12 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.estado_mo.modificado = true;
                     this.Cmp.id_funcionario.reset();
                     this.Cmp.id_funcionario.modificado = true;
+                    this.Cmp.valor_actual.reset();
+                    this.Cmp.valor_actual.modificado = true;
+                    this.Cmp.txtMontoSup.reset();
+                    this.Cmp.txtMontoSup.modificado = true;
+                    this.Cmp.txtMontoInf.reset();
+                    this.Cmp.txtMontoInf.modificado = true;
 
                 }else if(rec.data.tipo == 'acti_fun_dep'){
                     this.Cmp.tipo_reporte.reset();
@@ -1093,7 +1111,13 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.fecha_ini.reset();
                     this.Cmp.fecha_ini.modificado = true;
                     this.Cmp.fecha_fin.reset();
-                    this.Cmp.fecha_fin.modificado = true;                                                                            
+                    this.Cmp.fecha_fin.modificado = true;  
+                    this.Cmp.valor_actual.reset();
+                    this.Cmp.valor_actual.modificado = true;
+                    this.Cmp.txtMontoSup.reset();
+                    this.Cmp.txtMontoSup.modificado = true;
+                    this.Cmp.txtMontoInf.reset();
+                    this.Cmp.txtMontoInf.modificado = true;                                                                                              
                 }
 
             }, this);
