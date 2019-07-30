@@ -715,8 +715,7 @@ BEGIN
             ';
 
             --Definicion de la respuesta
-            v_consulta:=v_consulta||v_parametros.filtro;
-            --||' and kaf.f_verificar_hijos (niv.nivel,niv.id_clasificacion, coalesce(taf.id_activo_fijo, 0),'''||v_parametros.fecha_ini||''','''||v_parametros.fecha_fin||'''))';
+            v_consulta:=v_consulta||v_parametros.filtro||' and kaf.f_verificar_hijos (niv.nivel,niv.id_clasificacion, coalesce(taf.id_activo_fijo, 0),'''||v_parametros.fecha_ini||''','''||v_parametros.fecha_fin||'''))';
             v_consulta = v_consulta||' order by niv.camino, taf.codigo';
       raise notice 'v_consulta: %',v_parametros.filtro;
             --Devuelve la respuesta
