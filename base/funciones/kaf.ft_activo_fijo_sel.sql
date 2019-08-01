@@ -1366,7 +1366,7 @@ BEGIN
                       from kaf.tactivo_fijo af 
                       inner join param.tcatalogo cat on cat.id_catalogo = af.id_cat_estado_fun
                       inner join deposito b on b.id = af.id_activo_fijo                      
-                      where      ';
+                      where   af.en_deposito = ''si'' and  ';
                       
         v_consulta:=v_consulta||v_parametros.filtro;
         v_consulta:=v_consulta||'order by af.codigo';
