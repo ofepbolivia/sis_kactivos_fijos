@@ -113,6 +113,9 @@ BEGIN
 			v_parametros.monto_compra_orig_100
 			)RETURNING id_activo_fijo_modificacion into v_id_activo_fijo_modificacion;
 
+			if v_parametros.tipo is null or v_parametros.tipo = '' then
+            	raise exception 'El tipo modificacion no fue seleccionada.';                    
+            end if;
 			--Actualiza la ubicación del activo fijo si corresponde
 			if v_parametros.tipo = 1 then
 				
@@ -122,6 +125,8 @@ BEGIN
 					id_oficina = v_parametros.id_oficina,
 					ubicacion = v_parametros.ubicacion
 					where id_activo_fijo = v_parametros.id_activo_fijo;
+				else
+                	raise exception 'La oficina no fue seleccionada.';                    				                    
 				end if;
 
 			elsif v_parametros.tipo = 3 then
