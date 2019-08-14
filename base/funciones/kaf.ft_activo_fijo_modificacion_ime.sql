@@ -113,7 +113,7 @@ BEGIN
 			v_parametros.monto_compra_orig_100
 			)RETURNING id_activo_fijo_modificacion into v_id_activo_fijo_modificacion;
 
-			if v_parametros.tipo is null or v_parametros.tipo = '' then
+			if v_parametros.tipo is null then
             	raise exception 'El tipo modificacion no fue seleccionada.';                    
             end if;
 			--Actualiza la ubicación del activo fijo si corresponde
