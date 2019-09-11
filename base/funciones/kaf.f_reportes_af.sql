@@ -1265,7 +1265,7 @@ BEGIN
                                                             --and afv.codigo not like '%-G%'
             and af.estado <> 'eliminado' and
             case when v_parametros.baja_retiro = 'alta' then
-            afv.fecha_fin is null
+            (afv.fecha_fin is null or af.estado = 'alta')
             when v_parametros.baja_retiro = 'baj_ret' then
             afv.fecha_fin = '31/01/2019'::date
             else 
