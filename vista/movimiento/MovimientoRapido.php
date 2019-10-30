@@ -589,9 +589,13 @@ Phx.vista.MovimientoRapido = Ext.define('Phx.vista.MovimientoRapido', {
             size.height = 595;
             this.id_depto.hide();
             this.cmpId_deposito.hide();
+			this.id_depto.allowBlank=true;
+            this.cmpId_deposito.allowBlank=true;
         } else if(tipoMov=='transf'){
             this.id_depto.hide();
             this.cmpId_deposito.hide();
+			this.id_depto.allowBlank=true;
+            this.cmpId_deposito.allowBlank=true;
         } else if(tipoMov=='devol'){
             this.cmpFuncionarioDest.hide();
             this.cmpOficina.hide();

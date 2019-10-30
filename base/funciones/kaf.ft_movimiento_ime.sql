@@ -801,7 +801,7 @@ BEGIN
                     --Actualiza estado de activo fijo
                     update kaf.tactivo_fijo set
                     en_deposito = 'no',
-                    id_funcionario = coalesce(mov.id_funcionario_dest,mov.id_funcionario),
+                    id_funcionario = coalesce(mov.id_funcionario,mov.id_funcionario_dest),
                     id_persona = mov.id_persona,
                     id_oficina = coalesce(mov.id_oficina,kaf.tactivo_fijo.id_oficina),
                     fecha_asignacion = mov.fecha_mov,
@@ -2003,7 +2003,12 @@ BEGIN
               v_rec.id_depto as id_depto,
               false as reg_masivo
               into v_rec_af;
-
+			
+			  if v_parametros.tipo_movimiento = 'asig' then
+				v_rec_af.id_funcionario := v_parametros.id_funcionario_dest;
+                v_rec_af.id_funcionario_dest := null;
+              end if;
+			  
               --Inserción del movimiento
               v_id_movimiento = kaf.f_insercion_movimiento(p_id_usuario, hstore(v_rec_af));
               v_ids_mov = v_ids_mov || v_id_movimiento::varchar;
