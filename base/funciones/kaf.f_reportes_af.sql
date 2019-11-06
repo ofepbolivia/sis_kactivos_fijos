@@ -1380,14 +1380,16 @@ BEGIN
             and afv.codigo not in (select codigo
                                                 from tt_detalle_depreciacion)
             --and afv.id_activo_fijo_valor not in (select id_activo_fijo_valor from kaf.tactivo_fijo_valores where id_activo_fijo_valor_original = afv.id_activo_fijo_valor /*and tipo = 'alta'*/ )
-            and date_trunc('month',mdep.fecha) <> date_trunc('month',v_parametros.fecha_hasta::date)
-            and date_trunc('month',mdep.fecha) < date_trunc('month',v_parametros.fecha_hasta::date) --between date_trunc('month',('01-01-'||extract(year from v_parametros.fecha_hasta::date)::varchar)::date) and date_trunc('month',v_parametros.fecha_hasta::date)
+            --inicio cambio 06/11/2019 por activos de baja recuperados de un mes anterior y no asi a  la fecha (bvp)
+            --and date_trunc('month',mdep.fecha) <> date_trunc('month',v_parametros.fecha_hasta::date)
+            --and date_trunc('month',mdep.fecha) < date_trunc('month',v_parametros.fecha_hasta::date) --between date_trunc('month',('01-01-'||extract(year from v_parametros.fecha_hasta::date)::varchar)::date) and date_trunc('month',v_parametros.fecha_hasta::date)
+            --fin cambios 06/11/2019
             and date_trunc('month',mdep.fecha) = (select max(fecha)
                                                     from kaf.tmovimiento_af_dep
                                                     where id_activo_fijo_valor = afv.id_activo_fijo_valor
                                                     and id_moneda_dep = mdep.id_moneda_dep
-                                                    and date_trunc('month',fecha) <> date_trunc('month',v_parametros.fecha_hasta::date)
-                                                    and date_trunc('month',fecha) < date_trunc('month',v_parametros.fecha_hasta::date) --between date_trunc('month',('01-01-'||extract(year from v_parametros.fecha_hasta)::varchar)::date) and date_trunc('month',v_parametros.fecha_hasta)
+                                                    --and date_trunc('month',fecha) <> date_trunc('month',v_parametros.fecha_hasta::date)
+                                                    and date_trunc('month',fecha) <= date_trunc('month',v_parametros.fecha_hasta::date) --between date_trunc('month',('01-01-'||extract(year from v_parametros.fecha_hasta)::varchar)::date) and date_trunc('month',v_parametros.fecha_hasta)
                                                 )
             and mdep.id_moneda_dep = coalesce(v_parametros.id_moneda,1)
             and af.id_activo_fijo in (select id_activo_fijo from tt_af_filtro)
@@ -1397,6 +1399,126 @@ BEGIN
             and af.fecha_baja > v_parametros.fecha_hasta::date;
 
             --------------------------------
+            ----------------ini----------------
+            /** nueva consulta para seleccionar las bajas que tengan un solo mes de depreciacion
+            
+            **/
+            insert into tt_detalle_depreciacion(
+            id_activo_fijo_valor,codigo, denominacion ,fecha_ini_dep,monto_vigente_orig_100,monto_vigente_orig,inc_actualiz,
+            monto_actualiz,vida_util_orig,vida_util,
+            depreciacion_per,depreciacion_acum,monto_vigente,codigo_padre,denominacion_padre,tipo,tipo_cambio_fin,id_moneda_act,
+            id_activo_fijo_valor_original
+            )
+            select
+            afv.id_activo_fijo_valor,
+           case when (v_parametros.total_consol='deta' or v_parametros.total_consol='') then 
+            afv.codigo
+            else 
+            kaf.f_tam_codigo(afv.codigo)
+            end as codigo,
+             case when v_parametros.desc_nombre='desc' then
+                upper(af.descripcion)
+                when v_parametros.desc_nombre='nombre' or v_parametros.desc_nombre='' then
+                upper(af.denominacion)
+                else
+                upper(af.denominacion||' / '||chr(10)||af.descripcion)
+            end,
+            afv.fecha_ini_dep,
+            afv.monto_vigente_orig_100,
+            afv.monto_vigente_orig,
+            --(coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0)) as inc_actualiz,
+            case
+                  when (coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0)) < 0 then 0
+                  else (coalesce(mdep.monto_actualiz,0) - coalesce(afv.monto_vigente_orig,0))
+            end as inc_actualiz,
+            
+            case when substr(afv.codigo,1,13) ='05.03.01.0001' then 
+--------------------------------------------------
+            (v_ufv_mes_repo/(select tica.oficial
+            from param.ttipo_cambio tica
+            where tica.fecha = (
+            case coalesce(afv.id_activo_fijo_valor_original,0)
+                when 0 then afv.fecha_ini_dep
+                else (select fecha_ini_dep from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original)
+            end)
+            and tica.id_moneda = 3) * (case coalesce(afv.id_activo_fijo_valor_original,0)
+                when 0 then afv.monto_vigente_orig
+                else (select monto_vigente_orig from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original)
+            end)) 
+            else
+            mdep.monto_actualiz  
+            end as monto_actualiz,
+--------------------------------------------------
+            /*case coalesce(afv.id_activo_fijo_valor_original,0)
+                when 0 then afv.monto_vigente_orig * mdep.factor
+                else (select monto_vigente_orig from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original) * mdep.factor
+            end as monto_actualiz,*/
+            afv.vida_util_orig, mdep.vida_util,
+--------------------------------------------------
+            case when substr(afv.codigo,1,13) ='05.03.01.0001' then 
+            ((v_ufv_mes_repo/(select tica.oficial
+            from param.ttipo_cambio tica
+            where tica.fecha = (
+            case coalesce(afv.id_activo_fijo_valor_original,0)
+                when 0 then afv.fecha_ini_dep
+                else (select fecha_ini_dep from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original)
+            end)
+            and tica.id_moneda = 3) * (case coalesce(afv.id_activo_fijo_valor_original,0)
+                when 0 then afv.monto_vigente_orig
+                else (select monto_vigente_orig from kaf.tactivo_fijo_valores where id_activo_fijo_valor = afv.id_activo_fijo_valor_original)
+            end))/case when afv.vida_util_orig = 0 then 1 else afv.vida_util_orig end  * ( case when mdep.vida_util = 0 then 
+							            mdep.vida_util 
+                                        else 
+            							v_dep_ges_mes
+                                        end)
+            
+            )
+            else
+            mdep.depreciacion_per
+            end  as depreciacion_per,
+--------------------------------------------------
+            mdep.depreciacion_acum,
+            case when mdep.monto_vigente <=1 then
+                case when substr(af.codigo,1,2)='11' then
+                    0.00
+                else 
+                case when afv.tipo in ('ajuste','reval') then  
+                	mdep.monto_vigente
+                    else 
+                    1.00
+                    end
+                end    
+            else
+            mdep.monto_vigente
+            end,            
+            --mdep.monto_vigente,
+            substr(afv.codigo,1, position('.' in afv.codigo)-1) as codigo_padre,
+            (select nombre from kaf.tclasificacion where codigo_completo_tmp = substr(afv.codigo,1, position('.' in afv.codigo)-1)) as denominacion_padre,
+            afv.tipo,
+            mdep.tipo_cambio_fin,
+            mon.id_moneda_act,
+            afv.id_activo_fijo_valor_original
+            from kaf.tmovimiento_af_dep mdep
+            inner join kaf.tactivo_fijo_valores afv
+            on afv.id_activo_fijo_valor = mdep.id_activo_fijo_valor
+            inner join kaf.tactivo_fijo af
+            on af.id_activo_fijo = afv.id_activo_fijo
+            inner join kaf.tmoneda_dep mon
+            on mon.id_moneda =  afv.id_moneda_dep
+            where afv.fecha_fin is not null
+            and  not exists (select from kaf.tactivo_fijo_valores where id_activo_fijo_valor_original = afv.id_activo_fijo_valor and tipo<>'alta')
+            and afv.codigo not in (select codigo
+                                                from tt_detalle_depreciacion)
+			and (select count(id_activo_fijo_valor) from kaf.tmovimiento_af_dep where id_activo_fijo_valor = afv.id_activo_fijo_valor) = 1                                                
+            and mdep.id_moneda_dep = coalesce(v_parametros.id_moneda,1)
+            and af.id_activo_fijo in (select id_activo_fijo from tt_af_filtro)
+            and afv.id_activo_fijo_valor not in (select id_activo_fijo_valor
+                                                from tt_detalle_depreciacion)
+            and af.estado <> 'eliminado'
+            and af.fecha_baja > v_parametros.fecha_hasta::date;            
+            -----------------fin---------------
+
+
             --------------------------------
             insert into tt_detalle_depreciacion(
             id_activo_fijo_valor,codigo, denominacion ,fecha_ini_dep,monto_vigente_orig_100,monto_vigente_orig,inc_actualiz,
