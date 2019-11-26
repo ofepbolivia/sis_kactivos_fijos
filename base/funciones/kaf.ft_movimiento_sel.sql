@@ -323,9 +323,9 @@ BEGIN
 
             if(v_tipo_movimiento='Devolución' and v_id_deposito is not null)then
             	v_inner = 'left join kaf.tdeposito tdep on tdep.id_deposito = mov.id_deposito
-                		   inner join orga.vfuncionario_cargo_lugar fun1 on fun1.id_funcionario = tdep.id_funcionario';
+                		   inner join orga.vfuncionario_ultimo_cargo fun1 on fun1.id_funcionario = tdep.id_funcionario';
             else
-            	v_inner = 'inner join orga.vfuncionario_cargo_lugar fun1 on fun1.id_funcionario = mov.id_responsable_depto';
+            	v_inner = 'inner join orga.vfuncionario_ultimo_cargo fun1 on fun1.id_funcionario = mov.id_responsable_depto';
             end if;
 			--Consulta
 			v_consulta:=' select cat.descripcion as movimiento,
@@ -376,13 +376,13 @@ BEGIN
                          from kaf.tmovimiento mov
                               inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
                               inner join param.tdepto dpto on dpto.id_depto = mov.id_depto
-                              left join orga.vfuncionario_cargo_lugar fun on fun.id_funcionario =  mov.id_funcionario
+                              left join orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario =  mov.id_funcionario
                               and ((mov.fecha_mov BETWEEN fun.fecha_asignacion and fun.fecha_finalizacion) or (mov.fecha_mov >= fun.fecha_asignacion and fun.fecha_finalizacion is NULL))
-     						              left join orga.vfuncionario_cargo_lugar fundes on fundes.id_funcionario = mov.id_funcionario_dest
+     						              left join orga.vfuncionario_ultimo_cargo fundes on fundes.id_funcionario = mov.id_funcionario_dest
                               and ((mov.fecha_mov BETWEEN fundes.fecha_asignacion  and fundes.fecha_finalizacion) or (mov.fecha_mov >= fundes.fecha_asignacion and fundes.fecha_finalizacion is NULL))
                               left join orga.toficina ofi on ofi.id_oficina = mov.id_oficina
                               left join param.tlugar tlu on tlu.id_lugar = ofi.id_lugar
-                              inner join orga.vfuncionario_cargo_lugar fun_r on fun_r.id_funcionario = mov.id_responsable_depto
+                              inner join orga.vfuncionario_ultimo_cargo fun_r on fun_r.id_funcionario = mov.id_responsable_depto
                               '||v_inner||'
                               left join segu.vpersona per on per.id_persona = mov.id_persona
                               left join param.tlugar lug on lug.id_lugar = ofi.id_lugar
