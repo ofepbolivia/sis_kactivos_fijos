@@ -377,7 +377,8 @@ BEGIN
                               inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
                               inner join param.tdepto dpto on dpto.id_depto = mov.id_depto
                               left join orga.vfuncionario_ultimo_cargo fun on fun.id_funcionario =  mov.id_funcionario
-                              and ((mov.fecha_mov BETWEEN fun.fecha_asignacion and fun.fecha_finalizacion) or (mov.fecha_mov >= fun.fecha_asignacion and fun.fecha_finalizacion is NULL))
+                              /* comentado breydi.vasquez, motivo nuevo uso de vista creada orga.vfuncionario_ultimo_cargo , 26/11/2019
+                              and ((mov.fecha_mov BETWEEN fun.fecha_asignacion and fun.fecha_finalizacion) or (mov.fecha_mov >= fun.fecha_asignacion and fun.fecha_finalizacion is NULL))*/
      						              left join orga.vfuncionario_ultimo_cargo fundes on fundes.id_funcionario = mov.id_funcionario_dest
                               and ((mov.fecha_mov BETWEEN fundes.fecha_asignacion  and fundes.fecha_finalizacion) or (mov.fecha_mov >= fundes.fecha_asignacion and fundes.fecha_finalizacion is NULL))
                               left join orga.toficina ofi on ofi.id_oficina = mov.id_oficina
