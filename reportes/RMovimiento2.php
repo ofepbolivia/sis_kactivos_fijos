@@ -413,6 +413,7 @@ class RMovimiento2 extends ReportePDF {
       
          $totalAF = 0;
          $totalCompra = 0;
+        
 		 foreach ($this->getDataSource() as $datarow) {
             if($tipo=='baja'){
                
@@ -509,9 +510,9 @@ class RMovimiento2 extends ReportePDF {
             } else if($tipo=='alta'){
                     
                             
-                $this->tablealigns=array('L','L','L','L','L','C','R','R','L','L');
+                $this->tablealigns=array('L','L','L','L','L','C','R','R','L','C','L');
 //                $this->tablenumbers=array(0,0,0,0,0,0,1,1,0,0);
-                $this->tableborders=array('RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB');
+                $this->tableborders=array('RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB');
                 $this->tabletextcolor=array();
                 //totales de montos
                 $totalAF += $datarow['monto_compra_orig'];
@@ -527,7 +528,8 @@ class RMovimiento2 extends ReportePDF {
                             's6' => number_format($datarow['monto_compra_orig'],2,',','.'),
                             's7' => number_format($datarow['monto_compra_orig_100'],2,',','.'),
                             's8' => $datarow['nro_cbte_asociado'],
-                            's9' => ''
+                            's9' => (substr($datarow['codigo'],0,9) == '11.01.05.')? '-' : $datarow['vida_util_original'],
+                            's10' => ''
                             );
                 
                 
@@ -574,9 +576,9 @@ class RMovimiento2 extends ReportePDF {
 			
         }
 		if($tipo=='alta'){
-            $this->tablealigns=array('L','L','L','L','L','C','R','R','L','L');
+            $this->tablealigns=array('L','L','L','L','L','C','R','R','L','L','L');
 //            $this->tablenumbers=array(0,0,0,0,0,0,1,1,0,0);
-            $this->tableborders=array('','','','','','','RLTB','RLTB','','');
+            $this->tableborders=array('','','','','','','RLTB','RLTB','','','');
             $this->tabletextcolor=array();
             $RowArray = array(
                 's0'  => '',
@@ -588,7 +590,8 @@ class RMovimiento2 extends ReportePDF {
                 's6' => number_format($totalAF,2,',','.'),
                 's7' => number_format($totalCompra,2,',','.'),
                 's8' => '',
-                's9' => ''
+                's9' => '',
+                's10' => ''
             );
             $this-> MultiRow($RowArray,false,1);
         }
@@ -694,11 +697,11 @@ class RMovimiento2 extends ReportePDF {
             
         }  else if($tipo=='alta'){
                 
-              $this->tablewidthsHD=array(8,23,23,35,57,19,25,25,20,30);
+              $this->tablewidthsHD=array(8,23,23,35,50,19,24,24,15,15,29);
                //$this->tablewidths=array(8,31,84.5,34,32.5,26.5,18,20.5);
-              $this->tablealignsHD=array('C','C','C','C','C','C','C','C','C','C');
-              $this->tablenumbersHD=array(0,0,0,0,0,0,0,0);
-              $this->tablebordersHD=array('LTB','TB','TB','TB','TB','TBR');
+              $this->tablealignsHD=array('C','C','C','C','C','C','C','C','C','C','c');
+              $this->tablenumbersHD=array(0,0,0,0,0,0,0,0,0);
+              $this->tablebordersHD=array('LTB','TB','TB','TB','TB','TB','TBR');
               $this->tabletextcolorHD=array();
               $RowArray = array(
                             's0'  => 'Nro',
@@ -710,7 +713,8 @@ class RMovimiento2 extends ReportePDF {
                             's6' => 'Costo AF',
                             's7' => 'Valor Compra',
                             's8' => 'C31',
-                            's9' => 'Observaciones'
+                            's9' => 'Vida U.',
+                            's10' =>'Observaciones'
                         );
             
             

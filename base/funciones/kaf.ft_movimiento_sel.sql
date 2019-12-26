@@ -425,7 +425,8 @@ BEGIN
                             af.monto_compra_orig,
                             af.monto_compra_orig_100,
                             af.nro_cbte_asociado,
-                            af.observaciones
+                            af.observaciones,
+                            af.vida_util_original
                      from kaf.tmovimiento_af maf
                           inner join kaf.tactivo_fijo af on af.id_activo_fijo = maf.id_activo_fijo
                           left join param.tcatalogo cat2 on cat2.id_catalogo = af.id_cat_estado_fun

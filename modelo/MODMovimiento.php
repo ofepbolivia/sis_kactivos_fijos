@@ -296,7 +296,8 @@ class MODMovimiento extends MODbase{
 		$this->captura('monto_compra_orig','numeric');
 		$this->captura('monto_compra_orig_100','numeric');
 		$this->captura('nro_cbte_asociado','varchar');
-		$this->captura('observaciones','varchar');
+        $this->captura('observaciones','varchar');
+        $this->captura('vida_util_original','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
