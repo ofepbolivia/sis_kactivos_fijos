@@ -3072,8 +3072,8 @@ header("content-type: text/javascript; charset=UTF-8");
             var win = Phx.CP.loadWindows(
                 '../../../sis_kactivos_fijos/vista/activo_fijo_valores/ActivoFijoValoresHist.php',
                 'Detalle depreciación', {
-                    width: '80%',
-                    height: '70%'
+                    width: '95%',
+                    height: '95%'
                 }, rec,
                 this.idContenedor,
                 'ActivoFijoValoresHist'

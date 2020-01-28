@@ -19,7 +19,9 @@ class ACTActivoFijoValores extends ACTbase{
 		
 		if($this->objParam->getParametro('id_moneda_dep')!=''){
 			$this->objParam->addFiltro("actval.id_moneda_dep = ".$this->objParam->getParametro('id_moneda_dep'));	
-		}
+        }
+        
+        $this->objParam->getParametro('fecha_fin') != '' && $this->objParam->addFiltro("actval.fecha_fin is null ");
 
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);

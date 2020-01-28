@@ -1323,3 +1323,134 @@ CREATE TABLE kaf.tmotivo_eliminacion_af (
 
 WITH (oids = false);
 /***********************************F-SCP-BVP-KAF-1-20/02/2019****************************************/
+/***********************************I-SCP-BVP-KAF-1-28/01/2020****************************************/
+ALTER TABLE kaf.tmovimiento
+  ADD COLUMN nro_documento VARCHAR;
+
+COMMENT ON COLUMN kaf.tmovimiento.nro_documento
+IS 'Columna usada para registro de nro de documento de respaldo al movimiento';
+  
+ALTER TABLE kaf.tmovimiento
+  ADD COLUMN tipo_documento VARCHAR;
+
+COMMENT ON COLUMN kaf.tmovimiento.tipo_documento
+IS 'Columna usada para registro de tipo de documento de respaldo al movimiento';
+      
+  
+ALTER TABLE kaf.tmovimiento_af
+  ADD COLUMN vida_util_residual integer;         
+
+COMMENT ON COLUMN kaf.tmovimiento_af.vida_util_residual
+IS 'Columna usada para registro de vida residual correcta, usada en caso ajuste vida util';
+       
+  
+  ALTER TABLE kaf.tmovimiento_af
+  ADD COLUMN deprec_acum_ant numeric;         
+
+COMMENT ON COLUMN kaf.tmovimiento_af.deprec_acum_ant
+IS 'Columna usada para registro de depreciacion acumulada correcta, usada en caso ajuste vida util';
+  
+  ALTER TABLE kaf.tmovimiento_af
+  ADD COLUMN valor_residual numeric;         
+
+COMMENT ON COLUMN kaf.tmovimiento_af.valor_residual
+IS 'Columna usada para registro de valor residual correcta, usada en caso ajuste vida util';  
+  
+  ALTER TABLE kaf.tmovimiento_af
+  ADD COLUMN monto_vig_actu numeric;   
+
+COMMENT ON COLUMN kaf.tmovimiento_af.monto_vig_actu
+IS 'Columna usada para registro de monto vigente actualizado correcta, usada en caso ajuste vida util';  
+     
+
+ALTER TABLE kaf.tmovimiento_af
+  ADD COLUMN id_activo_fijo_valor INTEGER;
+
+COMMENT ON COLUMN kaf.tmovimiento_af.id_activo_fijo_valor
+IS 'Columna usada para registro id_activo_fijo_valor caso retiro parcial, para setear la fecha fin de un activo fijo valor y no depreciarla';  
+     
+ALTER TABLE kaf.tmovimiento_af
+  ADD COLUMN observacion TEXT;
+
+COMMENT ON COLUMN kaf.tmovimiento_af.observacion
+IS 'Columna usada para registro alguna observacion para el activo registrado';  
+    
+
+  ALTER TABLE kaf.tactivo_fijo_valores
+  ADD COLUMN vida_util_corregido integer; 
+
+  COMMENT ON COLUMN kaf.tactivo_fijo_valores.vida_util_corregido
+IS 'Columna usada para registro de la vida util corregida, usada en caso ajuste vida util, para el reporte de depreciacion';    
+        
+
+  ALTER TABLE kaf.tactivo_fijo_valores
+  ADD COLUMN vida_util_resid_corregido integer;    
+
+  COMMENT ON COLUMN kaf.tactivo_fijo_valores.vida_util_resid_corregido
+IS 'Columna usada para registro de la vida residual corregida, usada en caso ajuste vida util, para calculo depreciacion';    
+    
+
+  ALTER TABLE kaf.tactivo_fijo_valores
+  ADD COLUMN valor_residual numeric;    
+
+  COMMENT ON COLUMN kaf.tactivo_fijo_valores.valor_residual
+IS 'Columna usada para registro de la valor residual corregida, usada en caso ajuste vida util, para calculo depreciacion';    
+    
+
+  ALTER TABLE kaf.tactivo_fijo_valores
+  ADD COLUMN deprec_acum_ant numeric;    
+
+  COMMENT ON COLUMN kaf.tactivo_fijo_valores.deprec_acum_ant
+IS 'Columna usada para registro de depreciacion acumulada anterior gestion, usada en caso ajuste vida util, para calculo depreciacion';    
+    
+  ALTER TABLE kaf.tactivo_fijo_valores
+  ADD COLUMN tipo_modificacion VARCHAR;    
+
+ COMMENT ON COLUMN kaf.tactivo_fijo_valores.tipo_modificacion
+IS 'Columna usada para registro de tipo modificacion al activo, usada en caso ajuste vida util, para calculo depreciacion';    
+    
+ 
+  ALTER TABLE kaf.tactivo_fijo_valores
+  ADD COLUMN control_ajuste_vida DATE;  
+
+COMMENT ON COLUMN kaf.tactivo_fijo_valores.control_ajuste_vida
+IS 'Columna usada para registro de control, usada en caso ajuste vida util, para calculo depreciacion';    
+   
+  ALTER TABLE kaf.tactivo_fijo_valores
+  ADD COLUMN fecha_ajuste date;
+
+COMMENT ON COLUMN kaf.tactivo_fijo_valores.control_ajuste_vida
+IS 'Columna usada para registro de fecha de ajuste, usada en caso ajuste vida util, para calculo depreciacion';    
+   
+
+
+ALTER TABLE kaf.tmovimiento_af_dep
+  ADD COLUMN tipo_modificacion varchar;
+
+COMMENT ON COLUMN kaf.tactivo_fijo_valores.tipo_modificacion
+IS 'Columna usada para registro de tipo modificacion, usada en caso ajuste vida util, para reporte de depreciacion';    
+     
+      
+ALTER TABLE kaf.tmovimiento_af_dep
+  ADD COLUMN  depreciacion_acum_corregido numeric;
+
+COMMENT ON COLUMN kaf.tactivo_fijo_valores.depreciacion_acum_corregido
+IS 'Columna usada para registro de depreciacion acumulada corregido a su gestion en mes de diciembre, usada en caso ajuste vida util, para reporte depreciacion';    
+   
+ALTER TABLE kaf.tmovimiento_af_dep
+  ADD COLUMN fecha_ajuste_vida date;
+
+COMMENT ON COLUMN kaf.tactivo_fijo_valores.fecha_ajuste_vida
+IS 'Columna usada para registro de fecha de ajuste vida, usada en caso ajuste vida util, para reporte de depreciacion';    
+
+ALTER TABLE kaf.tmovimiento_motivo
+  ADD COLUMN codigo_mov_motivo varchar;
+
+COMMENT ON COLUMN kaf.tmovimiento_motivo.codigo_mov_motivo
+IS 'Columna usada para registro de codigo movimiento motivo, diferenciar por codigo los motivos de movimiento(usado para controles y reportes)';    
+  
+ALTER TABLE kaf.tmovimiento_motivo
+  ADD UNIQUE (codigo_mov_motivo); 
+
+
+/***********************************F-SCP-BVP-KAF-1-28/01/2020****************************************/

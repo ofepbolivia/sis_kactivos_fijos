@@ -64,7 +64,13 @@ BEGIN
         coalesce(v_parametros._id_usuario_ai,null) as _id_usuario_ai,
         coalesce(v_parametros.depreciacion_acum,null) as depreciacion_acum,
         coalesce(v_parametros.importe_ant,null) as importe_ant,
-        coalesce(v_parametros.vida_util_ant,null) as vida_util_ant
+        coalesce(v_parametros.vida_util_ant,null) as vida_util_ant,
+        -- breydi.vasquez (09/01/2020)
+        coalesce(v_parametros.vida_util_residual, null) as vida_util_residual,
+        coalesce(v_parametros.deprec_acum_ant, null) as deprec_acum_ant,
+        coalesce(v_parametros.valor_residual, null) as valor_residual,
+        coalesce(v_parametros.monto_vig_actu, null) as monto_vig_actu,
+        coalesce(v_parametros.monto_vig_actu, null) as observacion         
         into v_registros;
 
         --Inserción del movimiento
@@ -143,7 +149,13 @@ BEGIN
                 depreciacion_acum = v_parametros.depreciacion_acum,
                 id_moneda = v_id_moneda_base,
                 importe_ant = v_parametros.importe_ant,
-                vida_util_ant = v_parametros.vida_util_ant
+                vida_util_ant = v_parametros.vida_util_ant,
+                
+                vida_util_residual = v_parametros.vida_util_residual,
+                deprec_acum_ant = v_parametros.deprec_acum_ant,
+                valor_residual = v_parametros.valor_residual,
+                monto_vig_actu = v_parametros.monto_vig_actu,
+                observacion = v_parametros.observacion                
 			where id_movimiento_af=v_parametros.id_movimiento_af;
                
 			--Definicion de la respuesta

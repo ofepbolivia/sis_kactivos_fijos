@@ -57,6 +57,13 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
        		this.validarDatosMov();
        	}, this);
 
+        //activo fijo valor
+        /*this.Cmp.id_activo_fijo.on('select', function(cmp,rec,el){            
+            this.Cmp.id_activo_fijo_valor.reset();
+            this.Cmp.id_activo_fijo_valor.modificado=true;
+            this.Cmp.id_activo_fijo_valor.store.baseParams = {id_activo_fijo:rec.data.id_activo_fijo, id_moneda_dep: 1, fecha_fin:'no'}
+        }, this);*/        
+
        	//Grid
        	this.grid.on('cellclick', this.abrirEnlace, this);
 	},
@@ -165,7 +172,47 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 			grid: true,
 			form: true,
 			bottom_filter:true
-		},
+		},/*
+		{
+			config: {
+				name: 'id_activo_fijo_valor',
+				fieldLabel: 'Activo Fijo valor',
+				allowBlank: true,
+				emptyText: 'Elija una opción...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_kactivos_fijos/control/ActivoFijoValores/listarActivoFijoValores',
+					id: 'id_activo_fijo_valor',
+					root: 'datos',
+					sortInfo: {
+						field: 'codigo',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_activo_fijo_valor', 'codigo'],
+					remoteSort: true,
+					baseParams: {par_filtro: 'afij.denominacion#afij.codigo#afij.descripcion', fecha_mov:''}
+				}),
+				valueField: 'id_activo_fijo_valor',
+				displayField: 'codigo',
+				gdisplayField: 'codigo',
+				hiddenName: 'id_activo_fijo_valor',
+				forceSelection: true,
+				typeAhead: false,
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 15,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 300,
+				minChars: 2,
+				resizable: true,				
+			},
+			type: 'ComboBox',
+			id_grupo: 0,			
+			grid: false,
+			form: true			
+		},   */     
 		{
 			config: {
 				name: 'id_cat_estado_fun',
@@ -315,7 +362,21 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:0,
 			grid:false,
 			form:true
-		},
+		}, 
+		{
+			config:{
+				name: 'vida_util_residual',
+				fieldLabel: 'Vida residual',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 100,
+				maxLength:4
+			},
+			type:'NumberField',			
+			id_grupo:0,
+			grid:false,
+			form:true
+		},               
 		{
 			config:{
 				name: 'depreciacion_acum',
@@ -330,6 +391,58 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 			grid:false,
 			form:true
 		},
+        {
+            config:{
+				name: 'deprec_acum_ant',
+				fieldLabel: 'Depreciación Acum. Ant.',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 100
+			},
+			type:'NumberField',			
+			id_grupo:0,
+			grid:false,
+			form:true
+		},          
+        {
+            config:{
+				name: 'valor_residual',
+				fieldLabel: 'Valor Residual',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 100
+			},
+			type:'NumberField',			
+			id_grupo:0,
+			grid:false,
+			form:true
+		},
+        {
+            config:{
+				name: 'monto_vig_actu',
+				fieldLabel: 'Monto Vigente Act.',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 100
+			},
+			type:'NumberField',			
+			id_grupo:0,
+			grid:false,
+			form:true
+		}, 
+        {
+            config:{
+				name: 'observacion',
+				fieldLabel: 'Observacion',
+				allowBlank: true,
+				anchor: '100%',
+				gwidth: 100
+			},
+			type:'TextField',			
+			id_grupo:0,
+			grid:false,
+			form:true
+		},                                                                 
 		{
 			config:{
 				name: 'fecha_reg',
@@ -622,7 +735,8 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 		{name:'denominacion', type: 'string'},
 		{name:'estado_fun', type: 'string'},
 		{name:'motivo', type: 'string'},
-		'descripcion','monto_vigente_real_af','vida_util_real_af','fecha_ult_dep_real_af','depreciacion_acum_real_af','depreciacion_per_real_af','desc_moneda_orig','monto_compra','vida_util_af','fecha_ini_dep','depreciacion_acum'
+		'descripcion','monto_vigente_real_af','vida_util_real_af','fecha_ult_dep_real_af','depreciacion_acum_real_af','depreciacion_per_real_af','desc_moneda_orig','monto_compra','vida_util_af','fecha_ini_dep','depreciacion_acum',
+        'vida_util_residual', 'valor_residual', 'deprec_acum_ant', 'monto_vig_actu','observacion','activo_fijo_valores'
 	],
 	sortInfo:{
 		field: 'id_movimiento_af',
@@ -756,7 +870,9 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 
 	habilitarCampos: function(){
 		//Mostrar/ocultar componentes.
-		var swEstadoFun=false, swMotivo=false, swImporte=false, swVidaUtil=false,h=280,w=980,swDepAcum=false;
+		var swEstadoFun=false, swMotivo=false, swImporte=false, swVidaUtil=false,h=280,w=980,swDepAcum=false, 
+        swDepAcumAnt=false, swValResi=false, swVidaUtilRest=false,swMonVigAct=false,swObs=false, swAfVal=false;
+
 		if(this.maestro.cod_movimiento=='alta'){
 			
 		} else if(this.maestro.cod_movimiento=='baja'){
@@ -776,14 +892,28 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 		} else if(this.maestro.cod_movimiento=='transf'){
 			
 		} else if(this.maestro.cod_movimiento=='retiro'){
+            
+            /*if (this.maestro.codigo_mov_motivo == 'PAR_RET' ){ 
+                swAfVal= true;
+            }  */             
 			swMotivo=true;
 			h=313;//163;
-		} else if(this.maestro.cod_movimiento=='ajuste'){
-			swMotivo=true;
-			swImporte=true;
-			swVidaUtil=true;
-			swDepAcum=true;
-			h=400;//205;
+		} else if(this.maestro.cod_movimiento=='ajuste'){                                                                        
+            if (this.maestro.codigo_mov_motivo == 'AJ_VID_UT_PAS' ){                
+                swDepAcumAnt=true; 
+                swValResi=true;            
+                swVidaUtilRest=true;
+                swVidaUtil=true;                
+                if(this.maestro.fecha_mov.getMonth() != 11)  swMonVigAct=true;
+            }else{
+                swDepAcum=true;            
+                swMotivo=true;
+                swImporte=true;
+                swVidaUtil=true;
+            }
+			    h=490;//205;
+                swObs=true;
+                
 		} else if(this.maestro.cod_movimiento=='tranfdep'){
 			
 		} else if(this.maestro.cod_movimiento=='mejora'){
@@ -809,6 +939,12 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 		this.Cmp.res_saldo_vida_util.setVisible(swVidaUtil);
 		this.Cmp.res_saldo_depreciacion_acum.setVisible(swDepAcum);
 		this.Cmp.moneda_base.setVisible(swImporte);
+        this.Cmp.deprec_acum_ant.setVisible(swDepAcumAnt);        
+        this.Cmp.valor_residual.setVisible(swValResi);
+        this.Cmp.vida_util_residual.setVisible(swVidaUtilRest);                
+        this.Cmp.monto_vig_actu.setVisible(swMonVigAct);
+        this.Cmp.observacion.setVisible(swObs);    
+        //this.Cmp.id_activo_fijo_valor.setVisible(swAfVal);
 
 		this.Cmp.id_cat_estado_fun.allowBlank=!swEstadoFun;
 		this.Cmp.importe.allowBlank=!swImporte;
@@ -817,7 +953,11 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 		this.Cmp.res_saldo_importe.allowBlank=!swImporte;
 		this.Cmp.res_saldo_vida_util.allowBlank=!swVidaUtil;
 		this.Cmp.res_saldo_depreciacion_acum.allowBlank=!swDepAcum;
-
+        this.Cmp.deprec_acum_ant.allowBlank=!swDepAcumAnt;
+        this.Cmp.valor_residual.allowBlank=!swValResi;        
+        this.Cmp.vida_util_residual.allowBlank=!swVidaUtilRest;        
+        this.Cmp.monto_vig_actu.allowBlank=!swMonVigAct;        
+        this.Cmp.observacion.allowBlank=!swObs;        
 		//Resize window
     	this.window.setSize(w,h);
 	},

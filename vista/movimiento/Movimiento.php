@@ -129,6 +129,98 @@ header("content-type: text/javascript; charset=UTF-8");
 				form: true
 			},
 			{
+				config : {
+					name : 'id_movimiento_motivo',
+					fieldLabel : 'Motivo',
+					allowBlank : true,
+					emptyText : 'Motivo...',
+					store : new Ext.data.JsonStore({
+						url : '../../sis_kactivos_fijos/control/MovimientoMotivo/listarMovimientoMotivo',
+						id : 'id_movimiento_motivo',
+						root : 'datos',
+						sortInfo : {
+							field : 'motivo',
+							direction : 'ASC'
+						},
+						totalProperty : 'total',
+						fields : ['id_movimiento_motivo', 'motivo'],
+						remoteSort : true,
+						baseParams : {
+							par_filtro : 'motivo',
+							modulo: 'KAF'
+						}
+					}),
+					valueField : 'id_movimiento_motivo',
+					displayField : 'motivo',
+					gdisplayField : 'motivo',
+					//tpl : '<tpl for="."><div class="x-combo-list-item"><p>Nombre: {motivo}</p></div></tpl>',
+					hiddenName : 'id_movimiento_motivo',
+					forceSelection : true,
+					typeAhead : false,
+					triggerAction : 'all',
+					lazyRender : true,
+					mode : 'remote',
+					pageSize : 10,
+					queryDelay : 1000,
+					anchor : '95%',
+					gwidth : 200,
+					minChars : 2,
+					renderer : function(value, p, record) {
+						return String.format('{0}', record.data['movimiento_motivo']);
+					},
+					hidden: true
+				},
+				type : 'ComboBox',
+				id_grupo : 0,
+				filters : {
+					pfiltro : 'mmov.motivo',
+					type : 'string'
+				},
+				grid : true,
+				form : true
+			}, 
+			{
+				config:{
+					name: 'nro_documento',
+					fieldLabel: 'Nro Documento',
+					allowBlank: true,
+					anchor: '80%',
+					gwidth: 90										
+				},
+				type:'TextField',
+				filters:{pfiltro:'mov.nro_documento',type:'string'},
+				id_grupo:0,
+				grid:false,
+				form:true,
+				bottom_filter:true
+			},
+			{
+				config:{
+					name: 'tipo_documento',
+					fieldLabel: 'Tipo Documento',
+					allowBlank: true,
+					anchor: '80%',
+					gwidth: 90,
+                    triggerAction : 'all',
+                    lazyRender : true,
+                    mode : 'local',                    
+                    store : new Ext.data.ArrayStore({
+                    fields : ['tipo', 'valor'],
+                    data : [['tipo_documento_I', 'Nota Interna'],
+                            ['tipo_documento_I', 'Informe'],
+                            ['tipo_documento_III', 'Observacion Auditoria'],
+                            ['tipo_documento_IV', 'Otros']]
+                    }),                    
+                    valueField : 'tipo',
+                    displayField : 'valor'                                        
+				},
+				type:'ComboBox',				
+				id_grupo:0,
+				grid:false,
+				form:true,
+				bottom_filter:true
+			},                                   
+			{
 				config:{
 					name: 'num_tramite',
 					fieldLabel: 'Num.Trámite/Fecha',
@@ -661,57 +753,6 @@ header("content-type: text/javascript; charset=UTF-8");
 				bottom_filter:true
 			},
 			{
-				config : {
-					name : 'id_movimiento_motivo',
-					fieldLabel : 'Motivo',
-					allowBlank : true,
-					emptyText : 'Motivo...',
-					store : new Ext.data.JsonStore({
-						url : '../../sis_kactivos_fijos/control/MovimientoMotivo/listarMovimientoMotivo',
-						id : 'id_movimiento_motivo',
-						root : 'datos',
-						sortInfo : {
-							field : 'motivo',
-							direction : 'ASC'
-						},
-						totalProperty : 'total',
-						fields : ['id_movimiento_motivo', 'motivo'],
-						remoteSort : true,
-						baseParams : {
-							par_filtro : 'motivo',
-							modulo: 'KAF'
-						}
-					}),
-					valueField : 'id_movimiento_motivo',
-					displayField : 'motivo',
-					gdisplayField : 'motivo',
-					//tpl : '<tpl for="."><div class="x-combo-list-item"><p>Nombre: {motivo}</p></div></tpl>',
-					hiddenName : 'id_movimiento_motivo',
-					forceSelection : true,
-					typeAhead : false,
-					triggerAction : 'all',
-					lazyRender : true,
-					mode : 'remote',
-					pageSize : 10,
-					queryDelay : 1000,
-					anchor : '95%',
-					gwidth : 200,
-					minChars : 2,
-					renderer : function(value, p, record) {
-						return String.format('{0}', record.data['movimiento_motivo']);
-					},
-					hidden: true
-				},
-				type : 'ComboBox',
-				id_grupo : 0,
-				filters : {
-					pfiltro : 'mmov.motivo',
-					type : 'string'
-				},
-				grid : true,
-				form : true
-			},
-			{
 				config:{
 					name: 'id_int_comprobante',
 					fieldLabel: 'Cbte',
@@ -1047,7 +1088,10 @@ header("content-type: text/javascript; charset=UTF-8");
 			{name:'prestamo', type: 'string'},
 			{name:'fecha_dev_prestamo', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 			{name:'tipo_movimiento', type: 'string'},
-			{name:'id_proceso_wf_doc', type: 'numeric'}
+			{name:'id_proceso_wf_doc', type: 'numeric'},
+            {name:'nro_documento', type: 'string'},
+            {name:'tipo_documento', type: 'string'},
+            {name:'codigo_mov_motivo', type: 'string'}
 
 		],
 		sortInfo:{

@@ -120,6 +120,14 @@ BEGIN
                 afv1.monto_vigente_actualiz_inicial,
                 af.codigo,
                 afv1.codigo as codigo_afv
+
+                ,afv1.vida_util_resid_corregido,
+                afv1.vida_util_corregido,
+                afv1.deprec_acum_ant,
+                afv1.valor_residual,  -- monto vigente 
+                afv1.tipo_modificacion,               
+                afv1.control_ajuste_vida,
+                afv1.fecha_ajuste                
                 from kaf.tmovimiento_af maf
                 inner join kaf.vactivo_fijo_valor afv
                 on afv.id_activo_fijo = maf.id_activo_fijo
@@ -250,7 +258,16 @@ BEGIN
                 v_monto_actualiz    = v_ant_monto_actualiz * v_rec_tc.o_tc_factor;
 
                 
-
+                -- ini 13/01/2020 breydi.vasquez modificacion para ajuste de vida util
+                if ( v_rec.tipo_modificacion = 'ajuste_vida' and (date_trunc('month', v_mes_dep) = date_trunc('month',v_rec.fecha_ajuste + interval '1' month)) and v_rec.control_ajuste_vida >= v_mes_dep) then
+                 
+                    v_ant_monto_vigente = v_rec.valor_residual;
+					v_dep_acum_actualiz = v_rec.deprec_acum_ant * v_rec_tc.o_tc_factor;
+                    v_ant_vida_util  = v_rec.vida_util_resid_corregido;
+                	
+                end if;
+                -- fin bvp
+                
                 --Cálculo nuevos valores por depreciación
                 --RAC 03/03/2017
                 --  agrega validacion de division por cero

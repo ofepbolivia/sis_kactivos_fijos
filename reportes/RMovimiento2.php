@@ -12,7 +12,9 @@ class RMovimiento2 extends ReportePDF {
 	var $gerencia;
 	var $numeracion;
 	var $ancho_sin_totales;
-	var $tipoMov;
+    var $tipoMov;
+    var $motivo_ajuste;
+    var $nro_documento_ajuste;
     var $posY;
 	
 	function getDataSource(){
@@ -23,8 +25,9 @@ class RMovimiento2 extends ReportePDF {
 		$this->ancho_hoja = $this->getPageWidth()-PDF_MARGIN_LEFT-PDF_MARGIN_RIGHT-10;
 		$this->datos_detalle = $detalle;
 		$this->dataMaster = $maestro;	
-		$this->tipoMov = $this->dataMaster[0]['cod_movimiento']; 
-		
+        $this->tipoMov  = $this->dataMaster[0]['cod_movimiento']; 
+        $this->motivo_ajuste = $this->dataMaster[0]['codigo_mov_motivo']; 
+        $this->nro_documento_ajuste = $this->dataMaster[0]['nro_documento']; 
 		if($this->tipoMov=='asig'||$tipo=='devol'){
 			$this->SetMargins(7, 55, 5);
         } 
@@ -40,7 +43,7 @@ class RMovimiento2 extends ReportePDF {
 		$height = 6;
         $midHeight = 9;
         $longHeight = 18;
-
+        ($this->motivo_ajuste != '')?$title_motivo=' A LA VIDA UTIL':$title_motivo='';
         $x = $this->GetX();
         $y = $this->GetY();
         $this->SetXY($x, $y);
@@ -52,7 +55,7 @@ class RMovimiento2 extends ReportePDF {
         $this->SetFont('', 'B');
         $this->Cell(53, $midHeight, '', 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');
        
-        $this->Cell(168, $midHeight, 'FORMULARIO DE '.strtoupper($this->dataMaster[0]['movimiento']).' DE ACTIVOS FIJOS', 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');
+        $this->Cell(168, $midHeight, 'FORMULARIO DE '.strtoupper($this->dataMaster[0]['movimiento']).$title_motivo.' DE ACTIVOS FIJOS', 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');
         $this->tipoMov = $this->dataMaster[0]['cod_movimiento']; 
 
         $x = $this->GetX();
@@ -68,7 +71,7 @@ class RMovimiento2 extends ReportePDF {
         $width1 = 15;
         $width2 = 25;
         $this->SetXY($x, $y);
-
+        
         $this->SetFont('', '');
         $this->Cell(44, $longHeight, '', 1, 0, 'C', false, '', 0, false, 'T', 'C');
 
@@ -391,7 +394,7 @@ class RMovimiento2 extends ReportePDF {
    	      $this->setFontSubsetting(false);
 		  $this->AddPage();
 		  $tipo = $this->tipoMov;
-		  
+          $tipo_mov_ajus = $this->motivo_ajuste;
 		  $this->SetFontSize(7);
 
           //Definición de la fila donde empezar a desplegar los datos
@@ -413,7 +416,7 @@ class RMovimiento2 extends ReportePDF {
       
          $totalAF = 0;
          $totalCompra = 0;
-        
+         
 		 foreach ($this->getDataSource() as $datarow) {
             if($tipo=='baja'){
                
@@ -551,6 +554,27 @@ class RMovimiento2 extends ReportePDF {
                             );
                 
                 
+            //} else if($tipo == 'ajuste'){
+            }   else if ($tipo_mov_ajus == 'AJ_VID_UT_PAS') { 
+
+                    $this->tablealigns=array('L','L','L','L','R','C','C','R','R','R','R');
+                    $this->tablenumbers=array(0,0,0,0,0,0,0,0,0,0,0);
+                    $this->tableborders=array('RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB','RLTB');
+                    $this->tabletextcolor=array();
+                    $RowArray = array(
+                                  's0'  => $i+1,
+                                  's1' => $datarow['codigo'],   
+                                  's2' => $datarow['denominacion'],   
+                                  's3' => $datarow['descripcion'],       
+                                  's4' => $datarow['monto_vig_actu'],
+                                  's5' => $datarow['vida_util'],
+                                  's6' => $datarow['vida_util_residual'],           
+                                  's7' => $datarow['deprec_acum_ant'],
+                                  's8' => $datarow['valor_residual'],
+                                  's9' => $this->nro_documento_ajuste,
+                                  's10' => $datarow['observacion']                                 
+                                  );           
+                
             } else {
 			  $this->tablealigns=array('L','L','L','L','L','L','L');
 		      $this->tablenumbers=array(0,0,0,0,0,0,0);
@@ -602,7 +626,7 @@ class RMovimiento2 extends ReportePDF {
    } 
    
    function generarCabecera($tipo){
-    	
+        $tipo_mov_ajus = $this->motivo_ajuste;
 		//armca caecera de la tabla
 		$this->SetFontSize(9);
         $this->SetFont('', 'B');
@@ -735,6 +759,30 @@ class RMovimiento2 extends ReportePDF {
                             's4' => 'Estado Fun.',           
                             's5' => 'Observaciones');
             
+        //} else if($tipo == 'ajuste'){
+            
+        }else if ($tipo_mov_ajus == 'AJ_VID_UT_PAS') {
+                $this->tablewidthsHD=array(8,20,35,40,25,20,20,25,25,15,30);
+                $this->tablealignsHD=array('C','C','C','C','C','C','C','C','C','C');
+                $this->tablenumbersHD=array(0,0,0,0,0,0,0,0,0,0,0);
+                $this->tablebordersHD=array('LTB','TB','TB','TB','TB','TB','TB','TB','TB','TB','TB');
+                $this->tabletextcolorHD=array();
+                
+                $RowArray = array(
+                            's0'  => 'Nro',
+                            's1' => 'Código',   
+                            's2' => 'Denominación',        
+                            's3' => 'Descripción',
+                            's4' => 'Valor Actualizado',            
+                            's5' => 'Vida Original',
+                            's6' => 'Vida Residual',
+                            's7' => 'Dep. Gesti. Anter.',                            
+                            's8' => 'Valor Residual.',
+                            's9' => 'N° Informe',
+                            's10' => 'Observaciones'
+                        );                
+            
+        
         } else {
             
             $this->tablewidthsHD=array(8,31,94,34,32.5,26.5,18,20.5);

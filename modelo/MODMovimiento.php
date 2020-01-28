@@ -77,8 +77,11 @@ class MODMovimiento extends MODbase{
 
 		///AUMENTO CAMPO movimiento
 		$this->captura('tipo_movimiento','varchar');
-		$this->captura('id_proceso_wf_doc','int4');
-
+        $this->captura('id_proceso_wf_doc','int4');
+        $this->captura('nro_documento','varchar');
+        $this->captura('tipo_documento','varchar');
+        $this->captura('codigo_mov_motivo','varchar');        
+        
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -118,7 +121,11 @@ class MODMovimiento extends MODbase{
 
 		$this->setParametro('tipo_asig','tipo_asig','varchar');
 		$this->setParametro('prestamo','prestamo','varchar');
-		$this->setParametro('fecha_dev_prestamo','fecha_dev_prestamo','date');
+        $this->setParametro('fecha_dev_prestamo','fecha_dev_prestamo','date');
+        
+        $this->setParametro('nro_documento','nro_documento','varchar');
+        $this->setParametro('tipo_documento','tipo_documento','varchar');
+        
 
 
 		//Ejecuta la instruccion
@@ -164,8 +171,9 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('fecha_dev_prestamo','fecha_dev_prestamo','date');
 
 		///AUMENTO CAMPO movimiento
-		$this->setParametro('tipo_movimiento','tipo_movimiento','varchar');
-
+        $this->setParametro('tipo_movimiento','tipo_movimiento','varchar');
+        $this->setParametro('nro_documento','nro_documento','varchar');
+        $this->setParametro('tipo_documento','tipo_documento','varchar');                
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -256,8 +264,8 @@ class MODMovimiento extends MODbase{
 	    $this->captura('func_resp_dep','varchar');
 	    $this->captura('func_cargo_dep','varchar');
         $this->captura('deposito', 'varchar');        
-
-
+        $this->captura('codigo_mov_motivo','varchar');
+        $this->captura('nro_documento', 'varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -298,6 +306,11 @@ class MODMovimiento extends MODbase{
 		$this->captura('nro_cbte_asociado','varchar');
         $this->captura('observaciones','varchar');
         $this->captura('vida_util_original','int4');
+        $this->captura('vida_util_residual','int4');
+        $this->captura('deprec_acum_ant','numeric');
+        $this->captura('valor_residual','numeric');
+        $this->captura('monto_vig_actu','numeric');
+        $this->captura('observacion','text');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

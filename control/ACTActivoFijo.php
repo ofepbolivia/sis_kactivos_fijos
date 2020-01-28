@@ -1046,6 +1046,6 @@ class ACTActivoFijo extends ACTbase{
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 //        var_dump($firma); exit;
     }
-
+    
 }
 ?>

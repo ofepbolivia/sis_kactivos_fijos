@@ -34,7 +34,7 @@ class MODMovimientoMotivo extends MODbase{
 		$this->captura('usr_mod','varchar');
 		$this->captura('movimiento','varchar');
 		$this->captura('plantilla_cbte','varchar');
-		
+		$this->captura('codigo_mov_motivo','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -54,7 +54,7 @@ class MODMovimientoMotivo extends MODbase{
 		$this->setParametro('motivo','motivo','varchar');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('plantilla_cbte','plantilla_cbte','varchar');
-
+        $this->setParametro('codigo_mov_motivo','codigo_mov_motivo','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -75,7 +75,7 @@ class MODMovimientoMotivo extends MODbase{
 		$this->setParametro('motivo','motivo','varchar');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('plantilla_cbte','plantilla_cbte','varchar');
-
+        $this->setParametro('codigo_mov_motivo','codigo_mov_motivo','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

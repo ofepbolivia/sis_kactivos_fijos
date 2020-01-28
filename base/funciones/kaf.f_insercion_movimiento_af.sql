@@ -105,6 +105,12 @@ BEGIN
         id_moneda,
         importe_ant,
         vida_util_ant
+		-- breydi.vasquez (09/01/2020) para nuevo tipo ajuste de vida util
+        ,vida_util_residual,
+        deprec_acum_ant,
+        valor_residual,
+        monto_vig_actu,
+        observacion        
     ) values(
         (p_parametros->'id_movimiento')::integer,
         (p_parametros->'id_activo_fijo')::integer,
@@ -123,6 +129,12 @@ BEGIN
         v_id_moneda_base,
         (p_parametros->'importe_ant')::numeric,
         (p_parametros->'vida_util_ant')::integer
+		-- breydi.vasquez (09/01/2020) para nuevo tipo ajuste de vida util
+        ,(p_parametros->'vida_util_residual')::integer,
+        (p_parametros->'deprec_acum_ant')::numeric,
+        (p_parametros->'valor_residual')::numeric,
+        (p_parametros->'monto_vig_actu')::numeric,
+        (p_parametros->'observacion')::text        
     ) returning id_movimiento_af into v_id_movimiento_af;
 
      /*--------------ACTUALIZANDO KMOVIMIENTO CON LOS DATOS RECUPERADOS

@@ -54,7 +54,11 @@ class MODMovimientoAf extends MODbase{
         $this->captura('depreciacion_acum','numeric');
         $this->captura('importe_ant','numeric');
         $this->captura('vida_util_ant','integer');
-		
+        $this->captura('vida_util_residual','integer');
+        $this->captura('valor_residual','numeric');
+        $this->captura('deprec_acum_ant','numeric');
+        $this->captura('monto_vig_actu','numeric');
+        $this->captura('observacion', 'text');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -80,8 +84,13 @@ class MODMovimientoAf extends MODbase{
 		$this->setParametro('vida_util','vida_util','int4');
 		$this->setParametro('depreciacion_acum','depreciacion_acum','numeric');
 		$this->setParametro('importe_ant','importe_ant','numeric');
-		$this->setParametro('vida_util_ant','vida_util_ant','integer');
-
+        $this->setParametro('vida_util_ant','vida_util_ant','integer');
+        // breydi.vasquez (09/01/2020) para nuevo tipo ajuste de vida util
+        $this->setParametro('vida_util_residual','vida_util_residual','integer');
+        $this->setParametro('valor_residual','valor_residual','numeric');        
+        $this->setParametro('deprec_acum_ant','deprec_acum_ant','numeric');                    
+        $this->setParametro('monto_vig_actu','monto_vig_actu','numeric');        
+        $this->setParametro('observacion', 'observacion', 'text');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -108,8 +117,13 @@ class MODMovimientoAf extends MODbase{
 		$this->setParametro('vida_util','vida_util','int4');
 		$this->setParametro('depreciacion_acum','depreciacion_acum','numeric');
 		$this->setParametro('importe_ant','importe_ant','numeric');
-		$this->setParametro('vida_util_ant','vida_util_ant','integer');
-
+        $this->setParametro('vida_util_ant','vida_util_ant','integer');
+        // breydi.vasquez (09/01/2020) para nuevo tipo ajuste de vida util
+        $this->setParametro('vida_util_residual','vida_util_residual','integer');
+        $this->setParametro('valor_residual','valor_residual','numeric');        
+        $this->setParametro('deprec_acum_ant','deprec_acum_ant','numeric');                    
+        $this->setParametro('monto_vig_actu','monto_vig_actu','numeric');         
+        $this->setParametro('observacion', 'observacion', 'text');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

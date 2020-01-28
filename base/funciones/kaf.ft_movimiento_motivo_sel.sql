@@ -54,7 +54,8 @@ BEGIN
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,
 						cat.descripcion as movimiento,
-						mmot.plantilla_cbte
+						mmot.plantilla_cbte,
+                        mmot.codigo_mov_motivo
 						from kaf.tmovimiento_motivo mmot
 						inner join segu.tusuario usu1 on usu1.id_usuario = mmot.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = mmot.id_usuario_mod

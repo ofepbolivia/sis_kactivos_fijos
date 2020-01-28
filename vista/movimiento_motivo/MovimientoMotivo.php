@@ -66,6 +66,22 @@ Phx.vista.MovimientoMotivo=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name: 'codigo_mov_motivo',
+				fieldLabel: 'Codigo Mov. Motivo',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 200,
+                style:'text-transform:uppercase;',
+                qtip:'Codigo solo Mayusculas'                				
+			},
+				type:'TextField',
+				filters:{pfiltro:'mmot.motivo',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},                
+		{
+			config:{
 				name: 'plantilla_cbte',
 				fieldLabel: 'Plantilla Comprobante',
 				qtip: 'Código de la Plantilla de Comprobante con el que se generará el comprobante por el motivo',
@@ -209,7 +225,8 @@ Phx.vista.MovimientoMotivo=Ext.extend(Phx.gridInterfaz,{
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
 		{name:'movimiento', type: 'string'},
-		{name:'plantilla_cbte', type: 'string'}
+		{name:'plantilla_cbte', type: 'string'},
+        {name:'codigo_mov_motivo', type: 'string'}
 	],
 	sortInfo:{
 		field: 'id_movimiento_motivo',

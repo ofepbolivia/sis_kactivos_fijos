@@ -152,7 +152,10 @@ BEGIN
                         mov.prestamo,
                         mov.fecha_dev_prestamo,
                         mov.tipo_movimiento,
-                        mov.id_proceso_wf_doc
+                        mov.id_proceso_wf_doc,
+                        mov.nro_documento,
+                        mov.tipo_documento,
+                        movmot.codigo_mov_motivo
 						from kaf.tmovimiento mov
 						inner join segu.tusuario usu1 on usu1.id_usuario = mov.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = mov.id_usuario_mod
@@ -372,7 +375,9 @@ BEGIN
                                 dpto.codigo as codigo_depto,
 							    fun_r.desc_funcionario2::varchar as func_resp_dep,
                               fun_r.descripcion_cargo as func_cargo_dep,
-                              coalesce(dep.nombre, (select nombre from kaf.tdeposito where id_funcionario = fun1.id_funcionario)) as deposito
+                              coalesce(dep.nombre, (select nombre from kaf.tdeposito where id_funcionario = fun1.id_funcionario)) as deposito,
+                              momo.codigo_mov_motivo,
+                              mov.nro_documento
                          from kaf.tmovimiento mov
                               inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
                               inner join param.tdepto dpto on dpto.id_depto = mov.id_depto
@@ -388,6 +393,7 @@ BEGIN
                               left join segu.vpersona per on per.id_persona = mov.id_persona
                               left join param.tlugar lug on lug.id_lugar = ofi.id_lugar
                               left join kaf.tdeposito dep on dep.id_deposito = mov.id_deposito
+                              left join kaf.tmovimiento_motivo momo on momo.id_movimiento_motivo = mov.id_movimiento_motivo
                        WHERE  id_movimiento = '||v_parametros.id_movimiento;
 
 			      --Devuelve la respuesta
@@ -426,7 +432,13 @@ BEGIN
                             af.monto_compra_orig_100,
                             af.nro_cbte_asociado,
                             af.observaciones,
-                            af.vida_util_original
+                            af.vida_util_original,
+                            --aumento 23/01/2020 breydi.vasquez
+                            maf.vida_util_residual,
+                            maf.deprec_acum_ant,
+                            maf.valor_residual,
+                            maf.monto_vig_actu,
+                            maf.observacion                            
                      from kaf.tmovimiento_af maf
                           inner join kaf.tactivo_fijo af on af.id_activo_fijo = maf.id_activo_fijo
                           left join param.tcatalogo cat2 on cat2.id_catalogo = af.id_cat_estado_fun

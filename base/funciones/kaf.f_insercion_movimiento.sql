@@ -169,7 +169,9 @@ BEGIN
         id_funcionario_dest,
         id_movimiento_motivo,
         prestamo,
-        fecha_dev_prestamo
+        fecha_dev_prestamo,
+        nro_documento,
+        tipo_documento
     ) values(
         (p_parametros->'direccion')::varchar,
         (p_parametros->'fecha_hasta')::date,
@@ -199,7 +201,9 @@ BEGIN
         (p_parametros->'id_funcionario_dest')::integer,
         (p_parametros->'id_movimiento_motivo')::integer,
         (p_parametros->'prestamo')::varchar,
-        (p_parametros->'fecha_dev_prestamo')::date
+        (p_parametros->'fecha_dev_prestamo')::date,
+        (p_parametros->'nro_documento')::varchar,
+        (p_parametros->'tipo_documento')::varchar        
     ) returning id_movimiento into v_id_movimiento;
 
     -------------------------------------

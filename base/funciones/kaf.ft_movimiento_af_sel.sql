@@ -91,8 +91,13 @@ BEGIN
                         af.fecha_ini_dep,
                         movaf.depreciacion_acum,
                         movaf.importe_ant,
-                        movaf.vida_util_ant
+                        movaf.vida_util_ant,
                         
+                        movaf.vida_util_residual,
+                        movaf.valor_residual,
+                        movaf.deprec_acum_ant,
+                        movaf.monto_vig_actu,
+                        movaf.observacion                         
 						from kaf.tmovimiento_af movaf
 						--inner join segu.tusuario usu1 on usu1.id_usuario = movaf.id_usuario_reg
 						--left join segu.tusuario usu2 on usu2.id_usuario = movaf.id_usuario_mod
