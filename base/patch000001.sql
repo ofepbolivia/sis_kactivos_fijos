@@ -1427,20 +1427,20 @@ IS 'Columna usada para registro de fecha de ajuste, usada en caso ajuste vida ut
 ALTER TABLE kaf.tmovimiento_af_dep
   ADD COLUMN tipo_modificacion varchar;
 
-COMMENT ON COLUMN kaf.tactivo_fijo_valores.tipo_modificacion
+COMMENT ON COLUMN kaf.tmovimiento_af_dep.tipo_modificacion
 IS 'Columna usada para registro de tipo modificacion, usada en caso ajuste vida util, para reporte de depreciacion';    
      
       
 ALTER TABLE kaf.tmovimiento_af_dep
   ADD COLUMN  depreciacion_acum_corregido numeric;
 
-COMMENT ON COLUMN kaf.tactivo_fijo_valores.depreciacion_acum_corregido
+COMMENT ON COLUMN kaf.tmovimiento_af_dep.depreciacion_acum_corregido
 IS 'Columna usada para registro de depreciacion acumulada corregido a su gestion en mes de diciembre, usada en caso ajuste vida util, para reporte depreciacion';    
    
 ALTER TABLE kaf.tmovimiento_af_dep
   ADD COLUMN fecha_ajuste_vida date;
 
-COMMENT ON COLUMN kaf.tactivo_fijo_valores.fecha_ajuste_vida
+COMMENT ON COLUMN kaf.tmovimiento_af_dep.fecha_ajuste_vida
 IS 'Columna usada para registro de fecha de ajuste vida, usada en caso ajuste vida util, para reporte de depreciacion';    
 
 ALTER TABLE kaf.tmovimiento_motivo
