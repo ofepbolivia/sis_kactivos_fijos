@@ -75,11 +75,13 @@ BEGIN
 						actval.codigo,
 						actval.fecha_fin,
 						actval.monto_vigente_orig_100,
-                        mo.id_moneda
+                        mo.id_moneda,
+                        to_char(round(actval.monto_vigente_orig,2), ''999G999G999G999D99'') as monto_inicio_dep                        
 						from kaf.tactivo_fijo_valores actval
 						inner join segu.tusuario usu1 on usu1.id_usuario = actval.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = actval.id_usuario_mod
                         inner join param.tmoneda mo on mo.id_moneda = actval.id_moneda
+                        
 				        where  ';
 			
 			--Definicion de la respuesta

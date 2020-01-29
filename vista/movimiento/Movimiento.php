@@ -202,12 +202,12 @@ header("content-type: text/javascript; charset=UTF-8");
 					anchor: '80%',
 					gwidth: 90,
                     triggerAction : 'all',
-                    lazyRender : true,
+                    
                     mode : 'local',                    
                     store : new Ext.data.ArrayStore({
                     fields : ['tipo', 'valor'],
                     data : [['tipo_documento_I', 'Nota Interna'],
-                            ['tipo_documento_I', 'Informe'],
+                            ['tipo_documento_II', 'Informe'],
                             ['tipo_documento_III', 'Observacion Auditoria'],
                             ['tipo_documento_IV', 'Otros']]
                     }),                    

@@ -1455,7 +1455,7 @@ ALTER TABLE kaf.tmovimiento_motivo
 
 /***********************************F-SCP-BVP-KAF-1-28/01/2020****************************************/
 /***********************************I-SCP-BVP-KAF-1-29/01/2020****************************************/
-	create table temp_depreciacion(
+	create table public.temp_depreciacion(
     	fecha					date,
         dep_mes					numeric,
         dep_periodo				numeric,

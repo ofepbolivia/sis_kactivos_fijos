@@ -21,7 +21,7 @@ DECLARE
     v_movi					record;
     v_movimiento			record;
     v_extis					record;
-
+	v_codigo_mov			varchar;
 BEGIN
 
     --Nombre de la función
@@ -75,13 +75,21 @@ BEGIN
         from kaf.tmovimiento_af maf 
         inner join kaf.tmovimiento mo on mo.id_movimiento = maf.id_movimiento
         inner join kaf.tmovimiento_motivo mov on mov.id_movimiento_motivo = mo.id_movimiento_motivo
-        inner join wf.tproceso_wf pro on pro.id_proceso_wf=mo.id_proceso_wf
+        inner join wf.tproceso_wf pro on pro.id_proceso_wf=mo.id_proceso_wf        
         where maf.id_activo_fijo = (p_parametros->'id_activo_fijo')::integer and mo.estado<>'finalizado' 
         and mov.motivo <> 'Depreciación';
-        
-	if v_extis is not null then      
-          raise exception 'El activo esta registrado en el movimiento %',v_extis.nro_tramite;
-	end if;
+
+      select  cat.codigo
+      	into v_codigo_mov
+      from kaf.tmovimiento mov
+      inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
+      where mov.id_movimiento = (p_parametros->'id_movimiento')::integer;
+
+    if v_codigo_mov not in ('ajuste', 'retiro', 'baja','reval') then                  
+        if v_extis is not null then      
+            raise exception 'El activo esta registrado en el movimiento %',v_extis.nro_tramite;
+        end if;
+    end if;
 
     --Se obtiene la moneda base
     v_id_moneda_base  = param.f_get_moneda_base();
@@ -110,7 +118,8 @@ BEGIN
         deprec_acum_ant,
         valor_residual,
         monto_vig_actu,
-        observacion        
+        observacion,
+        id_activo_fijo_valor       
     ) values(
         (p_parametros->'id_movimiento')::integer,
         (p_parametros->'id_activo_fijo')::integer,
@@ -134,7 +143,8 @@ BEGIN
         (p_parametros->'deprec_acum_ant')::numeric,
         (p_parametros->'valor_residual')::numeric,
         (p_parametros->'monto_vig_actu')::numeric,
-        (p_parametros->'observacion')::text        
+        (p_parametros->'observacion')::text,
+        (p_parametros->'id_activo_fijo_valor')::integer       
     ) returning id_movimiento_af into v_id_movimiento_af;
 
      /*--------------ACTUALIZANDO KMOVIMIENTO CON LOS DATOS RECUPERADOS

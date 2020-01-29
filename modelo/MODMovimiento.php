@@ -83,7 +83,7 @@ class MODMovimiento extends MODbase{
         $this->captura('codigo_mov_motivo','varchar');        
         
 		//Ejecuta la instruccion
-		$this->armarConsulta();
+        $this->armarConsulta();        
 		$this->ejecutarConsulta();
 
 		//Devuelve la respuesta

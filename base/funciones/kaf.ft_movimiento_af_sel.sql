@@ -97,13 +97,16 @@ BEGIN
                         movaf.valor_residual,
                         movaf.deprec_acum_ant,
                         movaf.monto_vig_actu,
-                        movaf.observacion                         
+                        movaf.observacion,
+                        movaf.id_activo_fijo_valor,
+                        afcv.codigo                         
 						from kaf.tmovimiento_af movaf
 						--inner join segu.tusuario usu1 on usu1.id_usuario = movaf.id_usuario_reg
 						--left join segu.tusuario usu2 on usu2.id_usuario = movaf.id_usuario_mod
 						inner join kaf.tactivo_fijo af on af.id_activo_fijo = movaf.id_activo_fijo
 						left join param.tcatalogo cat on cat.id_catalogo = movaf.id_cat_estado_fun
 						left join kaf.tmovimiento_motivo mmot on mmot.id_movimiento_motivo = movaf.id_movimiento_motivo
+                        left join kaf.tactivo_fijo_valores afcv on afcv.id_activo_fijo_valor = movaf.id_activo_fijo_valor
 						/*left join kaf.f_activo_fijo_vigente() afvi
                         on afvi.id_activo_fijo = af.id_activo_fijo
                         and afvi.id_moneda = af.id_moneda_orig

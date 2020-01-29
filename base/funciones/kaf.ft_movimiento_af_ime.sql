@@ -70,7 +70,8 @@ BEGIN
         coalesce(v_parametros.deprec_acum_ant, null) as deprec_acum_ant,
         coalesce(v_parametros.valor_residual, null) as valor_residual,
         coalesce(v_parametros.monto_vig_actu, null) as monto_vig_actu,
-        coalesce(v_parametros.monto_vig_actu, null) as observacion         
+        coalesce(v_parametros.monto_vig_actu, null) as observacion,
+        coalesce(v_parametros.id_activo_fijo_valor, null) as id_activo_fijo_valor         
         into v_registros;
 
         --Inserción del movimiento
@@ -155,7 +156,8 @@ BEGIN
                 deprec_acum_ant = v_parametros.deprec_acum_ant,
                 valor_residual = v_parametros.valor_residual,
                 monto_vig_actu = v_parametros.monto_vig_actu,
-                observacion = v_parametros.observacion                
+                observacion = v_parametros.observacion,
+                id_activo_fijo_valor = v_parametros.id_activo_fijo_valor                
 			where id_movimiento_af=v_parametros.id_movimiento_af;
                
 			--Definicion de la respuesta

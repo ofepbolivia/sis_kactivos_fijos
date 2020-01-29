@@ -95,7 +95,7 @@ DECLARE
     v_id_af_valor_mod			  integer;   
     v_mes_fecha					  integer;
     v_anio 						  integer;    
-
+    v_codigo_retiro				  varchar;
 BEGIN
 
   v_nombre_funcion = 'kaf.ft_movimiento_ime';
@@ -1751,6 +1751,19 @@ BEGIN
                     raise exception 'El Comprobante contable (ID: %) aún no ha sido validado',v_movimiento.id_int_comprobante;
                   end if;*/
 
+                /*modificacion: 28/01/2020
+                  author: breyi.vasquez
+                  descripcion: nuevo tipo de motivo de retiro, setea la fecha del movimiento
+                  en la tabla activo_fijo_valores para el activo regitrado
+                */
+                select 
+                	mo.codigo_mov_motivo
+                    into v_codigo_retiro 
+                from kaf.tmovimiento m 
+                inner join kaf.tmovimiento_motivo mo on mo.id_movimiento_motivo = m.id_movimiento_motivo
+                where m.id_movimiento = v_movimiento.id_movimiento;                  
+
+            if v_codigo_retiro is null or v_codigo_retiro <> 'PAR_RET' then 
                 --Actualiza estado de activo fijo
                 update kaf.tactivo_fijo set
                 estado = 'retiro'
@@ -1759,15 +1772,31 @@ BEGIN
                 on mov.id_movimiento = movaf.id_movimiento
                 where kaf.tactivo_fijo.id_activo_fijo = movaf.id_activo_fijo
                 and movaf.id_movimiento = v_movimiento.id_movimiento;
-
+            end if;
                 --Finalización de AFV(s) vigentes (seteando fecha_fin)
-                for v_registros_af_mov in (select id_activo_fijo
-                                        from kaf.tmovimiento_af
-                                        where id_movimiento = v_movimiento.id_movimiento) loop
+                for v_registros_af_mov in (select maf.id_activo_fijo,
+                                                  mo.codigo_mov_motivo,
+                                                  maf.id_activo_fijo_valor
+                                            from kaf.tmovimiento_af maf
+                                            inner join kaf.tmovimiento m on m.id_movimiento = maf.id_movimiento
+                                            inner join kaf.tmovimiento_motivo mo on mo.id_movimiento_motivo = m.id_movimiento_motivo
+                                            where maf.id_movimiento = v_movimiento.id_movimiento) loop
+
+				   if v_registros_af_mov.codigo_mov_motivo = 'PAR_RET' then
+                   
+                   	update kaf.tactivo_fijo_valores 
+                    set 
+                    fecha_fin = pxp.f_last_day(v_movimiento.fecha_mov),
+                    fecha_mod = now(),
+					id_usuario_mod = p_id_usuario
+                    where id_activo_fijo_valor = v_registros_af_mov.id_activo_fijo_valor;
+                    
+                   else
 
                     v_fun = kaf.f_afv_finalizar(p_id_usuario,
                                               v_registros_af_mov.id_activo_fijo,
                                               v_movimiento.fecha_mov);
+                    end if;
                 end loop;
 
               elsif v_codigo_estado_siguiente = 'cbte' then

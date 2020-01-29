@@ -59,8 +59,11 @@ class MODMovimientoAf extends MODbase{
         $this->captura('deprec_acum_ant','numeric');
         $this->captura('monto_vig_actu','numeric');
         $this->captura('observacion', 'text');
+        $this->captura('id_activo_fijo_valor','integer');
+        $this->captura('codigo', 'varchar');
 		//Ejecuta la instruccion
-		$this->armarConsulta();
+        $this->armarConsulta();
+        //echo($this->consulta);exit;
 		$this->ejecutarConsulta();
 		
 		//Devuelve la respuesta
@@ -91,6 +94,7 @@ class MODMovimientoAf extends MODbase{
         $this->setParametro('deprec_acum_ant','deprec_acum_ant','numeric');                    
         $this->setParametro('monto_vig_actu','monto_vig_actu','numeric');        
         $this->setParametro('observacion', 'observacion', 'text');
+        $this->setParametro('id_activo_fijo_valor','id_activo_fijo_valor','integer');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -124,6 +128,7 @@ class MODMovimientoAf extends MODbase{
         $this->setParametro('deprec_acum_ant','deprec_acum_ant','numeric');                    
         $this->setParametro('monto_vig_actu','monto_vig_actu','numeric');         
         $this->setParametro('observacion', 'observacion', 'text');
+        $this->setParametro('id_activo_fijo_valor','id_activo_fijo_valor','integer');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
