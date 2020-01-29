@@ -42,15 +42,7 @@ BEGIN
 
 	v_cont = date_part('month'::text, p_fecha_desde) + 1;    
 
-	create temp table temp_depreciacion(
-    	fecha					date,
-        dep_mes					numeric,
-        dep_periodo				numeric,
-        dep_acumulada 			numeric,
-        monto_vigente			numeric,
-        monto_vigente_actu		numeric,
-    	vida_residual			integer
-    )on commit drop;
+	truncate table temp_depreciacion;
 
 	for i in 1..v_cont loop    
        

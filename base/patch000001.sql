@@ -1454,3 +1454,16 @@ ALTER TABLE kaf.tmovimiento_motivo
 
 
 /***********************************F-SCP-BVP-KAF-1-28/01/2020****************************************/
+/***********************************I-SCP-BVP-KAF-1-29/01/2020****************************************/
+	create table temp_depreciacion(
+    	fecha					date,
+        dep_mes					numeric,
+        dep_periodo				numeric,
+        dep_acumulada 			numeric,
+        monto_vigente			numeric,
+        monto_vigente_actu		numeric,
+    	vida_residual			integer
+    );
+COMMENT ON TABLE public.temp_depreciacion
+IS 'Almacena los calculos inversos de depreciacion lineal(no borrar tabla).';    
+/***********************************F-SCP-BVP-KAF-1-29/01/2020****************************************/
