@@ -26,8 +26,10 @@ class RMovimiento2 extends ReportePDF {
 		$this->datos_detalle = $detalle;
 		$this->dataMaster = $maestro;	
         $this->tipoMov  = $this->dataMaster[0]['cod_movimiento']; 
-        $this->motivo_ajuste = $this->dataMaster[0]['codigo_mov_motivo']; 
-        $this->nro_documento_ajuste = $this->dataMaster[0]['nro_documento']; 
+        $this->motivo_ajuste = $this->dataMaster[0]['codigo_mov_motivo'];
+         
+        $this->nro_documento_ajuste = $this->dataMaster[0]['nro_documento'];
+         
 		if($this->tipoMov=='asig'||$tipo=='devol'){
 			$this->SetMargins(7, 55, 5);
         } 
@@ -43,7 +45,16 @@ class RMovimiento2 extends ReportePDF {
 		$height = 6;
         $midHeight = 9;
         $longHeight = 18;
-        ($this->motivo_ajuste != '')?$title_motivo=' A LA VIDA UTIL':$title_motivo='';
+        $title_motivo_ret='';
+        switch ($this->motivo_ajuste) {
+            case 'PAR_RET': $title_motivo_ret=' REVALORIZADOS';break;               
+                break; 
+            case 'AJ_VID_UT_PAS': $title_motivo=' A LA VIDA UTIL';break;           
+            default: 
+                $title_motivo='';              
+                break;
+        }
+        //($this->motivo_ajuste != '')?$title_motivo=' A LA VIDA UTIL':$title_motivo='';
         $x = $this->GetX();
         $y = $this->GetY();
         $this->SetXY($x, $y);
@@ -55,7 +66,7 @@ class RMovimiento2 extends ReportePDF {
         $this->SetFont('', 'B');
         $this->Cell(53, $midHeight, '', 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');
        
-        $this->Cell(168, $midHeight, 'FORMULARIO DE '.strtoupper($this->dataMaster[0]['movimiento']).$title_motivo.' DE ACTIVOS FIJOS', 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');
+        $this->Cell(168, $midHeight, 'FORMULARIO DE '.strtoupper($this->dataMaster[0]['movimiento']).$title_motivo.' DE ACTIVOS FIJOS '.$title_motivo_ret, 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');
         $this->tipoMov = $this->dataMaster[0]['cod_movimiento']; 
 
         $x = $this->GetX();
@@ -221,7 +232,9 @@ class RMovimiento2 extends ReportePDF {
             $this->Ln();
             $this->SetFont('', 'B');
             $this->SetFont('', '');
-            
+            $this->SetFont('', 'B');
+            $this->Cell(100, $height,'N° Informe: '.$this->nro_documento_ajuste, "", 0, 'L', false, '', 0, false, 'T', 'C');            
+            $this->Ln();
             //Glosa
             $this->SetFont('', 'B');
             $this->Cell($width2+8, $height,'Glosa:', "", 0, 'L', false, '', 0, false, 'T', 'C');
@@ -237,9 +250,14 @@ class RMovimiento2 extends ReportePDF {
 
 	function Firmas() {
 		$this->SetFontSize(7);
+        if ($this->dataMaster[0]['cod_movimiento'] == 'retiro'){
+            $responsable = $this->dataMaster[0]['resp_af'];
+        }else{
+            $responsable = $this->dataMaster[0]['responsable_depto'];
+        }
         
         $_firma100='';
-        $_firma110=$this->dataMaster[0]['responsable_depto'];
+        $_firma110=$responsable;
         $_firma111='RESPONSABLE ACTIVOS FIJOS';
         
         $_firma200='';
@@ -537,6 +555,23 @@ class RMovimiento2 extends ReportePDF {
                 
                 
             }  else if($tipo=='retiro'){
+
+                if( $this->motivo_ajuste == 'PAR_RET'){
+                    
+                    $this->tablealigns=array('L','L','L','L','L','L');
+                    $this->tablenumbers=array(0,0,0,0,0,0);
+                    $this->tableborders=array('RLTB','RLTB','RLTB','RLTB','RLTB','RLTB');
+                    $this->tabletextcolor=array();
+                    
+                    $RowArray = array(
+                                's0'  => $i+1,
+                                's1' => $datarow['codigo'],   
+                                's2' => $datarow['codigo_afval'],
+                                's3' => $datarow['denominacion'],
+                                's4' => $datarow['descripcion'],                                        
+                                's5' => $datarow['observaciones']
+                                );
+                }else{
                     
                             
                 $this->tablealigns=array('L','L','L','L','L','L','L');
@@ -552,7 +587,7 @@ class RMovimiento2 extends ReportePDF {
                             's4' => $datarow['estado_fun'] ,           
                             's5' => $datarow['observaciones']
                             );
-                
+                }                
                 
             //} else if($tipo == 'ajuste'){
             }   else if ($tipo_mov_ajus == 'AJ_VID_UT_PAS') { 
@@ -744,6 +779,22 @@ class RMovimiento2 extends ReportePDF {
             
             
         } else if($tipo=='retiro'){
+
+            if( $this->motivo_ajuste == 'PAR_RET'){
+
+               $this->tablewidthsHD=array(8,25,30,65,73,65);                
+               $this->tablealignsHD=array('C','C','C','C','C','C');
+               $this->tablenumbersHD=array(0,0,0,0,0,0);
+               $this->tablebordersHD=array('LTB','TB','TB','TB','TB','TBR');
+               $this->tabletextcolorHD=array();
+               $RowArray = array(
+                             's0'  => 'Nro',
+                             's1' => 'Código',   
+                             's2' => 'Código Retiro',   
+                             's3' => 'Denominación',
+                             's4' => 'Descripción',                             
+                             's5' => 'Observaciones');                
+            }else{
                 
             $this->tablewidthsHD=array(8,25,50,90,26,57);
                //$this->tablewidths=array(8,31,84.5,34,32.5,26.5,18,20.5);
@@ -758,7 +809,7 @@ class RMovimiento2 extends ReportePDF {
                             's3' => 'Descripción',
                             's4' => 'Estado Fun.',           
                             's5' => 'Observaciones');
-            
+              }
         //} else if($tipo == 'ajuste'){
             
         }else if ($tipo_mov_ajus == 'AJ_VID_UT_PAS') {

@@ -266,7 +266,7 @@ class MODMovimiento extends MODbase{
         $this->captura('deposito', 'varchar');        
         $this->captura('codigo_mov_motivo','varchar');
         $this->captura('nro_documento', 'varchar');
-
+        $this->captura('resp_af', 'text');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		//echo $this->consulta;exit;
@@ -311,6 +311,7 @@ class MODMovimiento extends MODbase{
         $this->captura('valor_residual','numeric');
         $this->captura('monto_vig_actu','numeric');
         $this->captura('observacion','text');
+        $this->captura('codigo_afval','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

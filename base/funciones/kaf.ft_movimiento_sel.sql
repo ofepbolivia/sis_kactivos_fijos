@@ -377,7 +377,10 @@ BEGIN
                               fun_r.descripcion_cargo as func_cargo_dep,
                               coalesce(dep.nombre, (select nombre from kaf.tdeposito where id_funcionario = fun1.id_funcionario)) as deposito,
                               momo.codigo_mov_motivo,
-                              mov.nro_documento
+                              mov.nro_documento,
+                              (select desc_funcionario2
+                               from orga.vfuncionario_ultimo_cargo
+                               where descripcion_cargo = ''Jefe Activos Fijos y Servicios Generales'') as resp_af                              
                          from kaf.tmovimiento mov
                               inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
                               inner join param.tdepto dpto on dpto.id_depto = mov.id_depto
@@ -438,12 +441,14 @@ BEGIN
                             maf.deprec_acum_ant,
                             maf.valor_residual,
                             maf.monto_vig_actu,
-                            maf.observacion                            
+                            maf.observacion,
+                            afval.codigo as codigo_afval                           
                      from kaf.tmovimiento_af maf
                           inner join kaf.tactivo_fijo af on af.id_activo_fijo = maf.id_activo_fijo
                           left join param.tcatalogo cat2 on cat2.id_catalogo = af.id_cat_estado_fun
                           left join kaf.tmovimiento_motivo mmot on mmot.id_movimiento_motivo =  maf.id_movimiento_motivo
                           inner join kaf.tclasificacion cla on cla.id_clasificacion = af.id_clasificacion                     
+                          left join kaf.tactivo_fijo_valores afval on afval.id_activo_fijo_valor = maf.id_activo_fijo_valor                                               
                      where maf.id_activo_fijo not in (select id_activo_fijo from kaf.tmotivo_eliminacion_af where id_activo_fijo <> 17090)
                      and maf.id_movimiento = '||v_parametros.id_movimiento;
 

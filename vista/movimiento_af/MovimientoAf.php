@@ -903,7 +903,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 		} else if(this.maestro.cod_movimiento=='retiro'){
             
             if (this.maestro.codigo_mov_motivo == 'PAR_RET' ){ 
-                swAfVal= true;
+                swAfVal= true;                
             }               
 			swMotivo=true;
 			h=313;//163;
@@ -966,6 +966,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
         this.Cmp.valor_residual.allowBlank=!swValResi;        
         this.Cmp.vida_util_residual.allowBlank=!swVidaUtilRest;        
         this.Cmp.monto_vig_actu.allowBlank=!swMonVigAct;                        
+        this.Cmp.id_activo_fijo_valor.allowBlank=!swAfVal;
 		//Resize window
     	this.window.setSize(w,h);
 	},

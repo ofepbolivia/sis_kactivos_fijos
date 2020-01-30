@@ -70,7 +70,7 @@ BEGIN
         coalesce(v_parametros.deprec_acum_ant, null) as deprec_acum_ant,
         coalesce(v_parametros.valor_residual, null) as valor_residual,
         coalesce(v_parametros.monto_vig_actu, null) as monto_vig_actu,
-        coalesce(v_parametros.monto_vig_actu, null) as observacion,
+        coalesce(v_parametros.observacion, null) as observacion,
         coalesce(v_parametros.id_activo_fijo_valor, null) as id_activo_fijo_valor         
         into v_registros;
 

@@ -290,6 +290,7 @@ Phx.vista.MovimientoPrincipal = {
     		swDepositoDest=false;
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
+            swNroDoc=true;
         swTipoMovimiento=false;
     		h=370;
     	} else if(mov=='deprec'){
@@ -354,6 +355,7 @@ Phx.vista.MovimientoPrincipal = {
     		swDepositoDest=false;
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
+            swNroDoc=true;
         swTipoMovimiento=false;
     		h=250;
     	} else if(mov=='transf'){
