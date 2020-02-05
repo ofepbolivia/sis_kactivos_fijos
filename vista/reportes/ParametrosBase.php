@@ -667,6 +667,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			fieldLabel: 'Nivel',
 			items: [
 				{boxLabel: 'Sólo Totales', name: 'rb-auto3', inputValue: 'clasif'},
+                {boxLabel: 'Reporte Ministerio', name: 'rb-auto3', inputValue: 'ministerio'},                
                 {boxLabel: 'Detallado', name: 'rb-auto3', inputValue: 'completo', checked: true}                
             ]
 		});

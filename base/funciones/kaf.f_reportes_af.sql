@@ -2351,6 +2351,112 @@ BEGIN
                                 v_where = '(''total'',''clasif'')';
                                end if; 
 
+					 if v_parametros.af_deprec = 'ministerio' then 
+
+                                     create temp table tt_detalle_totales_minis(
+                                            codigo varchar(50),
+                                            denominacion varchar(500),
+                                            monto_vigente_orig_100 numeric(24,2),
+                                            monto_vigente_orig numeric(24,2),
+                                            inc_actualiz numeric(24,2),
+                                            monto_actualiz numeric(24,2),
+                                            depreciacion_acum_gest_ant numeric(24,2),
+                                            depreciacion_acum_actualiz_gest_ant numeric(24,2),
+                                            depreciacion_per numeric(24,2),
+                                            depreciacion_acum numeric(24,2),
+                                            monto_vigente numeric(24,2),
+                                            tipo    	varchar(10),
+											inc_ac_acum  numeric(18,2),
+                                            orden 	bigint                    
+                                        ) on commit drop;  
+                                    
+                     	 	insert into  tt_detalle_totales_minis 
+									select
+                                           case when de.codigo in ('02','10') and de.nivel in (2,10) then 
+                                            '02'
+                                              when de.codigo in ('03','04') and de.nivel in (3,4) then 
+                                            '03'
+                                              when de.codigo in ('05') and de.nivel in (5) then 
+                                            '04'                          
+                                              when de.codigo in ('06') and de.nivel in (6) then 
+                                            '05'
+                                              when de.codigo in ('07') and de.nivel in (7) then 
+                                            '06'
+                                              when de.codigo in ('08') and de.nivel in (8) then 
+                                            '07'
+                                              when de.codigo in ('09') and de.nivel in (9) then 
+                                            '08'                                                                                                                                                                                                                
+                                            else
+                                            de.codigo                       
+                                            end,
+                                           case when de.codigo in ('02','10') and de.nivel in (2,10) then 
+                                            'EDIFICIO'
+                                              when de.codigo in ('03','04') and de.nivel in (3,4) then 
+                                            'EQUIPO DE OFICINA Y MUEBLES'
+                                            else
+                                            de.denominacion                       
+                                            end,                 
+                                            de.monto_vigente_orig_100,                      
+                                            de.monto_vigente_orig,
+                                            (de.monto_actualiz - de.monto_vigente_orig)::numeric(18,2) as inc_actualiz,
+                                            de.monto_actualiz,
+                                            de.depreciacion_acum_gest_ant,
+                                            de.depreciacion_acum_actualiz_gest_ant,
+                                            case when monto_vigente_orig_100 < 0 then
+                                             (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant)
+                                            else 
+                                              case when 
+                                              (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant) <=0.01 then 
+                                                  0.00
+                                              else 
+                                                 (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant)
+                                              end
+                                            end as depreciacion_per,                                           
+                                            de.depreciacion_acum,
+                                            de.monto_vigente,
+                                            case when de.codigo = 'TOTAL FINAL' then 
+                                             'total'
+                                              else
+                                              'clasif'  
+                                              end,
+                                            ac.inc_ac  
+                                            from tt_detalle_depreciacion_totales de 
+                                            left join tt_actuli_acumulado ac on ac.code=de.codigo
+                                            where de.tipo in ('total','clasif')                      
+                                            order by de.codigo, de.orden;
+                                            
+                                    v_consulta = 'select
+                                            codigo::varchar(50),
+                                            denominacion::varchar(500),
+                                            now()::date,                       
+                                            sum(monto_vigente_orig_100),                      
+                                            sum(monto_vigente_orig),
+                                            sum(monto_actualiz - monto_vigente_orig)::numeric(18,2) as inc_actualiz,
+                                            sum(monto_actualiz),
+                                            0::integer as vida_util_orig,
+                                            0::integer as vida_util,
+                                            sum(depreciacion_acum_gest_ant),
+                                            sum(depreciacion_acum_actualiz_gest_ant),
+				                            sum(depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant),                                           
+                                            sum(depreciacion_acum),
+                                            sum(monto_vigente),
+                                            0::integer as nivel,
+                                            orden,
+                                            tipo,
+                                            0.00 reval,
+                                            0.00 ajust,
+                                            0.00 baja,
+                                            0.00 transito,
+                                            0.00 leasing,
+                                            sum(inc_ac_acum),
+                        					''-''::varchar as color,
+                                            sum(monto_actualiz - inc_ac_acum - monto_vigente_orig) as val_acu_perido,
+                                            0.00 as porce_depre
+                                            from tt_detalle_totales_minis 
+                                            group by codigo, orden, tipo,denominacion                      
+                                            order by codigo, orden';                                            
+							else 
+
                                     v_consulta = 'select
                                             de.codigo,
                                             de.denominacion,
@@ -2395,8 +2501,9 @@ BEGIN
                                             left join tt_actuli_acumulado ac on ac.code=de.codigo
                                             where tipo in '||v_where||'                       
                                             order by codigo, orden';
-                                --Devuelve la respuesta
-                                return v_consulta;
+                        end if;
+                        --Devuelve la respuesta
+                        return v_consulta;
                 
 
     else ---------detalle depreciacion nuevo reporte creado 
@@ -2640,7 +2747,111 @@ BEGIN
               v_where = '(''total'',''detalle'',''clasif'')';
               if v_parametros.af_deprec = 'clasif' then
                   v_where = '(''total'',''clasif'')';
-              end if;   
+              end if; 
+
+    	   if v_parametros.af_deprec = 'ministerio' then 
+           
+                create temp table tt_detalle_totales_minis(
+                    codigo varchar(50),
+                    denominacion varchar(500),
+                    monto_vigente_orig_100 numeric(24,2),
+                    monto_vigente_orig numeric(24,2),
+                    inc_actualiz numeric(24,2),
+                    monto_actualiz numeric(24,2),
+                    depreciacion_acum_gest_ant numeric(24,2),
+                    depreciacion_acum_actualiz_gest_ant numeric(24,2),
+                    depreciacion_per numeric(24,2),
+                    depreciacion_acum numeric(24,2),
+                    monto_vigente numeric(24,2),
+                    tipo    varchar(10),
+                    orden 	bigint                    
+                ) on commit drop;           
+              
+              	 insert into tt_detalle_totales_minis
+              		select
+                         case when codigo in ('02','10') and nivel in (2,10) then 
+                          '02'
+                            when codigo in ('03','04') and nivel in (3,4) then 
+                          '03'
+                            when codigo in ('05') and nivel in (5) then 
+                          '04'                          
+                            when codigo in ('06') and nivel in (6) then 
+                          '05'
+                            when codigo in ('07') and nivel in (7) then 
+                          '06'
+                            when codigo in ('08') and nivel in (8) then 
+                          '07'
+                            when codigo in ('09') and nivel in (9) then 
+                          '08'                                                                                                                                                                                                                
+                          else
+                          codigo                       
+                          end,
+                         case when codigo in ('02','10') and nivel in (2,10) then 
+                          'EDIFICIO'
+                            when codigo in ('03','04') and nivel in (3,4) then 
+                          'EQUIPO DE OFICINA Y MUEBLES'
+                          else
+                          denominacion                       
+                          end,                                           
+                          monto_vigente_orig_100,                     
+                          monto_vigente_orig,
+                          (monto_actualiz - monto_vigente_orig)::numeric(18,2) as inc_actualiz,
+                          monto_actualiz,
+                          depreciacion_acum_gest_ant,
+                          depreciacion_acum_actualiz_gest_ant,
+                          case when monto_vigente_orig_100 < 0 then
+                           (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant)
+                          else 
+                            case when 
+                            (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant) <=0.01 then 
+                                0.00
+                            else 
+                               (depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant)
+                            end
+                          end as depreciacion_per,                          
+                          depreciacion_acum,
+                          monto_vigente,
+                         case when codigo = 'TOTAL FINAL' then 
+                         'total'
+                          else
+                          'clasif'  
+                          end                         
+                          from tt_detalle_depreciacion_totales
+                          where tipo  in ('total','clasif')                      
+                          order by codigo, orden; 
+                               
+				v_consulta = 'select
+                          codigo::varchar(50),
+                          denominacion::varchar(500),
+                          now()::date as fecha_ini_dep,
+                          sum(monto_vigente_orig_100),
+                          sum(monto_vigente_orig),
+                          sum((monto_actualiz - monto_vigente_orig)),
+                          sum(monto_actualiz),
+                          0::integer as vida_util_orig,
+                          0::integer as vida_util,
+                          sum(depreciacion_acum_gest_ant),
+                          sum(depreciacion_acum_actualiz_gest_ant),
+                          sum(depreciacion_acum - depreciacion_acum_gest_ant - depreciacion_acum_actualiz_gest_ant),
+                          sum(depreciacion_acum),
+                          sum(monto_vigente),
+                          0::integer as nivel,
+                          orden,
+                          tipo,
+                          0.00 reval,
+                          0.00 ajust,
+                          0.00 baja,
+                          0.00 transito,
+                          0.00 leasing,
+                          0.00 as inc_ac_acum, 
+                          ''-''::varchar as color,
+                          0.00 as val_acu_perido,
+                          0.00 as porce_depre
+                          from tt_detalle_totales_minis
+                          group by codigo, orden, tipo,denominacion
+                          order by codigo'; 
+                                                        
+           else
 
               v_consulta = 'select
                           codigo,
@@ -2685,6 +2896,8 @@ BEGIN
                           from tt_detalle_depreciacion_totales
                           where tipo in '||v_where||'                       
                           order by codigo, orden';
+            end if;
+
               raise notice 'v_consulta: %', v_consulta;
               --Devuelve la respuesta
              
