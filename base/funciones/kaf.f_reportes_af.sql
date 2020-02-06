@@ -1123,7 +1123,7 @@ BEGIN
             create temp table tt_detalle_depreciacion (
                 id_activo_fijo_valor integer,
                 codigo varchar(50),
-                denominacion varchar(500),
+                denominacion varchar,
                 fecha_ini_dep date,
                 monto_vigente_orig_100 numeric(18,2),
                 monto_vigente_orig numeric(18,2),
@@ -1811,7 +1811,7 @@ BEGIN
             --Creación de la tabla con la agrupación y totales
             create temp table tt_detalle_depreciacion_totales (
                 codigo varchar(50),
-                denominacion varchar(500),
+                denominacion varchar,
                 fecha_ini_dep date,
                 monto_vigente_orig_100 numeric(24,2),
                 monto_vigente_orig numeric(24,2),
@@ -2095,7 +2095,7 @@ BEGIN
                 CREATE temp TABLE tt_detalle_depreciacion_consol (
                   id_activo_fijo_valor INTEGER,
                   codigo VARCHAR(50),
-                  denominacion VARCHAR(500),
+                  denominacion VARCHAR,
                   fecha_ini_dep DATE,
                   monto_vigente_orig_100 NUMERIC(18,2),
                   monto_vigente_orig NUMERIC(18,2),
@@ -2355,7 +2355,7 @@ BEGIN
 
                                      create temp table tt_detalle_totales_minis(
                                             codigo varchar(50),
-                                            denominacion varchar(500),
+                                            denominacion varchar,
                                             monto_vigente_orig_100 numeric(24,2),
                                             monto_vigente_orig numeric(24,2),
                                             inc_actualiz numeric(24,2),
@@ -2427,7 +2427,7 @@ BEGIN
                                             
                                     v_consulta = 'select
                                             codigo::varchar(50),
-                                            denominacion::varchar(500),
+                                            denominacion::varchar,
                                             now()::date,                       
                                             sum(monto_vigente_orig_100),                      
                                             sum(monto_vigente_orig),
@@ -2753,7 +2753,7 @@ BEGIN
            
                 create temp table tt_detalle_totales_minis(
                     codigo varchar(50),
-                    denominacion varchar(500),
+                    denominacion varchar,
                     monto_vigente_orig_100 numeric(24,2),
                     monto_vigente_orig numeric(24,2),
                     inc_actualiz numeric(24,2),
@@ -2822,7 +2822,7 @@ BEGIN
                                
 				v_consulta = 'select
                           codigo::varchar(50),
-                          denominacion::varchar(500),
+                          denominacion::varchar,
                           now()::date as fecha_ini_dep,
                           sum(monto_vigente_orig_100),
                           sum(monto_vigente_orig),

@@ -374,7 +374,7 @@ class MODReportes extends MODbase{
 		//Definicion de la lista del resultado del query
 		$this->captura('codigo','varchar(50)');
 
-        $this->captura('denominacion','varchar(500)');
+        $this->captura('denominacion','varchar');
         $this->captura('fecha_ini_dep','date');
         $this->captura('monto_vigente_orig_100','numeric');
         $this->captura('monto_vigente_orig','numeric');
