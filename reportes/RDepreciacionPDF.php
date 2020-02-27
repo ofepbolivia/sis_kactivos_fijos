@@ -176,7 +176,7 @@ class RDepreciacionPDF extends  ReportePDF{
                     's0'  => $contador,
                     's1' => $record['codigo'],
                     's2' => $record['denominacion'],
-                    's3' => $record['fecha_ini_dep'],
+                    's3' => date('d/m/Y', strtotime($record['fecha_ini_dep'])),
                     's4' => $record['monto_vigente_orig_100']!=''?$record['monto_vigente_orig_100']:0,
                     's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
                     's6' => $record['inc_actualiz']!=''?$record['inc_actualiz']:0,

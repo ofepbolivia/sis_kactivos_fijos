@@ -210,6 +210,7 @@ BEGIN
     -- LÓGICA POR PROCESO DE ACTIVO FIJO
     -------------------------------------
     if v_cod_movimiento in ('deprec','actua') then
+      if v_sw_reg_masivo then
         --DEPRECIACIÓN/ACTUALIZACIÓN: registro de todos los activos del departamento que les corresponda depreciar en el periodo solicitado
         for v_registros_mov in (select 
                                 afij.id_activo_fijo,
@@ -267,6 +268,7 @@ BEGIN
            end if;
           
         end loop;
+       end if;
     
     elsif v_cod_movimiento = 'transf' and v_sw_reg_masivo then
         --TRANSFERENCIA

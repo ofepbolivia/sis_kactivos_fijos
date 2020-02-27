@@ -154,7 +154,7 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
                     's0'  => $contador,
                     's1' => $record['codigo'],
                     's2' => $record['denominacion'],
-                    's3' => $record['fecha_ini_dep'],
+                    's3' => date('d/m/Y', strtotime($record['fecha_ini_dep'])),
                     's4' => $record['monto_vigente_orig_100']!=''?$record['monto_vigente_orig_100']:0,
                     's5' => $record['monto_vigente_orig']!=''?$record['monto_vigente_orig']:0,
                     's6' => $record['inc_ac_acum']!=0.00?$record['inc_ac_acum']:0,
@@ -166,7 +166,7 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
                     's12' => $record['depreciacion_acum_actualiz_gest_ant']!=''?$record['depreciacion_acum_actualiz_gest_ant']:0,
                     's13' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,                    
                     's14' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
-                    's15' => $record['monto_vigente']!=''?$record['monto_vigente']:0
+                    's15' => $record['monto_vigente']!=''?number_format($record['monto_vigente'],2,'.', ','):0
                 );
 
                 $this->MultiRow($RowArray,true,1);
@@ -194,7 +194,7 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
                     's11' => $record['depreciacion_acum_gest_ant']!=''?$record['depreciacion_acum_gest_ant']:0,
                     's12' => $record['depreciacion_acum_actualiz_gest_ant']!=''?$record['depreciacion_acum_actualiz_gest_ant']:0,
                     's13' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,                    
-                    's14' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
+                    's14' => $record['depreciacion_acum']!=''?number_format($record['depreciacion_acum'],2,'.',','):0,
                     's15' => $record['monto_vigente']!=''?$record['monto_vigente']:0
                 );
 

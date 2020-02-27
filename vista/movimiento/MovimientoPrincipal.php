@@ -304,6 +304,7 @@ Phx.vista.MovimientoPrincipal = {
     		swFuncionarioDest=false;
     		swCatMovMotivo=true;
         swTipoMovimiento=false;
+            swTipoAsig=true;
     		h=370;
     	} else if(mov=='desuso'){
     		swDireccion=false;

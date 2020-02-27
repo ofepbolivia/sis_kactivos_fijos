@@ -76,16 +76,24 @@ BEGIN
                 afv.id_activo_fijo_valor,
                 afv.id_moneda_dep,
                 afv.fecha_ult_dep_real,
-                case
-                    when afv.fecha_ult_dep_real >= afv.fecha_ini_dep and afv1.fecha_ult_dep is not null then ('01/'||date_part('month'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar||'/'||date_part('year'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar)::date
-                else
-                    afv.fecha_ult_dep_real
+                case when afv1.tipo_modificacion = 'ajuste_vida_residual' then
+	                ('01/'||date_part('month'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar||'/'||date_part('year'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar)::date
+				else
+                    case
+                        when afv.fecha_ult_dep_real >= afv.fecha_ini_dep and afv1.fecha_ult_dep is not null then ('01/'||date_part('month'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar||'/'||date_part('year'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar)::date
+                    else
+                        afv.fecha_ult_dep_real
+                    end
                 end as mes_dep,
                 cla.depreciable,
-                case
-                    when afv.fecha_ult_dep_real >= afv.fecha_ini_dep and afv1.fecha_ult_dep is not null then kaf.f_months_between(('01/'||date_part('month'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar||'/'||date_part('year'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar)::date, v_fecha_hasta)
+ 				case when afv1.tipo_modificacion = 'ajuste_vida_residual' then
+	                kaf.f_months_between(('01/'||date_part('month'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar||'/'||date_part('year'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar)::date, v_fecha_hasta)
                 else
-                    kaf.f_months_between(afv.fecha_ult_dep_real, v_fecha_hasta) 
+                    case
+                        when afv.fecha_ult_dep_real >= afv.fecha_ini_dep and afv1.fecha_ult_dep is not null then kaf.f_months_between(('01/'||date_part('month'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar||'/'||date_part('year'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar)::date, v_fecha_hasta)
+                    else
+                        kaf.f_months_between(afv.fecha_ult_dep_real, v_fecha_hasta)
+                    end
                 end as meses_dep,
 
                 mon.id_moneda_dep,
@@ -306,6 +314,12 @@ BEGIN
                 v_nuevo_dep_per       = 0;
                 v_nuevo_monto_vigente = v_monto_actualiz;                              
                 v_nuevo_vida_util     = v_ant_vida_util ;
+            end if;
+
+            if v_rec.tipo_modificacion = 'ajuste_vida_residual' then
+	            v_nuevo_monto_vigente = - v_rec.valor_residual;
+                v_nuevo_dep_acum      = v_rec.valor_residual;
+                v_nuevo_vida_util     = 0;
             end if;
 
 			--Verifica que no exista el reg. id_monea_dep, id_activo_fijo_valor, fecha

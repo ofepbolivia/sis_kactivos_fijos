@@ -1698,6 +1698,45 @@ BEGIN
                                 and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov)::integer -1 )::date);
                                 
                               end if;
+                        elsif v_registros_af_mov.codigo_mov_motivo = 'AJ_VID_RES' then
+
+                          v_fun = kaf.f_afv_crear(p_id_usuario,
+                                                    v_movimiento.cod_movimiento,
+                                                    v_registros_af_mov.id_activo_fijo,
+                                                    v_id_moneda_base,
+                                                    v_registros_af_mov.id_movimiento_af,
+                                                    v_registros_af_mov.fecha_mov,
+                                                    v_monto_inc_dec_real,
+                                                    v_registros_af_mov.vida_util,
+                                                    kaf.f_get_codigo_nuevo_afv(v_registros_af_mov.id_activo_fijo,v_movimiento.cod_movimiento),
+                                                    'si');
+
+						  update kaf.tactivo_fijo_valores
+                          set
+                          tipo_modificacion = 'ajuste_vida_residual',
+                          valor_residual = v_monto_inc_dec_real,
+                          monto_vigente_orig = 0,
+                          monto_vigente_orig_100 = 0,
+                          monto_vigente = 0
+                          where id_activo_fijo =  v_registros_af_mov.id_activo_fijo
+                          and id_moneda = 1
+                          and tipo = 'ajuste';
+
+                          update kaf.tactivo_fijo_valores set
+                          fecha_fin = pxp.f_last_day(date_trunc('month', v_registros_af_mov.fecha_mov + interval '2' month)::date),
+                          fecha_mod = now(),
+                          id_usuario_mod = p_id_usuario
+                          where id_activo_fijo = v_registros_af_mov.id_activo_fijo
+                          and fecha_fin is null;
+
+
+						  update kaf.tactivo_fijo_valores
+                          set
+                          tipo_modificacion = 'ajuste_vida_residual'
+                          where id_activo_fijo =  v_registros_af_mov.id_activo_fijo
+                          and id_moneda = 1
+                          and tipo = 'ajuste';
+
                     	else                                      
 
                         --Finalización de AFV(s) vigentes (seteando fecha_fin)
