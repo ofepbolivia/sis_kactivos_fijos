@@ -602,12 +602,14 @@ class ACTActivoFijo extends ACTbase{
                 }
             }
         }
-        if($this->objParam->getParametro('id_depto')!=''){
-            if($this->objParam->getParametro('id_depto')==3){
-                $this->objParam->addFiltro("taf.id_depto in (7,47)");
-            }
-            else{
-                $this->objParam->addFiltro("taf.id_depto = ".$this->objParam->getParametro('id_depto'));
+        if($this->objParam->getParametro('configuracion_reporte') != 'pendientes_aprobacion') {
+            if($this->objParam->getParametro('id_depto')!=''){
+                if($this->objParam->getParametro('id_depto')==3){
+                    $this->objParam->addFiltro("taf.id_depto in (7,47)");
+                }
+                else{
+                    $this->objParam->addFiltro("taf.id_depto = ".$this->objParam->getParametro('id_depto'));
+                }
             }
         }
         if($this->objParam->getParametro('nr_factura')!=''){
