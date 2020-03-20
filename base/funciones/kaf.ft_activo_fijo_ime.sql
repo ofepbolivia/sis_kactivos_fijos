@@ -52,6 +52,8 @@ DECLARE
     v_id_movimiento_af      integer;
     v_del_activo			integer;
 
+    v_tramite				varchar='no';
+
 BEGIN
 
     v_nombre_funcion = 'kaf.ft_activo_fijo_ime';
@@ -1077,6 +1079,30 @@ BEGIN
             --Definicion de la respuesta
 		v_resp = pxp.f_agrega_clave(v_resp,'mensaje_code',v_respuesta::varchar);
             return v_resp;
+        end;
+
+    /*********************************
+ 	#TRANSACCION:  'KA_VERTRCOM_IME'
+ 	#DESCRIPCION:	Verifica si el tramite de compra ya esta asignada al algun activo fijo de alta.
+ 	#AUTOR:			breydi vasquez
+ 	#FECHA:			18/03/2020
+	***********************************/
+
+	elsif(p_transaccion='KA_VERTRCOM_IME')then
+
+    	begin
+
+            
+        	if (v_parametros.id_activo_fijo is null or  v_parametros.id_activo_fijo=0)then 
+              if exists ( select 1 from kaf.tactivo_fijo where tramite_compra = v_parametros.tramite_compra) then
+                  v_tramite = 'si';
+              end if;
+            end if;
+            
+            v_resp = pxp.f_agrega_clave(v_resp,'', '');              
+            v_resp = pxp.f_agrega_clave(v_resp,'id_preingreso', v_parametros.id_preingreso::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'existe',v_tramite::varchar);
+        	return v_resp;
         end;
 
 	else

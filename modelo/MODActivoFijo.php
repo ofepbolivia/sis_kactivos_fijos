@@ -1078,6 +1078,59 @@ class MODActivoFijo extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }	
+    function verificarNoTramiteCompra(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='kaf.ft_activo_fijo_ime';
+        $this->transaccion='KA_VERTRCOM_IME';
+        $this->tipo_procedimiento='IME';//tipo de transaccion
+        //Definicion de la lista del resultado del query                
+        $this->setParametro('tramite_compra','tramite_compra','varchar');
+        $this->setParametro('id_preingreso','id_preingreso','int4');
+        $this->setParametro('id_activo_fijo','id_activo_fijo','int4');
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
 
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
+    function listarFuncionarioUltCargo(){
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='kaf.ft_activo_fijo_sel';
+        $this->transaccion='SKA_ACFUNCAR_SEL';
+        $this->tipo_procedimiento='SEL';//tipo de transaccion        		
+		
+        //Definicion de la lista del resultado del query
+        $this->captura('id_uo_funcionario','integer');
+        $this->captura('id_funcionario','integer');
+        $this->captura('desc_funcionario1','text');
+        $this->captura('desc_funcionario2','text');
+        $this->captura('id_uo','integer');
+        $this->captura('nombre_cargo','varchar');
+        $this->captura('fecha_asignacion','date');
+        $this->captura('fecha_finalizacion','date');
+        $this->captura('num_doc','integer');
+        $this->captura('ci','varchar');
+        $this->captura('codigo','varchar');
+        $this->captura('email_empresa','varchar');
+        $this->captura('estado_reg_fun','varchar');
+        $this->captura('estado_reg_asi','varchar');
+        $this->captura('id_cargo','integer');
+        $this->captura('descripcion_cargo','varchar');
+        $this->captura('cargo_codigo','varchar');
+        $this->captura('id_lugar','integer');
+        $this->captura('id_oficina','integer');
+        $this->captura('lugar_nombre','varchar');
+        $this->captura('oficina_nombre','varchar');
+	
+        //Ejecuta la instruccion
+        $this->armarConsulta(); 		       
+        //echo($this->consulta);exit;
+        $this->ejecutarConsulta();
+
+        //Devuelve la respuesta
+        return $this->respuesta;        
+    }
 }
 ?>

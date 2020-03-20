@@ -71,7 +71,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			mode : 'local',
 			store : new Ext.data.ArrayStore({
 				fields : ['tipo', 'valor'],
-				data : [['gepa', 'Formato Reporte Pasada'], ['geac', 'Formato Reporte Actual']]
+				data : [['gepa', 'Formato Reporte Pasada'], ['geac', 'Formato Reporte Actual'], ['resfin', 'Reporte Estados Financieros']]
 			}),
 			anchor : '40%',
 			valueField : 'tipo',
@@ -399,7 +399,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			anchor: '100%',
 			emptyText: 'Elija un funcionario...',
 			store: new Ext.data.JsonStore({  
-				url: '../../sis_organigrama/control/Funcionario/listarFuncionarioCargo',
+				url: '../../sis_kactivos_fijos/control/ActivoFijo/listarFuncionarioUltCargo',
 				id: 'id_uo',
 				root: 'datos',
 				sortInfo:{

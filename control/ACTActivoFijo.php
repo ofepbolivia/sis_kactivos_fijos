@@ -1048,6 +1048,18 @@ class ACTActivoFijo extends ACTbase{
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 //        var_dump($firma); exit;
     }
-    
+
+
+    function verificarNoTramiteCompra(){
+        $this->objFunc=$this->create('MODActivoFijo');
+        $this->res=$this->objFunc->verificarNoTramiteCompra($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }    
+
+    function listarFuncionarioUltCargo(){
+        $this->objFunc=$this->create('MODActivoFijo');
+        $this->res=$this->objFunc->listarFuncionarioUltCargo($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 }
 ?>

@@ -1374,6 +1374,67 @@ BEGIN
         return v_consulta;
 	end;
 
+    /*******************************
+     #TRANSACCION:  SKA_ACFUNCAR_SEL
+     #DESCRIPCION:	lista de funcionario activos e inactivos, usado para sacar el reporte de inventario
+     #AUTOR:		breydi vasquez
+     #FECHA:		20/03/2020
+    ***********************************/
+    elsif(p_transaccion='SKA_ACFUNCAR_SEL')then
+
+
+      BEGIN
+	      v_consulta:= 'select
+          				afunc.id_uo_funcionario,
+                        afunc.id_funcionario,
+                        afunc.desc_funcionario1,
+                        afunc.desc_funcionario2,
+                        afunc.id_uo,
+                        afunc.nombre_cargo,
+                        afunc.fecha_asignacion,
+                        afunc.fecha_finalizacion,
+                        afunc.num_doc,
+                        afunc.ci,
+                        afunc.codigo,
+                        afunc.email_empresa,
+                        afunc.estado_reg_fun,
+                        afunc.estado_reg_asi,
+                        afunc.id_cargo,
+                        afunc.descripcion_cargo,
+                        afunc.cargo_codigo,
+                        afunc.id_lugar,
+                        afunc.id_oficina,
+                        afunc.lugar_nombre,
+                        afunc.oficina_nombre
+                        FROM orga.vfuncionario_ultimo_cargo afunc
+                        WHERE  afunc.estado_reg_fun in (''activo'', ''inactivo'')
+                        and ';
+                        
+          v_consulta:=v_consulta||v_parametros.filtro;
+          v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' OFFSET ' || v_parametros.puntero;
+          raise notice 'v_consulta %', v_consulta;
+          return v_consulta;                        
+          
+      END;    
+
+    /*******************************
+     #TRANSACCION:  SKA_ACFUNCAR_CONT
+     #DESCRIPCION:	Conteo de funcionarios Activos e inactivos,
+     #AUTOR:		breydi vasquez
+     #FECHA:		20/03/2020
+    ***********************************/
+    elsif(p_transaccion='SKA_ACFUNCAR_CONT')then
+
+      --consulta:=';
+      BEGIN
+
+        v_consulta:='select count(afunc.id_uo_funcionario)
+        			FROM orga.vfuncionario_ultimo_cargo afunc
+                    WHERE  afunc.estado_reg_fun in (''activo'', ''inactivo'')
+                    and';
+        v_consulta:=v_consulta||v_parametros.filtro;
+        return v_consulta;
+      END;
 
   else
     raise exception 'Transaccion inexistente';

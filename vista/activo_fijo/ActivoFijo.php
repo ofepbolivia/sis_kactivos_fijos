@@ -1594,7 +1594,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name: 'en_deposito',type: 'string'},{name: 'extension',type: 'string'},
             {name: 'codigo_ant',type: 'string'},{name: 'marca',type: 'string'},
             {name: 'nro_serie',type: 'string'},
-            {name: 'caracteristicas',type: 'string'},
+            {name: 'caracteristicas',type: 'string'},            
             'monto_compra_orig','desc_proyecto','id_proyecto',
             'monto_vigente_real_af','vida_util_real_af','fecha_ult_dep_real_af','depreciacion_acum_real_af','depreciacion_per_real_af','tipo_activo','depreciable','cantidad_af','id_unidad_medida','codigo_unmed',
             {name:'descripcion_unmed',type:'string'},
@@ -2581,8 +2581,11 @@ header("content-type: text/javascript; charset=UTF-8");
             var data;
             if(tipo=='edit'){
                 //Carga datos
-                this.cargaFormulario(this.sm.getSelected().data);
+                var ob = this.sm.getSelected().data;
+                    ob.edit_af = true;
+                this.cargaFormulario(ob);
                 data = this.sm.getSelected().data;
+                                
             } else {
                 //Inicializa el formulario
                 this.form.getForm().reset();
@@ -2652,9 +2655,39 @@ header("content-type: text/javascript; charset=UTF-8");
         onSubmit: function(o,x,force){
             var formData;
             if(this.form.getForm().isValid()){
-                Phx.CP.loadingShow();
+                //Phx.CP.loadingShow();                
                 formData = this.dataSubmit();
+                console.log(formData);                                
+                //agregado breydi vasquez 18/03/2020
                 Ext.Ajax.request({
+                                url:'../../sis_kactivos_fijos/control/ActivoFijo/verificarNoTramiteCompra',
+                                params:{tramite_compra: formData.tramite_compra, id_preingreso: '',id_activo_fijo:formData.id_activo_fijo},
+                                success: function(resp) {
+                                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));                                                                          
+                                    if (reg.ROOT.datos.existe == 'si') {                                        
+                                        Ext.Msg.confirm('Mensaje', 'EL N° DE TRAMITE: '+formData.tramite_compra+' YA ESTA REGISTRADO CON UN ACTIVO FIJO DE ALTA',
+                                        function(btn) {
+                                            if (btn=="yes"){
+                                                this.registrar() 
+                                            }
+                                        }, this);                                      
+                                                                               
+                                    }else{
+                                        this.registrar()
+                                    }                                                                          
+                                },
+                                failure: this.conexionFailure,
+                                timeout:this.timeout,
+                                scope:this
+                            });                                
+            } else {
+                Ext.MessageBox.alert('Validación','Existen datos inválidos en el formulario. Corrija y vuelva a intentarlo');
+            }
+        },
+        registrar: function(){
+            var formData = this.dataSubmit();
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
                     url: '../../sis_kactivos_fijos/control/ActivoFijo/insertarActivoFijo',
                     params: this.dataSubmit,
                     isUpload: false,
@@ -2669,9 +2702,6 @@ header("content-type: text/javascript; charset=UTF-8");
                     timeout: this.timeout,
                     scope: this
                 });
-            } else {
-                Ext.MessageBox.alert('Validación','Existen datos inválidos en el formulario. Corrija y vuelva a intentarlo');
-            }
         },
         onSubmitDel: function (o, x, force){
             Phx.CP.loadingShow();
@@ -2787,7 +2817,8 @@ header("content-type: text/javascript; charset=UTF-8");
             return tb;
         },
 
-        onButtonNew: function() {
+        onButtonNew: function() {            
+            
             this.crearVentana();
             this.abrirVentana('new');
             var data = this.getSelectedData();
@@ -2817,6 +2848,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
         onButtonEdit: function() {
+            
             this.crearVentana();
             this.abrirVentana('edit');
             var data = this.getSelectedData();
