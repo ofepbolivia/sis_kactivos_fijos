@@ -210,6 +210,11 @@ BEGIN
     -- LÓGICA POR PROCESO DE ACTIVO FIJO
     -------------------------------------
     if v_cod_movimiento in ('deprec','actua') then
+
+        if v_cod_movimiento = 'actua' then
+        	v_sw_reg_masivo = true;
+        end if;    
+        
       if v_sw_reg_masivo then
         --DEPRECIACIÓN/ACTUALIZACIÓN: registro de todos los activos del departamento que les corresponda depreciar en el periodo solicitado
         for v_registros_mov in (select 
