@@ -415,6 +415,12 @@ header("content-type: text/javascript; charset=UTF-8");
                 '<span>{depreciacion_per_real_af}</span>',
                 '<br><b>Vida útil: </b>',
                 '<span>{vida_util_real_af}</span>',
+                '<br><b>En deposito?: </b>',
+                '<span>{en_deposito}</span>',
+                '<br><b>Responsable Deposito: </b>',
+                '<span>{resp_deposito}</span>',
+                '<br><b>Deposito: </b>',
+                '<span>{deposito}</span>',
                 '</div>',
                 '</tpl>',
                 '</div>'
@@ -1171,19 +1177,32 @@ header("content-type: text/javascript; charset=UTF-8");
                 config: {
                     name: 'id_deposito',
                     fieldLabel: 'Deposito',
+                    gwidth: 220,
                     renderer: function(value, p, record) {
                         return String.format('{0}', record.data['deposito']);
-                    }
+                    },
+
                 },
                 type: 'TextField',
-                id_grupo: 0,
+                id_grupo: 1,
                 filters: {
                     pfiltro: 'depaf.nombre',
                     type: 'string'
                 },
                 grid: true,
                 form: true
-            }, {
+            },
+            {
+                config: {
+                    name: 'resp_deposito',
+                    fieldLabel: 'Responsable Deposito'
+                },
+                type: 'TextField',
+                id_grupo: 0,
+                grid: true,
+                form: false
+            },
+            {
                 config: {
                     name: 'monto_compra_orig',
                     fieldLabel: 'Monto Compra Mon.Orig.',
@@ -1594,7 +1613,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {name: 'en_deposito',type: 'string'},{name: 'extension',type: 'string'},
             {name: 'codigo_ant',type: 'string'},{name: 'marca',type: 'string'},
             {name: 'nro_serie',type: 'string'},
-            {name: 'caracteristicas',type: 'string'},            
+            {name: 'caracteristicas',type: 'string'},
             'monto_compra_orig','desc_proyecto','id_proyecto',
             'monto_vigente_real_af','vida_util_real_af','fecha_ult_dep_real_af','depreciacion_acum_real_af','depreciacion_per_real_af','tipo_activo','depreciable','cantidad_af','id_unidad_medida','codigo_unmed',
             {name:'descripcion_unmed',type:'string'},
@@ -1612,7 +1631,9 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'id_uo',type:'string'},
             {name:'departamento', type:'string'},
             {name: 'fecha_inicio', type: 'date', dateFormat: 'Y-m-d'},
-            {name: 'fecha_fin', type: 'date', dateFormat: 'Y-m-d'}
+            {name: 'fecha_fin', type: 'date', dateFormat: 'Y-m-d'},
+            {name:'resp_deposito', type:'string'},
+
         ],
         arrayDefaultColumHidden: ['fecha_reg', 'usr_reg', 'fecha_mod', 'usr_mod', 'estado_reg', 'id_usuario_ai', 'usuario_ai', 'id_persona', 'foto', 'id_proveedor', 'fecha_compra', 'id_cat_estado_fun', 'ubicacion', 'documento', 'observaciones', 'monto_rescate', 'id_deposito', 'monto_compra', 'id_moneda', 'depreciacion_mes', 'descripcion', 'id_moneda_orig', 'fecha_ini_dep', 'id_cat_estado_compra', 'vida_util_original', 'id_centro_costo', 'id_oficina', 'id_depto', 'fecha_inicio', 'fecha_fin'],
         sortInfo: {
@@ -2585,7 +2606,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     ob.edit_af = true;
                 this.cargaFormulario(ob);
                 data = this.sm.getSelected().data;
-                                
+
             } else {
                 //Inicializa el formulario
                 this.form.getForm().reset();
@@ -2655,31 +2676,31 @@ header("content-type: text/javascript; charset=UTF-8");
         onSubmit: function(o,x,force){
             var formData;
             if(this.form.getForm().isValid()){
-                //Phx.CP.loadingShow();                
+                //Phx.CP.loadingShow();
                 formData = this.dataSubmit();
-                console.log(formData);                                
+                console.log(formData);
                 //agregado breydi vasquez 18/03/2020
                 Ext.Ajax.request({
                                 url:'../../sis_kactivos_fijos/control/ActivoFijo/verificarNoTramiteCompra',
                                 params:{tramite_compra: formData.tramite_compra, id_preingreso: '',id_activo_fijo:formData.id_activo_fijo},
                                 success: function(resp) {
-                                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));                                                                          
-                                    if (reg.ROOT.datos.existe == 'si') {                                        
+                                    var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                                    if (reg.ROOT.datos.existe == 'si') {
                                         Ext.Msg.confirm('Mensaje', 'EL N° DE TRAMITE: '+formData.tramite_compra+' YA ESTA REGISTRADO CON UN ACTIVO FIJO DE ALTA',
                                         function(btn) {
                                             if (btn=="yes"){
-                                                this.registrar() 
+                                                this.registrar()
                                             }
-                                        }, this);                                      
-                                                                               
+                                        }, this);
+
                                     }else{
                                         this.registrar()
-                                    }                                                                          
+                                    }
                                 },
                                 failure: this.conexionFailure,
                                 timeout:this.timeout,
                                 scope:this
-                            });                                
+                            });
             } else {
                 Ext.MessageBox.alert('Validación','Existen datos inválidos en el formulario. Corrija y vuelva a intentarlo');
             }
@@ -2817,8 +2838,8 @@ header("content-type: text/javascript; charset=UTF-8");
             return tb;
         },
 
-        onButtonNew: function() {            
-            
+        onButtonNew: function() {
+
             this.crearVentana();
             this.abrirVentana('new');
             var data = this.getSelectedData();
@@ -2848,7 +2869,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
         onButtonEdit: function() {
-            
+
             this.crearVentana();
             this.abrirVentana('edit');
             var data = this.getSelectedData();

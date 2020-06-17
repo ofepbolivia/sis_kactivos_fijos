@@ -111,7 +111,11 @@ BEGIN
                             cc.codigo_cc as centro_costo,
                             ofi.codigo || '' '' || ofi.nombre as oficina,
                             dpto.codigo || '' '' || dpto.nombre as depto,
-                            fun.desc_funcionario2 as funcionario,
+                            case when afij.en_deposito = ''no'' then
+ 	                            fun.desc_funcionario2
+                             else
+                             	''''::text
+                             end as funcionario,
                             depaf.nombre as deposito,
                             depaf.codigo as deposito_cod,
                             mon.codigo as desc_moneda_orig,
@@ -151,7 +155,12 @@ BEGIN
                             (afij.codigo ||''-''||afij.denominacion)::varchar as desc_denominacion,
                             dpto.nombre as departamento,
                             afij.fecha_inicio,
-                            afij.fecha_fin
+                            afij.fecha_fin,
+                            case when afij.en_deposito = ''si'' then
+     	                            fundepo.desc_funcionario2
+                                 else
+                                 	''''::text
+                                 end as resp_deposito
             from kaf.tactivo_fijo afij
             inner join segu.tusuario usu1 on usu1.id_usuario = afij.id_usuario_reg
             left join param.tcatalogo cat1 on cat1.id_catalogo = afij.id_cat_estado_fun
@@ -161,6 +170,7 @@ BEGIN
             inner join param.tmoneda mon on mon.id_moneda = afij.id_moneda_orig
                         left join param.tproyecto proy on proy.id_proyecto = afij.id_proyecto
                         left  join kaf.tdeposito depaf on depaf.id_deposito = afij.id_deposito
+      			            left join orga.vfuncionario fundepo on fundepo.id_funcionario = depaf.id_funcionario
                         left join kaf.vactivo_fijo_vigente_estado_rep afvi on afvi.id_activo_fijo = afij.id_activo_fijo
                         and afvi.id_moneda = afij.id_moneda_orig
                         and (afvi.estado_mov_dep = ''finalizado'' or afvi.estado_mov_dep is null)
@@ -230,7 +240,7 @@ BEGIN
             inner join param.tmoneda mon on mon.id_moneda = afij.id_moneda_orig
                         left join param.tproyecto proy on proy.id_proyecto = afij.id_proyecto
                         left  join kaf.tdeposito depaf on depaf.id_deposito = afij.id_deposito
-
+			                   left join orga.vfuncionario fundepo on fundepo.id_funcionario = depaf.id_funcionario
                         /*
                         left join kaf.vactivo_fijo_vigente_estado afvi on afvi.id_activo_fijo = afij.id_activo_fijo
                         and afvi.id_moneda = afij.id_moneda_orig
@@ -1310,8 +1320,8 @@ BEGIN
 	     #FECHA:        12/12/2018
 	    ***********************************/
 	    elsif(p_transaccion='SKA_ACDEPXFUN_SEL')then
-		
-        begin 
+
+        begin
             select depo.id_deposito,
                    depo.nombre,
             	   f.desc_funcionario1
@@ -1320,9 +1330,9 @@ BEGIN
             from kaf.tdeposito depo
 			inner join orga.vfuncionario f on f.id_funcionario = depo.id_funcionario
             where depo.id_funcionario = v_parametros.id_funcionario;
-            
+
 		v_consulta:= '
-                      with recursive deposito (id,fecha) as 
+                      with recursive deposito (id,fecha) as
                       (
                             select maf.id_activo_fijo,
                                    max(mov.fecha_mov),
@@ -1350,11 +1360,11 @@ BEGIN
                                where coalesce(mov.id_deposito, mov.id_deposito_dest) <> '||v_rec_depo.id_deposito||'
                                and cat.id_catalogo in (116, 130)
                                and tew.codigo = ''finalizado''
-                               and mov.fecha_reg >= ''01-05-2019''::date           
-       													)                             
+                               and mov.fecha_reg >= ''01-05-2019''::date
+       													)
                             group by maf.id_activo_fijo
                       )
-                      select 
+                      select
                           af.codigo,
                           af.denominacion,
                           af.descripcion,
@@ -1363,11 +1373,11 @@ BEGIN
                           '''||v_rec_depo.nombre||'''::varchar as almacen,
                           b.fecha as fecha_mov,
                           '''||v_rec_depo.desc_funcionario1||'''::text as encargado
-                      from kaf.tactivo_fijo af 
+                      from kaf.tactivo_fijo af
                       inner join param.tcatalogo cat on cat.id_catalogo = af.id_cat_estado_fun
-                      inner join deposito b on b.id = af.id_activo_fijo                      
+                      inner join deposito b on b.id = af.id_activo_fijo
                       where   af.en_deposito = ''si'' and  ';
-                      
+
         v_consulta:=v_consulta||v_parametros.filtro;
         v_consulta:=v_consulta||'order by af.codigo';
 
@@ -1409,13 +1419,13 @@ BEGIN
                         FROM orga.vfuncionario_ultimo_cargo afunc
                         WHERE  afunc.estado_reg_fun in (''activo'', ''inactivo'')
                         and ';
-                        
+
           v_consulta:=v_consulta||v_parametros.filtro;
           v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' OFFSET ' || v_parametros.puntero;
           raise notice 'v_consulta %', v_consulta;
-          return v_consulta;                        
-          
-      END;    
+          return v_consulta;
+
+      END;
 
     /*******************************
      #TRANSACCION:  SKA_ACFUNCAR_CONT
