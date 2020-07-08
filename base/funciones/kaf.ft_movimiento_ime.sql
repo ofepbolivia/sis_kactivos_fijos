@@ -811,6 +811,7 @@ BEGIN
                     --Actualiza estado de activo fijo
                     update kaf.tactivo_fijo set
                     en_deposito = 'no',
+                    id_deposito = null,
                     id_funcionario = coalesce(mov.id_funcionario,mov.id_funcionario_dest),
                     id_persona = mov.id_persona,
                     id_oficina = coalesce(mov.id_oficina,kaf.tactivo_fijo.id_oficina),
@@ -858,6 +859,7 @@ BEGIN
                     --Actualiza estado de activo fijo
                     update kaf.tactivo_fijo set
                     en_deposito = 'si',
+                    id_funcionario = null,
                     -- id_funcionario = mov.id_responsable_depto,
                     id_persona = null,
                     fecha_asignacion = mov.fecha_mov,
