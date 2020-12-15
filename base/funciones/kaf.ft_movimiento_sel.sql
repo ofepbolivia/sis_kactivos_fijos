@@ -148,14 +148,19 @@ BEGIN
 			            movmot.motivo,
 			            mov.id_int_comprobante,
 			            mov.id_int_comprobante_aitb,
-                        funwf.desc_funcionario2 as resp_wf,
-                        mov.prestamo,
-                        mov.fecha_dev_prestamo,
-                        mov.tipo_movimiento,
-                        mov.id_proceso_wf_doc,
-                        mov.nro_documento,
-                        mov.tipo_documento,
-                        movmot.codigo_mov_motivo
+                  funwf.desc_funcionario2 as resp_wf,
+                  mov.prestamo,
+                  mov.fecha_dev_prestamo,
+                  mov.tipo_movimiento,
+                  mov.id_proceso_wf_doc,
+                  mov.nro_documento,
+                  mov.tipo_documento,
+                  movmot.codigo_mov_motivo,
+                  case when mov.estado = ''finalizado'' then
+                    ew.fecha_reg
+                  else
+                  	null
+                  end as fecha_finalizacion
 						from kaf.tmovimiento mov
 						inner join segu.tusuario usu1 on usu1.id_usuario = mov.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = mov.id_usuario_mod
@@ -195,7 +200,11 @@ BEGIN
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+      v_consulta:=v_consulta||'
+            ORDER BY CASE WHEN ew.fecha_reg IS NULL THEN 1 ELSE 0 END,
+            mov.fecha_mov DESC
+             ' || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+			--v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
@@ -380,7 +389,7 @@ BEGIN
                               mov.nro_documento,
                               (select desc_funcionario2
                                from orga.vfuncionario_ultimo_cargo
-                               where descripcion_cargo = ''Jefe Activos Fijos y Servicios Generales'') as resp_af                              
+                               where descripcion_cargo = ''Jefe Activos Fijos y Servicios Generales'') as resp_af
                          from kaf.tmovimiento mov
                               inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
                               inner join param.tdepto dpto on dpto.id_depto = mov.id_depto
@@ -442,13 +451,13 @@ BEGIN
                             maf.valor_residual,
                             maf.monto_vig_actu,
                             maf.observacion,
-                            afval.codigo as codigo_afval                           
+                            afval.codigo as codigo_afval
                      from kaf.tmovimiento_af maf
                           inner join kaf.tactivo_fijo af on af.id_activo_fijo = maf.id_activo_fijo
                           left join param.tcatalogo cat2 on cat2.id_catalogo = af.id_cat_estado_fun
                           left join kaf.tmovimiento_motivo mmot on mmot.id_movimiento_motivo =  maf.id_movimiento_motivo
-                          inner join kaf.tclasificacion cla on cla.id_clasificacion = af.id_clasificacion                     
-                          left join kaf.tactivo_fijo_valores afval on afval.id_activo_fijo_valor = maf.id_activo_fijo_valor                                               
+                          inner join kaf.tclasificacion cla on cla.id_clasificacion = af.id_clasificacion
+                          left join kaf.tactivo_fijo_valores afval on afval.id_activo_fijo_valor = maf.id_activo_fijo_valor
                      where maf.id_activo_fijo not in (select id_activo_fijo from kaf.tmotivo_eliminacion_af where id_activo_fijo <> 17090)
                      and maf.id_movimiento = '||v_parametros.id_movimiento;
 

@@ -178,14 +178,14 @@ header("content-type: text/javascript; charset=UTF-8");
 				},
 				grid : true,
 				form : true
-			}, 
+			},
 			{
 				config:{
 					name: 'nro_documento',
 					fieldLabel: 'Nro Documento',
 					allowBlank: true,
 					anchor: '80%',
-					gwidth: 90										
+					gwidth: 90
 				},
 				type:'TextField',
 				filters:{pfiltro:'mov.nro_documento',type:'string'},
@@ -202,44 +202,47 @@ header("content-type: text/javascript; charset=UTF-8");
 					anchor: '80%',
 					gwidth: 90,
                     triggerAction : 'all',
-                    
-                    mode : 'local',                    
+
+                    mode : 'local',
                     store : new Ext.data.ArrayStore({
                     fields : ['tipo', 'valor'],
                     data : [['tipo_documento_I', 'Nota Interna'],
                             ['tipo_documento_II', 'Informe'],
                             ['tipo_documento_III', 'Observacion Auditoria'],
                             ['tipo_documento_IV', 'Otros']]
-                    }),                    
+                    }),
                     valueField : 'tipo',
-                    displayField : 'valor'                                        
+                    displayField : 'valor'
 				},
-				type:'ComboBox',				
+				type:'ComboBox',
 				id_grupo:0,
 				grid:false,
 				form:true,
 				bottom_filter:true
-			},                                   
+			},
 			{
 				config:{
 					name: 'num_tramite',
 					fieldLabel: 'Num.Trámite/Fecha',
 					allowBlank: true,
 					anchor: '80%',
-					gwidth: 210,
+					gwidth: 250,
 					maxLength:200,
 					disabled: true,
 					renderer: function(value,p,record){
 						/*var fecha = new Date(record.data['fecha_mov'].dateFormat('d/m/Y'));
 						 console.log('xxxxxxx',fecha.toString());*/
-
+						 var fecha_finalizacion = '';
+						 if(record.data['fecha_finalizacion'] != null){
+							 fecha_finalizacion = record.data['fecha_finalizacion'].dateFormat('d/m/Y H:i:s');
+						 }
 
 	 									if(record.data.tipo_movimiento=='Transito'){
 	 											//return String.format('<div ><font weight="bold"; color="#ffffff";>{0}</font></div>',value);
-												return '<tpl style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:250px; height:45px; float:left;"><p><b>Fecha: </b> '+record.data['fecha_mov'].dateFormat('d/m/Y')+'</p><p><b>Tramite: </b> <font color="blue">'+record.data['num_tramite']+'</font></p><p><b>Estado: </b>'+record.data['estado']+'</p></div></tpl>';
+												return '<tpl style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:250px; height:45px; float:left;"><p><b>Fecha: </b> '+record.data['fecha_mov'].dateFormat('d/m/Y')+'</p><p><b>Fecha finalizacion Mov. : </b> <font color="blue">'+fecha_finalizacion+'</font></p><p><b>Tramite: </b> <font color="blue">'+record.data['num_tramite']+'</font></p><p><b>Estado: </b>'+record.data['estado']+'</p></div></tpl>';
 										 }
 										 else {
-											 return '<tpl><p><b>Fecha: </b> '+record.data['fecha_mov'].dateFormat('d/m/Y')+'</p><p><b>Tramite: </b> <font color="blue">'+record.data['num_tramite']+'</font></p><p><b>Estado: </b>'+record.data['estado']+'</p></div></tpl>';
+											 return '<tpl><p><b>Fecha: </b> '+record.data['fecha_mov'].dateFormat('d/m/Y')+'</p><p><b>Fecha finalizacion Mov. : </b> <font color="blue">'+fecha_finalizacion+'</font></p><p><b>Tramite: </b> <font color="blue">'+record.data['num_tramite']+'</font></p><p><b>Estado: </b>'+record.data['estado']+'</p></div></tpl>';
 
 										 }
 
@@ -1089,9 +1092,10 @@ header("content-type: text/javascript; charset=UTF-8");
 			{name:'fecha_dev_prestamo', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 			{name:'tipo_movimiento', type: 'string'},
 			{name:'id_proceso_wf_doc', type: 'numeric'},
-            {name:'nro_documento', type: 'string'},
-            {name:'tipo_documento', type: 'string'},
-            {name:'codigo_mov_motivo', type: 'string'}
+      {name:'nro_documento', type: 'string'},
+      {name:'tipo_documento', type: 'string'},
+      {name:'codigo_mov_motivo', type: 'string'},
+			{name:'fecha_finalizacion', type: 'date',dateFormat:'Y-m-d H:i:s.u'}
 
 		],
 		sortInfo:{
