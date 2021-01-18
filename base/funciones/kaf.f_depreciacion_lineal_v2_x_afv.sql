@@ -113,10 +113,10 @@ BEGIN
                 ,afv1.vida_util_resid_corregido,
                 afv1.vida_util_corregido,
                 afv1.deprec_acum_ant,
-                afv1.valor_residual,  -- monto vigente 
-                afv1.tipo_modificacion,               
+                afv1.valor_residual,  -- monto vigente
+                afv1.tipo_modificacion,
                 afv1.control_ajuste_vida,
-                afv1.fecha_ajuste                
+                afv1.fecha_ajuste
                 from kaf.vactivo_fijo_valor afv
                 inner join kaf.tmoneda_dep mon
                 on mon.id_moneda_dep = afv.id_moneda_dep
@@ -220,7 +220,17 @@ BEGIN
                 from kaf.f_get_tipo_cambio(v_rec.id_moneda, v_rec.id_moneda, v_tipo_cambio_anterior,  v_mes_dep);
             end if;
 
-
+            -- ini breydi vasquez 18-01-2021, motivo ufvs en decenso solo mes de diciembre 2020
+            -- 2.35998 ufv al 10 de diciembre 2020
+                 	if v_mes_dep > '01/11/2020'::date and v_mes_dep < '01/01/2021'::date then
+                      select v_rec_tc.o_tc_inicial,
+                             2.35998 as o_tc_final,
+                             2.35998 / v_rec_tc.o_tc_inicial as o_tc_factor,
+                             v_rec_tc.o_fecha_ini,
+                             v_rec_tc.o_fecha_fin
+                       into v_rec_tc;
+                  end if;
+      			-- fin
 
             --SI es llamado para depreciar .....
             if v_rec.depreciable = 'si' then
@@ -237,11 +247,11 @@ BEGIN
 
                 -- ini 13/01/2020 breydi.vasquez modificacion para ajuste de vida util
                 if ( v_rec.tipo_modificacion = 'ajuste_vida' and (date_trunc('month', v_mes_dep) = date_trunc('month',v_rec.fecha_ajuste + interval '1' month)) and v_rec.control_ajuste_vida >= v_mes_dep) then
-                 
+
                     v_ant_monto_vigente = v_rec.valor_residual;
 					v_dep_acum_actualiz = v_rec.deprec_acum_ant * v_rec_tc.o_tc_factor;
                     v_ant_vida_util  = v_rec.vida_util_resid_corregido;
-                	
+
                 end if;
                 -- fin bvp
 

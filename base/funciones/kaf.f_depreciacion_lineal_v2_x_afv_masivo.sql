@@ -213,7 +213,17 @@ BEGIN
                 from kaf.f_get_tipo_cambio(v_rec.id_moneda, v_rec.id_moneda, v_tipo_cambio_anterior,  v_mes_dep);
             end if;
 
-
+            -- ini breydi vasquez 18-01-2021, motivo ufvs en decenso solo mes de diciembre 2020.
+            -- 2.35998 ufv al 10 de diciembre 2020
+                 	if v_mes_dep > '01/11/2020'::date and v_mes_dep < '01/01/2021'::date then
+                      select v_rec_tc.o_tc_inicial,
+                             2.35998 as o_tc_final,
+                             2.35998 / v_rec_tc.o_tc_inicial as o_tc_factor,
+                             v_rec_tc.o_fecha_ini,
+                             v_rec_tc.o_fecha_fin
+                       into v_rec_tc;
+                  end if;
+      			-- fin
 
             --SI es llamado para depreciar .....
             if v_rec.depreciable = 'si' then
