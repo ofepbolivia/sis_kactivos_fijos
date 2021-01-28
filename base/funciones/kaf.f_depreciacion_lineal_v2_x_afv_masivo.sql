@@ -43,7 +43,7 @@ DECLARE
     v_id_periodo_subsistema integer;
     v_id_subsistema			integer;
     v_res                   varchar;
-
+	v_factor_ini			numeric;
 BEGIN
 
     v_nombre_funcion = 'kaf.f_depreciacion_lineal_v2_x_afv_masivo';
@@ -215,14 +215,19 @@ BEGIN
 
             -- ini breydi vasquez 18-01-2021, motivo ufvs en decenso solo mes de diciembre 2020.
             -- 2.35998 ufv al 10 de diciembre 2020
-                 	if v_mes_dep > '01/11/2020'::date and v_mes_dep < '01/01/2021'::date then
-                      select v_rec_tc.o_tc_inicial,
-                             2.35998 as o_tc_final,
-                             2.35998 / v_rec_tc.o_tc_inicial as o_tc_factor,
-                             v_rec_tc.o_fecha_ini,
-                             v_rec_tc.o_fecha_fin
-                       into v_rec_tc;
-                  end if;
+              if v_mes_dep > '01/11/2020'::date and v_mes_dep < '01/01/2021'::date then
+              	if v_rec.fecha_ini_dep > '10/12/2020'::date then
+                	v_factor_ini = 2.35998;
+                else
+                	v_factor_ini = v_rec_tc.o_tc_inicial;
+                end if;
+                select v_factor_ini,
+                       2.35998 as o_tc_final,
+                       2.35998 / v_factor_ini as o_tc_factor,
+                       v_rec_tc.o_fecha_ini,
+                       v_rec_tc.o_fecha_fin
+                 into v_rec_tc;
+              end if;
       			-- fin
 
             --SI es llamado para depreciar .....
@@ -410,3 +415,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION kaf.f_depreciacion_lineal_v2_x_afv_masivo (p_id_usuario integer, p_id_activo_fijo_valor varchar, p_fecha_hasta date)
+  OWNER TO postgres;

@@ -38,6 +38,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
        	/////////
        	// Combo activos
        	this.Cmp.id_activo_fijo.on('select', function(combo, record, index){
+					console.log("breydi ", record);
        		this.cargarResumenAf(record.data);
        		this.validarDatosMov();
        	}, this)
@@ -58,7 +59,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
        	}, this);
 
         //activo fijo valor
-        this.Cmp.id_activo_fijo.on('select', function(cmp,rec,el){            
+        this.Cmp.id_activo_fijo.on('select', function(cmp,rec,el){
             this.Cmp.id_activo_fijo_valor.reset();
             this.Cmp.id_activo_fijo_valor.modificado=true;
             this.Cmp.id_activo_fijo_valor.store.baseParams = {id_activo_fijo:rec.data.id_activo_fijo, id_moneda_dep: 1, fecha_fin:'no'}
@@ -72,8 +73,8 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 	    return !isNaN(obj - parseFloat(obj));
 	},
 
-	cargarResumenAf: function(data){        
-        
+	cargarResumenAf: function(data){
+
 		this.Cmp.res_codigo.setValue(data.codigo);
 		this.Cmp.res_denominacion.setValue(data.denominacion);
 		this.Cmp.res_descripcion.setValue(data.descripcion);
@@ -85,11 +86,11 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 		this.Cmp.res_dep_acum_real.setValue(data.depreciacion_acum_real_af);
 		this.Cmp.res_dep_per_real.setValue(data.depreciacion_per_real_af);
 		this.Cmp.res_vida_util_real.setValue(data.vida_util_real_af);
-		this.Cmp.res_fecha_ult_dep_real.setValue(data.fecha_ult_dep_real_af);                                        
+		this.Cmp.res_fecha_ult_dep_real.setValue(data.fecha_ult_dep_real_af);
 	},
-	
+
 	filter:{},
-			
+
 	Atributos:[
 		{
 			//configuracion del componente
@@ -99,7 +100,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 					name: 'id_movimiento_af'
 			},
 			type:'Field',
-			form:true 
+			form:true
 		},
 		{
 			//configuracion del componente
@@ -109,7 +110,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 					name: 'id_movimiento'
 			},
 			type:'Field',
-			form:true 
+			form:true
 		},
 		{
 			config:{
@@ -208,20 +209,20 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 300,
 				minChars: 2,
 				resizable: true,
-                renderer : function(value, p, record) {                                        
+                renderer : function(value, p, record) {
                     if (record.data['codigo'] != null){
 					    return String.format('{0}', record.data['codigo']);
                     }else{
                         return '';
                     }
 				},
-                tpl : '<tpl for="."><div class="x-combo-list-item"><p><b>Codigo:</b> {codigo}</p><p><b>Monto Vig. Org. :</b> {monto_inicio_dep}</p></div></tpl>',                                              
+                tpl : '<tpl for="."><div class="x-combo-list-item"><p><b>Codigo:</b> {codigo}</p><p><b>Monto Vig. Org. :</b> {monto_inicio_dep}</p></div></tpl>',
 			},
 			type: 'ComboBox',
-			id_grupo: 0,			
+			id_grupo: 0,
 			grid: true,
-			form: true			
-		},        
+			form: true
+		},
 		{
 			config: {
 				name: 'id_cat_estado_fun',
@@ -371,7 +372,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:0,
 			grid:false,
 			form:true
-		}, 
+		},
 		{
 			config:{
 				name: 'vida_util_residual',
@@ -381,11 +382,11 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 100,
 				maxLength:4
 			},
-			type:'NumberField',			
+			type:'NumberField',
 			id_grupo:0,
 			grid:false,
 			form:true
-		},               
+		},
 		{
 			config:{
 				name: 'depreciacion_acum',
@@ -403,16 +404,16 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
         {
             config:{
 				name: 'deprec_acum_ant',
-				fieldLabel: 'Depreciación Acum. Ant.',
+				fieldLabel: 'Depreciación Acum. Act.',
 				allowBlank: true,
 				anchor: '100%',
 				gwidth: 100
 			},
-			type:'NumberField',			
+			type:'NumberField',
 			id_grupo:0,
 			grid:false,
 			form:true
-		},          
+		},
         {
             config:{
 				name: 'valor_residual',
@@ -421,7 +422,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 				anchor: '100%',
 				gwidth: 100
 			},
-			type:'NumberField',			
+			type:'NumberField',
 			id_grupo:0,
 			grid:false,
 			form:true
@@ -434,11 +435,24 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 				anchor: '100%',
 				gwidth: 100
 			},
-			type:'NumberField',			
+			type:'NumberField',
 			id_grupo:0,
 			grid:false,
 			form:true
-		}, 
+		},
+		{
+			config:{
+					name: 'deprec_acu_ges_ant',
+					fieldLabel: 'Depre Acum. Ges. Ant.',
+					allowBlank: true,
+					anchor: '100%',
+					gwidth: 100
+				},
+				type:'NumberField',
+				id_grupo:0,
+				grid:false,
+				form:true
+			},
         {
             config:{
 				name: 'observacion',
@@ -447,11 +461,11 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 				anchor: '100%',
 				gwidth: 100
 			},
-			type:'TextField',			
+			type:'TextField',
 			id_grupo:0,
 			grid:false,
 			form:true
-		},                                                                 
+		},
 		{
 			config:{
 				name: 'fecha_reg',
@@ -459,7 +473,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-							format: 'd/m/Y', 
+							format: 'd/m/Y',
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 				type:'DateField',
@@ -535,7 +549,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-							format: 'd/m/Y', 
+							format: 'd/m/Y',
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 			type:'DateField',
@@ -716,7 +730,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 			form:true
 		}
 	],
-	tam_pag:50,	
+	tam_pag:50,
 	title:'Detalle Movimiento',
 	ActSave:'../../sis_kactivos_fijos/control/MovimientoAf/insertarMovimientoAf',
 	ActDel:'../../sis_kactivos_fijos/control/MovimientoAf/eliminarMovimientoAf',
@@ -743,9 +757,9 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 		{name:'cod_af', type: 'string'},
 		{name:'denominacion', type: 'string'},
 		{name:'estado_fun', type: 'string'},
-		{name:'motivo', type: 'string'},        
+		{name:'motivo', type: 'string'},
 		'descripcion','monto_vigente_real_af','vida_util_real_af','fecha_ult_dep_real_af','depreciacion_acum_real_af','depreciacion_per_real_af','desc_moneda_orig','monto_compra','vida_util_af','fecha_ini_dep','depreciacion_acum',
-        'vida_util_residual', 'valor_residual', 'deprec_acum_ant', 'monto_vig_actu','observacion','id_activo_fijo_valor','codigo'
+        'vida_util_residual', 'valor_residual', 'deprec_acum_ant', 'monto_vig_actu','observacion','id_activo_fijo_valor','codigo','deprec_acu_ges_ant'
 	],
 	sortInfo:{
 		field: 'id_movimiento_af',
@@ -760,7 +774,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
             '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Vida Util:&nbsp;&nbsp;</b> {vida_util}</p>',
             '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Motivo:&nbsp;&nbsp;</b> {motivo}</p>','<hr>',
             '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Usuario Registro:&nbsp;&nbsp;</b> {usr_reg}</p>',
-            '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Fecha Registro:&nbsp;&nbsp;</b> {fecha_reg}</p>',	       
+            '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Fecha Registro:&nbsp;&nbsp;</b> {fecha_reg}</p>',
             '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Usuario Modificación:&nbsp;&nbsp;</b> {usr_mod}</p>',
             '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Fecha Modificación:&nbsp;&nbsp;</b> {fecha_mod}</p>'
         )
@@ -799,10 +813,10 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
                 fecha_mov: this.maestro.fecha_mov
             };
         }
-		//este 
+		//este
 		Ext.apply(this.Cmp.id_activo_fijo.store.baseParams,{codMov:this.maestro.cod_movimiento});
 		this.Cmp.id_activo_fijo.modificado=true;
-		
+
 		//Setea parametros de filtro para el combo de motivos
 		this.Cmp.id_movimiento_motivo.store.baseParams = {
 			"start":"0","limit":"15","sort":"denominacion","dir":"ASC","par_filtro":"mmot.motivo","id_cat_movimiento":this.maestro.id_cat_movimiento
@@ -879,11 +893,11 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 
 	habilitarCampos: function(){
 		//Mostrar/ocultar componentes.
-		var swEstadoFun=false, swMotivo=false, swImporte=false, swVidaUtil=false,h=280,w=980,swDepAcum=false, 
-        swDepAcumAnt=false, swValResi=false, swVidaUtilRest=false,swMonVigAct=false,swObs=false, swAfVal=false;
+		var swEstadoFun=false, swMotivo=false, swImporte=false, swVidaUtil=false,h=280,w=980,swDepAcum=false,
+        swDepAcumAnt=false, swValResi=false, swVidaUtilRest=false,swMonVigAct=false,swObs=false, swAfVal=false, swDepAcGesAnt=false;
 
 		if(this.maestro.cod_movimiento=='alta'){
-			
+
 		} else if(this.maestro.cod_movimiento=='baja'){
 			swMotivo=true;
 			h=313;//163;
@@ -893,51 +907,59 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 			swVidaUtil=true;
 			h=355;//205;
 		} else if(this.maestro.cod_movimiento=='deprec'){
-			
+
 		} else if(this.maestro.cod_movimiento=='asig'){
-			
+
 		} else if(this.maestro.cod_movimiento=='devol'){
-			
+
 		} else if(this.maestro.cod_movimiento=='transf'){
-			
+
 		} else if(this.maestro.cod_movimiento=='retiro'){
-            
-            if (this.maestro.codigo_mov_motivo == 'PAR_RET' ){ 
-                swAfVal= true;                
-            }               
+
+            if (this.maestro.codigo_mov_motivo == 'PAR_RET' ){
+                swAfVal= true;
+            }
 			swMotivo=true;
 			h=313;//163;
-		} else if(this.maestro.cod_movimiento=='ajuste'){                                                                        
-            if (this.maestro.codigo_mov_motivo == 'AJ_VID_UT_PAS' ){                
-                swDepAcumAnt=true; 
-                swValResi=true;            
+		} else if(this.maestro.cod_movimiento=='ajuste'){
+            if (this.maestro.codigo_mov_motivo == 'AJ_VID_UT_PAS' ){
+                swDepAcumAnt=true;
+                swValResi=true;
                 swVidaUtilRest=true;
-                swVidaUtil=true;                
+                swVidaUtil=true;
                 if(this.maestro.fecha_mov.getMonth() != 11)  swMonVigAct=true;
-            }else{
-                swDepAcum=true;            
+            }else if(this.maestro.codigo_mov_motivo == 'AJ_ACT_PAS'){
+							swDepAcumAnt=true;
+							swValResi=true;
+							swVidaUtilRest=true;
+							swVidaUtil=true;
+							swMonVigAct=true;
+							swDepAcGesAnt=true;
+						}
+						else{
+                swDepAcum=true;
                 swMotivo=true;
                 swImporte=true;
                 swVidaUtil=true;
             }
 			    h=490;//205;
                 swObs=true;
-                
+
 		} else if(this.maestro.cod_movimiento=='tranfdep'){
-			
+
 		} else if(this.maestro.cod_movimiento=='mejora'){
 			swMotivo=true;
 			swImporte=true;
 			swVidaUtil=true;
 			h=355;//205;
 		} else if(this.maestro.cod_movimiento=='actua'){
-			
+
 		} else if(this.maestro.cod_movimiento=='divis'){
-			
+
 		} else if(this.maestro.cod_movimiento=='desgl'){
-			
+
 		} else if(this.maestro.cod_movimiento=='intpar'){
-			
+
 		}
 
 		this.Cmp.id_cat_estado_fun.setVisible(swEstadoFun);
@@ -948,11 +970,12 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 		this.Cmp.res_saldo_vida_util.setVisible(swVidaUtil);
 		this.Cmp.res_saldo_depreciacion_acum.setVisible(swDepAcum);
 		this.Cmp.moneda_base.setVisible(swImporte);
-        this.Cmp.deprec_acum_ant.setVisible(swDepAcumAnt);        
+        this.Cmp.deprec_acum_ant.setVisible(swDepAcumAnt);
         this.Cmp.valor_residual.setVisible(swValResi);
-        this.Cmp.vida_util_residual.setVisible(swVidaUtilRest);                
+        this.Cmp.vida_util_residual.setVisible(swVidaUtilRest);
         this.Cmp.monto_vig_actu.setVisible(swMonVigAct);
-        this.Cmp.observacion.setVisible(swObs);    
+				this.Cmp.deprec_acu_ges_ant.setVisible(swDepAcGesAnt);
+        this.Cmp.observacion.setVisible(swObs);
         this.Cmp.id_activo_fijo_valor.setVisible(swAfVal);
 
 		this.Cmp.id_cat_estado_fun.allowBlank=!swEstadoFun;
@@ -963,9 +986,10 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 		this.Cmp.res_saldo_vida_util.allowBlank=!swVidaUtil;
 		this.Cmp.res_saldo_depreciacion_acum.allowBlank=!swDepAcum;
         this.Cmp.deprec_acum_ant.allowBlank=!swDepAcumAnt;
-        this.Cmp.valor_residual.allowBlank=!swValResi;        
-        this.Cmp.vida_util_residual.allowBlank=!swVidaUtilRest;        
-        this.Cmp.monto_vig_actu.allowBlank=!swMonVigAct;                        
+        this.Cmp.valor_residual.allowBlank=!swValResi;
+        this.Cmp.vida_util_residual.allowBlank=!swVidaUtilRest;
+        this.Cmp.monto_vig_actu.allowBlank=!swMonVigAct;
+				// this.Cmp.deprec_acu_ges_ant.allowBlank=!swDepAcGesAnt;
         this.Cmp.id_activo_fijo_valor.allowBlank=!swAfVal;
 		//Resize window
     	this.window.setSize(w,h);
@@ -997,7 +1021,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 	liberaMenu : function() {
 		var tb = Phx.vista.MovimientoAf.superclass.liberaMenu.call(this);
 		if(this.maestro.estado != 'borrador'){
-			this.getBoton('new').disable();						
+			this.getBoton('new').disable();
 		}
 		this.getBoton('btnDetDep').disable();
 		return tb;
@@ -1011,7 +1035,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 		} else {
 			Phx.vista.MovimientoAf.superclass.onButtonEdit.call(this);
 	    	this.cargarMonedaBase();
-	    	this.habilitarCampos();            
+	    	this.habilitarCampos();
 
 	    	this.cargarResumenAf(this.sm.getSelected().data);
 	    	//Carga los inc. o dec. reales
@@ -1019,7 +1043,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 	    	var temp1 = Ext.util.Format.round(this.Cmp.depreciacion_acum.getValue()-this.Cmp.res_dep_acum_real.getValue(),2);
 	    	this.Cmp.res_saldo_importe.setValue(temp);
 			this.Cmp.res_saldo_vida_util.setValue(this.Cmp.vida_util.getValue()-this.Cmp.res_vida_util_real.getValue());
-			this.Cmp.res_saldo_depreciacion_acum.setValue(temp1);            
+			this.Cmp.res_saldo_depreciacion_acum.setValue(temp1);
 		}
 		this.IdMovimientoAf=this.sm.getSelected().data.id_movimiento_af;
     },
@@ -1030,7 +1054,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
     		this.reinicializarParams();
     		this.abrirVentanaMovEspeciales();
     	} else {
-    		Phx.vista.MovimientoAf.superclass.onButtonNew.call(this);	
+    		Phx.vista.MovimientoAf.superclass.onButtonNew.call(this);
     	}
     	this.cargarMonedaBase();
     	//Variable temporal
@@ -1042,7 +1066,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
         width: '100%',
         defaults: {
            border: false
-        },            
+        },
         items: [{
 			        bodyStyle: 'padding-right:5px;',
 			        items: [{
@@ -1277,7 +1301,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
         	border: false,
         	handler: function(btn,event){
         		if(this.me_activo_fijo.getValue()){
-        			this.openInputForm();	
+        			this.openInputForm();
         		} else {
         			Ext.MessageBox.alert('Mensaje','Previamente debe seleccionar un activo fijo');
         		}
@@ -1336,7 +1360,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
         		if(node.isLeaf()){
         			this.me_btn_eliminar_intpar.setDisabled(true);
         			return;
-        		} 
+        		}
         		Ext.MessageBox.confirm('Confirmación','¿Está seguro de quitar el Activo Fijo?',function(resp,cmp){
 					if(resp=='yes'){
 
@@ -1363,7 +1387,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 
 
 
-        				
+
 					}
 				}, this);
         	},
@@ -1386,7 +1410,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
         //Arbol izquierdo
     	this.treeLeft = new Ext.tree.TreePanel({
     		title: 'Valores del Activo Fijo',
-    		animate:true, 
+    		animate:true,
             autoScroll:true,
             singleClickExpand: true,
             loader: new Ext.tree.TreeLoader({
@@ -1411,7 +1435,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
         //Árbol derecho
     	this.treeRight = new Ext.tree.TreePanel({
     		title: 'Nuevos Activos Fijos',
-    		animate:true, 
+    		animate:true,
             autoScroll:true,
             enableDD:true,
             containerScroll: false,
@@ -1427,7 +1451,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
         if(this.maestro.cod_movimiento=='divis'){
         	//Árbol izquierdo síncrono
         	var root = new Ext.tree.TreeNode({
-	            text: 'Valores AF (Saldo: )', 
+	            text: 'Valores AF (Saldo: )',
 	            draggable:false,
 	            expandable: true,
 	            expanded: true
@@ -1439,7 +1463,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 	        this.treeLeft.setRootNode(root);
 	        //Árbol derecho asíncrono
 	        var rootR = new Ext.tree.AsyncTreeNode({
-	            text: 'Nuevos Activos Fijos', 
+	            text: 'Nuevos Activos Fijos',
 	            draggable:false,
 	            expandable: true
 	        });
@@ -1458,14 +1482,14 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
         } else if(this.maestro.cod_movimiento=='desgl'){
         	//Árbol izquierdo asíncrono
         	var root = new Ext.tree.AsyncTreeNode({
-	            text: 'Valores AF', 
+	            text: 'Valores AF',
 	            draggable:false,
 	            expandable: true
 	        });
 	        this.treeLeft.setRootNode(root);
 	        //Árbol derecho síncrono
 	        var rootR = new Ext.tree.TreeNode({
-	            text: 'Nuevos Activos Fijos', 
+	            text: 'Nuevos Activos Fijos',
 	            draggable:false,
 	            expandable: true,
 	            expanded: true
@@ -1501,14 +1525,14 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
         } else if(this.maestro.cod_movimiento=='intpar'){
         	//Árbol izquierdo asíncrono
         	var root = new Ext.tree.AsyncTreeNode({
-	            text: 'Valores AF', 
+	            text: 'Valores AF',
 	            draggable:false,
 	            expandable: true
 	        });
 	        this.treeLeft.setRootNode(root);
 	        //Árbol derecho síncrono
 	        var rootR = new Ext.tree.TreeNode({
-	            text: 'Nuevos Activos Fijos', 
+	            text: 'Nuevos Activos Fijos',
 	            draggable:false,
 	            expandable: true,
 	            expanded: true,
@@ -1583,7 +1607,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
         	}
 
        	}, this);
-        
+
 
         //Form
     	this.formMovEsp = new Ext.form.FormPanel({
@@ -1636,14 +1660,14 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
             					this.treeRight
             				]
             			}),
-            			
+
             		]
             	})
             ],
             padding: this.paddingForm,
             bodyStyle: this.bodyStyleForm,
             border: this.borderForm,
-            frame: this.frameForm, 
+            frame: this.frameForm,
             autoScroll: false,
             autoDestroy: true,
             autoScroll: true,
@@ -1680,7 +1704,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
     		} else {
     			title='Nuevo Registro - '+this.maestro.movimiento+' (Al '+fecha.format("d/m/Y")+')';
     		}
-    		
+
 	    	this.windowMovEsp.setTitle(title);
 	    	this.windowMovEsp.show();
     	}
@@ -2078,7 +2102,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
             padding: this.paddingForm,
             bodyStyle: this.bodyStyleForm,
             border: this.borderForm,
-            frame: this.frameForm, 
+            frame: this.frameForm,
             autoScroll: false,
             autoDestroy: true,
             autoScroll: true,
@@ -2389,7 +2413,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 
 	        	this.treeRight.getRootNode().appendChild(newNode);
         	}
-        	
+
 
 		}
 

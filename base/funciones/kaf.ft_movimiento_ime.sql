@@ -1627,7 +1627,8 @@ BEGIN
                                               maf.deprec_acum_ant,
                                               maf.valor_residual,
                                               maf.monto_vig_actu,
-                                              mot.codigo_mov_motivo
+                                              mot.codigo_mov_motivo,
+                                              maf.deprec_acu_ges_ant
                                               -- fin breydi.vasquez
                                               from kaf.tmovimiento_af maf
                                               inner join kaf.tmovimiento mov
@@ -1699,6 +1700,65 @@ BEGIN
                                 where id_activo_fijo_valor = v_id_af_valor_mod
                                 and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov)::integer -1 )::date);
 
+                              end if;
+                    elsif v_registros_af_mov.codigo_mov_motivo = 'AJ_ACT_PAS'then
+                             select va.id_activo_fijo_valor into v_id_af_valor_mod
+                                from kaf.tactivo_fijo_valores va
+                                where va.id_activo_fijo = v_registros_af_mov.id_activo_fijo
+                                and va.tipo = 'alta'
+                                and va.id_moneda = 1
+                                and va.fecha_fin is null;
+
+
+                              v_mes_fecha =  extract(month from v_registros_af_mov.fecha_mov)::integer;
+                              if v_mes_fecha = 12 then
+                                  v_anio = extract(year from v_registros_af_mov.fecha_mov)::integer + 1;
+                              else
+	                              v_anio = extract(year from v_registros_af_mov.fecha_mov)::integer;
+                              end if;
+
+                              update kaf.tactivo_fijo_valores
+                              set
+                              vida_util_corregido = v_registros_af_mov.vida_util,
+                              vida_util_resid_corregido = v_registros_af_mov.vida_util_residual,
+                              valor_residual = v_registros_af_mov.valor_residual,
+                              deprec_acum_ant = v_registros_af_mov.deprec_acum_ant,
+                              tipo_modificacion = 'ajuste_pas_act',
+                              control_ajuste_vida = (('01-12-'||v_anio)::date),
+                              fecha_ajuste = v_registros_af_mov.fecha_mov,
+                              monto_vig_actu_mod = v_registros_af_mov.monto_vig_actu
+                              where id_activo_fijo_valor = v_id_af_valor_mod;
+
+                              if v_mes_fecha = 12 then
+
+                                update kaf.tmovimiento_af_dep
+                                set
+                                    tipo_modificacion = 'ajuste_pas_act',
+                                    depreciacion_acum_corregido	 = v_registros_af_mov.deprec_acum_ant,
+                                    fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                where id_activo_fijo_valor = v_id_af_valor_mod
+                                and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov))::date);
+
+                              else
+
+                                if v_registros_af_mov.deprec_acu_ges_ant is null or v_registros_af_mov.vida_util_residual > 0 then
+                                   v_depreciacion_acum_corregido = kaf.f_depre_inversa_mes_truncado(v_registros_af_mov.monto_vig_actu, v_registros_af_mov.valor_residual, v_registros_af_mov.deprec_acum_ant, v_registros_af_mov.vida_util_residual, v_registros_af_mov.fecha_mov);
+                                      update kaf.tmovimiento_af_dep
+                                      set
+                                        tipo_modificacion = 'ajuste_pas_act',
+                                        depreciacion_acum_corregido	 = v_depreciacion_acum_corregido,
+                                        fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                    where id_activo_fijo_valor = v_id_af_valor_mod
+                                    and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov)::integer -1 )::date);
+								else
+                                    update kaf.tmovimiento_af_dep
+                                    set
+                                      tipo_modificacion = 'ajuste_pas_act',
+                                      depreciacion_acum_corregido	 = v_registros_af_mov.deprec_acu_ges_ant,
+                                      fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                  where id_activo_fijo_valor = v_id_af_valor_mod
+                                  and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov)::integer -1 )::date);
+                                end if;
                               end if;
                         elsif v_registros_af_mov.codigo_mov_motivo = 'AJ_VID_RES' then
 

@@ -42,7 +42,7 @@ DECLARE
     v_id_periodo_subsistema integer;
     v_id_subsistema			integer;
     v_res                   varchar;
-
+    v_factor_ini			numeric;
 BEGIN
 
     v_nombre_funcion = 'kaf.f_depreciacion_lineal_v2_x_afv';
@@ -61,7 +61,7 @@ BEGIN
                 afv.id_activo_fijo_valor,
                 afv.id_moneda_dep,
                 afv.fecha_ult_dep_real,
-                case when afv1.tipo_modificacion = 'ajuste_revalorizado' then
+                case when afv1.tipo_modificacion = 'ajuste_vida_residual' then
 	                ('01/'||date_part('month'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar||'/'||date_part('year'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar)::date
 				else
                     case
@@ -71,7 +71,7 @@ BEGIN
                     end
                 end as mes_dep,
                 cla.depreciable,
-                case when afv1.tipo_modificacion = 'ajuste_revalorizado' then
+                case when afv1.tipo_modificacion = 'ajuste_vida_residual' then
 	                kaf.f_months_between(('01/'||date_part('month'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar||'/'||date_part('year'::text, afv.fecha_ult_dep_real + interval '1' month)::varchar)::date, v_fecha_hasta)
                 else
                     case
@@ -116,7 +116,8 @@ BEGIN
                 afv1.valor_residual,  -- monto vigente
                 afv1.tipo_modificacion,
                 afv1.control_ajuste_vida,
-                afv1.fecha_ajuste
+                afv1.fecha_ajuste,
+                afv1.monto_vig_actu_mod
                 from kaf.vactivo_fijo_valor afv
                 inner join kaf.tmoneda_dep mon
                 on mon.id_moneda_dep = afv.id_moneda_dep
@@ -222,14 +223,19 @@ BEGIN
 
             -- ini breydi vasquez 18-01-2021, motivo ufvs en decenso solo mes de diciembre 2020
             -- 2.35998 ufv al 10 de diciembre 2020
-                 	if v_mes_dep > '01/11/2020'::date and v_mes_dep < '01/01/2021'::date then
-                      select v_rec_tc.o_tc_inicial,
-                             2.35998 as o_tc_final,
-                             2.35998 / v_rec_tc.o_tc_inicial as o_tc_factor,
-                             v_rec_tc.o_fecha_ini,
-                             v_rec_tc.o_fecha_fin
-                       into v_rec_tc;
-                  end if;
+            if v_mes_dep > '01/11/2020'::date and v_mes_dep < '01/01/2021'::date then
+              if v_rec.fecha_ini_dep > '10/12/2020'::date then
+                v_factor_ini = 2.35998;
+              else
+                v_factor_ini = v_rec_tc.o_tc_inicial;
+              end if;
+              select v_factor_ini,
+                     2.35998 as o_tc_final,
+                     2.35998 / v_factor_ini as o_tc_factor,
+                     v_rec_tc.o_fecha_ini,
+                     v_rec_tc.o_fecha_fin
+               into v_rec_tc;
+            end if;
       			-- fin
 
             --SI es llamado para depreciar .....
@@ -249,8 +255,19 @@ BEGIN
                 if ( v_rec.tipo_modificacion = 'ajuste_vida' and (date_trunc('month', v_mes_dep) = date_trunc('month',v_rec.fecha_ajuste + interval '1' month)) and v_rec.control_ajuste_vida >= v_mes_dep) then
 
                     v_ant_monto_vigente = v_rec.valor_residual;
-					v_dep_acum_actualiz = v_rec.deprec_acum_ant * v_rec_tc.o_tc_factor;
+					          v_dep_acum_actualiz = v_rec.deprec_acum_ant * v_rec_tc.o_tc_factor;
                     v_ant_vida_util  = v_rec.vida_util_resid_corregido;
+
+                elsif ( v_rec.tipo_modificacion = 'ajuste_pas_act' and (date_trunc('month', v_mes_dep) = date_trunc('month',v_rec.fecha_ajuste + interval '1' month)) and v_rec.control_ajuste_vida >= v_mes_dep) then
+
+                  v_ant_monto_vigente = v_rec.valor_residual;
+                  v_dep_acum_actualiz = v_rec.deprec_acum_ant * v_rec_tc.o_tc_factor;
+                  v_ant_vida_util  = v_rec.vida_util_resid_corregido;
+                  if v_ant_vida_util > 0 then
+                      v_monto_actualiz = v_rec.monto_vig_actu_mod * v_rec_tc.o_tc_factor;
+                  else
+                      v_ant_monto_actualiz = v_rec.monto_vig_actu_mod;
+                  end if;
 
                 end if;
                 -- fin bvp

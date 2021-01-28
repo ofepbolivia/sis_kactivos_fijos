@@ -76,7 +76,7 @@ class MODReportes extends MODbase{
 		$this->captura('descripcion','varchar');
 		$this->captura('desc_funcionario1','text');
 		$this->captura('meses','integer');
-		$this->captura('importe','numeric');		
+		$this->captura('importe','numeric');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -333,15 +333,15 @@ class MODReportes extends MODbase{
         $this->captura('codigo_raiz','varchar');
         $this->captura('id_clasificacion_raiz','INTEGER');
 
-		$this->captura('depreciacion_per_final','NUMERIC'); 
-        $this->captura('depreciacion_per_actualiz_final','NUMERIC'); 
+		$this->captura('depreciacion_per_final','NUMERIC');
+        $this->captura('depreciacion_per_actualiz_final','NUMERIC');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
 
 		//echo $this->consulta;exit;
-		
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
@@ -370,7 +370,7 @@ class MODReportes extends MODbase{
 		$this->setParametro('actu_perido','actu_perido','varchar');
 		$this->setParametro('baja_retiro','baja_retiro','varchar');
 		$this->setParametro('ubi_nac_inter','ubi_nac_inter','varchar');
-
+    $this->setParametro('id_clasificacion','id_clasificacion','integer');
 		//Definicion de la lista del resultado del query
 		$this->captura('codigo','varchar(50)');
 
