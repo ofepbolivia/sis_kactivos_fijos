@@ -259,7 +259,7 @@ BEGIN
               else
                 v_factor_ini = v_rec_tc.o_tc_inicial;
               end if;
-              select v_factor_ini,
+              select v_factor_ini as o_tc_inicial,
                      2.35998 as o_tc_final,
                      2.35998 / v_factor_ini as o_tc_factor,
                      v_rec_tc.o_fecha_ini,

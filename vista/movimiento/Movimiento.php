@@ -283,6 +283,29 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			{
 				config:{
+					name: 'tipo_drepeciacion',
+					fieldLabel: 'Tipo Depreciación',
+					allowBlank: false,
+					anchor: '80%',
+					gwidth: 90,
+                    triggerAction : 'all',
+
+                    mode : 'local',
+                    store : new Ext.data.ArrayStore({
+                    fields : ['tipo', 'valor'],
+                    data : [['deprec_ministerio', 'Depreciación Ministerio'],
+                            ['deprec_impuesto', 'Depreciación Impuestos']]
+                    }),
+                    valueField : 'tipo',
+                    displayField : 'valor'
+				},
+				type:'ComboBox',
+				id_grupo:0,
+				grid:false,
+				form:true
+			},
+			{
+				config:{
 					name: 'fecha_mov',
 					fieldLabel: 'Fecha',
 					allowBlank: false,
@@ -363,7 +386,7 @@ header("content-type: text/javascript; charset=UTF-8");
 							desc='<tpl for="."><div style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:300px; height:45px; float:left;"><p><b>Dpto.:</b> '+record.data['depto']+'</p></div></tpl>';
 						}
 						else {
-							desc='<tpl for="."><div class="x-combo-list-item" ><p><b>Dpto.:</b> '+record.data['depto']+'</p></div></tpl>';
+							desc='<tpl for="."><div class="x-combo-list-item" ><p><b>Dpto.:</b> '+record.data['depto']+'</p><p><b>Tipo Deprec/Act.</b> <font color="blue">'+record.data['tipo_drepeciacion']+'</font></p></div></tpl>';
 						}
 						return desc;
 					}
@@ -1095,7 +1118,8 @@ header("content-type: text/javascript; charset=UTF-8");
       {name:'nro_documento', type: 'string'},
       {name:'tipo_documento', type: 'string'},
       {name:'codigo_mov_motivo', type: 'string'},
-			{name:'fecha_finalizacion', type: 'date',dateFormat:'Y-m-d H:i:s.u'}
+			{name:'fecha_finalizacion', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+			{name:'tipo_drepeciacion',type:'string'}
 
 		],
 		sortInfo:{

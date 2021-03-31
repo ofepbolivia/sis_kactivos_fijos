@@ -146,6 +146,7 @@ BEGIN
         coalesce(v_parametros.tipo_asig,null) as tipo_asig,
         coalesce(v_parametros.nro_documento,null) as nro_documento,
         coalesce(v_parametros.tipo_documento,null) as tipo_documento,
+        coalesce(v_parametros.tipo_drepeciacion,null) as tipo_drepeciacion,
         v_reg_masivo as reg_masivo
         into v_rec_af;
 
@@ -1056,7 +1057,11 @@ BEGIN
                         where id_movimiento_af = v_rec.id_movimiento_af;
 
                     end loop;*/
-                    v_resp = kaf.f_depreciacion_lineal_v2(p_id_usuario,v_movimiento.id_movimiento);
+                    IF v_movimiento.tipo_drepeciacion = 'deprec_impuesto' THEN
+                        v_resp = kaf.f_depreciacion_lineal_v2_f_impuestos(p_id_usuario,v_movimiento.id_movimiento);
+                    ELSE
+                          v_resp = kaf.f_depreciacion_lineal_v2(p_id_usuario,v_movimiento.id_movimiento);
+                    END IF;
 
                 elsif v_codigo_estado_siguiente = 'cbte' then
 
@@ -1131,7 +1136,11 @@ BEGIN
                                 where id_movimiento = v_movimiento.id_movimiento) loop
                         v_resp = kaf.f_depreciacion_lineal(p_id_usuario,v_rec.id_activo_fijo,v_movimiento.fecha_hasta,  v_rec.id_movimiento_af,'NO'); --el ultimo parametro indi
                     end loop;*/
-                    v_resp = kaf.f_depreciacion_lineal_v2(p_id_usuario,v_movimiento.id_movimiento);
+                     IF v_movimiento.tipo_drepeciacion = 'deprec_impuesto' THEN
+ 	                      v_resp = kaf.f_depreciacion_lineal_v2_f_impuestos(p_id_usuario,v_movimiento.id_movimiento);
+                     ELSE
+                           v_resp = kaf.f_depreciacion_lineal_v2(p_id_usuario,v_movimiento.id_movimiento);
+                     END IF;
 
                 elsif v_codigo_estado_siguiente = 'cbte' then
 
@@ -2069,20 +2078,38 @@ BEGIN
             --Obtener datos tipo estado
              if v_movimiento.cod_movimiento = 'deprec' then
                 if v_codigo_estado = 'borrador' then
+                -- tipo depreciacion
+                  IF v_movimiento.tipo_drepeciacion = 'deprec_impuesto' THEN
+                  --Eliminar registros de la depreciacion
+                  delete from kaf.tmovimiento_af_dep_impuestos
+                  where id_movimiento_af in (select id_movimiento_af
+                                          from kaf.tmovimiento_af
+                                          where id_movimiento = v_movimiento.id_movimiento);
+                  ELSE
                     --Eliminar registros de la depreciacion
                     delete from kaf.tmovimiento_af_dep
                     where id_movimiento_af in (select id_movimiento_af
                                             from kaf.tmovimiento_af
                                             where id_movimiento = v_movimiento.id_movimiento);
+                  END IF;
                 end if;
             elsif v_movimiento.cod_movimiento = 'actua' then
 
                 if v_codigo_estado = 'borrador' then
+                -- tipo depreciacion
+                  IF v_movimiento.tipo_drepeciacion = 'deprec_impuesto' THEN
+                  --Eliminar registros de la depreciacion
+                  delete from kaf.tmovimiento_af_dep_impuestos
+                  where id_movimiento_af in (select id_movimiento_af
+                                          from kaf.tmovimiento_af
+                                          where id_movimiento = v_movimiento.id_movimiento);
+                  ELSE
                     --Eliminar registros de la depreciacion
                     delete from kaf.tmovimiento_af_dep
                     where id_movimiento_af in (select id_movimiento_af
                                             from kaf.tmovimiento_af
                                             where id_movimiento = v_movimiento.id_movimiento);
+                  END IF;
                 end if;
             end if;
 

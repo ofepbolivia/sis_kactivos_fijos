@@ -464,5 +464,62 @@ class MODReportes extends MODbase{
         return $this->respuesta;
     }
 
+    function listarRepDepreciacionImpuestos(){
+      //Definicion de variables para ejecucion del procedimientp
+  		$this->procedimiento='kaf.f_reportes_dep_impuestos';
+  		$this->transaccion='SKA_RDEPIMP_SEL';
+  		$this->tipo_procedimiento='SEL';//tipo de transaccion
+  		$this->setCount(false);
+
+  		//Define los parametros para la funcion
+  		$this->setParametro('tipo_salida','tipo_salida','varchar');
+  		$this->setParametro('fecha_hasta','fecha_hasta','date');
+  		$this->setParametro('estado','estado','varchar');
+  		$this->setParametro('id_moneda','id_moneda','integer');
+  		$this->setParametro('af_deprec','af_deprec','varchar');
+  		$this->setParametro('desc_nombre','desc_nombre','varchar');
+  		$this->setParametro('total_consol','total_consol','varchar');
+  		$this->setParametro('estado_depre','estado_depre','varchar');
+  		$this->setParametro('tipo_repo','tipo_repo','varchar');
+  		$this->setParametro('actu_perido','actu_perido','varchar');
+  		$this->setParametro('baja_retiro','baja_retiro','varchar');
+  		$this->setParametro('ubi_nac_inter','ubi_nac_inter','varchar');
+      $this->setParametro('id_clasificacion','id_clasificacion','integer');
+  		//Definicion de la lista del resultado del query
+  		$this->captura('codigo','varchar(50)');
+
+      $this->captura('denominacion','varchar');
+      $this->captura('fecha_ini_dep','date');
+      $this->captura('monto_vigente_orig_100','numeric');
+      $this->captura('monto_vigente_orig','numeric');
+      $this->captura('inc_actualiz','numeric');
+      $this->captura('monto_actualiz','numeric');
+      $this->captura('vida_util_orig','integer');
+      $this->captura('vida_util','integer');
+      $this->captura('depreciacion_acum_gest_ant','numeric');
+      $this->captura('depreciacion_acum_actualiz_gest_ant','numeric');
+      $this->captura('depreciacion_per','numeric');
+      $this->captura('depreciacion_acum','numeric');
+      $this->captura('monto_vigente','numeric');
+      $this->captura('nivel','integer');
+      $this->captura('orden','bigint');
+      $this->captura('tipo','varchar(10)');
+      $this->captura('reval','numeric');
+      $this->captura('ajust','numeric');
+      $this->captura('baja','numeric');
+      $this->captura('transito','numeric');
+      $this->captura('leasing','numeric');
+      $this->captura('inc_ac_acum','numeric');
+      $this->captura('color','varchar');
+      $this->captura('val_acu_perido','numeric');
+      $this->captura('porce_depre','numeric');
+
+      //Ejecuta la instruccion
+      $this->armarConsulta();
+      //echo $this->consulta;exit;
+      $this->ejecutarConsulta();
+      //Devuelve la respuesta
+      return $this->respuesta;
+    }
 }
 ?>

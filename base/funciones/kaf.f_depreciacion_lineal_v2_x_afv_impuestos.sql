@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION kaf.f_depreciacion_lineal_v2_x_afv (
+CREATE OR REPLACE FUNCTION kaf.f_depreciacion_lineal_v2_x_afv_impuestos (
   p_id_usuario integer,
   p_id_activo_fijo_valor integer,
   p_fecha_hasta date
@@ -6,9 +6,9 @@ CREATE OR REPLACE FUNCTION kaf.f_depreciacion_lineal_v2_x_afv (
 RETURNS varchar AS
 $body$
 /*
-Autor: RCM
-Fecha: 21/12/2017
-Descripción: Depreciación lineal de activos fijos v2
+Autor: BVP
+Fecha: 30/03/2021
+Descripción: Depreciación lineal de activos fijos v2 Impuestos
 */
 DECLARE
 
@@ -45,7 +45,7 @@ DECLARE
     v_factor_ini			numeric;
 BEGIN
 
-    v_nombre_funcion = 'kaf.f_depreciacion_lineal_v2_x_afv';
+    v_nombre_funcion = 'kaf.f_depreciacion_lineal_v2_x_afv_impuestos';
 
     --Obtención de la fecha tope de la depreciación
     v_fecha_hasta = p_fecha_hasta;
@@ -118,7 +118,7 @@ BEGIN
                 afv1.control_ajuste_vida,
                 afv1.fecha_ajuste,
                 afv1.monto_vig_actu_mod
-                from kaf.vactivo_fijo_valor afv
+                from kaf.vactivo_fijo_valor_impuestos afv
                 inner join kaf.tmoneda_dep mon
                 on mon.id_moneda_dep = afv.id_moneda_dep
                 inner join kaf.tactivo_fijo af
@@ -173,11 +173,11 @@ BEGIN
 
             select mdep.tipo_cambio_fin
             into v_tipo_cambio_anterior
-            from kaf.tmovimiento_af_dep mdep
+            from kaf.tmovimiento_af_dep_impuestos mdep
             where mdep.id_activo_fijo_valor = v_rec.id_activo_fijo_valor_original
             and mdep.id_moneda_dep = v_rec.id_moneda_dep
             and mdep.fecha = (select max(fecha)
-                            from kaf.tmovimiento_af_dep
+                            from kaf.tmovimiento_af_dep_impuestos
                             where id_activo_fijo_valor = v_rec.id_activo_fijo_valor_original
                             and id_moneda_dep = v_rec.id_moneda_dep);
 
@@ -220,23 +220,6 @@ BEGIN
                 into v_rec_tc
                 from kaf.f_get_tipo_cambio(v_rec.id_moneda, v_rec.id_moneda, v_tipo_cambio_anterior,  v_mes_dep);
             end if;
-
-            -- ini breydi vasquez 18-01-2021, motivo ufvs en decenso solo mes de diciembre 2020
-            -- 2.35998 ufv al 10 de diciembre 2020
-            if v_mes_dep > '01/11/2020'::date and v_mes_dep < '01/01/2021'::date then
-              if v_rec.fecha_ini_dep > '10/12/2020'::date then
-                v_factor_ini = 2.35998;
-              else
-                v_factor_ini = v_rec_tc.o_tc_inicial;
-              end if;
-              select v_factor_ini as o_tc_inicial,
-                     2.35998 as o_tc_final,
-                     2.35998 / v_factor_ini as o_tc_factor,
-                     v_rec_tc.o_fecha_ini,
-                     v_rec_tc.o_fecha_fin
-               into v_rec_tc;
-            end if;
-      			-- fin
 
             --SI es llamado para depreciar .....
             if v_rec.depreciable = 'si' then
@@ -319,13 +302,13 @@ BEGIN
             end if;
 
 			--Verifica que no exista el reg. id_monea_dep, id_activo_fijo_valor, fecha
-            if not exists(select 1 from kaf.tmovimiento_af_dep
+            if not exists(select 1 from kaf.tmovimiento_af_dep_impuestos
             				where id_activo_fijo_valor = v_rec.id_activo_fijo_valor
                             and id_moneda_dep = v_rec.id_moneda_dep
                             and fecha = v_mes_dep) then
 
                 --Inserción en base de datos
-                INSERT INTO kaf.tmovimiento_af_dep (
+                INSERT INTO kaf.tmovimiento_af_dep_impuestos (
                 id_usuario_reg,
                 id_usuario_mod,
                 fecha_reg,

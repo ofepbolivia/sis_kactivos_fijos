@@ -160,7 +160,12 @@ BEGIN
                     ew.fecha_reg
                   else
                   	null
-                  end as fecha_finalizacion
+                  end as fecha_finalizacion,
+                  case when mov.tipo_drepeciacion = ''deprec_impuesto'' then
+                  	''Depreciación Impuestos''::varchar
+                  else
+                  	''Depreciación Ministerio''::varchar
+                  end as tipo_drepeciacion
 						from kaf.tmovimiento mov
 						inner join segu.tusuario usu1 on usu1.id_usuario = mov.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = mov.id_usuario_mod

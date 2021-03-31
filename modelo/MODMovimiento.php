@@ -81,8 +81,8 @@ class MODMovimiento extends MODbase{
     $this->captura('nro_documento','varchar');
     $this->captura('tipo_documento','varchar');
     $this->captura('codigo_mov_motivo','varchar');
-		$this->captura('fecha_finalizacion','timestamp');		
-
+		$this->captura('fecha_finalizacion','timestamp');
+		$this->captura('tipo_drepeciacion','varchar');
 		//Ejecuta la instruccion
         $this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -126,7 +126,7 @@ class MODMovimiento extends MODbase{
 
         $this->setParametro('nro_documento','nro_documento','varchar');
         $this->setParametro('tipo_documento','tipo_documento','varchar');
-
+				$this->setParametro('tipo_drepeciacion','tipo_drepeciacion','varchar');
 
 
 		//Ejecuta la instruccion

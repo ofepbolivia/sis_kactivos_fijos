@@ -1475,3 +1475,7 @@ ALTER TABLE kaf.tmovimiento_af
   ADD COLUMN deprec_acu_ges_ant NUMERIC;
 
 /***********************************F-SCP-BVP-KAF-1-28/01/2021****************************************/
+/***********************************I-SCP-BVP-KAF-1-31/03/2021****************************************/
+ALTER TABLE kaf.tmovimiento
+  ADD COLUMN tipo_drepeciacion VARCHAR(20);
+/***********************************F-SCP-BVP-KAF-1-31/03/2021****************************************/
