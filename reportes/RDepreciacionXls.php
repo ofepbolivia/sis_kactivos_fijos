@@ -126,7 +126,10 @@ class RDepreciacionXls
         $sheet0->getColumnDimension('U')->setWidth(10);
         $sheet0->getColumnDimension('V')->setWidth(10);*/
 
-
+        $title_2 = '';
+        if ($this->objParam->getParametro('tipo_deprec')=='impuesto'){
+            $title_2 = ' TRIBUTARIO';
+        }
         //$this->docexcel->getActiveSheet()->mergeCells('A1:A3');
         $title = "DETALLE DE DEPRECIACION DE ACTIVOS FIJOS";
         $codigo = $datos[0]['codigo'];
@@ -135,7 +138,7 @@ class RDepreciacionXls
         $sheet0->mergeCells('B1:Q1');
         $sheet0->setCellValue('B1', 'BOLIVIANA DE AVIACIÓN');
         $sheet0->mergeCells('B2:Q2');
-        $sheet0->setCellValue('B2', $title);
+        $sheet0->setCellValue('B2', $title.$title_2);
         $sheet0->mergeCells('B3:Q3');
         $sheet0->setCellValue('B3', ' Al: '.date_format(date_create($this->objParam->getParametro('fecha_hasta')), 'd/m/Y'));
         $sheet0->mergeCells('B4:Q4');
@@ -256,12 +259,12 @@ class RDepreciacionXls
         $sheet0->setCellValue('M6', $actu_acu);
 
         $sheet0->setCellValue('N6', $depre_ges);
-		
+
 		//$sheet0->setCellValue('O6', '% DEP.G');
 
         $sheet0->setCellValue('O6', $depre_a);
 
-        $sheet0->setCellValue('P6', 'VALOR RESIDUAL');		
+        $sheet0->setCellValue('P6', 'VALOR RESIDUAL');
 
 
         //*************************************Fin Cabecera*****************************************
@@ -330,7 +333,7 @@ class RDepreciacionXls
 				//$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14, $fila, '');
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14, $fila, $value['depreciacion_acum']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(15, $fila, $value['monto_vigente']);
-				
+
 
 
             }else if($value['tipo'] == 'detalle'){
@@ -381,7 +384,7 @@ class RDepreciacionXls
 				//$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14, $fila, $value['porce_depre']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14, $fila, $value['depreciacion_acum']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(15, $fila, $value['monto_vigente']);
-				
+
 
                 $contador++;
 
@@ -431,14 +434,14 @@ class RDepreciacionXls
 				//$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14, $fila, '');
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(14, $fila, $value['depreciacion_acum']);
                 $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(15, $fila, $value['monto_vigente']);
-				
+
             }
 
             $fila++;
         }
         //************************************************Fin Detalle***********************************************
 
-        
+
     }
 }
 

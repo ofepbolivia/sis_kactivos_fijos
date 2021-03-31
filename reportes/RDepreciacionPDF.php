@@ -11,7 +11,10 @@ class RDepreciacionPDF extends  ReportePDF{
 
     function Header() {
         $this->Ln(3);
-
+        $title_2 = '';
+        if ($this->objParam->getParametro('tipo_deprec')=='impuesto'){
+            $title_2 = ' TRIBUTARIO';
+        }
         //cabecera del reporte
         $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 16,5,40,20);
         $this->ln(3);
@@ -22,7 +25,7 @@ class RDepreciacionPDF extends  ReportePDF{
 
         $this->SetFont('','B',10);
         $this->Cell(0,5,"BOLIVIANA DE AVIACION",0,1,'C');
-        $this->Cell(0,5,$title,0,1,'C');
+        $this->Cell(0,5,$title.$title_2,0,1,'C');
 
         $this->SetFont('','B',6);
         $this->Cell(0,3,' Al: '.date_format(date_create($this->objParam->getParametro('fecha_hasta')), 'd/m/Y'),0,1,'C');
@@ -60,7 +63,7 @@ class RDepreciacionPDF extends  ReportePDF{
         //primera linea
         $this->Cell(10,3,'','',0,'C');
         $this->Cell(20,3,'','',0,'C');
-        $this->Cell(36,3,'','',0,'C');        
+        $this->Cell(36,3,'','',0,'C');
         $this->Cell(15,3,'','',0,'C');
 
         $this->Cell(18,3,'','',0,'C');
@@ -96,10 +99,10 @@ class RDepreciacionPDF extends  ReportePDF{
         $this->Cell(17,3,'GESTION ANT.','BRL',0,'C');
 
         $this->Cell(17,3,$depre_ges,'TBRL',0,'C');
-		//$this->Cell(10,3,'% DEP.G','TBRL',0,'C');		
+		//$this->Cell(10,3,'% DEP.G','TBRL',0,'C');
         $this->Cell(17,3,$depre_acu,'TBRL',0,'C');
         $this->Cell(19,3,'VALOR RESIDUAL','TBRL',0,'C');
-		
+
 
 
 
@@ -158,7 +161,7 @@ class RDepreciacionPDF extends  ReportePDF{
                     //'s13' => '',
                     's13' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
                     's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0
-                    
+
                 );
 
                 $this->MultiRow($RowArray,true,1);
@@ -188,7 +191,7 @@ class RDepreciacionPDF extends  ReportePDF{
                     's12' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,
                     //'s13' => number_format($record['porce_depre'],2,'.',''),
                     's13' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
-                    's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0                    
+                    's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0
                 );
 
                 $this->MultiRow($RowArray,true,1);
@@ -218,7 +221,7 @@ class RDepreciacionPDF extends  ReportePDF{
                     //'s13' => '',
                     's13' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
                     's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0
-                    
+
                 );
 
                 $this->MultiRow($RowArray,true,1);
