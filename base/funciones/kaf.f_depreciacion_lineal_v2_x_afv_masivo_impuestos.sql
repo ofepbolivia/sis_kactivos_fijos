@@ -72,7 +72,7 @@ BEGIN
         end as mes_dep,
         cla.depreciable,
         case when afv1.tipo_modificacion = ''ajuste_vida_residual'' then
-            kaf.f_months_between((''01/''||date_part(''month''::text, afv.fecha_ult_dep_real + interval ''1'' month)::varchar||''/''||date_part(''year''::text, afv.fecha_ult_dep_real + interval ''1'' month)::varchar)::date, v_fecha_hasta)
+            kaf.f_months_between((''01/''||date_part(''month''::text, afv.fecha_ult_dep_real + interval ''1'' month)::varchar||''/''||date_part(''year''::text, afv.fecha_ult_dep_real + interval ''1'' month)::varchar)::date, '''||v_fecha_hasta||''')
         else
             case
                 when afv.fecha_ult_dep_real >= afv.fecha_ini_dep and afv1.fecha_ult_dep is not null then kaf.f_months_between((''01/''||date_part(''month''::text, afv.fecha_ult_dep_real + interval ''1'' month)::varchar||''/''||date_part(''year''::text, afv.fecha_ult_dep_real + interval ''1'' month)::varchar)::date, '''||v_fecha_hasta||''')
@@ -113,7 +113,7 @@ BEGIN
         afv1.monto_vigente_actualiz_inicial,
         af.codigo,
         afv1.codigo as codigo_afv,
-        ,afv1.vida_util_resid_corregido,
+        afv1.vida_util_resid_corregido,
         afv1.vida_util_corregido,
         afv1.deprec_acum_ant,
         afv1.valor_residual,  -- monto vigente

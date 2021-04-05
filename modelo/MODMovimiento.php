@@ -175,6 +175,7 @@ class MODMovimiento extends MODbase{
         $this->setParametro('tipo_movimiento','tipo_movimiento','varchar');
         $this->setParametro('nro_documento','nro_documento','varchar');
         $this->setParametro('tipo_documento','tipo_documento','varchar');
+				$this->setParametro('tipo_drepeciacion','tipo_drepeciacion','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
