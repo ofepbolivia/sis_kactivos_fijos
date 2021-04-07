@@ -369,6 +369,8 @@ header("content-type: text/javascript; charset=UTF-8");
 								return '<tpl style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:200px; height:45px; float:left;"><p><b>Fecha: </b> '+record.data['fecha_mov'].dateFormat('d/m/Y')+'</p><p><b>Tramite: </b> <font color="blue">'+record.data['num_tramite']+'</font></p><p><b>Estado: </b>'+record.data['estado']+'</p></div></tpl>';
 						 }*/
 						var desc;
+						var depre = '';
+						if (record.data['cod_movimiento']=='deprec' || record.data['cod_movimiento']=='actua') {depre='<p><b>Tipo Deprec/Act.</b> <font color="blue">'+record.data['tipo_drepeciacion']+'</font></p>'};
 						if(record.data['cod_movimiento']=='transf' && record.data['tipo_movimiento']=='Transito' ){
 							desc='<tpl for="."><div style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:300px; height:45px; float:left;"><p><b>Dpto.:</b> '+record.data['depto']+'</p><p><b>De:</b> <font color="blue">'+record.data['desc_funcionario2']+'</font></p><p><b>A:</b> <u><font color="green">'+record.data['funcionario_dest']+'</u></font></p></div></tpl>';
 
@@ -386,7 +388,7 @@ header("content-type: text/javascript; charset=UTF-8");
 							desc='<tpl for="."><div style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:300px; height:45px; float:left;"><p><b>Dpto.:</b> '+record.data['depto']+'</p></div></tpl>';
 						}
 						else {
-							desc='<tpl for="."><div class="x-combo-list-item" ><p><b>Dpto.:</b> '+record.data['depto']+'</p><p><b>Tipo Deprec/Act.</b> <font color="blue">'+record.data['tipo_drepeciacion']+'</font></p></div></tpl>';
+							desc='<tpl for="."><div class="x-combo-list-item" ><p><b>Dpto.:</b> '+record.data['depto']+'</p>'+depre+'</div></tpl>';
 						}
 						return desc;
 					}
