@@ -163,8 +163,10 @@ BEGIN
                   end as fecha_finalizacion,
                   case when mov.tipo_drepeciacion = ''deprec_impuesto'' then
                   	''Depreciación Impuestos''::varchar
-                  else
+                  when mov.tipo_drepeciacion = ''deprec_ministerio'' then
                   	''Depreciación Ministerio''::varchar
+                  else
+                  	mov.tipo_drepeciacion
                   end as tipo_drepeciacion
 						from kaf.tmovimiento mov
 						inner join segu.tusuario usu1 on usu1.id_usuario = mov.id_usuario_reg
