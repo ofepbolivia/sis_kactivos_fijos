@@ -391,7 +391,11 @@ BEGIN
                                 dpto.codigo as codigo_depto,
 							    fun_r.desc_funcionario2::varchar as func_resp_dep,
                               fun_r.descripcion_cargo as func_cargo_dep,
-                              coalesce(dep.nombre, (select nombre from kaf.tdeposito where id_funcionario = fun1.id_funcionario)) as deposito,
+                              case when mov.id_deposito is null then
+                                  null
+                              else
+                              coalesce(dep.nombre, (select nombre from kaf.tdeposito where id_funcionario = fun1.id_funcionario and id_deposito = mov.id_deposito))
+                              end as deposito,
                               momo.codigo_mov_motivo,
                               mov.nro_documento,
                               (select desc_funcionario2
