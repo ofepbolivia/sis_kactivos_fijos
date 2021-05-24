@@ -12,10 +12,12 @@ Phx.vista.ParametrosRepCodigosQR = {
 		this.formParam.topToolbar.items.items[1].setVisible(false);
 		this.formParam.topToolbar.items.items[2].setVisible(false);
 		this.formParam.topToolbar.items.items[4].setVisible(false);
-		this.formParam.topToolbar.items.items[5].setVisible(false);		
+		this.formParam.topToolbar.items.items[5].setVisible(false);
 		this.formParam.topToolbar.items.items[7].setVisible(false);
-		this.formParam.topToolbar.items.items[8].setVisible(false);		
-		this.formParam.topToolbar.items.items[10].setVisible(false);				
+		this.formParam.topToolbar.items.items[8].setVisible(false);
+		this.formParam.topToolbar.items.items[10].setVisible(false);
+		this.formParam.topToolbar.items.items[12].setVisible(false);
+		this.formParam.topToolbar.items.items[14].setVisible(false);			
 		this.formParam.topToolbar.doLayout();
 		//Eventos
 		this.definirEventos();
@@ -31,9 +33,9 @@ Phx.vista.ParametrosRepCodigosQR = {
 			this.cmbClasificacionMulti.setVisible(false);
 		},this);
 		//BVP
-		this.cmbClasificacionMulti.on('select',function(){						
-			this.cmbClasificacion.setVisible(false);					
-			this.cmbActivo.reset();			
+		this.cmbClasificacionMulti.on('select',function(){
+			this.cmbClasificacion.setVisible(false);
+			this.cmbActivo.reset();
 		},this);//
 	},
 	definicionRutareporte: function(report){
@@ -101,7 +103,7 @@ Phx.vista.ParametrosRepCodigosQR = {
 			} else {
 				Ext.MessageBox.alert('Información','Debe seleccionar alguno de los dos criterios.');
 			}
-			
+
 		}
 	}
 
