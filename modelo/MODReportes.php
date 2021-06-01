@@ -399,6 +399,7 @@ class MODReportes extends MODbase{
 		$this->captura('color','varchar');
 		$this->captura('val_acu_perido','numeric');
 		$this->captura('porce_depre','numeric');
+    $this->captura('depto_ubicacion','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
