@@ -1786,7 +1786,13 @@ BEGIN
                 and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_parametros.fecha_hasta::date)::integer -1 )::date)
             ),0),
             depreciacion_acum_actualiz_gest_ant = (((case when substr(tt_detalle_depreciacion.codigo,1,13) ='05.03.01.0001' then
-             v_ufv_mes_repo else tt_detalle_depreciacion.tipo_cambio_fin end/(param.f_get_tipo_cambio_v2(tt_detalle_depreciacion.id_moneda_act, coalesce(v_parametros.id_moneda,1), ('31/12/'||extract(year from v_parametros.fecha_hasta::date)::integer -1)::date, 'O'))))-1)*(coalesce((
+             v_ufv_mes_repo else tt_detalle_depreciacion.tipo_cambio_fin end/(
+             case when v_parametros.fecha_hasta::date > '31/12/2020'::date then
+	             2.35998 -- ufv al 10/12/2020 cambio por caida en las ufvs
+             else
+             	param.f_get_tipo_cambio_v2(tt_detalle_depreciacion.id_moneda_act, coalesce(v_parametros.id_moneda,1), ('31/12/'||extract(year from v_parametros.fecha_hasta::date)::integer -1)::date, 'O')
+             end
+             )))-1)*(coalesce((
                             select
                               case when tipo_modificacion in ('ajuste_vida', 'ajuste_pas_act') and v_parametros.fecha_hasta > fecha_ajuste_vida then
                                   depreciacion_acum_corregido
@@ -1809,7 +1815,13 @@ BEGIN
                 and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_parametros.fecha_hasta::date)::integer -1 )::date)
             ),0),
             depreciacion_acum_actualiz_gest_ant = (((case when substr(tt_detalle_depreciacion.codigo,1,13) ='05.03.01.0001' then
-             v_ufv_mes_repo else tt_detalle_depreciacion.tipo_cambio_fin end/(param.f_get_tipo_cambio_v2(tt_detalle_depreciacion.id_moneda_act, coalesce(v_parametros.id_moneda,1), ('31/12/'||extract(year from v_parametros.fecha_hasta::date)::integer -1)::date, 'O'))))-1)*(coalesce((
+             v_ufv_mes_repo else tt_detalle_depreciacion.tipo_cambio_fin end/(
+             case when v_parametros.fecha_hasta::date > '31/12/2020'::date then
+	             2.35998 -- ufv al 10/12/2020 cambio por caida en las ufvs
+             else              
+	             param.f_get_tipo_cambio_v2(tt_detalle_depreciacion.id_moneda_act, coalesce(v_parametros.id_moneda,1), ('31/12/'||extract(year from v_parametros.fecha_hasta::date)::integer -1)::date, 'O')
+             end
+             )))-1)*(coalesce((
                             select depreciacion_acum
                             from kaf.tmovimiento_af_dep
                             where id_activo_fijo_valor = tt_detalle_depreciacion.id_activo_fijo_valor_original
