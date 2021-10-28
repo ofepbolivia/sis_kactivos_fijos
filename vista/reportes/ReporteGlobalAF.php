@@ -811,16 +811,58 @@ header("content-type: text/javascript; charset=UTF-8");
                     queryDelay: 1000,
                     minChars: 2,
                     anchor : '70%',
-                    listWidth:220,
+                    listWidth:230,
                     width:250,
-                    enableMultiSelect: true
+                    enableMultiSelect: true,
+                    resizable:true
                 },
 
                 type : 'ComboBox',
                 id_grupo : 1,
                 grid : true,
                 form : true
-            },            
+            }, 
+			{
+				config: {
+					name: 'id_deposito',
+					fieldLabel: 'Deposito',
+					allowBlank: true,
+					emptyText: 'Elija un deposito...',
+					hidden: true,
+					store: new Ext.data.JsonStore({
+						url: '../../sis_kactivos_fijos/control/Deposito/listarDeposito',
+						id: 'id_deposito',
+						root: 'datos',
+						fields: ['id_deposito','codigo','nombre'],
+						totalProperty: 'total',
+						sortInfo: {
+							field: 'codigo',
+							direction: 'ASC'
+						},
+						baseParams:{par_filtro:'dep.codigo#dep.nombre'}
+
+					}),
+					valueField: 'id_deposito',
+					displayField: 'nombre',
+					gdisplayField: 'deposito',
+					hiddenName: 'id_deposito',
+					forceSelection: false,
+					typeAhead: false,
+					triggerAction: 'all',
+					lazyRender: true,
+					mode: 'remote',
+					pageSize: 15,
+					queryDelay: 1000,
+					anchor: '95%',
+					gwidth: 150,
+					minChars: 2,
+                    resizable:true,
+                    listWidth:310,
+				},
+				type: 'ComboBox',
+				id_grupo: 1,			
+				form: true
+			},                       
         ],
         title : 'Reporte Global Activos Fijos',
         ActSave : '../../sis_kactivos_fijos/control/ActivoFijo/reportesAFGlobal',
@@ -845,6 +887,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getComponente('rep_acti_fun_dep').setVisible(false);
             this.getComponente('estado_mo').setVisible(false);
             this.getComponente('id_funcionario').setVisible(false);                        
+            this.getComponente('id_deposito').setVisible(false);                        
         },
 
         iniciarEventos:function(){        	        	
@@ -873,6 +916,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.tipo_activo);
                     this.ocultarComponente(this.Cmp.estado_mo);
                     this.ocultarComponente(this.Cmp.id_funcionario);
+                    this.ocultarComponente(this.Cmp.id_deposito);
                     this.mostrarComponente(this.Cmp.fecha_ini);
                     this.mostrarComponente(this.Cmp.fecha_fin);
                     this.mostrarComponente(this.Cmp.id_depto);
@@ -902,6 +946,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.tipo_activo);
                     this.ocultarComponente(this.Cmp.estado_mo);
                     this.ocultarComponente(this.Cmp.id_funcionario);
+                    this.ocultarComponente(this.Cmp.id_deposito);
                     this.Cmp.activo_multi.getStore().each(function(rec){
                         this.Cmp.activo_multi.checkRecord(rec);
                     },this);
@@ -928,6 +973,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.tipo_activo);
                     this.mostrarComponente(this.Cmp.estado_mo);
 					this.ocultarComponente(this.Cmp.id_funcionario);
+					this.ocultarComponente(this.Cmp.id_deposito);
                     this.ocultarComponente(this.Cmp.valor_actual);
                     this.ocultarComponente(this.Cmp.txtMontoSup);
                     this.ocultarComponente(this.Cmp.txtMontoInf);
@@ -960,6 +1006,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.tipo_activo);
                     this.ocultarComponente(this.Cmp.estado_mo);
 					this.ocultarComponente(this.Cmp.id_funcionario);
+					this.ocultarComponente(this.Cmp.id_deposito);
 					this.mostrarComponente(this.Cmp.fecha_ini);
 					this.mostrarComponente(this.Cmp.fecha_fin);
 					this.mostrarComponente(this.Cmp.id_depto);
@@ -997,6 +1044,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.fecha_ini);
                     this.ocultarComponente(this.Cmp.fecha_fin);
                     this.mostrarComponente(this.Cmp.id_funcionario);                	
+                    this.mostrarComponente(this.Cmp.id_deposito);                	
                     this.ocultarComponente(this.Cmp.valor_actual);
                     this.ocultarComponente(this.Cmp.txtMontoSup);
                     this.ocultarComponente(this.Cmp.txtMontoInf);
@@ -1062,6 +1110,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.estado_mo.modificado = true;
                     this.Cmp.id_funcionario.reset();
                     this.Cmp.id_funcionario.modificado = true;
+                    this.Cmp.id_deposito.reset();
+                    this.Cmp.id_deposito.modificado = true;
                     this.Cmp.valor_actual.reset();
                     this.Cmp.valor_actual.modificado = true;
                     this.Cmp.txtMontoSup.reset();
@@ -1108,6 +1158,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.Cmp.estado_mo.modificado = true;
                     this.Cmp.id_funcionario.reset();
                     this.Cmp.id_funcionario.modificado = true;
+                    this.Cmp.id_deposito.reset();
+                    this.Cmp.id_deposito.modificado = true;
                     this.Cmp.fecha_ini.reset();
                     this.Cmp.fecha_ini.modificado = true;
                     this.Cmp.fecha_fin.reset();
@@ -1121,6 +1173,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 }
 
             }, this);
+        this.Cmp.id_funcionario.on('select', function(cmb,rec,ind) {
+            this.Cmp.id_deposito.reset();
+            this.Cmp.id_deposito.store.baseParams.id_funcionario = rec.data.id_funcionario;
+            this.Cmp.id_deposito.modificado = true;
+        }, this)
         },
 
         onSubmit:function(o){        	

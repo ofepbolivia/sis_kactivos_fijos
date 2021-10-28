@@ -1064,6 +1064,8 @@ class MODActivoFijo extends MODbase{
         $this->setCount(false);
 
 		$this->setParametro('id_funcionario','id_funcionario','int4');
+		$this->setParametro('id_deposito','id_deposito','int4');
+
         //Definicion de la lista del resultado del query
         $this->captura('codigo','varchar');
         $this->captura('denominacion','varchar');
@@ -1075,6 +1077,7 @@ class MODActivoFijo extends MODbase{
 		$this->captura('encargado','text');
         //Ejecuta la instruccion
         $this->armarConsulta();
+        // echo($this->consulta);exit;
         $this->ejecutarConsulta();
 
         //Devuelve la respuesta

@@ -16,6 +16,9 @@ class ACTDeposito extends ACTbase{
 		if($this->objParam->getParametro('id_depto')!=''){
 			$this->objParam->addFiltro("depaf.id_depto = ".$this->objParam->getParametro('id_depto'));	
 		}
+		if($this->objParam->getParametro('id_funcionario')!=''){
+			$this->objParam->addFiltro("depaf.id_funcionario = ".$this->objParam->getParametro('id_funcionario'));	
+		}
 
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);

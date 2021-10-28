@@ -44,6 +44,7 @@ DECLARE
     v_id_depo   integer;
     v_est_fun_tod		varchar = '';
     v_rec_depo			record;
+    v_filro         varchar;
 BEGIN
 
   v_nombre_funcion = 'kaf.ft_activo_fijo_sel';
@@ -1322,14 +1323,11 @@ BEGIN
 	    elsif(p_transaccion='SKA_ACDEPXFUN_SEL')then
 
         begin
-        select depo.id_deposito,
-                        depo.nombre,
-                 	   f.desc_funcionario1
-                 	into
-                     v_rec_depo
-                 from kaf.tdeposito depo
-     			inner join orga.vfuncionario f on f.id_funcionario = depo.id_funcionario
-                 where depo.id_funcionario = v_parametros.id_funcionario;
+        	if v_parametros.id_deposito is not null then
+            	v_filro = 'depo.id_deposito = '||v_parametros.id_deposito;
+            else
+            	v_filro = '0=0';
+            end if;
 
      		v_consulta:= 'select
                            af.codigo,
@@ -1352,7 +1350,7 @@ BEGIN
                          inner join param.tcatalogo cat on cat.id_catalogo = af.id_cat_estado_fun
                          inner join kaf.tdeposito depo on depo.id_deposito = af.id_deposito
                          inner join orga.vfuncionario fun on fun.id_funcionario = depo.id_funcionario
-                         where  depo.id_funcionario = '||v_parametros.id_funcionario||' and ' ;
+                         where  depo.id_funcionario = '||v_parametros.id_funcionario||' and '||v_filro||' and ' ;
 
              v_consulta:=v_consulta||v_parametros.filtro;
              v_consulta:=v_consulta||'order by af.codigo';
