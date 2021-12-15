@@ -66,7 +66,8 @@ header("content-type: text/javascript; charset=UTF-8");
 		    var definido = this.cmbTipoMov.store.data.items[0].data.tipo;
             var id_clasdificacion = this.cmbClasificacion.getValue();
 			this.cmbActivo.setValue('');
-			this.configElement(this.cmbClasificacionMulti,false,true);
+			this.cmbClasificacionMulti.reset()
+			// this.configElement(this.cmbClasificacionMulti,false,true);
             this.cmbTipoMov.setValue(definido);
             console.log('bbbbbb',this.cmbTipoMov.hidden );
             if (this.cmbTipoMov.hidden == false) {
@@ -78,7 +79,8 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.cmbClasificacionMulti.on('select',function(){
 		    var definido = this.cmbTipoMov.store.data.items[0].data.tipo;
 		    var id_clasdificacion = this.cmbClasificacionMulti.getValue();
-			this.configElement(this.cmbClasificacion,false,true);
+			this.cmbClasificacion.reset();
+			// this.configElement(this.cmbClasificacion,false,true);
 			this.cmbTipoMov.setValue(definido);
             if (this.cmbTipoMov.hidden == false) {
 
