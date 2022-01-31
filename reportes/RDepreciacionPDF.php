@@ -63,7 +63,7 @@ class RDepreciacionPDF extends  ReportePDF{
         //primera linea
         $this->Cell(10,3,'','',0,'C');
         $this->Cell(20,3,'','',0,'C');
-        $this->Cell(29,3,'','',0,'C');
+        $this->Cell(36,3,'','',0,'C');
         $this->Cell(15,3,'','',0,'C');
 
         $this->Cell(18,3,'','',0,'C');
@@ -82,9 +82,9 @@ class RDepreciacionPDF extends  ReportePDF{
         $this->Cell(19,3,'','',1,'C');
 
         //segunda linea
-        $this->Cell(8,3,'NUM','TBRL',0,'C');
-        $this->Cell(16,3,'CODIGO','TBRL',0,'C');
-        $this->Cell(35,3,$desno,'BTRL',0,'C');
+        $this->Cell(10,3,'NUM','TBRL',0,'C');
+        $this->Cell(20,3,'CODIGO','TBRL',0,'C');
+        $this->Cell(36,3,$desno,'BTRL',0,'C');
         $this->Cell(15,3,'INICIO DEP.','TBRL',0,'C');
 
         $this->Cell(18,3,'COMPRA (100%)','TBRL',0,'C');
@@ -102,7 +102,7 @@ class RDepreciacionPDF extends  ReportePDF{
 		//$this->Cell(10,3,'% DEP.G','TBRL',0,'C');
         $this->Cell(17,3,$depre_acu,'TBRL',0,'C');
         $this->Cell(19,3,'VALOR RESIDUAL','TBRL',0,'C');
-        $this->Cell(18,3,'UBICACION','TBRL',0,'C');
+        // $this->Cell(18,3,'UBICACION','TBRL',0,'C');
 
 
 
@@ -129,8 +129,8 @@ class RDepreciacionPDF extends  ReportePDF{
         $codigo = '';
         $contador=1;
 
-        $this->tablewidths=array(8,16,35,15,18,18,20,20,11,11,17,17,17,17,19,18);
-        $this->tablealigns=array('C','L','L','C','R','R','R','R','R','R','R','R','R','R','R','C');
+        $this->tablewidths=array(10,20,36,15,18,18,20,20,11,11,17,17,17,17,19);
+        $this->tablealigns=array('C','L','L','C','R','R','R','R','R','R','R','R','R','R','R');
 
         foreach($this->datos as $record){
 
@@ -142,8 +142,8 @@ class RDepreciacionPDF extends  ReportePDF{
 
                 $this->SetTextColor(0);
 
-                $this->tableborders=array('LB','B','B','B','BLR','BLR','BLR','BLR','B','B','BLR','BLR','BLR','BLR','BRL','BLR');
-                $this->tablenumbers=array(0,0,0,0,2,2,2,2,0,0,2,2,2,2,2,0);
+                $this->tableborders=array('LB','B','B','B','BLR','BLR','BLR','BLR','B','B','BLR','BLR','BLR','BLR','BRL');
+                $this->tablenumbers=array(0,0,0,0,2,2,2,2,0,0,2,2,2,2,2);
                 $RowArray = array(
                     's0'  => '',
                     's1' => $record['codigo'],
@@ -160,8 +160,7 @@ class RDepreciacionPDF extends  ReportePDF{
                     's12' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,
                     //'s13' => '',
                     's13' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
-                    's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0,
-                    's15' => ''
+                    's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0,                    
 
                 );
 
@@ -172,8 +171,8 @@ class RDepreciacionPDF extends  ReportePDF{
                 $this->SetFillColor(255, 255, 255);
                 $this->SetTextColor(0);
                 //$fecha_dep =  $record['fecha_ini_dep'] != '' ?date_format(date_create($record['fecha_ini_dep']), 'd/m/Y'):'';
-                $this->tableborders=array('LB','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','RBL','RBL');
-                $this->tablenumbers=array(0,0,0,0,2,2,2,2,0,0,2,2,2,2,2,0);
+                $this->tableborders=array('LB','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','BLR','RBL');
+                $this->tablenumbers=array(0,0,0,0,2,2,2,2,0,0,2,2,2,2,2);
                 $codigo_1=substr($record['codigo'],0,2);
                 $codigo_11=substr($record['codigo'],0,9);
                 $RowArray = array(
@@ -192,16 +191,16 @@ class RDepreciacionPDF extends  ReportePDF{
                     's12' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,
                     //'s13' => number_format($record['porce_depre'],2,'.',''),
                     's13' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
-                    's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0,
-                    'S15' => $record['depto_ubicacion'],
+                    's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0
+                    // 'S15' => $record['depto_ubicacion'],
                 );
 
                 $this->MultiRow($RowArray,true,1);
                 $contador ++;
             }else if($record['tipo'] == 'total') {
 
-                $this->tableborders=array('LB','B','B','B','BLR','BLR','BLR','BLR','B','B','BLR','BLR','BLR','BLR','RBL','RBL');
-                $this->tablenumbers=array(0,0,0,0,2,2,2,2,0,0,2,2,2,2,2,0);
+                $this->tableborders=array('LB','B','B','B','BLR','BLR','BLR','BLR','B','B','BLR','BLR','BLR','BLR','RBL');
+                $this->tablenumbers=array(0,0,0,0,2,2,2,2,0,0,2,2,2,2,2);
                 $this->SetFont('','B',6);
                 $this->SetFillColor(224, 235, 255);
 
@@ -222,8 +221,7 @@ class RDepreciacionPDF extends  ReportePDF{
                     's12' => $record['depreciacion_per']!=''?$record['depreciacion_per']:0,
                     //'s13' => '',
                     's13' => $record['depreciacion_acum']!=''?$record['depreciacion_acum']:0,
-                    's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0,
-                    's15' => ''
+                    's14' => $record['monto_vigente']!=''?$record['monto_vigente']:0                    
 
                 );
 
