@@ -1,0 +1,1 @@
+# sis_kactivos_fijos
