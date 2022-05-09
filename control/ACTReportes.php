@@ -37,12 +37,12 @@ class ACTReportes extends ACTbase {
     }
 
     function reporteKardexAFXls(){
-    	
+
 		if($this->objParam->getParametro('def')=='csv'){
         	$nombreArchivo = uniqid(md5(session_id()).'KardexAF').'.xls';
 		}else{
 			$nombreArchivo = uniqid(md5(session_id()).'KardexAF').'.pdf';
-		}	
+		}
 
         //Recuperar datos
         $this->objFunc = $this->create('MODReportes');
@@ -65,14 +65,14 @@ class ACTReportes extends ACTbase {
         	$reporte = new RKardexAFxls($this->objParam);
 			$reporte->setDataSet($dataSource->getDatos());
 	        $reporte->datosHeader($dataSource->getDatos(), $this->objParam->getParametro('id_entrega'));
-	        $reporte->generarReporte();	
-					
-		}else{									
+	        $reporte->generarReporte();
+
+		}else{
             $this->objReporteFormato=new RKardexAFPDF($this->objParam);
             $this->objReporteFormato->setDatos($dataSource->getDatos());
             $this->objReporteFormato->generarReporte();
-            $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');						
-		}        
+            $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
+		}
 
         $this->mensajeExito=new Mensaje();
         $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
@@ -169,8 +169,13 @@ class ACTReportes extends ACTbase {
     //(FEA) 07/02/2018 Reporte de Depreciación de activos fijos
     function reporteDepreciacion(){
         $this->definirFiltros();
-        $this->objFunc = $this->create('MODReportes');
-        $this->res = $this->objFunc->listarRepDepreciacion($this->objParam);
+        if($this->objParam->getParametro('tipo_deprec')=='impuesto'){
+          $this->objFunc = $this->create('MODReportes');
+          $this->res = $this->objFunc->listarRepDepreciacionImpuestos($this->objParam);
+        }else{
+          $this->objFunc = $this->create('MODReportes');
+          $this->res = $this->objFunc->listarRepDepreciacion($this->objParam);
+        }
 
 
         //Genera el nombre del archivo (aleatorio + titulo)
@@ -188,7 +193,7 @@ class ACTReportes extends ACTbase {
 
 
         if($this->objParam->getParametro('tipo')=='pdf'){
-        	
+
         	if($this->objParam->getParametro('tipo_repo')=='gepa' || $this->objParam->getParametro('tipo_repo')==''){
 	            //Instancia la clase de pdf
 	            $this->objReporteFormato=new RDepreciacionPDF ($this->objParam);
@@ -199,21 +204,21 @@ class ACTReportes extends ACTbase {
 	            $this->objReporteFormato=new RDepreciacionActulizadaPDF ($this->objParam);
 	            $this->objReporteFormato->setDatos($this->res->datos);
 	            $this->objReporteFormato->generarReporte();
-	            $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');				
+	            $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
 			}
-			
+
         }
         else{
         	if($this->objParam->getParametro('tipo_repo')=='gepa' || $this->objParam->getParametro('tipo_repo')==''){
-        		
+
 	            $reporte = new RDepreciacionXls($this->objParam);
 	            $reporte->setDatos($this->res->datos);
 	            $reporte->generarReporte();
 			}else{
-				
+
 	            $reporte = new RDepreciacionActulizadaXls($this->objParam);
 	            $reporte->setDatos($this->res->datos);
-	            $reporte->generarReporte();				
+	            $reporte->generarReporte();
 			}
         }
 
@@ -261,7 +266,7 @@ class ACTReportes extends ACTbase {
 					)
 					SELECT id
 					FROM t)");
-		}		
+		}
 		if($this->objParam->getParametro('denominacion')!=''){
 			$this->objParam->addFiltro("afij.denominacion ilike ''%".$this->objParam->getParametro('denominacion')."%''");
 		}
@@ -271,8 +276,8 @@ class ACTReportes extends ACTbase {
 		if($this->objParam->getParametro('fecha_ini_dep')!=''){
 			$this->objParam->addFiltro("afij.fecha_ini_dep = ''".$this->objParam->getParametro('fecha_ini_dep')."''");
 		}
-		if($this->objParam->getParametro('estado')!=''){			
-				$this->objParam->addFiltro("afij.estado = ''".$this->objParam->getParametro('estado')."''");	
+		if($this->objParam->getParametro('estado')!=''){
+				$this->objParam->addFiltro("afij.estado = ''".$this->objParam->getParametro('estado')."''");
 		}
 		if($this->objParam->getParametro('id_centro_costo')!=''){
 			$this->objParam->addFiltro("afij.id_centro_costo in (
@@ -388,13 +393,13 @@ class ACTReportes extends ACTbase {
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
     }
-    
+
 	function reporteDepreciacionPeriodo(){
         $this->definirFiltros();
         $this->objFunc = $this->create('MODReportes');
         $this->res = $this->objFunc->listarRepDepreciacion($this->objParam);
 		//$this->res->imprimirRespuesta($this->res->generarJson());
-       
+
         if($this->objParam->getParametro('tipo')=='pdf'){
             $nombreArchivo = uniqid(md5(session_id()).'[DepreciaciónPeriodo AF]').'.pdf';
         }
@@ -409,11 +414,11 @@ class ACTReportes extends ACTbase {
 
 
         if($this->objParam->getParametro('tipo')=='pdf'){
-        	
+
 		        $this->objReporteFormato=new RDepreciacionActulizadoPDF ($this->objParam);
 		        $this->objReporteFormato->setDatos($this->res->datos);
 		        $this->objReporteFormato->generarReporte();
-		        $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');        		
+		        $this->objReporteFormato->output($this->objReporteFormato->url_archivo,'F');
         }
         else{
 
@@ -426,8 +431,8 @@ class ACTReportes extends ACTbase {
         $this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado',
             'Se generó con éxito el reporte: '.$nombreArchivo,'control');
         $this->mensajeExito->setArchivoGenerado($nombreArchivo);
-        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());	
-		
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+
 	}
    function reporteKAF()
     {

@@ -12,10 +12,12 @@ Phx.vista.ParametrosRepRespInventario = {
 		this.formParam.topToolbar.items.items[1].setVisible(false);
 		this.formParam.topToolbar.items.items[2].setVisible(false);
 		this.formParam.topToolbar.items.items[4].setVisible(false);
-		this.formParam.topToolbar.items.items[5].setVisible(false);		
+		this.formParam.topToolbar.items.items[5].setVisible(false);
 		this.formParam.topToolbar.items.items[7].setVisible(false);
-		this.formParam.topToolbar.items.items[8].setVisible(false);		
+		this.formParam.topToolbar.items.items[8].setVisible(false);
 		this.formParam.topToolbar.items.items[10].setVisible(false);
+		this.formParam.topToolbar.items.items[12].setVisible(false);
+		this.formParam.topToolbar.items.items[14].setVisible(false);
 		this.formParam.topToolbar.doLayout();
 
 		//Eventos
@@ -64,11 +66,11 @@ Phx.vista.ParametrosRepRespInventario = {
 				this.cmbOficina.setValue('');
 				this.cmbOficina.setVisible(false);
 				this.cmbOficina.modificado=true;
-				
+
 				this.cmbInventa.allowBlank=true;
 				this.cmbInventa.setValue('');
 				this.cmbInventa.setVisible(false);
-				this.cmbInventa.modificado=true;				
+				this.cmbInventa.modificado=true;
 
 			} else {
 				this.cmbLugar.setVisible(false);
@@ -83,23 +85,23 @@ Phx.vista.ParametrosRepRespInventario = {
 				this.cmbOficina.allowBlank=true;
 				this.cmbOficina.setVisible(true);
 				this.cmbOficina.modificado=true;
-				
+
 				this.cmbInventa.allowBlank=false;
 				this.cmbInventa.setVisible(true);
 				this.cmbInventa.modificado=true;
 			}
 		}, this);
-		this.cmbInventa.on('select',function(combo,record,index){	
+		this.cmbInventa.on('select',function(combo,record,index){
 			if(record.data.tipo=="2"){
 				this.descNombre.setVisible(false);
 				this.descNombre.allowBlank=true;
 				this.descNombre.clearInvalid();
-				this.descNombre.setValue('');										
+				this.descNombre.setValue('');
 			}else{
 				this.descNombre.setVisible(true);
 				this.descNombre.allowBlank=false;
 				this.descNombre.clearInvalid();
-				this.descNombre.setValue('');				
+				this.descNombre.setValue('');
 			}
 		},this);
 	},
@@ -151,7 +153,7 @@ Phx.vista.ParametrosRepRespInventario = {
 		this.configElement(this.fieldSetGeneral,true,true);
 		this.configElement(this.fieldSetIncluir,false,true);
 		this.configElement(this.fieldSetCompra,false,true);
-        this.configElement(this.descNombre,true,false);        
+        this.configElement(this.descNombre,true,false);
 	},
 	onSubmit: function(){
 		if(this.formParam.getForm().isValid()){
@@ -183,7 +185,7 @@ Phx.vista.ParametrosRepRespInventario = {
 			/*} else {
 				Ext.MessageBox.alert('Información','Debe seleccionar los criterios obligatorios.');
 			}*/
-			
+
 		}
 	},
 	getExtraParams: function(){
@@ -208,4 +210,4 @@ Phx.vista.ParametrosRepRespInventario = {
 
 
     }
-</script>	
+</script>

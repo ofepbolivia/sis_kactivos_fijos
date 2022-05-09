@@ -2128,3 +2128,127 @@ AS
            afd.id_moneda,
            afd.id_moneda_dep;
 /***********************************F-DEP-BVP-KAF-1-20/02/2019*****************************************/
+/***********************************I-DEP-BVP-KAF-1-31/03/2021*****************************************/
+CREATE VIEW kaf.vminimo_movimiento_af_dep_impuestos (
+    id_activo_fijo_valor,
+    monto_vigente,
+    vida_util,
+    fecha,
+    depreciacion_acum,
+    depreciacion_per,
+    depreciacion_acum_ant,
+    monto_actualiz,
+    depreciacion_acum_actualiz,
+    depreciacion_per_actualiz,
+    id_moneda,
+    id_moneda_dep,
+    tipo_cambio_fin,
+    tipo_cambio_ini)
+AS
+ WITH maximo AS (
+SELECT z.id_activo_fijo_valor,
+            max(z.id_movimiento_af_dep) AS id_movimiento_af_dep
+FROM kaf.tmovimiento_af_dep_impuestos z
+GROUP BY z.id_activo_fijo_valor
+        )
+    SELECT afd.id_activo_fijo_valor,
+    afd.monto_vigente,
+    afd.vida_util,
+    afd.fecha,
+    afd.depreciacion_acum,
+    afd.depreciacion_per,
+    afd.depreciacion_acum_ant,
+    afd.monto_actualiz,
+    afd.depreciacion_acum_actualiz,
+    afd.depreciacion_per_actualiz,
+    afd.id_moneda,
+    afd.id_moneda_dep,
+    afd.tipo_cambio_fin,
+    afd.tipo_cambio_ini
+    FROM kaf.tmovimiento_af_dep_impuestos afd
+     JOIN maximo m ON afd.id_movimiento_af_dep = m.id_movimiento_af_dep;
+
+ALTER VIEW kaf.vminimo_movimiento_af_dep_impuestos
+  OWNER TO postgres;
+
+  CREATE VIEW kaf.vactivo_fijo_valor_impuestos (
+      id_usuario_reg,
+      id_usuario_mod,
+      fecha_reg,
+      fecha_mod,
+      estado_reg,
+      id_usuario_ai,
+      usuario_ai,
+      id_activo_fijo_valor,
+      id_activo_fijo,
+      monto_vigente_orig,
+      vida_util_orig,
+      fecha_ini_dep,
+      depreciacion_mes,
+      depreciacion_per,
+      depreciacion_acum,
+      monto_vigente,
+      vida_util,
+      fecha_ult_dep,
+      tipo_cambio_ini,
+      tipo_cambio_fin,
+      tipo,
+      estado,
+      principal,
+      monto_rescate,
+      id_movimiento_af,
+      codigo,
+      monto_vigente_real,
+      vida_util_real,
+      fecha_ult_dep_real,
+      depreciacion_acum_real,
+      depreciacion_per_real,
+      depreciacion_acum_ant_real,
+      monto_actualiz_real,
+      id_moneda,
+      id_moneda_dep,
+      tipo_cambio_anterior)
+  AS
+  SELECT afv.id_usuario_reg,
+      afv.id_usuario_mod,
+      afv.fecha_reg,
+      afv.fecha_mod,
+      afv.estado_reg,
+      afv.id_usuario_ai,
+      afv.usuario_ai,
+      afv.id_activo_fijo_valor,
+      afv.id_activo_fijo,
+      afv.monto_vigente_orig,
+      afv.vida_util_orig,
+      afv.fecha_ini_dep,
+      afv.depreciacion_mes,
+      afv.depreciacion_per,
+      afv.depreciacion_acum,
+      afv.monto_vigente,
+      afv.vida_util,
+      afv.fecha_ult_dep,
+      afv.tipo_cambio_ini,
+      afv.tipo_cambio_fin,
+      afv.tipo,
+      afv.estado,
+      afv.principal,
+      afv.monto_rescate,
+      afv.id_movimiento_af,
+      afv.codigo,
+      COALESCE(min.monto_vigente, afv.monto_vigente_orig) AS monto_vigente_real,
+      COALESCE(min.vida_util, afv.vida_util_orig) AS vida_util_real,
+      COALESCE(min.fecha, afv.fecha_ini_dep) AS fecha_ult_dep_real,
+      COALESCE(min.depreciacion_acum, 0::numeric) AS depreciacion_acum_real,
+      COALESCE(min.depreciacion_per, 0::numeric) AS depreciacion_per_real,
+      COALESCE(min.depreciacion_acum_ant, 0::numeric) AS depreciacion_acum_ant_real,
+      COALESCE(min.monto_actualiz, afv.monto_vigente_orig) AS monto_actualiz_real,
+      afv.id_moneda,
+      afv.id_moneda_dep,
+      COALESCE(min.tipo_cambio_fin, NULL::numeric) AS tipo_cambio_anterior
+  FROM kaf.tactivo_fijo_valores afv
+       LEFT JOIN kaf.vminimo_movimiento_af_dep_impuestos min ON min.id_activo_fijo_valor =
+           afv.id_activo_fijo_valor AND afv.id_moneda_dep = min.id_moneda_dep;
+
+  ALTER VIEW kaf.vactivo_fijo_valor_impuestos
+    OWNER TO postgres;
+/***********************************F-DEP-BVP-KAF-1-31/03/2021*****************************************/

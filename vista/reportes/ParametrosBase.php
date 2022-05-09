@@ -15,7 +15,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.definirEventos();
 		this.cargaReportes();
 		this.layout();
-		this.render();		
+		this.render();
 
 		//Eventos
 		var date = new Date();
@@ -71,7 +71,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			mode : 'local',
 			store : new Ext.data.ArrayStore({
 				fields : ['tipo', 'valor'],
-				data : [['gepa', 'Formato Reporte Pasada'], ['geac', 'Formato Reporte Actual']]
+				data : [['gepa', 'Formato Reporte Pasada'], ['geac', 'Formato Reporte Actual'], ['resfin', 'Reporte Estados Financieros']]
 			}),
 			anchor : '40%',
 			valueField : 'tipo',
@@ -93,7 +93,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			valueField : 'tipo',
 			displayField : 'valor',
 			style: this.setBackgroundColor('cmbPeriodo')
-		});				
+		});
 		this.cmpFechas = new Ext.form.CompositeField({
         	fieldLabel: 'Fechas',
         	items: [this.lblDesde,this.dteFechaDesde,this.lblHasta,this.dteFechaHasta]
@@ -135,7 +135,7 @@ Ext.define('Phx.vista.ParametrosBase', {
             anchor: '100%',
             store: new Ext.data.JsonStore({
                          url: '../../sis_kactivos_fijos/control/ActivoFijo/ListaDetActivo',
-                         id: 'id_clasificacion', 
+                         id: 'id_clasificacion',
                          root: 'datos',
                          sortInfo:{
                             field: 'codigo',
@@ -147,7 +147,7 @@ Ext.define('Phx.vista.ParametrosBase', {
                     baseParams:{par_filtro:'cla.codigo#nombre'}
                     }),
                 valueField: 'id_clasificacion',
-                displayField: 'nombre',                
+                displayField: 'nombre',
                 tpl: new Ext.XTemplate([
                         '<tpl for=".">',
                         '<div class="x-combo-list-item">',
@@ -157,11 +157,11 @@ Ext.define('Phx.vista.ParametrosBase', {
                         '</div></tpl>'
                     ]),
             valueField: 'id_clasificacion',
-            displayField: 'clasificacion',                
+            displayField: 'clasificacion',
             typeAhead: false,
             triggerAction: 'all',
             lazyRender:true,
-            mode:'remote',               
+            mode:'remote',
             pageSize:15,
             queryDelay:1000,
             width:654,
@@ -216,7 +216,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			valueField : 'tipo',
 			displayField : 'valor',
 			style: this.setBackgroundColor('cmbUbiacion')
-		});				
+		});
 		this.cmbEstadoDepre = new Ext.form.ComboBox({
 			name : 'estado_depre',
 			fieldLabel : 'Estado/Depre',
@@ -232,7 +232,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			valueField : 'tipo',
 			displayField : 'valor',
 			style : this.setBackgroundColor('cmbEstadoDepre')
-		});		 				
+		});
 		this.cmbActivo = new Ext.form.ComboBox({
 			fieldLabel: 'Activo Fijo',
 			anchor: '100%',
@@ -276,13 +276,13 @@ Ext.define('Phx.vista.ParametrosBase', {
 		});
 		this.dteFechaCompra = new Ext.form.DateField({
 			fieldLabel: 'Fecha Compra Inf.',
-			//format: 'd/m/Y', 
+			//format: 'd/m/Y',
 			dateFormat:'Y-m-d',
 			style: this.setBackgroundColor('dteFechaCompra')
 		});
 		this.dteFechaCompraMax = new Ext.form.DateField({
 			fieldLabel: 'Fecha Compra Sup.',
-			//format: 'd/m/Y', 
+			//format: 'd/m/Y',
 			dateFormat:'Y-m-d',
 			style: this.setBackgroundColor('dteFechaCompraMax')
 		});
@@ -298,7 +298,7 @@ Ext.define('Phx.vista.ParametrosBase', {
         });
 		this.dteFechaIniDep = new Ext.form.DateField({
 			fieldLabel: 'Fecha Ini.Dep.',
-			format: 'd/m/Y', 
+			format: 'd/m/Y',
 			style: this.setBackgroundColor('dteFechaIniDep')
 		});
 		this.cmbEstado = new Ext.form.ComboBox({
@@ -398,12 +398,12 @@ Ext.define('Phx.vista.ParametrosBase', {
 			fieldLabel: 'Responsable',
 			anchor: '100%',
 			emptyText: 'Elija un funcionario...',
-			store: new Ext.data.JsonStore({  
-				url: '../../sis_organigrama/control/Funcionario/listarFuncionarioCargo',
+			store: new Ext.data.JsonStore({
+				url: '../../sis_kactivos_fijos/control/ActivoFijo/listarFuncionarioUltCargo',
 				id: 'id_uo',
 				root: 'datos',
 				sortInfo:{
-					field: 'desc_funcionario1', 
+					field: 'desc_funcionario1',
 					direction: 'ASC'
 				},
 				totalProperty: 'total',
@@ -411,7 +411,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 				// turn on remote sorting
 				remoteSort: true,
 				baseParams: {par_filtro:'desc_funcionario1#email_empresa#codigo#nombre_cargo'}
-				
+
 			}),
 			style: this.setBackgroundColor('cmbResponsable'),
 			valueField: 'id_funcionario',
@@ -558,6 +558,21 @@ Ext.define('Phx.vista.ParametrosBase', {
             msgTarget: 'side',
             style: this.setBackgroundColor('cmbClasificacion')
         });
+        this.cmpUbicacion = new Ext.form.ComboBox({
+            name : 'desc_ubicacion',
+            fieldLabel : 'Columna Ubicación',
+            triggerAction : 'all',
+            lazyRender : true,
+            mode : 'local',
+            store : new Ext.data.ArrayStore({
+                fields : ['tipo', 'valor'],
+                data : [['no', 'No'], ['si','Si']]
+            }),
+            anchor : '30%',
+            valueField : 'tipo',
+            displayField : 'valor',			
+            msgTarget: 'side'            
+        });
         this.cmbInventa = new Ext.form.ComboBox({
             name : 'inventario',
             fieldLabel : 'Inventario (si/no)',
@@ -573,7 +588,7 @@ Ext.define('Phx.vista.ParametrosBase', {
             displayField : 'valor',
             msgTarget: 'side',
             style: this.setBackgroundColor('cmbInventa')
-        });        
+        });
 
 		this.cmbDeposito = new Ext.form.ComboBox({
 			fieldLabel: 'Deposito',
@@ -667,8 +682,8 @@ Ext.define('Phx.vista.ParametrosBase', {
 			fieldLabel: 'Nivel',
 			items: [
 				{boxLabel: 'Sólo Totales', name: 'rb-auto3', inputValue: 'clasif'},
-                {boxLabel: 'Reporte Ministerio', name: 'rb-auto3', inputValue: 'ministerio'},                
-                {boxLabel: 'Detallado', name: 'rb-auto3', inputValue: 'completo', checked: true}                
+                {boxLabel: 'Reporte Ministerio', name: 'rb-auto3', inputValue: 'ministerio'},
+                {boxLabel: 'Detallado', name: 'rb-auto3', inputValue: 'completo', checked: true}
             ]
 		});
 	},
@@ -679,7 +694,7 @@ Ext.define('Phx.vista.ParametrosBase', {
         	title: 'General',
         	items: [this.cmbTipoRep,this.cmbPeriodo,this.cmpFechas,this.cmbClasificacion,this.cmbClasificacionMulti,this.cmbTipoMov,this.cmbBajaReti,this.cmbUbiacion,this.cmbEstadoDepre,this.cmbActivo,this.txtDenominacion,this.cmbMoneda,this.cmpFechaCompra,this.cmpMontos,this.cmbTipo,this.cmbLugar,this.txtNroCbteAsociado,
         		this.dteFechaIniDep,this.cmbEstado,this.cmbCentroCosto,this.txtUbicacionFisica,
-				this.cmbOficina,this.cmbResponsable,this.cmbDepto, this.cmbInventa, this.descNombre, this.cmbDeposito,this.radGroupDeprec]
+				this.cmbOficina,this.cmbResponsable,this.cmbDepto, this.cmbInventa, this.descNombre, this.cmpUbicacion, this.cmbDeposito,this.radGroupDeprec]
         });
 
         this.fieldSetIncluir = new Ext.form.FieldSet({
@@ -709,8 +724,8 @@ Ext.define('Phx.vista.ParametrosBase', {
             tbar: [
                 {xtype:'button', text:'<i class="fa fa-print" aria-hidden="true"></i> Generar en Pantalla', tooltip: 'Generar el reporte', handler: this.onSubmit, scope: this},'-',
                 {
-		        	xtype:'button', 
-		        	text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Reporte XLS', 
+		        	xtype:'button',
+		        	text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Reporte XLS',
 		        	tooltip: 'reporte excel',
 		        	grupo:[0,4],
 		        	argument: {
@@ -719,24 +734,24 @@ Ext.define('Phx.vista.ParametrosBase', {
 		        	},
 		        	handler: this.onReporteDep,
 		        	scope: this
-            	},'-',                
+            	},'-',
 				{
-            	xtype:'button', 
-            	text:'<i class="fa fa-file-pdf-o" aria-hidden="true"></i> Reporte PDF', 
+            	xtype:'button',
+            	text:'<i class="fa fa-file-pdf-o" aria-hidden="true"></i> Reporte PDF',
             	tooltip: 'reporte pdf',
-            	grupo:[0,4],            	
+            	grupo:[0,4],
                 argument: {
                     'news': true,
                     def: 'pdf'
                 },
-                handler: this.onReporteDep,            	
-            	scope: this            		
-            	},'-',			
+                handler: this.onReporteDep,
+            	scope: this
+            	},'-',
                 {xtype:'button', text:'<i class="fa fa-undo" aria-hidden="true"></i> Reset', tooltip: 'Resetear los parámetros', handler: this.onReset, scope: this},
 				'-',
                 {
-		        	xtype:'button', 
-		        	text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Reporte XLS', 
+		        	xtype:'button',
+		        	text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Reporte XLS',
 		        	tooltip: 'reporte excel',
 		        	grupo:[0,4],
 		        	argument: {
@@ -745,21 +760,50 @@ Ext.define('Phx.vista.ParametrosBase', {
 		        	},
 		        	handler: this.onReporteDepPe,
 		        	scope: this
-            	},'-',                
+            	},'-',
 				{
-            	xtype:'button', 
-            	text:'<i class="fa fa-file-pdf-o" aria-hidden="true"></i> Reporte PDF', 
+            	xtype:'button',
+            	text:'<i class="fa fa-file-pdf-o" aria-hidden="true"></i> Reporte PDF',
             	tooltip: 'reporte pdf',
-            	grupo:[0,4],            	
+            	grupo:[0,4],
                 argument: {
                     'news': true,
                     def: 'pdf'
                 },
-                handler: this.onReporteDepPe,            	
-            	scope: this            		
-            	}				               				
+                handler: this.onReporteDepPe,
+            	scope: this
+						},
+
+						'-',
+						{
+					xtype:'button',
+					text:'<i class="fa fa-file-excel-o" aria-hidden="true"></i> Rep. XLS Impuestos',
+					tooltip: 'reporte excel',
+					grupo:[0,4],
+					argument: {
+						'news':true,
+						def: 'csv',
+						imp: 'impuesto'
+					},
+					handler: this.onReporteDepImpues,
+					scope: this
+					},'-',
+		{
+					xtype:'button',
+					text:'<i class="fa fa-file-pdf-o" aria-hidden="true"></i> Rep. PDF Impuestos',
+					tooltip: 'reporte pdf',
+					grupo:[0,4],
+						argument: {
+								'news': true,
+								def: 'pdf',
+								imp: 'impuesto'
+						},
+						handler: this.onReporteDepImpues,
+					scope: this
+				},
+
 		      ]
-			}); 
+			});
 
 		//Contenedor
 		this.viewPort = new Ext.Container({
@@ -795,6 +839,20 @@ Ext.define('Phx.vista.ParametrosBase', {
 			scope:this
 		});
 	},
+	onReporteDepImpues:function(cmp, event){
+		var parametros = this.getParams();
+		parametros.tipo = cmp.argument.def;
+		parametros.tipo_deprec = cmp.argument.imp
+		Phx.CP.loadingShow();
+		Ext.Ajax.request({
+			url:'../../sis_kactivos_fijos/control/Reportes/reporteDepreciacion',
+			params: parametros,
+			success: this.successExport,
+			failure: this.conexionFailure,
+			timeout:this.timeout,
+			scope:this
+		});
+	},
 	onReporteDepPe: function (cmp, event) {
 
 		var parametros = this.getParams();
@@ -808,23 +866,23 @@ Ext.define('Phx.vista.ParametrosBase', {
 			timeout:this.timeout,
 			scope:this
 		});
-	}, 	
+	},
 	render: function(){
 		this.panel.add(this.viewPort);
         this.panel.doLayout();
-        this.addEvents('init'); 
+        this.addEvents('init');
 	},
 	onReset: function(){
 		this.cmbTipoRep.setValue('');
 		this.dteFechaDesde.setValue('');
 		this.dteFechaHasta.setValue('');
 		this.cmbActivo.setValue('');
-		this.cmbClasificacion.setValue('');		
-		this.cmbClasificacionMulti.reset();					
+		this.cmbClasificacion.setValue('');
+		this.cmbClasificacionMulti.reset();
 		this.cmbTipoMov.setValue('');
 		this.cmbBajaReti.setValue('');
 		this.cmbUbiacion.setValue('');
-		this.cmbEstadoDepre.setValue('');				
+		this.cmbEstadoDepre.setValue('');
 		this.txtDenominacion.setValue('');
 		this.dteFechaCompra.setValue('');
 		this.dteFechaIniDep.setValue('');
@@ -841,6 +899,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.radGroupEstadoMov.setValue('todos');
 		this.cmbDepto.setValue('');
 		this.descNombre.setValue('');
+		this.cmpUbicacion.setValue('');
 		this.cmbInventa.setValue('');
 		this.cmbDeposito.setValue('');
 		this.cmbMoneda.setValue('');
@@ -868,7 +927,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 	                this.titleReporte, {
 	                    width: 870,
 	                    height : 620
-	                }, { 
+	                }, {
 	                    paramsRep: this.getParams()
 	                },
 	                this.idContenedor,
@@ -884,12 +943,12 @@ Ext.define('Phx.vista.ParametrosBase', {
 			_fecha_hasta,
 			_fecha_compra,
 			_fecha_ini_dep,
-			_id_clasificacion,					
+			_id_clasificacion,
 			_fecha_compra_max;
 
 		//Clasificación (por el problema de que getvalue devuelve la descripción y no el valor ¡?¡??)
-		if(this.cmbClasificacion.selectedIndex!=-1){						
-			_id_clasificacion = this.cmbClasificacion.store.getAt(this.cmbClasificacion.selectedIndex).id;			
+		if(this.cmbClasificacion.selectedIndex!=-1){
+			_id_clasificacion = this.cmbClasificacion.store.getAt(this.cmbClasificacion.selectedIndex).id;
 		}
 		if(this.dteFechaDesde.getValue()) _fecha_desde = this.dteFechaDesde.getValue().dateFormat('Y-m-d');
 		if(this.dteFechaHasta.getValue()) _fecha_hasta = this.dteFechaHasta.getValue().dateFormat('Y-m-d');
@@ -921,6 +980,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			af_estado_mov: this.radGroupEstadoMov.getValue().inputValue,
 			id_depto: this.cmbDepto.getValue(),
 			desc_nombre: this.descNombre.getValue(),
+			desc_ubicacion: this.cmpUbicacion.getValue(),
 			inventario: this.cmbInventa.getValue(),
 			id_deposito: this.cmbDeposito.getValue(),
 			id_moneda: this.cmbMoneda.getValue(),
@@ -937,7 +997,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			ubi_nac_inter: this.cmbUbiacion.getValue(),
 			estado_depre : this.cmbEstadoDepre.getValue(),
 			tipo_repo : this.cmbTipoRep.getValue(),
-			actu_perido:this.cmbPeriodo.getValue(),		
+			actu_perido:this.cmbPeriodo.getValue(),
 		};
 
 		Ext.apply(params,this.getExtraParams());
@@ -990,7 +1050,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			                this.titleReporte, {
 			                    width: 870,
 			                    height : 620
-			                }, { 
+			                }, {
 			                    paramsRep: this.getParams()
 			                },
 			                this.idContenedor,
@@ -998,7 +1058,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 			            );
             		}
             	},this);
-            	
+
             },
             argument: this.argumentSave,
             failure: this.conexionFailure,
@@ -1016,7 +1076,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.configElement(this.cmbEstadoDepre,false,true);
 		this.configElement(this.cmbTipoMov,false,true);
 		this.configElement(this.cmbBajaReti,false,true);
-		this.configElement(this.cmbUbiacion,false,true);				
+		this.configElement(this.cmbUbiacion,false,true);
 		this.configElement(this.txtDenominacion,false,true);
 		this.configElement(this.dteFechaCompra,false,true);
 		this.configElement(this.dteFechaIniDep,false,true);
@@ -1032,6 +1092,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.configElement(this.radGroupTangible,false,true);
 		this.configElement(this.cmbDepto,false,true);
 		this.configElement(this.descNombre,false,true);
+		this.configElement(this.cmpUbicacion,false,true);
 		this.configElement(this.cmbInventa,false,true);
 		this.configElement(this.cmbDeposito,false,true);
 		this.configElement(this.lblDesde,false,true);
@@ -1064,7 +1125,7 @@ Ext.define('Phx.vista.ParametrosBase', {
     	Phx.CP.loadingHide();
         var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
         var nomRep = objRes.ROOT.detalle.archivo_generado;
-        if(Phx.CP.config_ini.x==1){  			
+        if(Phx.CP.config_ini.x==1){
         	nomRep = Phx.CP.CRIPT.Encriptar(nomRep);
             }
             window.open('../../../lib/lib_control/Intermediario.php?r='+nomRep+'&t='+new Date().toLocaleTimeString())

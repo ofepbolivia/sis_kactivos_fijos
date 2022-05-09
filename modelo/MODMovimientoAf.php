@@ -8,17 +8,17 @@
 */
 
 class MODMovimientoAf extends MODbase{
-	
+
 	function __construct(CTParametro $pParam){
 		parent::__construct($pParam);
 	}
-			
+
 	function listarMovimientoAf(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='kaf.ft_movimiento_af_sel';
 		$this->transaccion='SKA_MOVAF_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
-				
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_movimiento_af','int4');
 		$this->captura('id_movimiento','int4');
@@ -61,21 +61,22 @@ class MODMovimientoAf extends MODbase{
         $this->captura('observacion', 'text');
         $this->captura('id_activo_fijo_valor','integer');
         $this->captura('codigo', 'varchar');
+				$this->captura('deprec_acu_ges_ant','numeric');
 		//Ejecuta la instruccion
         $this->armarConsulta();
         //echo($this->consulta);exit;
 		$this->ejecutarConsulta();
-		
+
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function insertarMovimientoAf(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_movimiento_af_ime';
 		$this->transaccion='SKA_MOVAF_INS';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_movimiento','id_movimiento','int4');
 		$this->setParametro('id_activo_fijo','id_activo_fijo','int4');
@@ -90,11 +91,13 @@ class MODMovimientoAf extends MODbase{
         $this->setParametro('vida_util_ant','vida_util_ant','integer');
         // breydi.vasquez (09/01/2020) para nuevo tipo ajuste de vida util
         $this->setParametro('vida_util_residual','vida_util_residual','integer');
-        $this->setParametro('valor_residual','valor_residual','numeric');        
-        $this->setParametro('deprec_acum_ant','deprec_acum_ant','numeric');                    
-        $this->setParametro('monto_vig_actu','monto_vig_actu','numeric');        
+        $this->setParametro('valor_residual','valor_residual','numeric');
+        $this->setParametro('deprec_acum_ant','deprec_acum_ant','numeric');
+        $this->setParametro('monto_vig_actu','monto_vig_actu','numeric');
         $this->setParametro('observacion', 'observacion', 'text');
         $this->setParametro('id_activo_fijo_valor','id_activo_fijo_valor','integer');
+				$this->setParametro('deprec_acu_ges_ant','deprec_acu_ges_ant','numeric');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -102,13 +105,13 @@ class MODMovimientoAf extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function modificarMovimientoAf(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_movimiento_af_ime';
 		$this->transaccion='SKA_MOVAF_MOD';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_movimiento_af','id_movimiento_af','int4');
 		$this->setParametro('id_movimiento','id_movimiento','int4');
@@ -124,11 +127,12 @@ class MODMovimientoAf extends MODbase{
         $this->setParametro('vida_util_ant','vida_util_ant','integer');
         // breydi.vasquez (09/01/2020) para nuevo tipo ajuste de vida util
         $this->setParametro('vida_util_residual','vida_util_residual','integer');
-        $this->setParametro('valor_residual','valor_residual','numeric');        
-        $this->setParametro('deprec_acum_ant','deprec_acum_ant','numeric');                    
-        $this->setParametro('monto_vig_actu','monto_vig_actu','numeric');         
+        $this->setParametro('valor_residual','valor_residual','numeric');
+        $this->setParametro('deprec_acum_ant','deprec_acum_ant','numeric');
+        $this->setParametro('monto_vig_actu','monto_vig_actu','numeric');
         $this->setParametro('observacion', 'observacion', 'text');
         $this->setParametro('id_activo_fijo_valor','id_activo_fijo_valor','integer');
+				$this->setParametro('deprec_acu_ges_ant','deprec_acu_ges_ant','numeric');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -136,13 +140,13 @@ class MODMovimientoAf extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 	function eliminarMovimientoAf(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='kaf.ft_movimiento_af_ime';
 		$this->transaccion='SKA_MOVAF_ELI';
 		$this->tipo_procedimiento='IME';
-				
+
 		//Define los parametros para la funcion
 		$this->setParametro('id_movimiento_af','id_movimiento_af','int4');
 
@@ -153,6 +157,6 @@ class MODMovimientoAf extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
 }
 ?>

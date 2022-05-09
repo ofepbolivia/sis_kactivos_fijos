@@ -90,11 +90,11 @@ DECLARE
     v_reg_masivo                  boolean;
     v_id_movi_motivo			  integer;
 
-   --bvp							
+   --bvp
     v_depreciacion_acum_corregido numeric;
-    v_id_af_valor_mod			  integer;   
+    v_id_af_valor_mod			  integer;
     v_mes_fecha					  integer;
-    v_anio 						  integer;    
+    v_anio 						  integer;
     v_codigo_retiro				  varchar;
 BEGIN
 
@@ -145,7 +145,8 @@ BEGIN
         coalesce(v_parametros.fecha_dev_prestamo,null) as fecha_dev_prestamo,
         coalesce(v_parametros.tipo_asig,null) as tipo_asig,
         coalesce(v_parametros.nro_documento,null) as nro_documento,
-        coalesce(v_parametros.tipo_documento,null) as tipo_documento,        
+        coalesce(v_parametros.tipo_documento,null) as tipo_documento,
+        coalesce(v_parametros.tipo_drepeciacion,null) as tipo_drepeciacion,
         v_reg_masivo as reg_masivo
         into v_rec_af;
 
@@ -269,7 +270,8 @@ BEGIN
                 fecha_dev_prestamo = v_parametros.fecha_dev_prestamo,
                 tipo_movimiento = v_parametros.tipo_movimiento,
                 nro_documento = v_parametros.nro_documento,
-                tipo_documento = v_parametros.tipo_documento                
+                tipo_documento = v_parametros.tipo_documento,
+                tipo_drepeciacion = v_parametros.tipo_drepeciacion
             where id_movimiento=v_parametros.id_movimiento;
 
             --Verifica el tipo de movimiento para aplicar reglas
@@ -284,8 +286,13 @@ BEGIN
                 --Si se cambio de depto se borra el detalle y se lo vuelve a llenar
                 if v_rec.id_depto != v_parametros.id_depto then
 
-                    delete from kaf.tmovimiento_af_dep
-                    where id_movimiento_af in (select id_movimiento_af from kaf.tmovimiento_af where id_movimiento = v_parametros.id_movimiento);
+                    if v_parametros.tipo_drepeciacion = 'deprec_impuesto' then
+                          delete from kaf.tmovimiento_af_dep_impuestos
+                          where id_movimiento_af in (select id_movimiento_af from kaf.tmovimiento_af where id_movimiento = v_parametros.id_movimiento);
+                    else
+                      delete from kaf.tmovimiento_af_dep
+                      where id_movimiento_af in (select id_movimiento_af from kaf.tmovimiento_af where id_movimiento = v_parametros.id_movimiento);
+                    end if;
 
                     delete from kaf.tmovimiento_af where id_movimiento = v_parametros.id_movimiento;
 
@@ -811,6 +818,7 @@ BEGIN
                     --Actualiza estado de activo fijo
                     update kaf.tactivo_fijo set
                     en_deposito = 'no',
+                    id_deposito = null,
                     id_funcionario = coalesce(mov.id_funcionario,mov.id_funcionario_dest),
                     id_persona = mov.id_persona,
                     id_oficina = coalesce(mov.id_oficina,kaf.tactivo_fijo.id_oficina),
@@ -858,7 +866,8 @@ BEGIN
                     --Actualiza estado de activo fijo
                     update kaf.tactivo_fijo set
                     en_deposito = 'si',
-                    id_funcionario = mov.id_responsable_depto,
+                    id_funcionario = null,
+                    -- id_funcionario = mov.id_responsable_depto,
                     id_persona = null,
                     fecha_asignacion = mov.fecha_mov,
                     ubicacion = 'Depósito',
@@ -1054,7 +1063,11 @@ BEGIN
                         where id_movimiento_af = v_rec.id_movimiento_af;
 
                     end loop;*/
-                    v_resp = kaf.f_depreciacion_lineal_v2(p_id_usuario,v_movimiento.id_movimiento);
+                    IF v_movimiento.tipo_drepeciacion = 'deprec_impuesto' THEN
+                        v_resp = kaf.f_depreciacion_lineal_v2_f_impuestos(p_id_usuario,v_movimiento.id_movimiento);
+                    ELSE
+                          v_resp = kaf.f_depreciacion_lineal_v2(p_id_usuario,v_movimiento.id_movimiento);
+                    END IF;
 
                 elsif v_codigo_estado_siguiente = 'cbte' then
 
@@ -1129,7 +1142,11 @@ BEGIN
                                 where id_movimiento = v_movimiento.id_movimiento) loop
                         v_resp = kaf.f_depreciacion_lineal(p_id_usuario,v_rec.id_activo_fijo,v_movimiento.fecha_hasta,  v_rec.id_movimiento_af,'NO'); --el ultimo parametro indi
                     end loop;*/
-                    v_resp = kaf.f_depreciacion_lineal_v2(p_id_usuario,v_movimiento.id_movimiento);
+                     IF v_movimiento.tipo_drepeciacion = 'deprec_impuesto' THEN
+ 	                      v_resp = kaf.f_depreciacion_lineal_v2_f_impuestos(p_id_usuario,v_movimiento.id_movimiento);
+                     ELSE
+                           v_resp = kaf.f_depreciacion_lineal_v2(p_id_usuario,v_movimiento.id_movimiento);
+                     END IF;
 
                 elsif v_codigo_estado_siguiente = 'cbte' then
 
@@ -1620,13 +1637,15 @@ BEGIN
                                               af.cantidad_revaloriz,
                                               av.monto_vigente_real_af,
                                               av.vida_util_real_af
-                                              -- breydi.vasquez (10/01/2020) valores nuevos para ajuste 
+                                              -- breydi.vasquez (10/01/2020) valores nuevos para ajuste
                                               ,maf.vida_util_residual,
                                               maf.deprec_acum_ant,
                                               maf.valor_residual,
                                               maf.monto_vig_actu,
-                                              mot.codigo_mov_motivo
-                                              -- fin breydi.vasquez                                               
+                                              mot.codigo_mov_motivo,
+                                              maf.deprec_acu_ges_ant,
+                                              mov.tipo_drepeciacion
+                                              -- fin breydi.vasquez
                                               from kaf.tmovimiento_af maf
                                               inner join kaf.tmovimiento mov
                                               on mov.id_movimiento = maf.id_movimiento
@@ -1645,27 +1664,27 @@ BEGIN
                         v_monto_inc_dec_real = v_registros_af_mov.importe;
                         v_vida_util_inc_dec_real = v_registros_af_mov.vida_util;
 
-                -- breydi.vasquez (10/01/2020) valores nuevos para ajuste de vida util 
-                if (v_registros_af_mov.deprec_acum_ant is not null and v_registros_af_mov.codigo_mov_motivo = 'AJ_VID_UT_PAS') then 
-						     -- actualizacion de valores para corregir la depreciacion del activo 
-                             
+                -- breydi.vasquez (10/01/2020) valores nuevos para ajuste de vida util
+                if (v_registros_af_mov.deprec_acum_ant is not null and v_registros_af_mov.codigo_mov_motivo = 'AJ_VID_UT_PAS') then
+						     -- actualizacion de valores para corregir la depreciacion del activo
+
                              select va.id_activo_fijo_valor into v_id_af_valor_mod
                                 from kaf.tactivo_fijo_valores va
                                 where va.id_activo_fijo = v_registros_af_mov.id_activo_fijo
                                 and va.tipo = 'alta'
                                 and va.id_moneda = 1
                                 and va.fecha_fin is null;
-                              
-                             
+
+
                               v_mes_fecha =  extract(month from v_registros_af_mov.fecha_mov)::integer;
                               if v_mes_fecha = 12 then
                                   v_anio = extract(year from v_registros_af_mov.fecha_mov)::integer + 1;
                               else
 	                              v_anio = extract(year from v_registros_af_mov.fecha_mov)::integer;
                               end if;
-                                
-                              update kaf.tactivo_fijo_valores 
-                              set 
+
+                              update kaf.tactivo_fijo_valores
+                              set
                               vida_util_corregido = v_registros_af_mov.vida_util,
                               vida_util_resid_corregido = v_registros_af_mov.vida_util_residual,
                               valor_residual = v_registros_af_mov.valor_residual,
@@ -1674,31 +1693,185 @@ BEGIN
                               control_ajuste_vida = (('01-12-'||v_anio)::date),
                               fecha_ajuste = v_registros_af_mov.fecha_mov
                               where id_activo_fijo_valor = v_id_af_valor_mod;
-                              
-                              if v_mes_fecha = 12 then  
-                                
-                                update kaf.tmovimiento_af_dep
-                                set 
-                                    tipo_modificacion = 'ajuste_vida',
-                                    depreciacion_acum_corregido	 = v_registros_af_mov.deprec_acum_ant,
-                                    fecha_ajuste_vida = v_registros_af_mov.fecha_mov                                                                        
-                                where id_activo_fijo_valor = v_id_af_valor_mod
-                                and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov))::date);
-                                
+
+                              if v_mes_fecha = 12 then
+                                if v_registros_af_mov.tipo_drepeciacion = 'deprec_impuesto' then
+
+                                  update kaf.tmovimiento_af_dep_impuestos
+                                  set
+                                      tipo_modificacion = 'ajuste_vida',
+                                      depreciacion_acum_corregido	 = v_registros_af_mov.deprec_acum_ant,
+                                      fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                  where id_activo_fijo_valor = v_id_af_valor_mod
+                                  and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov))::date);
+
+                                else
+                                  update kaf.tmovimiento_af_dep
+                                  set
+                                      tipo_modificacion = 'ajuste_vida',
+                                      depreciacion_acum_corregido	 = v_registros_af_mov.deprec_acum_ant,
+                                      fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                  where id_activo_fijo_valor = v_id_af_valor_mod
+                                  and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov))::date);
+                                end if;
+
                               else
-                              
+
                               	v_depreciacion_acum_corregido = kaf.f_depre_inversa_mes_truncado(v_registros_af_mov.monto_vig_actu, v_registros_af_mov.valor_residual, v_registros_af_mov.deprec_acum_ant, v_registros_af_mov.vida_util_residual, v_registros_af_mov.fecha_mov);
-                                
-                                update kaf.tmovimiento_af_dep
-                                set 
-                                    tipo_modificacion = 'ajuste_vida',
-                                    depreciacion_acum_corregido	 = v_depreciacion_acum_corregido,
-                                    fecha_ajuste_vida = v_registros_af_mov.fecha_mov
-                                where id_activo_fijo_valor = v_id_af_valor_mod
-                                and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov)::integer -1 )::date);
-                                
+
+                                if v_registros_af_mov.tipo_drepeciacion = 'deprec_impuesto' then
+
+                                  update kaf.tmovimiento_af_dep_impuestos
+                                  set
+                                      tipo_modificacion = 'ajuste_vida',
+                                      depreciacion_acum_corregido	 = v_depreciacion_acum_corregido,
+                                      fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                  where id_activo_fijo_valor = v_id_af_valor_mod
+                                  and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov)::integer -1 )::date);
+
+                                else
+                                  update kaf.tmovimiento_af_dep
+                                  set
+                                      tipo_modificacion = 'ajuste_vida',
+                                      depreciacion_acum_corregido	 = v_depreciacion_acum_corregido,
+                                      fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                  where id_activo_fijo_valor = v_id_af_valor_mod
+                                  and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov)::integer -1 )::date);
+                                end if;
+
                               end if;
-                    	else                                      
+                    elsif v_registros_af_mov.codigo_mov_motivo = 'AJ_ACT_PAS'then
+                             select va.id_activo_fijo_valor into v_id_af_valor_mod
+                                from kaf.tactivo_fijo_valores va
+                                where va.id_activo_fijo = v_registros_af_mov.id_activo_fijo
+                                and va.tipo = 'alta'
+                                and va.id_moneda = 1
+                                and va.fecha_fin is null;
+
+
+                              v_mes_fecha =  extract(month from v_registros_af_mov.fecha_mov)::integer;
+                              if v_mes_fecha = 12 then
+                                  v_anio = extract(year from v_registros_af_mov.fecha_mov)::integer + 1;
+                              else
+	                              v_anio = extract(year from v_registros_af_mov.fecha_mov)::integer;
+                              end if;
+
+                              update kaf.tactivo_fijo_valores
+                              set
+                              vida_util_corregido = v_registros_af_mov.vida_util,
+                              vida_util_resid_corregido = v_registros_af_mov.vida_util_residual,
+                              valor_residual = v_registros_af_mov.valor_residual,
+                              deprec_acum_ant = v_registros_af_mov.deprec_acum_ant,
+                              tipo_modificacion = 'ajuste_pas_act',
+                              control_ajuste_vida = (('01-12-'||v_anio)::date),
+                              fecha_ajuste = v_registros_af_mov.fecha_mov,
+                              monto_vig_actu_mod = v_registros_af_mov.monto_vig_actu
+                              where id_activo_fijo_valor = v_id_af_valor_mod;
+
+                              if v_mes_fecha = 12 then
+                                if v_registros_af_mov.tipo_drepeciacion = 'deprec_impuesto' then
+
+                                    update kaf.tmovimiento_af_dep_impuestos
+                                    set
+                                        tipo_modificacion = 'ajuste_pas_act',
+                                        depreciacion_acum_corregido	 = v_registros_af_mov.deprec_acum_ant,
+                                        fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                    where id_activo_fijo_valor = v_id_af_valor_mod
+                                    and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov))::date);
+
+                                  else
+                                    update kaf.tmovimiento_af_dep
+                                    set
+                                        tipo_modificacion = 'ajuste_pas_act',
+                                        depreciacion_acum_corregido	 = v_registros_af_mov.deprec_acum_ant,
+                                        fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                    where id_activo_fijo_valor = v_id_af_valor_mod
+                                    and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov))::date);
+                                  end if;
+                              else
+
+                                if v_registros_af_mov.deprec_acu_ges_ant is null or v_registros_af_mov.vida_util_residual > 0 then
+                                   v_depreciacion_acum_corregido = kaf.f_depre_inversa_mes_truncado(v_registros_af_mov.monto_vig_actu, v_registros_af_mov.valor_residual, v_registros_af_mov.deprec_acum_ant, v_registros_af_mov.vida_util_residual, v_registros_af_mov.fecha_mov);
+                                   if v_registros_af_mov.tipo_drepeciacion = 'deprec_impuesto' then
+                                       update kaf.tmovimiento_af_dep_impuestos
+                                       set
+                                         tipo_modificacion = 'ajuste_pas_act',
+                                         depreciacion_acum_corregido	 = v_depreciacion_acum_corregido,
+                                         fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                     where id_activo_fijo_valor = v_id_af_valor_mod
+                                     and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov)::integer -1 )::date);
+
+                                   else
+
+                                      update kaf.tmovimiento_af_dep
+                                      set
+                                        tipo_modificacion = 'ajuste_pas_act',
+                                        depreciacion_acum_corregido	 = v_depreciacion_acum_corregido,
+                                        fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                    where id_activo_fijo_valor = v_id_af_valor_mod
+                                    and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov)::integer -1 )::date);
+
+                                  end if;
+								else
+                                if v_registros_af_mov.tipo_drepeciacion = 'deprec_impuesto' then
+                                    update kaf.tmovimiento_af_dep_impuestos
+                                    set
+                                      tipo_modificacion = 'ajuste_pas_act',
+                                      depreciacion_acum_corregido	 = v_registros_af_mov.deprec_acu_ges_ant,
+                                      fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                  where id_activo_fijo_valor = v_id_af_valor_mod
+                                  and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov)::integer -1 )::date);
+                                else
+                                    update kaf.tmovimiento_af_dep
+                                    set
+                                      tipo_modificacion = 'ajuste_pas_act',
+                                      depreciacion_acum_corregido	 = v_registros_af_mov.deprec_acu_ges_ant,
+                                      fecha_ajuste_vida = v_registros_af_mov.fecha_mov
+                                  where id_activo_fijo_valor = v_id_af_valor_mod
+                                  and date_trunc('month',fecha) = date_trunc('month',('01-12-'||extract(year from v_registros_af_mov.fecha_mov)::integer -1 )::date);
+                                end if;
+                              end if;
+                            end if;
+                        elsif v_registros_af_mov.codigo_mov_motivo = 'AJ_VID_RES' then
+
+                          v_fun = kaf.f_afv_crear(p_id_usuario,
+                                                    v_movimiento.cod_movimiento,
+                                                    v_registros_af_mov.id_activo_fijo,
+                                                    v_id_moneda_base,
+                                                    v_registros_af_mov.id_movimiento_af,
+                                                    v_registros_af_mov.fecha_mov,
+                                                    v_monto_inc_dec_real,
+                                                    v_registros_af_mov.vida_util,
+                                                    kaf.f_get_codigo_nuevo_afv(v_registros_af_mov.id_activo_fijo,v_movimiento.cod_movimiento),
+                                                    'si');
+
+						  update kaf.tactivo_fijo_valores
+                          set
+                          tipo_modificacion = 'ajuste_vida_residual',
+                          valor_residual = v_monto_inc_dec_real,
+                          monto_vigente_orig = 0,
+                          monto_vigente_orig_100 = 0,
+                          monto_vigente = 0
+                          where id_activo_fijo =  v_registros_af_mov.id_activo_fijo
+                          and id_moneda = 1
+                          and tipo = 'ajuste';
+
+                          update kaf.tactivo_fijo_valores set
+                          fecha_fin = pxp.f_last_day(date_trunc('month', v_registros_af_mov.fecha_mov + interval '2' month)::date),
+                          fecha_mod = now(),
+                          id_usuario_mod = p_id_usuario
+                          where id_activo_fijo = v_registros_af_mov.id_activo_fijo
+                          and fecha_fin is null;
+
+
+						  update kaf.tactivo_fijo_valores
+                          set
+                          tipo_modificacion = 'ajuste_vida_residual'
+                          where id_activo_fijo =  v_registros_af_mov.id_activo_fijo
+                          and id_moneda = 1
+                          and tipo = 'ajuste';
+
+                    	else
 
                         --Finalización de AFV(s) vigentes (seteando fecha_fin)
                         v_fun = kaf.f_afv_finalizar(p_id_usuario,
@@ -1716,7 +1889,7 @@ BEGIN
                                                 v_registros_af_mov.vida_util,
                                                 kaf.f_get_codigo_nuevo_afv(v_registros_af_mov.id_activo_fijo,v_movimiento.cod_movimiento),
                                                 'si');
-                        end if;                                                
+                        end if;
 
                     end loop;
 
@@ -1756,14 +1929,14 @@ BEGIN
                   descripcion: nuevo tipo de motivo de retiro, setea la fecha del movimiento
                   en la tabla activo_fijo_valores para el activo regitrado
                 */
-                select 
+                select
                 	mo.codigo_mov_motivo
-                    into v_codigo_retiro 
-                from kaf.tmovimiento m 
+                    into v_codigo_retiro
+                from kaf.tmovimiento m
                 inner join kaf.tmovimiento_motivo mo on mo.id_movimiento_motivo = m.id_movimiento_motivo
-                where m.id_movimiento = v_movimiento.id_movimiento;                  
+                where m.id_movimiento = v_movimiento.id_movimiento;
 
-            if v_codigo_retiro is null or v_codigo_retiro <> 'PAR_RET' then 
+            if v_codigo_retiro is null or v_codigo_retiro <> 'PAR_RET' then
                 --Actualiza estado de activo fijo
                 update kaf.tactivo_fijo set
                 estado = 'retiro'
@@ -1783,14 +1956,14 @@ BEGIN
                                             where maf.id_movimiento = v_movimiento.id_movimiento) loop
 
 				   if v_registros_af_mov.codigo_mov_motivo = 'PAR_RET' then
-                   
-                   	update kaf.tactivo_fijo_valores 
-                    set 
+
+                   	update kaf.tactivo_fijo_valores
+                    set
                     fecha_fin = pxp.f_last_day(v_movimiento.fecha_mov),
                     fecha_mod = now(),
 					id_usuario_mod = p_id_usuario
                     where id_activo_fijo_valor = v_registros_af_mov.id_activo_fijo_valor;
-                    
+
                    else
 
                     v_fun = kaf.f_afv_finalizar(p_id_usuario,
@@ -1968,20 +2141,38 @@ BEGIN
             --Obtener datos tipo estado
              if v_movimiento.cod_movimiento = 'deprec' then
                 if v_codigo_estado = 'borrador' then
+                -- tipo depreciacion
+                  IF v_movimiento.tipo_drepeciacion = 'deprec_impuesto' THEN
+                  --Eliminar registros de la depreciacion
+                  delete from kaf.tmovimiento_af_dep_impuestos
+                  where id_movimiento_af in (select id_movimiento_af
+                                          from kaf.tmovimiento_af
+                                          where id_movimiento = v_movimiento.id_movimiento);
+                  ELSE
                     --Eliminar registros de la depreciacion
                     delete from kaf.tmovimiento_af_dep
                     where id_movimiento_af in (select id_movimiento_af
                                             from kaf.tmovimiento_af
                                             where id_movimiento = v_movimiento.id_movimiento);
+                  END IF;
                 end if;
             elsif v_movimiento.cod_movimiento = 'actua' then
 
                 if v_codigo_estado = 'borrador' then
+                -- tipo depreciacion
+                  IF v_movimiento.tipo_drepeciacion = 'deprec_impuesto' THEN
+                  --Eliminar registros de la depreciacion
+                  delete from kaf.tmovimiento_af_dep_impuestos
+                  where id_movimiento_af in (select id_movimiento_af
+                                          from kaf.tmovimiento_af
+                                          where id_movimiento = v_movimiento.id_movimiento);
+                  ELSE
                     --Eliminar registros de la depreciacion
                     delete from kaf.tmovimiento_af_dep
                     where id_movimiento_af in (select id_movimiento_af
                                             from kaf.tmovimiento_af
                                             where id_movimiento = v_movimiento.id_movimiento);
+                  END IF;
                 end if;
             end if;
 
@@ -2081,7 +2272,7 @@ BEGIN
           from param.tcatalogo_tipo ctip
           inner join param.tcatalogo cat
           on cat.id_catalogo_tipo = ctip.id_catalogo_tipo
-          inner join kaf.tmovimiento_motivo mom 
+          inner join kaf.tmovimiento_motivo mom
           on mom.id_cat_movimiento = cat.id_catalogo
           where ctip.tabla = 'tmovimiento__id_cat_movimiento'
           and cat.codigo = v_parametros.tipo_movimiento;
@@ -2101,17 +2292,17 @@ BEGIN
               coalesce(v_parametros.id_oficina,null) as id_oficina,
               coalesce(v_parametros.id_depto, null) as id_depto,
               coalesce(v_parametros.id_deposito, null) as id_deposito,
-              coalesce(v_id_movi_motivo, null) as id_movimiento_motivo,              
+              coalesce(v_id_movi_motivo, null) as id_movimiento_motivo,
               v_id_cat_movimiento as id_cat_movimiento,
               v_rec.id_depto as id_depto,
               false as reg_masivo
               into v_rec_af;
-			
+
 			  if v_parametros.tipo_movimiento = 'asig' then
 				v_rec_af.id_funcionario := v_parametros.id_funcionario_dest;
                 v_rec_af.id_funcionario_dest := null;
               end if;
-			  
+
               --Inserción del movimiento
               v_id_movimiento = kaf.f_insercion_movimiento(p_id_usuario, hstore(v_rec_af));
               v_ids_mov = v_ids_mov || v_id_movimiento::varchar;

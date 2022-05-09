@@ -44,6 +44,7 @@ DECLARE
     v_id_depo   integer;
     v_est_fun_tod		varchar = '';
     v_rec_depo			record;
+    v_filro         varchar;
 BEGIN
 
   v_nombre_funcion = 'kaf.ft_activo_fijo_sel';
@@ -111,7 +112,11 @@ BEGIN
                             cc.codigo_cc as centro_costo,
                             ofi.codigo || '' '' || ofi.nombre as oficina,
                             dpto.codigo || '' '' || dpto.nombre as depto,
-                            fun.desc_funcionario2 as funcionario,
+                            case when afij.en_deposito = ''no'' then
+ 	                            fun.desc_funcionario2
+                             else
+                             	''''::text
+                             end as funcionario,
                             depaf.nombre as deposito,
                             depaf.codigo as deposito_cod,
                             mon.codigo as desc_moneda_orig,
@@ -151,7 +156,12 @@ BEGIN
                             (afij.codigo ||''-''||afij.denominacion)::varchar as desc_denominacion,
                             dpto.nombre as departamento,
                             afij.fecha_inicio,
-                            afij.fecha_fin
+                            afij.fecha_fin,
+                            case when afij.en_deposito = ''si'' then
+     	                            fundepo.desc_funcionario2
+                                 else
+                                 	''''::text
+                                 end as resp_deposito
             from kaf.tactivo_fijo afij
             inner join segu.tusuario usu1 on usu1.id_usuario = afij.id_usuario_reg
             left join param.tcatalogo cat1 on cat1.id_catalogo = afij.id_cat_estado_fun
@@ -161,6 +171,7 @@ BEGIN
             inner join param.tmoneda mon on mon.id_moneda = afij.id_moneda_orig
                         left join param.tproyecto proy on proy.id_proyecto = afij.id_proyecto
                         left  join kaf.tdeposito depaf on depaf.id_deposito = afij.id_deposito
+      			            left join orga.vfuncionario fundepo on fundepo.id_funcionario = depaf.id_funcionario
                         left join kaf.vactivo_fijo_vigente_estado_rep afvi on afvi.id_activo_fijo = afij.id_activo_fijo
                         and afvi.id_moneda = afij.id_moneda_orig
                         and (afvi.estado_mov_dep = ''finalizado'' or afvi.estado_mov_dep is null)
@@ -230,7 +241,7 @@ BEGIN
             inner join param.tmoneda mon on mon.id_moneda = afij.id_moneda_orig
                         left join param.tproyecto proy on proy.id_proyecto = afij.id_proyecto
                         left  join kaf.tdeposito depaf on depaf.id_deposito = afij.id_deposito
-
+			                   left join orga.vfuncionario fundepo on fundepo.id_funcionario = depaf.id_funcionario
                         /*
                         left join kaf.vactivo_fijo_vigente_estado afvi on afvi.id_activo_fijo = afij.id_activo_fijo
                         and afvi.id_moneda = afij.id_moneda_orig
@@ -1310,70 +1321,104 @@ BEGIN
 	     #FECHA:        12/12/2018
 	    ***********************************/
 	    elsif(p_transaccion='SKA_ACDEPXFUN_SEL')then
-		
-        begin 
-            select depo.id_deposito,
-                   depo.nombre,
-            	   f.desc_funcionario1
-            	into
-                v_rec_depo
-            from kaf.tdeposito depo
-			inner join orga.vfuncionario f on f.id_funcionario = depo.id_funcionario
-            where depo.id_funcionario = v_parametros.id_funcionario;
-            
-		v_consulta:= '
-                      with recursive deposito (id,fecha) as 
-                      (
-                            select maf.id_activo_fijo,
-                                   max(mov.fecha_mov),
-                                   max(mov.id_movimiento)
-                            from kaf.tmovimiento mov
-                              inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
-                              left join wf.testado_wf ew on ew.id_estado_wf = mov.id_estado_wf
-                              left join wf.ttipo_estado tew on tew.id_tipo_estado = ew.id_tipo_estado
-                              left join kaf.tdeposito depo on depo.id_deposito = mov.id_deposito
-                              left join kaf.tdeposito depodest on depodest.id_deposito = mov.id_deposito_dest
-                              left join kaf.tmovimiento_af maf on maf.id_movimiento = mov.id_movimiento
-                             where coalesce(mov.id_deposito, mov.id_deposito_dest) = '||v_rec_depo.id_deposito||'
-                             and cat.id_catalogo in (116, 130)
-                             and tew.codigo = ''finalizado''
-       				  		 and maf.id_activo_fijo not in (
-                             select  maf.id_activo_fijo
-                              from kaf.tmovimiento mov
-                                inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
-                                left join wf.testado_wf ew on ew.id_estado_wf = mov.id_estado_wf
-                                left join wf.ttipo_estado tew on tew.id_tipo_estado = ew.id_tipo_estado
-                                left join kaf.tdeposito depo on depo.id_deposito = mov.id_deposito
-                                left join kaf.tdeposito depodest on depodest.id_deposito = mov.id_deposito_dest
-                                left join kaf.tmovimiento_af maf on maf.id_movimiento = mov.id_movimiento
-                                left join kaf.tactivo_fijo af on af.id_activo_fijo = maf.id_activo_fijo
-                               where coalesce(mov.id_deposito, mov.id_deposito_dest) <> '||v_rec_depo.id_deposito||'
-                               and cat.id_catalogo in (116, 130)
-                               and tew.codigo = ''finalizado''
-                               and mov.fecha_reg >= ''01-05-2019''::date           
-       													)                             
-                            group by maf.id_activo_fijo
-                      )
-                      select 
-                          af.codigo,
-                          af.denominacion,
-                          af.descripcion,
-                          af.ubicacion,
-                          cat.descripcion as cat_desc,
-                          '''||v_rec_depo.nombre||'''::varchar as almacen,
-                          b.fecha as fecha_mov,
-                          '''||v_rec_depo.desc_funcionario1||'''::text as encargado
-                      from kaf.tactivo_fijo af 
-                      inner join param.tcatalogo cat on cat.id_catalogo = af.id_cat_estado_fun
-                      inner join deposito b on b.id = af.id_activo_fijo                      
-                      where   af.en_deposito = ''si'' and  ';
-                      
-        v_consulta:=v_consulta||v_parametros.filtro;
-        v_consulta:=v_consulta||'order by af.codigo';
 
-        return v_consulta;
+        begin
+        	if v_parametros.id_deposito is not null then
+            	v_filro = 'depo.id_deposito = '||v_parametros.id_deposito;
+            else
+            	v_filro = '0=0';
+            end if;
+
+     		v_consulta:= 'select
+                           af.codigo,
+                           af.denominacion,
+                           af.descripcion,
+                           af.ubicacion,
+                           cat.descripcion as cat_desc,
+                           depo.nombre::varchar as almacen ,
+                          (select max(mov.fecha_mov)
+                             from kaf.tmovimiento mov
+                             inner join param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
+                             inner join wf.testado_wf ew on ew.id_estado_wf = mov.id_estado_wf
+                             inner join wf.ttipo_estado tew on tew.id_tipo_estado = ew.id_tipo_estado
+                             where mov.id_movimiento in
+                             (select id_movimiento from kaf.tmovimiento_af maf where maf.id_activo_fijo = af.id_activo_fijo)
+                             and cat.codigo in (''devol'',''tranfdep'')
+                             and tew.codigo = ''finalizado'') as fecha_mov,
+                           fun.desc_funcionario1::text as encargado
+                         from kaf.tactivo_fijo af
+                         inner join param.tcatalogo cat on cat.id_catalogo = af.id_cat_estado_fun
+                         inner join kaf.tdeposito depo on depo.id_deposito = af.id_deposito
+                         inner join orga.vfuncionario fun on fun.id_funcionario = depo.id_funcionario
+                         where  depo.id_funcionario = '||v_parametros.id_funcionario||' and '||v_filro||' and ' ;
+
+             v_consulta:=v_consulta||v_parametros.filtro;
+             v_consulta:=v_consulta||'order by af.codigo';
+     		      raise notice '%',v_consulta;
+             return v_consulta;
 	end;
 
+    /*******************************
+     #TRANSACCION:  SKA_ACFUNCAR_SEL
+     #DESCRIPCION:	lista de funcionario activos e inactivos, usado para sacar el reporte de inventario
+     #AUTOR:		breydi vasquez
+     #FECHA:		20/03/2020
+    ***********************************/
+    elsif(p_transaccion='SKA_ACFUNCAR_SEL')then
+
+
+      BEGIN
+	      v_consulta:= 'select
+          				afunc.id_uo_funcionario,
+                        afunc.id_funcionario,
+                        afunc.desc_funcionario1,
+                        afunc.desc_funcionario2,
+                        afunc.id_uo,
+                        afunc.nombre_cargo,
+                        afunc.fecha_asignacion,
+                        afunc.fecha_finalizacion,
+                        afunc.num_doc,
+                        afunc.ci,
+                        afunc.codigo,
+                        afunc.email_empresa,
+                        afunc.estado_reg_fun,
+                        afunc.estado_reg_asi,
+                        afunc.id_cargo,
+                        afunc.descripcion_cargo,
+                        afunc.cargo_codigo,
+                        afunc.id_lugar,
+                        afunc.id_oficina,
+                        afunc.lugar_nombre,
+                        afunc.oficina_nombre
+                        FROM orga.vfuncionario_ultimo_cargo afunc
+                        WHERE  afunc.estado_reg_fun in (''activo'', ''inactivo'')
+                        and ';
+
+          v_consulta:=v_consulta||v_parametros.filtro;
+          v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' OFFSET ' || v_parametros.puntero;
+          raise notice 'v_consulta %', v_consulta;
+          return v_consulta;
+
+      END;
+
+    /*******************************
+     #TRANSACCION:  SKA_ACFUNCAR_CONT
+     #DESCRIPCION:	Conteo de funcionarios Activos e inactivos,
+     #AUTOR:		breydi vasquez
+     #FECHA:		20/03/2020
+    ***********************************/
+    elsif(p_transaccion='SKA_ACFUNCAR_CONT')then
+
+      --consulta:=';
+      BEGIN
+
+        v_consulta:='select count(afunc.id_uo_funcionario)
+        			FROM orga.vfuncionario_ultimo_cargo afunc
+                    WHERE  afunc.estado_reg_fun in (''activo'', ''inactivo'')
+                    and';
+        v_consulta:=v_consulta||v_parametros.filtro;
+        return v_consulta;
+      END;
 
   else
     raise exception 'Transaccion inexistente';

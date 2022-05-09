@@ -77,13 +77,14 @@ class MODMovimiento extends MODbase{
 
 		///AUMENTO CAMPO movimiento
 		$this->captura('tipo_movimiento','varchar');
-        $this->captura('id_proceso_wf_doc','int4');
-        $this->captura('nro_documento','varchar');
-        $this->captura('tipo_documento','varchar');
-        $this->captura('codigo_mov_motivo','varchar');        
-        
+    $this->captura('id_proceso_wf_doc','int4');
+    $this->captura('nro_documento','varchar');
+    $this->captura('tipo_documento','varchar');
+    $this->captura('codigo_mov_motivo','varchar');
+		$this->captura('fecha_finalizacion','timestamp');
+		$this->captura('tipo_drepeciacion','varchar');
 		//Ejecuta la instruccion
-        $this->armarConsulta();        
+        $this->armarConsulta();
 		$this->ejecutarConsulta();
 
 		//Devuelve la respuesta
@@ -122,10 +123,10 @@ class MODMovimiento extends MODbase{
 		$this->setParametro('tipo_asig','tipo_asig','varchar');
 		$this->setParametro('prestamo','prestamo','varchar');
         $this->setParametro('fecha_dev_prestamo','fecha_dev_prestamo','date');
-        
+
         $this->setParametro('nro_documento','nro_documento','varchar');
         $this->setParametro('tipo_documento','tipo_documento','varchar');
-        
+				$this->setParametro('tipo_drepeciacion','tipo_drepeciacion','varchar');
 
 
 		//Ejecuta la instruccion
@@ -173,7 +174,8 @@ class MODMovimiento extends MODbase{
 		///AUMENTO CAMPO movimiento
         $this->setParametro('tipo_movimiento','tipo_movimiento','varchar');
         $this->setParametro('nro_documento','nro_documento','varchar');
-        $this->setParametro('tipo_documento','tipo_documento','varchar');                
+        $this->setParametro('tipo_documento','tipo_documento','varchar');
+				$this->setParametro('tipo_drepeciacion','tipo_drepeciacion','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -263,7 +265,7 @@ class MODMovimiento extends MODbase{
 	    $this->captura('codigo_depto','varchar');
 	    $this->captura('func_resp_dep','varchar');
 	    $this->captura('func_cargo_dep','varchar');
-        $this->captura('deposito', 'varchar');        
+        $this->captura('deposito', 'varchar');
         $this->captura('codigo_mov_motivo','varchar');
         $this->captura('nro_documento', 'varchar');
         $this->captura('resp_af', 'text');

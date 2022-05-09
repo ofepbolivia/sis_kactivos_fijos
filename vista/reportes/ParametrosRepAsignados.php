@@ -12,14 +12,16 @@ Phx.vista.ParametrosRepAsignados = {
 		this.formParam.topToolbar.items.items[1].setVisible(false);
 		this.formParam.topToolbar.items.items[2].setVisible(false);
 		this.formParam.topToolbar.items.items[4].setVisible(false);
-		this.formParam.topToolbar.items.items[5].setVisible(false);		
+		this.formParam.topToolbar.items.items[5].setVisible(false);
 		this.formParam.topToolbar.items.items[7].setVisible(false);
-		this.formParam.topToolbar.items.items[8].setVisible(false);		
+		this.formParam.topToolbar.items.items[8].setVisible(false);
 		this.formParam.topToolbar.items.items[10].setVisible(false);
+		this.formParam.topToolbar.items.items[12].setVisible(false);
+		this.formParam.topToolbar.items.items[14].setVisible(false);
 		this.formParam.topToolbar.doLayout();
 		//Eventos
 		this.definirEventos();
-		
+
 	},
 	definirEventos: function(){
 		this.cmbActivo.on('select',function(){
@@ -63,7 +65,7 @@ Phx.vista.ParametrosRepAsignados = {
 
 		this.configElement(this.cmbClasificacion,true,true);
 		this.configElement(this.cmbClasificacionMulti,false,true);
-		this.configElement(this.cmbTipoMov,false,true)		
+		this.configElement(this.cmbTipoMov,false,true)
 		this.configElement(this.txtDenominacion,true,true);
 		this.configElement(this.dteFechaCompra,true,true);
 		this.configElement(this.dteFechaIniDep,true,true);
@@ -96,10 +98,10 @@ Phx.vista.ParametrosRepAsignados = {
 		this.configElement(this.fieldSetIncluir,true,true);
 		this.configElement(this.fieldSetCompra,false,true);
 		this.configElement(this.cmbTipo,true,true);
-		
+
 	},
 	onSubmit: function(){
-		
+
 		if(this.formParam.getForm().isValid()){
 
 			var win = Phx.CP.loadWindows(
@@ -107,14 +109,14 @@ Phx.vista.ParametrosRepAsignados = {
                 this.titleReporte, {
                     width: 870,
                     height : 620
-                }, { 
+                }, {
                     paramsRep: this.getParams()
                 },
                 this.idContenedor,
                 this.claseReporte
             );
 
-			
+
 		}
 	},
 	getExtraParams: function(){

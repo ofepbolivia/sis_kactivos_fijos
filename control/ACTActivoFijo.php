@@ -602,12 +602,19 @@ class ACTActivoFijo extends ACTbase{
                 }
             }
         }
-        if($this->objParam->getParametro('id_depto')!=''){
-            if($this->objParam->getParametro('id_depto')==3){
-                $this->objParam->addFiltro("taf.id_depto in (7,47)");
-            }
-            else{
-                $this->objParam->addFiltro("taf.id_depto = ".$this->objParam->getParametro('id_depto'));
+        if($this->objParam->getParametro('configuracion_reporte') != 'pendientes_aprobacion') {
+            if($this->objParam->getParametro('id_depto')!=''){
+                if($this->objParam->getParametro('id_depto')==3){
+                    if($this->objParam->getParametro('configuracion_reporte') != 'sin_asignacion'){
+                        $this->objParam->addFiltro("taf.id_depto in (7,47)");
+                    }
+                }
+                else{
+                    if($this->objParam->getParametro('configuracion_reporte') != 'sin_asignacion'){
+                        $this->objParam->addFiltro("taf.id_depto = ".$this->objParam->getParametro('id_depto'));
+                    }
+                    
+                }
             }
         }
         if($this->objParam->getParametro('nr_factura')!=''){
@@ -1046,6 +1053,18 @@ class ACTActivoFijo extends ACTbase{
         $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 //        var_dump($firma); exit;
     }
-    
+
+
+    function verificarNoTramiteCompra(){
+        $this->objFunc=$this->create('MODActivoFijo');
+        $this->res=$this->objFunc->verificarNoTramiteCompra($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }    
+
+    function listarFuncionarioUltCargo(){
+        $this->objFunc=$this->create('MODActivoFijo');
+        $this->res=$this->objFunc->listarFuncionarioUltCargo($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 }
 ?>

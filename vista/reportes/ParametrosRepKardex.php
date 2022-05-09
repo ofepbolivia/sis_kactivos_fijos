@@ -12,10 +12,12 @@ Phx.vista.ParametrosRepKardex = {
 		this.formParam.topToolbar.items.items[1].setVisible(false);
 		this.formParam.topToolbar.items.items[2].setVisible(false);
 		this.formParam.topToolbar.items.items[4].setVisible(false);
-		this.formParam.topToolbar.items.items[5].setVisible(false);		
+		this.formParam.topToolbar.items.items[5].setVisible(false);
 		this.formParam.topToolbar.items.items[7].setVisible(false);
-		this.formParam.topToolbar.items.items[8].setVisible(false);		
+		this.formParam.topToolbar.items.items[8].setVisible(false);
 		this.formParam.topToolbar.items.items[10].setVisible(false);
+		this.formParam.topToolbar.items.items[12].setVisible(false);
+		this.formParam.topToolbar.items.items[14].setVisible(false);
 		this.formParam.topToolbar.doLayout();
 		//Eventos
 		this.definirEventos();
@@ -59,7 +61,7 @@ Phx.vista.ParametrosRepKardex = {
 		this.configElement(this.cmbClasificacion,false,true);
 		this.configElement(this.cmbClasificacionMulti,false,true);
 		this.configElement(this.cmbEstadoDepre,false,true);
-		this.configElement(this.cmbTipoMov,false,true)		
+		this.configElement(this.cmbTipoMov,false,true)
 		this.configElement(this.txtDenominacion,false,true);
 		this.configElement(this.dteFechaCompra,false,true);
 		this.configElement(this.dteFechaIniDep,false,true);
@@ -99,14 +101,14 @@ Phx.vista.ParametrosRepKardex = {
                 this.titleReporte, {
                     width: 870,
                     height : 620
-                }, { 
+                }, {
                     paramsRep: this.getParams()
                 },
                 this.idContenedor,
                 this.claseReporte
             );
 
-			
+
 		}
 	},
 	getExtraParams: function(){

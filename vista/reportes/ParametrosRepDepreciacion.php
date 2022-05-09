@@ -9,19 +9,22 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.ParametrosRepDepreciacion.superclass.constructor.call(this,config);
             this.definicionRutareporte();
             this.definirParametros();
-            this.formParam.topToolbar.items.items[0].setVisible(false);            
+            this.formParam.topToolbar.items.items[0].setVisible(false);
 			this.formParam.topToolbar.items.items[1].setVisible(false);
 			this.formParam.topToolbar.items.items[2].setVisible(false);
 			this.formParam.topToolbar.items.items[3].setVisible(false);
 			this.formParam.topToolbar.items.items[4].setVisible(false);
 			this.formParam.topToolbar.items.items[5].setVisible(false);
-			this.formParam.topToolbar.items.items[6].setVisible(false);		
+			this.formParam.topToolbar.items.items[6].setVisible(false);
 			this.formParam.topToolbar.items.items[7].setVisible(false);
 			this.formParam.topToolbar.items.items[8].setVisible(false);
-			this.formParam.topToolbar.items.items[9].setVisible(false);		
+			this.formParam.topToolbar.items.items[9].setVisible(false);
 			this.formParam.topToolbar.items.items[10].setVisible(false);
-			            
-            this.formParam.topToolbar.insert(0,'-',{               
+      this.formParam.topToolbar.items.items[12].setVisible(false);
+      this.formParam.topToolbar.items.items[13].setVisible(false);
+      this.formParam.topToolbar.items.items[14].setVisible(false);
+
+            this.formParam.topToolbar.insert(0,'-',{
                 xtype: 'splitbutton',
                 grupo: [0,4],
                 tooltip: '<b>Reporte Depreciacion A.F.</b><br>Podemos generar reporte de depreciacion de formato PDF y EXCEL.',
@@ -34,24 +37,26 @@ header("content-type: text/javascript; charset=UTF-8");
                         'news': true,
                         def: 'edit'
                     },
-                    handler: me.detalleDepreciacion,                    
+                    handler: me.detalleDepreciacion,
                     scope: me
-                }, {
-                    text: 'Periodo Depreciacion',
-                    iconCls: 'bedit',
-                    argument: {
-                        'news': true,
-                        def: 'edit'
-                    },
-                    handler: me.detalleDepPeriodo,
-                    scope: me
-                }]
+                },
+                // {
+                //     text: 'Periodo Depreciacion',
+                //     iconCls: 'bedit',
+                //     argument: {
+                //         'news': true,
+                //         def: 'edit'
+                //     },
+                //     handler: me.detalleDepPeriodo,
+                //     scope: me
+                // }
+              ]
             }
             );
             this.formParam.topToolbar.doLayout();
 		//Eventos
 		this.definirEventos();
-		
+
 	},
 	definirEventos: function(){
 		this.cmbActivo.on('select',function(){
@@ -61,7 +66,8 @@ header("content-type: text/javascript; charset=UTF-8");
 		    var definido = this.cmbTipoMov.store.data.items[0].data.tipo;
             var id_clasdificacion = this.cmbClasificacion.getValue();
 			this.cmbActivo.setValue('');
-			this.configElement(this.cmbClasificacionMulti,false,true);
+			this.cmbClasificacionMulti.reset()
+			// this.configElement(this.cmbClasificacionMulti,false,true);
             this.cmbTipoMov.setValue(definido);
             console.log('bbbbbb',this.cmbTipoMov.hidden );
             if (this.cmbTipoMov.hidden == false) {
@@ -73,7 +79,8 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.cmbClasificacionMulti.on('select',function(){
 		    var definido = this.cmbTipoMov.store.data.items[0].data.tipo;
 		    var id_clasdificacion = this.cmbClasificacionMulti.getValue();
-			this.configElement(this.cmbClasificacion,false,true);
+			this.cmbClasificacion.reset();
+			// this.configElement(this.cmbClasificacion,false,true);
 			this.cmbTipoMov.setValue(definido);
             if (this.cmbTipoMov.hidden == false) {
 
@@ -82,7 +89,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 		},this);
 		this.cmbTipoMov.on('select',function(cmb,record,index){
-			if(record.data.tipo=='consoli'){						
+			if(record.data.tipo=='consoli'){
 				this.cmbEstadoDepre.setVisible(false);
 				this.cmbEstadoDepre.setValue('');
 			}else{
@@ -90,15 +97,15 @@ header("content-type: text/javascript; charset=UTF-8");
 				this.cmbEstadoDepre.setValue('');
 			}
 		},this);
-		this.cmbTipoRep.on('select',function(cmb,record,index){			
+		this.cmbTipoRep.on('select',function(cmb,record,index){
 			if(record.data.tipo=='geac'){
 				this.cmbPeriodo.setVisible(true);
 				this.cmbPeriodo.setValue('');
-				this.configElement(this.cmbPeriodo,true,false);			
+				this.configElement(this.cmbPeriodo,true,false);
 			}else{
 				this.configElement(this.cmbPeriodo,false,true);
 				this.cmbPeriodo.setVisible(false);
-				this.cmbPeriodo.setValue('');				
+				this.cmbPeriodo.setValue('');
 			}
 		},this);
 		//Responsable
@@ -132,14 +139,14 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         definirParametros: function(report){
             this.inicializarParametros();
-			this.configElement(this.cmbTipoRep,false,false);			
+			this.configElement(this.cmbTipoRep,false,false);
             this.configElement(this.dteFechaDesde,false,true);
             this.configElement(this.dteFechaHasta,false,false);
-            this.configElement(this.cmbActivo,false,true);            
+            this.configElement(this.cmbActivo,false,true);
 
 		this.configElement(this.cmbClasificacion,false,true);
-		this.configElement(this.cmbClasificacionMulti,false,true);		
-		this.configElement(this.cmbTipoMov,false,false);					
+		this.configElement(this.cmbClasificacionMulti,false,true);
+		this.configElement(this.cmbTipoMov,false,false);
 		this.configElement(this.txtDenominacion,false,true);
 		this.configElement(this.dteFechaCompra,true,true);
 		this.configElement(this.dteFechaIniDep,false,true);
@@ -157,6 +164,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.configElement(this.radGroupTangible,false,true);
 		this.configElement(this.cmbDepto,false,true);
 		this.configElement(this.descNombre,false,true);
+		this.configElement(this.cmpUbicacion,false,true);
 		this.configElement(this.cmbBajaReti,false,true);
 		this.configElement(this.cmbUbiacion,false,true);
 		this.configElement(this.cmbDeposito,false,true);
@@ -216,7 +224,7 @@ header("content-type: text/javascript; charset=UTF-8");
             return color;
         },
 		onReporteDepPe: function (cmp, event) {
-	
+
 			var parametros = this.getParams();
 			parametros.tipo = cmp.argument.def;
 			Phx.CP.loadingShow();
@@ -245,11 +253,12 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.cmpMontos.setVisible(false);
 			this.dteFechaIniDep.setVisible(false);
 			this.descNombre.setVisible(true);
+			this.cmpUbicacion.setVisible(true);
 			this.cmbBajaReti.setVisible(false);
 			this.cmbUbiacion.setVisible(true);
 			this.radGroupDeprec.setVisible(true);
 			this.radGroupTangible.setVisible(true);
-			this.cmbEstado.setValue('');	
+			this.cmbEstado.setValue('');
 			cmp.scope.formParam.topToolbar.items.items[0].setVisible(true);
 			cmp.scope.formParam.topToolbar.items.items[1].setVisible(true);
 			cmp.scope.formParam.topToolbar.items.items[2].setVisible(true);
@@ -262,8 +271,12 @@ header("content-type: text/javascript; charset=UTF-8");
 			cmp.scope.formParam.topToolbar.items.items[9].setVisible(true);
 			cmp.scope.formParam.topToolbar.items.items[10].setVisible(false);
 			cmp.scope.formParam.topToolbar.items.items[11].setVisible(false);
-			cmp.scope.formParam.topToolbar.items.items[12].setVisible(false);			
-								
+			cmp.scope.formParam.topToolbar.items.items[12].setVisible(false);
+      cmp.scope.formParam.topToolbar.items.items[13].setVisible(true);
+      cmp.scope.formParam.topToolbar.items.items[14].setVisible(true);
+      cmp.scope.formParam.topToolbar.items.items[15].setVisible(true);
+      cmp.scope.formParam.topToolbar.items.items[16].setVisible(true);
+
 		},
 		detalleDepPeriodo:function(cmp,event){
 	      this.cmbTipoRep.setValue('');
@@ -272,17 +285,18 @@ header("content-type: text/javascript; charset=UTF-8");
 	      this.cmbEstadoDepre.setValue('');
 	      this.cmbTipoRep.setValue('');
 	      this.dteFechaHasta.setValue('');
-	      this.cmbClasificacion.setValue('');       
+	      this.cmbClasificacion.setValue('');
 	      this.cmbClasificacionMulti.reset();
 	      this.cmbMoneda.setValue('');
 	      this.dteFechaIniDep.setValue('');
 	      this.descNombre.setValue('');
+	      this.cmpUbicacion.setValue('');
 	      this.cmbBajaReti.setValue('');
 	      this.cmbUbiacion.setValue('');
 	      this.radGroupDeprec.setValue('completo');
 	      this.radGroupTangible.setValue('ambos');
-	      this.cmbEstado.setValue('');	
-	      					
+	      this.cmbEstado.setValue('');
+
 			this.cmbTipoRep.setVisible(false);
 			this.configElement(this.cmbPeriodo,true,false);
 			this.cmbTipoMov.setVisible(false);
@@ -298,6 +312,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.cmpMontos.setVisible(false);
 			this.dteFechaIniDep.setVisible(false);
 			this.descNombre.setVisible(true);
+			this.cmpUbicacion.setVisible(true);
 			this.radGroupDeprec.setVisible(true);
 			this.radGroupTangible.setVisible(true);
 			this.cmbEstado.setVisible(true);
@@ -312,10 +327,13 @@ header("content-type: text/javascript; charset=UTF-8");
 			cmp.scope.formParam.topToolbar.items.items[8].setVisible(true);
 			cmp.scope.formParam.topToolbar.items.items[9].setVisible(true);
 			cmp.scope.formParam.topToolbar.items.items[10].setVisible(true);
-			cmp.scope.formParam.topToolbar.items.items[11].setVisible(true);
 			cmp.scope.formParam.topToolbar.items.items[12].setVisible(true);
+      cmp.scope.formParam.topToolbar.items.items[13].setVisible(false);
+      cmp.scope.formParam.topToolbar.items.items[14].setVisible(false);
+      cmp.scope.formParam.topToolbar.items.items[15].setVisible(false);
+      cmp.scope.formParam.topToolbar.items.items[16].setVisible(false);
 
-		}        
+		}
 
     }
 </script>

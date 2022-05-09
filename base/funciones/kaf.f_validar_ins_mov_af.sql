@@ -11,13 +11,13 @@ $body$
  DESCRIPCION:   funcion  que centraliza las validaciones sobre lso activos fijos relacionado con movimiento, se usa al insertar editar movimiento_af, y en la isneración automatica de movimiento
  AUTOR:      (RAC)
  FECHA:         27(03/2017
- COMENTARIOS: 
+ COMENTARIOS:
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
 
- DESCRIPCION: 
- AUTOR:     
- FECHA:   
+ DESCRIPCION:
+ AUTOR:
+ FECHA:
 ***************************************************************************/
 
 DECLARE
@@ -30,24 +30,24 @@ DECLARE
 
 
 BEGIN
- 
+
    v_nombre_funcion = 'kaf.f_validar_ins_mov_af';
-   
-   
-    select 
+
+
+    select
           mov.estado,
           mov.codigo,
           cat.codigo as codigo_movimiento,
           mov.id_cat_movimiento,
           mov.id_funcionario,
           mov.id_depto
-         INTO 
+         INTO
           v_registros
       from kaf.tmovimiento mov
       inner join  param.tcatalogo cat on cat.id_catalogo = mov.id_cat_movimiento
       where mov.id_movimiento =  p_id_movimiento;
-      
-      select 
+
+      select
          af.id_activo_fijo,
          af.denominacion,
          af.codigo,
@@ -59,10 +59,10 @@ BEGIN
          cla.depreciable
         into
           v_reg_af
-      from kaf.tactivo_fijo af 
+      from kaf.tactivo_fijo af
       inner join kaf.tclasificacion cla on cla.id_clasificacion = af.id_clasificacion
-      where af.id_activo_fijo = p_id_activo_fijo;   
-      
+      where af.id_activo_fijo = p_id_activo_fijo;
+
       -----------------------------
       -- validaciones genericas
       -----------------------------
@@ -72,171 +72,172 @@ BEGIN
       FOR v_registros_mov in (
                    select
                                 mov.id_movimiento,
-                                mov.num_tramite
+                                mov.num_tramite,
+                                mov.tipo_drepeciacion
                               from kaf.tmovimiento mov
                               inner join kaf.tmovimiento_af maf on mov.id_movimiento = maf.id_movimiento and maf.id_activo_fijo = p_id_activo_fijo
-                              where     mov.id_movimiento != p_id_movimiento 
+                              where     mov.id_movimiento != p_id_movimiento
                                     and  mov.id_cat_movimiento = v_registros.id_cat_movimiento
                                     and mov.estado_reg = 'activo'
                                     and mov.estado  not in ('finalizado')) LOOP
-      
+      if v_registros_mov.tipo_drepeciacion != 'deprec_ministerio' and v_registros_mov.tipo_drepeciacion != 'deprec_impuesto' then
          v_error = v_error ||'<BR> '||v_registros_mov.num_tramite;
-      
-      
+      end if;
+
       END LOOP;
 
       IF v_reg_af.id_depto != v_registros.id_depto THEN
-           
+
            IF p_lanzar_error THEN
-               raise exception 'El departamento del activo no es igual al departamento del movimiento';         
+               raise exception 'El departamento del activo no es igual al departamento del movimiento';
            ELSE
                 RETURN FALSE;
            END IF;
-         
+
       END IF;
-      
-      
-      
+
+
+
       IF v_error != '' THEN
            IF p_lanzar_error THEN
-               raise exception 'El activo ID =%, %  (%) se encuentra en los movimientos:  % <br> que no es tan finalizados', p_id_activo_fijo,v_reg_af.denominacion,COALESCE(v_reg_af.codigo,'s/c'),v_error ;         
+               raise exception 'El activo ID =%, %  (%) se encuentra en los movimientos:  % <br> que no es tan finalizados', p_id_activo_fijo,v_reg_af.denominacion,COALESCE(v_reg_af.codigo,'s/c'),v_error ;
            ELSE
               RETURN FALSE;
            END IF;
       END IF;
-      
-      
 
-          
-      --------------------------------------------      
+
+
+
+      --------------------------------------------
       --validaciones segun el tipo de movimiento
       -------------------------------------------
-            
+
         IF v_registros.codigo_movimiento = 'deprec' THEN
             --  validar que el activo este dado de alta
             IF v_reg_af.estado != 'alta' THEN
-                 
+
                  IF p_lanzar_error THEN
-                   raise exception 'solo puede depreciar activos que esten dados de alta (%)',COALESCE(v_reg_af.denominacion,'s/d'); 
+                   raise exception 'solo puede depreciar activos que esten dados de alta (%)',COALESCE(v_reg_af.denominacion,'s/d');
                  ELSE
                     RETURN FALSE;
                  END IF;
             END IF;
-            
-            IF v_reg_af.depreciable != 'si' THEN                 
+
+            IF v_reg_af.depreciable != 'si' THEN
                  IF p_lanzar_error THEN
-                   raise exception 'Según clasificación el activo no es depreciable (%)',COALESCE(v_reg_af.denominacion,'s/d'); 
+                   raise exception 'Según clasificación el activo no es depreciable (%)',COALESCE(v_reg_af.denominacion,'s/d');
                  ELSE
                     RETURN FALSE;
                  END IF;
             END IF;
-            
-            
-            
-            
+
+
+
+
          ELSEIF v_registros.codigo_movimiento = 'actua' THEN
             --  validar que el activo este dado de alta
             IF v_reg_af.estado != 'alta' THEN
                  IF p_lanzar_error THEN
-                   raise exception 'solo puede actulizar activos que esten dados de alta (%)',COALESCE(v_reg_af.denominacion,'s/d'); 
+                   raise exception 'solo puede actulizar activos que esten dados de alta (%)',COALESCE(v_reg_af.denominacion,'s/d');
                  ELSE
                     RETURN FALSE;
                  END IF;
-            END IF; 
-            
-            IF v_reg_af.depreciable != 'no' THEN                 
+            END IF;
+
+            IF v_reg_af.depreciable != 'no' THEN
                  IF p_lanzar_error THEN
-                   raise exception 'Solo puede actulziar activos no depreciables. Según clasificación el activo (%) es depreciable ',COALESCE(v_reg_af.denominacion,'s/d'); 
+                   raise exception 'Solo puede actulziar activos no depreciables. Según clasificación el activo (%) es depreciable ',COALESCE(v_reg_af.denominacion,'s/d');
                  ELSE
                     RETURN FALSE;
                  END IF;
-            END IF;  
-        
+            END IF;
+
         ELSIF v_registros.codigo_movimiento = 'reval' THEN
             --  validar que el activo este dado de alta
             IF v_reg_af.estado != 'alta' THEN
                  IF p_lanzar_error THEN
-                   raise exception 'solo puede revalorizar activos que esten dados de alta (%)',COALESCE(v_reg_af.denominacion,'s/d'); 
+                   raise exception 'solo puede revalorizar activos que esten dados de alta (%)',COALESCE(v_reg_af.denominacion,'s/d');
                  ELSE
                     RETURN FALSE;
                  END IF;
-                     
-                 
-                     
-            END IF;    
+
+
+
+            END IF;
         ELSIF v_registros.codigo_movimiento = 'transf' THEN
-                    
+
            -- validar que el activo es asignado con el funcionario origen
            IF v_registros.id_funcionario != v_reg_af.id_funcionario or  v_reg_af.estado !='alta' or v_reg_af.en_deposito = 'si'   THEN
                 IF p_lanzar_error THEN
-                   raise exception 'Activo fijo (%) no elegible para la Transferencia (Revise el funcionario origen, o que el activo esté de alta o no esté depósito)',COALESCE(v_reg_af.codigo,'s/c'); 
+                   raise exception 'Activo fijo (%) no elegible para la Transferencia (Revise el funcionario origen, o que el activo esté de alta o no esté depósito)',COALESCE(v_reg_af.codigo,'s/c');
                 ELSE
                     RETURN FALSE;
-                END IF; 
-           
-           END IF;
-           
-               
+                END IF;
 
-          
-            
+           END IF;
+
+
+
+
+
         ELSIF v_registros.codigo_movimiento = 'baja' THEN
              --solo podemso dar de baja activos que estan dados de alta
             IF v_reg_af.estado != 'alta' THEN
-               
+
                 IF p_lanzar_error THEN
-                   raise exception 'solo puede dar de baja  activos que esten dados de alta (%)',COALESCE(v_reg_af.codigo,'s/c'); 
+                   raise exception 'solo puede dar de baja  activos que esten dados de alta (%)',COALESCE(v_reg_af.codigo,'s/c');
                 ELSE
                     RETURN FALSE;
-                END IF;           
+                END IF;
             END IF;
-             
+
         ELSIF v_registros.codigo_movimiento = 'asig' THEN
-        
+
            --validar que el activo fijo este en deposito para ser asignado
            IF v_reg_af.en_deposito = 'no' THEN
-              
+
                 IF p_lanzar_error THEN
                  raise exception 'solo puede asginar activos que esten swpoairo (%)',COALESCE(v_reg_af.codigo,'s/c');
                 ELSE
                   RETURN FALSE;
-                END IF;            
+                END IF;
            END IF;
-           
-           
+
+
            --validar que ela ctivo este dado de alta
-           IF v_reg_af.estado != 'alta' THEN              
+           IF v_reg_af.estado != 'alta' THEN
                 IF p_lanzar_error THEN
                  raise exception 'solo puede asginar activos que esten dados de alta (%)',COALESCE(v_reg_af.codigo,'s/c');
                 ELSE
                   RETURN FALSE;
-                END IF;            
+                END IF;
            END IF;
-           
-           
-             
+
+
+
          ELSIF v_registros.codigo_movimiento = 'alta' THEN
-        
+
            --validar que el activo fijo este en deposito para ser asignado
            IF v_reg_af.estado != 'registrado' THEN
-              
+
                 IF p_lanzar_error THEN
                   raise exception 'Solo puede dar de alta activos registrados (%)',COALESCE(v_reg_af.codigo,'s/c');
                 ELSE
                   RETURN FALSE;
-                END IF;            
-           END IF;    
-          
-       
+                END IF;
+           END IF;
+
+
         END IF;
-   
-   
+
+
 
         RETURN TRUE;
-        
-        
+
+
 EXCEPTION
-        
+
   WHEN OTHERS THEN
     v_resp='';
     v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
