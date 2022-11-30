@@ -643,7 +643,7 @@ class RDetalleDepXls
 		//$sheet->setCellValueByColumnAndRow(0,1,$this->objParam->getParametro('titulo_rep'));
 		$sheet->getStyle('C1')->getFont()->applyFromArray(array('bold'=>true,
 															    'size'=>12,
-															    'name'=>Arial));
+															    'name'=>'Arial'));
 																
 		$sheet->getStyle('C1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 		$sheet->setCellValue('C1',strtoupper($titulo));		
@@ -653,7 +653,7 @@ class RDetalleDepXls
 		$sheet->getStyle('C2')->getFont()->applyFromArray(array(
 															    'bold'=>true,
 															    'size'=>10,
-															    'name'=>Arial));	
+															    'name'=>'Arial'));	
 																															
 		$sheet->getStyle('C2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 		$sheet->setCellValue('C2',strtoupper("ID ".$this->objParam->getParametro('id_movimiento')));		
@@ -662,7 +662,7 @@ class RDetalleDepXls
 		$sheet->getStyle('C3')->getFont()->applyFromArray(array(
 															    'bold'=>true,
 															    'size'=>10,
-															    'name'=>Arial));	
+															    'name'=>'Arial'));	
 																															
 		$sheet->getStyle('C3')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 		$sheet->setCellValue('C3',$fechas);		
