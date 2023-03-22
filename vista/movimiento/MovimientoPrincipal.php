@@ -522,6 +522,7 @@ Phx.vista.MovimientoPrincipal = {
         this.getBoton('btnChequeoDocumentosWf').enable();
         this.getBoton('btnChequeoDocumentosAF').enable();
         this.getBoton('diagrama_gantt').enable();
+        this.getBoton('btnAsignacion').disable();//fRnk: añadido porque da error con movimientos sin asig,transf,devol
         if(data.cod_movimiento != 'asig' && data.cod_movimiento != 'transf' && data.cod_movimiento != 'devol'){
             this.getBoton('btnReporte').enable();
         }
