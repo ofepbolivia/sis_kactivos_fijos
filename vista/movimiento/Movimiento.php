@@ -55,6 +55,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 text :'Det. Dep',
                 iconCls : 'bpdf32',
                 disabled: true,
+                hidden: true, //fRnk: botón oculto porque no se envuentra la vista kaf.vdetalle_depreciacion_activo_por_gestion
                 handler : this.onButtonReportDepreciacion,
                 tooltip : '<b>Reporte Depreciación</b><br/><b>Reporte que detalla la depreciación del movimiento</b>'
             });
