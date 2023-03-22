@@ -1250,7 +1250,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                     xtype: 'fieldset',                                    
                                     layout: 'column',                                                                                                            
                                     border: true,
-                                    title: 'Reporte Compras x Gestión',
+                                    title: 'Reporte Activos Fijos', //fRnk: modificado label original "Reporte Compras x Gestión"
                                     bodyStyle: 'padding: 5px 5px 0 5px;',
                                     bodyStyle:'margin: 0 0 0 0',                                    
                                     items: [

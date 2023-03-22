@@ -68,7 +68,7 @@ Phx.vista.MovimientoMotivo=Ext.extend(Phx.gridInterfaz,{
 			config:{
 				name: 'codigo_mov_motivo',
 				fieldLabel: 'Codigo Mov. Motivo',
-				allowBlank: false,
+				allowBlank: true, //fRnk: acepta vacios
 				anchor: '80%',
 				gwidth: 200,
                 style:'text-transform:uppercase;',

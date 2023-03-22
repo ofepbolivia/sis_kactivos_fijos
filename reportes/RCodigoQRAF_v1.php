@@ -131,10 +131,10 @@ class RCodigoQRAF_v1 extends  ReportePDF {
             $codAux = substr($this->cod['desc'],0,$maxLength-23).'...';
         }
         while (strlen($codAux)>0) {
-
+            //fRnk: modificado, no funcionaba la impresión del código QR, maxh
             $tmp = substr($codAux, 0, $maxLengthLinea);
             $text = mb_strtoupper($tmp,'UTF-8');
-            $this->MultiCell(0, 0, $text, 0,'L', false,0, $x, $y,true, 0, false,true, '',true);
+            $this->MultiCell(0, 0, $text, 0,'L', false,0, $x, $y,true, 0, false,true, 0,true);
             $codAux = substr($codAux, $maxLengthLinea,$maxLength);
             $y=$y+7;
 

@@ -40,7 +40,8 @@ class RMovimientoUpdate extends  ReportePDF {
         $x = $this->GetX();
         $y = $this->GetY();
         $this->SetXY($x, $y);
-        $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 20,5,35,16);
+        //fRnk: modificado cabecera reporte
+        $this->Image(dirname(__FILE__).'/../../lib/' . $_SESSION['_DIR_LOGO'], 20,6,35,16);
         $this->SetFontSize(12);
         $this->SetFont('', 'B');
         $this->Cell(44, $midHeight, '', 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');
@@ -63,7 +64,7 @@ class RMovimientoUpdate extends  ReportePDF {
             $this->setCellPaddings(2);
             $this->Cell($width1, $height, 'PROCESO:', 1, 0, '', false, '', 0, false, 'T', 'C');
             $this->SetFont('', '', 7);
-            $this->Cell($width2+9, $height,$this->dataMaster[0]['num_tramite'], 1, 0, 'L', false, '', 0, false, 'T', 'C');
+            $this->Cell($width2+9, $height,$this->dataMaster[0]['num_tramite'], 0, 0, 'L', false, '', 0, false, 'T', 'C');
             $this->setCellPaddings(2);
             $this->Ln();
             $this->SetX($x);
@@ -112,7 +113,7 @@ class RMovimientoUpdate extends  ReportePDF {
             $this->Ln();
             $this->SetX($x);
             $this->SetFont('', 'B', 7);
-            $this->Cell($width1+4, $height, 'PAGINA:', 1, 0, '', false, '', 0, false, 'T', 'C');
+            $this->Cell($width1+4, $height, 'PÁGINA:', 1, 0, '', false, '', 0, false, 'T', 'C');
             $this->SetFont('', '', 7);
             $this->Cell($w = $width2+9, $h = $height, $txt = $this->getAliasNumPage() . ' de ' . $this->getAliasNbPages(), $border = 1, $ln = 0, $align = 'C', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
             $this->setCellPaddings(2);

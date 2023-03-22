@@ -233,7 +233,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.maestro = config;
             //llama al constructor de la clase padre
             Phx.vista.ActivoFijo.superclass.constructor.call(this, config);
-
+            /* fRnk: se quitó el filtro caracteristicas
             var cmbCaract = new Ext.form.ComboBox({
                 name:'caract_val',
                 fieldLabel:'Caracteristicas',
@@ -302,7 +302,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.store.load({params:{start:0, limit:this.tam_pag}});
                 }
 
-            },this);
+            },this);*/
 
             this.init();
             //////////////////
@@ -415,11 +415,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 '<span>{depreciacion_per_real_af}</span>',
                 '<br><b>Vida útil: </b>',
                 '<span>{vida_util_real_af}</span>',
-                '<br><b>En deposito?: </b>',
+                '<br><b>¿En depósito?: </b>',
                 '<span>{en_deposito}</span>',
                 '<br><b>Responsable Deposito: </b>',
                 '<span>{resp_deposito}</span>',
-                '<br><b>Deposito: </b>',
+                '<br><b>Depósito: </b>',
                 '<span>{deposito}</span>',
                 '</div>',
                 '</tpl>',
@@ -2023,7 +2023,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 tpl : '<tpl for="."><div class="x-combo-list-item"><p>{codigo} - {descripcion}</p></div></tpl>',
                             }, {
                                 xtype: 'textfield',
-                                fieldLabel: 'Codigo Ant.',
+                                fieldLabel: 'Código Ant.',
                                 name: 'codigo_ant',
                                 id: this.idContenedor+'_codigo_ant'
                             }/*, {
@@ -2295,7 +2295,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 width: 140
                             },{
                                 xtype: 'textfield',
-                                fieldLabel: 'Nro. de Tramite de Compra',
+                                fieldLabel: 'Nro. de Trámite de Compra',
                                 name: 'tramite_compra',
                                 allowBlank: true,
                                 id: this.idContenedor+'_tramite_compra',
@@ -2316,8 +2316,8 @@ header("content-type: text/javascript; charset=UTF-8");
                                     data: [ ['Ninguno'], ['Leasing']]
                                 }),
                                 valueField: 'subtipo',
-                                displayField: 'subtipo'
-
+                                displayField: 'subtipo',
+                                hidden: true //fRnk: ocultado
                             },
                                 {
                                     xtype: 'combo',
@@ -2625,7 +2625,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     Ext.each(obj.items.items, function(elm, b, c){
                         if(elm.getXType()=='combo'&&elm.mode=='remote'&&elm.store!=undefined){
                             if (!elm.store.getById(data[elm.name])) {
-                                rec = new Ext.data.Record({[elm.displayField]: data[elm.gdisplayField], [elm.valueField]: data[elm.name] },data[elm.name]);
+                                var rec = new Ext.data.Record({[elm.displayField]: data[elm.gdisplayField], [elm.valueField]: data[elm.name] },data[elm.name]);
                                 elm.store.add(rec);
                                 elm.store.commitChanges();
                                 elm.modificado = true;
@@ -2637,7 +2637,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     key = element.replace(this.idContenedor+'_','');
                     if(obj.getXType()=='combo'&&obj.mode=='remote'&&obj.store!=undefined){
                         if (!obj.store.getById(data[key])) {
-                            rec = new Ext.data.Record({[obj.displayField]: data[obj.gdisplayField], [obj.valueField]: data[key] },data[key]);
+                            var rec = new Ext.data.Record({[obj.displayField]: data[obj.gdisplayField], [obj.valueField]: data[key] },data[key]);
                             obj.store.add(rec);
                             obj.store.commitChanges();
                             obj.modificado = true;
@@ -2671,7 +2671,8 @@ header("content-type: text/javascript; charset=UTF-8");
             }
         },
         cargarValoresDefecto: function(){
-
+            //fRnk: por defecto "Ninguno"
+            Ext.getCmp(this.idContenedor+'_subtipo').setValue('Ninguno');
         },
         onSubmit: function(o,x,force){
             var formData;
@@ -2847,7 +2848,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Ext.getCmp(this.idContenedor+'_id_moneda_orig').enable();
             Ext.getCmp(this.idContenedor+'_monto_compra_orig').enable();
             Ext.getCmp(this.idContenedor+'_monto_compra_orig_100').enable();
-            Ext.getCmp(this.idContenedor+'_monto_rescate').enable();
+            Ext.getCmp(this.idContenedor+'_monto_rescate').disable(); //fRnk: modificado, deshabilitado
             Ext.getCmp(this.idContenedor+'_vida_util_real_af').disable();
             Ext.getCmp(this.idContenedor+'_vida_util_original').enable();
             Ext.getCmp(this.idContenedor+'_id_depto').enable();
@@ -3018,15 +3019,17 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
 
-        tabeast: [{
+        tabeast: [/*fRnk: se quitaron los tabs, Caracteristicas y Centros de Costo
+        {
             url: '../../../sis_kactivos_fijos/vista/activo_fijo_caract/ActivoFijoCaract.php',
             title: 'Caracteristicas',
             width: '35%',
             cls: 'ActivoFijoCaract'
-        },
+        },*/
             {
                 url: '../../../sis_kactivos_fijos/vista/movimiento/MovimientoPorActivo.php',
                 title: 'Movimientos',
+                width: '35%',
                 cls: 'MovimientoPorActivo'
             },
             {
@@ -3034,11 +3037,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 title: 'Depreciaciones/Actualizaciones',
                 cls: 'ActivoFijoValoresDepPrin'
             },
-            {
+            /*{
                 url: '../../../sis_kactivos_fijos/vista/tipo_prorrateo/TipoProrrateo.php',
                 title: 'Centros de Costo',
                 cls: 'TipoProrrateo'
-            },
+            },*/
             {
                 url: '../../../sis_kactivos_fijos/vista/activo_fijo_modificacion/ActivoFijoModificacion.php',
                 title: 'Modificaciones',

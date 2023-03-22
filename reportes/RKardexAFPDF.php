@@ -4,11 +4,11 @@ require_once dirname(__FILE__).'/../../pxp/lib/lib_reporte/ReportePDF.php';
 class RKardexAFPDF extends  ReportePDF{
     var $datos ;   
 
-    function Header() {        
-        	
+    function Header() {
+        //fRnk: se añadió la cabera del reporte
 		$fecha_ini = date("d/m/Y",strtotime($this->objParam->getParametro('fecha_desde')));
-		$fecha_fin = date("d/m/Y",strtotime($this->objParam->getParametro('fecha_hasta')));	
-        $this->Ln(3);
+		$fecha_fin = date("d/m/Y",strtotime($this->objParam->getParametro('fecha_hasta')));
+        /*$this->Ln(3);
         //cabecera del reporte
         $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 10,5,35,20);
         $this->ln(5);
@@ -16,7 +16,39 @@ class RKardexAFPDF extends  ReportePDF{
         $this->Cell(0,5,"KARDEX DE ACTIVOS FIJOS",0,1,'C');
         $this->Cell(0,5,"DEL ".$fecha_ini." HASTA ".$fecha_fin,0,1,'C');
 		$this->Cell(0,5,"(Expresado en Bolivianos)",0,1,'C');
-        //$this->Ln(10);		        
+        //$this->Ln(10);
+        */
+        $fini = explode("/", $fecha_ini);
+        $ffin = explode("/", $fecha_fin);
+        $gini = count($fini) > 2 ? intval($fini[2]) : '';
+        $gfin = count($ffin) > 2 ? intval($ffin[2]) : '';
+        $gestion = $gini != $gfin ? $gini . ' - ' . $gfin : $gini;
+        $content = '<table border="1" cellpadding="1" style="font-size: 11px">
+            <tr>
+                <td style="width: 23%; color: #444444;" rowspan="5">
+                    &nbsp;<br><img  style="width: 150px;" src="./../../../lib/' . $_SESSION['_DIR_LOGO'] . '" alt="Logo">
+                </td>		
+                <td style="width: 52%; color: #444444;text-align: center" rowspan="5">
+                   <h4 style="font-size: 14px">KARDEX DE ACTIVOS FIJOS</h4>
+                   <b style="font-size: 12px">DEL '. $fecha_ini.' HASTA '.$fecha_fin.'</b><br>
+                   <b style="font-size: 12px">(Expresado en Bolivianos)</b>
+                </td>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Gestión:</b> ' . $gestion . '</td>
+            </tr>
+            <tr>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Fecha:</b> ' . date('d/m/y h:i:s A') . '</td>
+            </tr>
+            <tr>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Depto.:</b> </td>
+            </tr>
+            <tr>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Usuario:</b> ' . $_SESSION['_LOGIN'] . '</td>
+            </tr>
+            <tr>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Estado:</b></td>
+            </tr>
+        </table>';
+        $this->writeHTML($content, false, false, true, false, '');
     }
 
     function setDatos($datos) {
@@ -240,7 +272,7 @@ class RKardexAFPDF extends  ReportePDF{
 		$this->Ln(10);
 		$this->SetFont('','B',9);
 	    $this->SetMargins(15, 50, 40);		
-		$this->cell(218,10,'MOVIMIENTO FÍSICO DEL ACTIVO',1,0,C,false,'',0,false,'RLBT','C');
+		$this->cell(218,10,'MOVIMIENTO FÍSICO DEL ACTIVO',1,0,'C',false,'',0,false,'RLBT','C');
 		$this->Ln();
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);				
 		$this->tablewidthsHD = array(8, 40, 40, 20, 20, 45, 45);
@@ -266,7 +298,7 @@ class RKardexAFPDF extends  ReportePDF{
 		$this->AddPage();		
 		$this->SetFont('','B',9);
 	    $this->SetMargins(15, 50, 40);		
-		$this->cell(218,10,'MOVIMIENTO FÍSICO DEL ACTIVO',1,0,C,false,'',0,false,'RLBT','C');
+		$this->cell(218,10,'MOVIMIENTO FÍSICO DEL ACTIVO',1,0,'C',false,'',0,false,'RLBT','C');
 		$this->Ln();
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);				
 		$this->tablewidthsHD = array(8, 22, 23, 40, 25, 25, 25, 25, 25);		
@@ -290,11 +322,12 @@ class RKardexAFPDF extends  ReportePDF{
 	}
 
 	function mainBox(){
+        //fRnk: no funcionaba todo el reporte, 'C'
 		$this->AddPage();		
 		$this->SetFont('','B',9);
 	    $this->SetMargins(2, 50, 2);
 		$this->SetXY(2, 50);		
-		$this->cell(276,10,'DETALLE CONTABLE DEL BIEN',1,0,C,false,'',0,false,'RLBT','L');
+		$this->cell(276,10,'DETALLE CONTABLE DEL BIEN',1,0,'C',false,'',0,false,'RLBT','L');
 		$this->Ln();
 		$this->SetFont('','B',8);
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);				

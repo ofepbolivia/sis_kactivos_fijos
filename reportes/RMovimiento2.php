@@ -55,12 +55,44 @@ class RMovimiento2 extends ReportePDF {
                 break;
         }
         //($this->motivo_ajuste != '')?$title_motivo=' A LA VIDA UTIL':$title_motivo='';
+
+        //fRnk: se modificó la cabecera del reporte
+        $arr = explode("-", $this->dataMaster[0]['num_tramite']);
+        $gestion=count($arr)>3?$arr[3]:'';
+        $content='<table border="1" cellpadding="1" style="font-size: 11px">
+            <tr>
+                <td style="width: 23%; color: #444444;" rowspan="5">
+                    &nbsp;<br><img  style="width: 150px;" src="./../../../lib/' . $_SESSION['_DIR_LOGO'] . '" alt="Logo">
+                </td>		
+                <td style="width: 52%; color: #444444;text-align: center" rowspan="5">
+                   <h1 style="font-size: 16px">FORMULARIO DE ' . strtoupper($this->dataMaster[0]['movimiento']) . $title_motivo . ' DE ACTIVOS FIJOS ' . $title_motivo_ret . '</h1>
+                   <h4 style="font-size: 14px">' . strtoupper($this->dataMaster[0]['depto']) . '</h4>
+                </td>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Gestión:</b> ' . $gestion . '</td>
+            </tr>
+            <tr>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Fecha:</b> ' . date('d/m/y h:i:s A') . '</td>
+            </tr>
+            <tr>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>N° Trámite:</b> ' . $this->dataMaster[0]['num_tramite'] . '</td>
+            </tr>
+            <tr>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Usuario:</b> ' . $_SESSION['_LOGIN'] . '</td>
+            </tr>
+            <tr>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Estado:</b> ' . $this->dataMaster[0]['estado'] . '</td>
+            </tr>
+        </table>';
+        $this->writeHTML($content, false, false, true, false, '');
+       //echo var_dump($this->dataMaster[0]); exit();
+      /*
         $x = $this->GetX();
         $y = $this->GetY();
         $this->SetXY($x, $y);
        
 		//$this->Image(dirname(__FILE__).'/../../lib/'.$_SESSION['_DIR_LOGO'], 10,5,35,20);
-		$this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 10,5,35,16);
+        $this->Image(dirname(__FILE__).'/../../lib'.$_SESSION['_DIR_LOGO'], 10,5,35,16);
+		//$this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 10,5,35,16);
 
         $this->SetFontSize(12);
         $this->SetFont('', 'B');
@@ -78,6 +110,8 @@ class RMovimiento2 extends ReportePDF {
         $this->Cell(168, $midHeight, strtoupper($this->dataMaster[0]['depto']), 'LRB', 0, 'C', false, '', 0, false, 'T', 'C');
 
         $this->SetFontSize(7);
+        //PDF::writeHTMLCell($item->width, $item->height, $item->position_x, $item->position_y, $html, 0, 0, 0, true, 'L', true);
+
 
         $width1 = 15;
         $width2 = 25;
@@ -110,7 +144,7 @@ class RMovimiento2 extends ReportePDF {
         $this->SetFont('', 'B');
         //$this->Cell($w = $width2, $h = $height, $txt = $this->getAliasNumPage() . ' de ' . $this->getAliasNbPages(), $border = "B", $ln = 0, $align = 'C', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
         $this->Cell($w = $width2, $h = $height, $txt = '', $border = "", $ln = 0, $align = 'C', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
-        $this->setCellPaddings(2);
+        $this->setCellPaddings(2);*/
 		
 		//$this->Ln();
 		$this->fieldsHeader($this->tipoMov);
@@ -233,7 +267,7 @@ class RMovimiento2 extends ReportePDF {
             $this->SetFont('', 'B');
             $this->SetFont('', '');
             $this->SetFont('', 'B');
-            $this->Cell(100, $height,'N° Informe: '.$this->nro_documento_ajuste, "", 0, 'L', false, '', 0, false, 'T', 'C');            
+            $this->Cell(100, $height,'N° Informe: '.$this->nro_documento_ajuste, "", 0, 'L', false, '', 0, false, 'T', 'C');
             $this->Ln();
             //Glosa
             $this->SetFont('', 'B');
@@ -241,6 +275,7 @@ class RMovimiento2 extends ReportePDF {
             $this->Ln();
             $this->SetFont('', '');
             $this->MultiCell($w = 0, $h = $hLong, $txt = $this->cortar_texto($this->dataMaster[0]['glosa'],495), $border = 0, $align = 'L', $fill = false, $ln = 1, $x = '', $y = '', $reseth = true, $stretch = 0, $ishtml = false, $autopadding = true, $maxh = $hMedium, $valign = 'M', $fitcell = false);
+            $this->Ln();
             $this->firstPage++;
             
             $this->posY = $this->GetY();

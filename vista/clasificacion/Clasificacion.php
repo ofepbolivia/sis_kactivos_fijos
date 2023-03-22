@@ -195,7 +195,9 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 			allowBlank : true,
 			anchor : '100%',
 			gwidth : 100,
-			maxLength : 1000
+			maxLength : 1000,
+            disabled: true,
+            emptyText: '1'
 		},
 		type : 'NumberField',
 		filters : {
@@ -212,7 +214,8 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 			allowBlank : true,
 			anchor : '100%',
 			gwidth : 100,
-			maxLength : 1000
+			maxLength : 1000,
+            hidden: true
 		},
 		type : 'TextField',
 		filters : {
@@ -230,7 +233,8 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 			anchor : '100%',
 			gwidth : 100,
 			maxLength : 1000,
-			disabled: true
+			disabled: true,
+            hidden: true,
 		},
 		type : 'NumberField',
 		filters : {
@@ -279,7 +283,7 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 		filters:{pfiltro:'cat.descripcion',type:'string'},
 		grid: true,
 		form: true
-	},{
+	},{//fRnk: se ocultaron los campos id_concepto_ingas,correlativo_act,icono, porque no se utilizan
         config:{
             name: 'id_concepto_ingas',
             fieldLabel: 'Concepto',
@@ -314,6 +318,7 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
             width:'100%',
             gwidth:200,
             minChars:2,
+            hidden: true,
             qtip:'Si el conceto de gasto que necesita no existe por favor  comuniquese con el área de presupuestos para solictar la creación',
             tpl: '<tpl for="."><div class="x-combo-list-item"><p><b>{desc_ingas}</b></p><strong>{tipo}</strong><p>PARTIDA: {desc_partida}</p></div></tpl>',
             renderer:function(value, p, record){return String.format('{0}', record.data['desc_ingas']);}
@@ -475,8 +480,8 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 	bsave : false,
 	bexcel : false,
 	rootVisible : true,
-	fwidth : 420,
-	fheight : 300,
+	fwidth : 550,
+	fheight : 430,
 	onNodeDrop : function(o) {
 	    this.ddParams = {
 	        tipo_nodo : o.dropNode.attributes.tipo_nodo
@@ -537,10 +542,11 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 			this.Cmp['contabilizar'].setValue(master.contabilizar);
 			this.Cmp['monto_residual'].setValue(master.monto_residual);
 			this.Cmp['id_cat_metodo_dep'].setValue(master.id_cat_metodo_dep);
+            //fRnk: por defecto monto residual=1 y no modificable
+			this.Cmp['monto_residual'].setValue('1');
 			if(master.codigo){
 				this.Cmp['codigo_final'].setValue(master.codigo+'.');	
 			}
-
 		}
 	},
 	tabeast: [
@@ -549,13 +555,14 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 		title: 'Partidas',
 		width: '50%',
 		cls: 'ClasificacionPartida'
-	},
-	{
+	}
+    /* fRnk: se quitó la pestaña de variables
+	,{
 	    url: '../../../sis_kactivos_fijos/vista/clasificacion_variable/ClasificacionVariable.php',
 	    title: 'Variables',
 	    width: '50%',
 	    cls: 'ClasificacionVariable'
-	}
+	}*/
 	],
 	definirEventos: function(){
 		this.Cmp.vida_util.on('blur',function(val){

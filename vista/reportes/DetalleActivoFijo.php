@@ -227,7 +227,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 xtype : 'fieldset',
                 layout : 'form',
                 border : true,
-                title : 'Reporte Compras x Gestión',
+                title : 'Reporte Activos Fijos', //fRnk: modificado label original "Reporte Compras x Gestión"
                 bodyStyle : 'padding:0 10px 0;',
                 columnWidth : .40,
                 items : [],

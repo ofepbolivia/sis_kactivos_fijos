@@ -1,6 +1,7 @@
 <?php
 class RKardexAFxls
 {
+    //fRnk: se modificaron varios valores, no funcionaba el reporte font, left
 	private $docexcel;
 	private $objWriter;
 	private $nombre_archivo;
@@ -84,19 +85,19 @@ class RKardexAFxls
 		$sheet->setCellValueByColumnAndRow(0,1,$this->objParam->getParametro('titulo_rep'));
 		//Título 1
 		$titulo1 = "KARDEX DE ACTIVOS FIJOS";
-		$this->cell($sheet,$titulo1,'A1',0,1,"center",true,$this->tam_letra_titulo,Arial);
+		$this->cell($sheet,$titulo1,'A1',0,1,"center",true,$this->tam_letra_titulo,'Arial');
 		$sheet->mergeCells('A1:Q1');
 		
 		//Título 2
 		$fecha_desde = date("d/m/Y",strtotime($this->objParam->getParametro('fecha_desde')));
 		$fecha_hasta = date("d/m/Y",strtotime($this->objParam->getParametro('fecha_hasta')));
 		$titulo2 = "DEL ".$fecha_desde." AL ".$fecha_hasta;
-		$this->cell($sheet,$titulo2,'A2',0,2,"center",true,$this->tam_letra_subtitulo,Arial);
+		$this->cell($sheet,$titulo2,'A2',0,2,"center",true,$this->tam_letra_subtitulo,'Arial');
 		$sheet->mergeCells('A2:Q2');
 
 		//Título 3
 		$titulo3="(Expresado en ".$this->desc_moneda.")";
-		$this->cell($sheet,$titulo3,'A3',0,3,"center",true,$this->tam_letra_subtitulo,Arial);
+		$this->cell($sheet,$titulo3,'A3',0,3,"center",true,$this->tam_letra_subtitulo,'Arial');
 		$sheet->mergeCells('A3:Q3');
 
 		//Logo
@@ -112,78 +113,78 @@ class RKardexAFxls
 		$record = $this->dataSet[0];
 		
 		//Primera columna
-		$this->cell($sheet,'CÓDIGO','A5',0,5,"",true,$this->tam_letra_cabecera,Arial);
-		//$this->cell($sheet,'CLASIFICACIÓN','A6',0,6,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'DESCRIPCION','A6',0,6,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'NOMBRE','A7',0,7,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'FECHA COMPRA','A8',0,8,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'INICIO DE DEPRECIACIÓN','A9',0,9,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'ESTADO DEL ACTIVO','A10',0,10,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'UFV FECHA DE COMPRA','A11',0,11,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'VIDA ÚTIL ORIGINAL (MESES)','A12',0,12,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'CENTRO DE COSTOS','A13',0,13,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'UNIDAD SOLICITANTE','A14',0,14,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'RESPONSABLE DE LA COMPRA','A15',0,15,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'LUGAR DE COMPRA','A16',0,16,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'No DE C31','A17',0,17,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'FECHA DE C31','A18',0,18,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'No DE PROCESO COMPRA','A19',0,19,"",true,$this->tam_letra_cabecera,Arial);
+		$this->cell($sheet,'CÓDIGO','A5',0,5,"",true,$this->tam_letra_cabecera,'Arial');
+		//$this->cell($sheet,'CLASIFICACIÓN','A6',0,6,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'DESCRIPCION','A6',0,6,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'NOMBRE','A7',0,7,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'FECHA COMPRA','A8',0,8,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'INICIO DE DEPRECIACIÓN','A9',0,9,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'ESTADO DEL ACTIVO','A10',0,10,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'UFV FECHA DE COMPRA','A11',0,11,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'VIDA ÚTIL ORIGINAL (MESES)','A12',0,12,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'CENTRO DE COSTOS','A13',0,13,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'UNIDAD SOLICITANTE','A14',0,14,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'RESPONSABLE DE LA COMPRA','A15',0,15,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'LUGAR DE COMPRA','A16',0,16,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'No DE C31','A17',0,17,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'FECHA DE C31','A18',0,18,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'No DE PROCESO COMPRA','A19',0,19,"",true,$this->tam_letra_cabecera,'Arial');
 		
-		$this->cell($sheet,'UBICACIÓN FÍSICA','A20',0,20,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'UBICACIÓN DEL BIEN (CIUDAD)','A21',0,21,"",true,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,'RESPONSABLE DEL BIEN','A22',0,22,"",true,$this->tam_letra_cabecera,Arial);
+		$this->cell($sheet,'UBICACIÓN FÍSICA','A20',0,20,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'UBICACIÓN DEL BIEN (CIUDAD)','A21',0,21,"",true,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,'RESPONSABLE DEL BIEN','A22',0,22,"",true,$this->tam_letra_cabecera,'Arial');
 		
 		
 		
 
-		$this->cell($sheet,$record['codigo'],'E5',4,5,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['descripcion'],'E6',4,6,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['denominacion'],'E7',4,7,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['fecha_compra'],'E8',4,8,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['fecha_ini_dep'],'E9',4,9,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['estado'],'E10',4,10,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['ufv_fecha_compra'],'E11',4,11,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['vida_util_original'],'E12',4,12,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['desc_centro_costo'],'E13',4,13,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['desc_uo_solic'],'E14',4,14,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['desc_funcionario_compra'],'E15',4,15,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['lugar_compra'],'E16',4,16,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['nro_cbte_asociado'],'E17',4,17,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['fecha_cbte_asociado'],'E18',4,18,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['nro_pro_tramite'],'E19',4,19,"left",false,$this->tam_letra_cabecera,Arial);
+		$this->cell($sheet,$record['codigo'],'E5',4,5,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['descripcion'],'E6',4,6,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['denominacion'],'E7',4,7,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['fecha_compra'],'E8',4,8,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['fecha_ini_dep'],'E9',4,9,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['estado'],'E10',4,10,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['ufv_fecha_compra'],'E11',4,11,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['vida_util_original'],'E12',4,12,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['desc_centro_costo'],'E13',4,13,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['desc_uo_solic'],'E14',4,14,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['desc_funcionario_compra'],'E15',4,15,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['lugar_compra'],'E16',4,16,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['nro_cbte_asociado'],'E17',4,17,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['fecha_cbte_asociado'],'E18',4,18,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['nro_pro_tramite'],'E19',4,19,"left",false,$this->tam_letra_cabecera,'Arial');
 		
-		$this->cell($sheet,$record['ubicacion'],'E20',4,20,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['ciudad'],'E21',4,21,"left",false,$this->tam_letra_cabecera,Arial);
-		$this->cell($sheet,$record['responsable'],'E22',4,22,"left",false,$this->tam_letra_cabecera,Arial);
+		$this->cell($sheet,$record['ubicacion'],'E20',4,20,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['ciudad'],'E21',4,21,"left",false,$this->tam_letra_cabecera,'Arial');
+		$this->cell($sheet,$record['responsable'],'E22',4,22,"left",false,$this->tam_letra_cabecera,'Arial');
 		
 		
 		
-		//$this->cell($sheet,$record['num_tramite'],'E22',4,22,"left",false,$this->tam_letra_cabecera,Arial);
+		//$this->cell($sheet,$record['num_tramite'],'E22',4,22,"left",false,$this->tam_letra_cabecera,'Arial');
 		
 
 		//Segunda columna
-		$this->cell($sheet,'NUMERAL','J6',9,6,"",true,10,Arial);
-		$this->cell($sheet,'MONTO','J11',9,11,"",true,10,Arial);
+		$this->cell($sheet,'NUMERAL','J6',9,6,"",true,10,'Arial');
+		$this->cell($sheet,'MONTO','J11',9,11,"",true,10,'Arial');
 		$this->cell($sheet,'','J10',9,10,"",true);		
-		$this->cell($sheet,'% DEPRECIACIÓN','J12',9,12,"",true,10,Arial);
-		$this->cell($sheet,'MÉTODO DEPRECIACIÓN','J13',9,13,"",true,10,Arial);
-		$this->cell($sheet,'FACTURA N°','J17',9,17,"",true,10,Arial);		
+		$this->cell($sheet,'% DEPRECIACIÓN','J12',9,12,"",true,10,'Arial');
+		$this->cell($sheet,'MÉTODO DEPRECIACIÓN','J13',9,13,"",true,10,'Arial');
+		$this->cell($sheet,'FACTURA N°','J17',9,17,"",true,10,'Arial');
 
-		$this->cell($sheet,$record['cod_clasif'],'M6',12,6,"left",false,10,Arial);
-		$this->cell($sheet,'100%','M10',12,10,"right",false,10,Arial);
-		$this->cell($sheet,'87%','N10',13,10,"right",false,10,Arial);	
-		$this->cell($sheet,$record['monto_vigente_orig_100'],'M11',12,11,left,false,10,Arial);
-		$this->cell($sheet,$record['monto_vigente_orig'],'M11',13,11,"left",false,10,Arial);
-		$this->cell($sheet,$record['porcentaje_dep'],'M12',12,12,"left",false,10,Arial);
-		$this->cell($sheet,$record['metodo_dep'],'M13',12,13,"left",false,10,Arial);
-		$this->cell($sheet,$record['nro_factura'],'M14',12,17,"left",false,10,Arial);
+		$this->cell($sheet,$record['cod_clasif'],'M6',12,6,"left",false,10,'Arial');
+		$this->cell($sheet,'100%','M10',12,10,"right",false,10,'Arial');
+		$this->cell($sheet,'87%','N10',13,10,"right",false,10,'Arial');
+		$this->cell($sheet,$record['monto_vigente_orig_100'],'M11',12,11,'left',false,10,'Arial');
+		$this->cell($sheet,$record['monto_vigente_orig'],'M11',13,11,"left",false,10,'Arial');
+		$this->cell($sheet,$record['porcentaje_dep'],'M12',12,12,"left",false,10,'Arial');
+		$this->cell($sheet,$record['metodo_dep'],'M13',12,13,"left",false,10,'Arial');
+		$this->cell($sheet,$record['nro_factura'],'M14',12,17,"left",false,10,'Arial');
 		
 
 		//Actualiza número de fila
 		$this->fila = 25;
 	}
 
-	function cell($sheet,$texto,$cell,$x,$y,$align="left",$bold=true,$size=10,$name=Arial,$wrap=false,$border=false,$valign='center'){
+	function cell($sheet,$texto,$cell,$x,$y,$align="left",$bold=true,$size=10,$name='Arial',$wrap=false,$border=false,$valign='center'){
 		$sheet->getStyle($cell)->getFont()->applyFromArray(array('bold'=>$bold,'size'=>$size,'name'=>$name));
 		//Alineación horizontal
 		if($align=='left'){
@@ -228,19 +229,19 @@ class RKardexAFxls
 	function firstBox($sheet){
 		//Cabecera caja
 		$f = $this->fila;
-		$this->cell($sheet,'MOVIMIENTO FÍSICO DEL ACTIVO',"B$f",1,$f,"center",true,$this->tam_letra_detalle_cabecera,Arial);
+		$this->cell($sheet,'MOVIMIENTO FÍSICO DEL ACTIVO',"B$f",1,$f,"center",true,$this->tam_letra_detalle_cabecera,'Arial');
 		$sheet->mergeCells("B$f:I$f");
 		$this->cellBorder($sheet,"B$f:I$f");
 		$f++;
-		$this->cell($sheet,'No.',"B$f",1,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'N.PROCESO',"C$f",2,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'PROCESO',"D$f",3,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'DEL',"E$f",4,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'AL',"F$f",5,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'RESPONSABLE',"G$f",6,$f,"center",true,$this->tam_letra_detalle,Arial,true,false);
+		$this->cell($sheet,'No.',"B$f",1,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'N.PROCESO',"C$f",2,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'PROCESO',"D$f",3,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'DEL',"E$f",4,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'AL',"F$f",5,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'RESPONSABLE',"G$f",6,$f,"center",true,$this->tam_letra_detalle,'Arial',true,false);
 		$sheet->mergeCells("G$f:H$f");
 		$this->cellBorder($sheet,"G$f:H$f");
-		$this->cell($sheet,'CARGO',"I$f",8,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
+		$this->cell($sheet,'CARGO',"I$f",8,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
 
 		///////////////////
 		//Detalle de datos
@@ -278,15 +279,15 @@ class RKardexAFxls
 				}
 			}
 			//Despliega los datos
-			$this->cell($sheet,$cont,"B$f",1,$f,"right",false,$this->tam_letra_detalle,Arial,false,true);
-			$this->cell($sheet,$arrayTmp[$fil]['num_tramite'],"C$f",2,$f,"left",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,$arrayTmp[$fil]['desc_mov'],"D$f",3,$f,"center",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,date("d/m/Y",strtotime($arrayTmp[$fil]['fecha_mov'])),"E$f",4,$f,"center",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,$fecha_sig,"F$f",5,$f,"center",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,$arrayTmp[$fil]['responsable'],"G$f",6,$f,"left",false,$this->tam_letra_detalle,Arial,true,true);
+			$this->cell($sheet,$cont,"B$f",1,$f,"right",false,$this->tam_letra_detalle,'Arial',false,true);
+			$this->cell($sheet,$arrayTmp[$fil]['num_tramite'],"C$f",2,$f,"left",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,$arrayTmp[$fil]['desc_mov'],"D$f",3,$f,"center",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,date("d/m/Y",strtotime($arrayTmp[$fil]['fecha_mov'])),"E$f",4,$f,"center",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,$fecha_sig,"F$f",5,$f,"center",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,$arrayTmp[$fil]['responsable'],"G$f",6,$f,"left",false,$this->tam_letra_detalle,'Arial',true,true);
 			$sheet->mergeCells("G$f:H$f");
 			$this->cellBorder($sheet, "G$f:H$f");
-			$this->cell($sheet,$arrayTmp[$fil]['cargo'],"I$f",8,$f,"left",false,$this->tam_letra_detalle,Arial,true,true);
+			$this->cell($sheet,$arrayTmp[$fil]['cargo'],"I$f",8,$f,"left",false,$this->tam_letra_detalle,'Arial',true,true);
 		}
 
 		//Borde a la caja
@@ -301,26 +302,26 @@ class RKardexAFxls
 	function secondBox($sheet){
 		//Cabecera caja
 		$f = $this->fila;
-		$this->cell($sheet,'PROCESOS DEL ACTIVO',"k$f",10,$f,"center",true,$this->tam_letra_detalle_cabecera,Arial);
+		$this->cell($sheet,'PROCESOS DEL ACTIVO',"k$f",10,$f,"center",true,$this->tam_letra_detalle_cabecera,'Arial');
 		$sheet->mergeCells("K$f:R$f");
 		$this->cellBorder($sheet,"K$f:R$f");
 		$f++;
-		$this->cell($sheet,'FECHA MOVIMIENTO',"K$f",10,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'UFV DEL PROCESO',"L$f",11,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'N.PROCESO',"M$f",12,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'MEJORA',"N$f",13,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'REVALORIZACIÓN',"O$f",14,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'AJUSTE (+ o -)',"P$f",15,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'RETIRO',"Q$f",16,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'MESES',"R$f",17,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
+		$this->cell($sheet,'FECHA MOVIMIENTO',"K$f",10,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'UFV DEL PROCESO',"L$f",11,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'N.PROCESO',"M$f",12,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'MEJORA',"N$f",13,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'REVALORIZACIÓN',"O$f",14,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'AJUSTE (+ o -)',"P$f",15,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'RETIRO',"Q$f",16,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'MESES',"R$f",17,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
 
 		//Detalle de datos
 		for ($fil=0; $fil < count($this->dataSet); $fil++) {
 			if($this->dataSet[$fil]['codigo_mov']=='reval'||$this->dataSet[$fil]['codigo_mov']=='mejora'||$this->dataSet[$fil]['codigo_mov']=='ajuste'||$this->dataSet[$fil]['codigo_mov']=='retiro') {
 				$f++;
-				$this->cell($sheet,date("d/m/Y",strtotime($this->dataSet[$fil]['fecha_mov'])),"K$f",10,$f,"center",false,$this->tam_letra_detalle,Arial,false,true);
-				$this->cell($sheet,$this->dataSet[$fil]['ufv_mov'],"L$f",11,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
-				$this->cell($sheet,$this->dataSet[$fil]['num_tramite'],"M$f",12,$f,"center",false,$this->tam_letra_detalle,Arial,true,true);
+				$this->cell($sheet,date("d/m/Y",strtotime($this->dataSet[$fil]['fecha_mov'])),"K$f",10,$f,"center",false,$this->tam_letra_detalle,'Arial',false,true);
+				$this->cell($sheet,$this->dataSet[$fil]['ufv_mov'],"L$f",11,$f,"right",false,$this->tam_letra_detalle,'Arial',true,true);
+				$this->cell($sheet,$this->dataSet[$fil]['num_tramite'],"M$f",12,$f,"center",false,$this->tam_letra_detalle,'Arial',true,true);
 				//Escoge en que celda colocar el importe
 				$monto=number_format($this->dataSet[$fil]['importe'],2,',','.');
 				$celda='';
@@ -343,9 +344,9 @@ class RKardexAFxls
 					$this->cellBorder($sheet, "K$f:R$f");
 				}
 				if($celda!=''){
-					$this->cell($sheet,$monto,"$celda$f",$numero,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
+					$this->cell($sheet,$monto,"$celda$f",$numero,$f,"right",false,$this->tam_letra_detalle,'Arial',true,true);
 				}
-				$this->cell($sheet,$this->dataSet[$fil]['meses'],"R$f",17,$f,"center",false,$this->tam_letra_detalle,Arial,true,true);
+				$this->cell($sheet,$this->dataSet[$fil]['meses'],"R$f",17,$f,"center",false,$this->tam_letra_detalle,'Arial',true,true);
 			}
 		}
 		//Borde a la caja
@@ -363,28 +364,28 @@ class RKardexAFxls
 	function mainBox($sheet){
 		//Cabecera caja
 		$f = $this->fila;
-		$this->cell($sheet,'DETALLE CONTABLE DEL BIEN',"B$f",1,$f,"center",true,$this->tam_letra_detalle_cabecera,Arial);
+		$this->cell($sheet,'DETALLE CONTABLE DEL BIEN',"B$f",1,$f,"center",true,$this->tam_letra_detalle_cabecera,'Arial');
 		$sheet->mergeCells("B$f:R$f");
 		$this->cellBorder($sheet,"B$f:R$f");
 		$f++;
-		$this->cell($sheet,'PROCESO',"B$f",1,$f,"center",true,$this->tam_letra_detalle,Arial,true);
+		$this->cell($sheet,'PROCESO',"B$f",1,$f,"center",true,$this->tam_letra_detalle,'Arial',true);
 		$sheet->mergeCells("B$f:D$f");
 		$this->cellBorder($sheet,"B$f:D$f");
-		$this->cell($sheet,'FECHA DE PROCESO',"E$f",4,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
+		$this->cell($sheet,'FECHA DE PROCESO',"E$f",4,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
 		$sheet->mergeCells("E$f:F$f");
 		$this->cellBorder($sheet,"E$f:F$f");
-		$this->cell($sheet,'MONTO 100%',"G$f",6,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'MONTO 87%',"H$f",7,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'MONTO ACTUAL',"I$f",8,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'INC. ACTUALIZADO/ACUMULADO',"J$f",9,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'VAL. ACTUALIZADO',"K$f",10,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'VIDA USADA',"L$f",11,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'VIDA RESIDUAL',"M$f",12,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'DEP. ACUM. GEST. ANT.',"N$f",13,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'ACT. DEP. GEST. ANT.',"O$f",14,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'DEP. DEL PERIODO',"P$f",15,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'DEP. ACUM.',"Q$f",16,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
-		$this->cell($sheet,'VAL RESI.',"R$f",17,$f,"center",true,$this->tam_letra_detalle,Arial,true,true);
+		$this->cell($sheet,'MONTO 100%',"G$f",6,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'MONTO 87%',"H$f",7,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'MONTO ACTUAL',"I$f",8,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'INC. ACTUALIZADO/ACUMULADO',"J$f",9,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'VAL. ACTUALIZADO',"K$f",10,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'VIDA USADA',"L$f",11,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'VIDA RESIDUAL',"M$f",12,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'DEP. ACUM. GEST. ANT.',"N$f",13,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'ACT. DEP. GEST. ANT.',"O$f",14,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'DEP. DEL PERIODO',"P$f",15,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'DEP. ACUM.',"Q$f",16,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
+		$this->cell($sheet,'VAL RESI.',"R$f",17,$f,"center",true,$this->tam_letra_detalle,'Arial',true,true);
 
 		//Vacía los movimientos físicos en un array temporal
 		$arrayTmp=array();
@@ -397,24 +398,24 @@ class RKardexAFxls
 		//Detalle de datos
 		for ($fil=0; $fil < count($arrayTmp); $fil++) {
 			$f++;
-			$this->cell($sheet,$arrayTmp[$fil]['desc_mov'],"B$f",1,$f,"left",false,$this->tam_letra_detalle,Arial,true);
+			$this->cell($sheet,$arrayTmp[$fil]['desc_mov'],"B$f",1,$f,"left",false,$this->tam_letra_detalle,'Arial',true);
 			$sheet->mergeCells("B$f:D$f");
 			$this->cellBorder($sheet,"B$f:D$f");
-			$this->cell($sheet,date("d/m/Y",strtotime($arrayTmp[$fil]['fecha_mov'])),"E$f",4,$f,"center",false,$this->tam_letra_detalle,Arial,true,true);
+			$this->cell($sheet,date("d/m/Y",strtotime($arrayTmp[$fil]['fecha_mov'])),"E$f",4,$f,"center",false,$this->tam_letra_detalle,'Arial',true,true);
 			$sheet->mergeCells("E$f:F$f");
 			$this->cellBorder($sheet,"E$f:F$f");
-			$this->cell($sheet,number_format($arrayTmp[$fil]['monto_vigente_orig_100'],2,',','.'),"G$f",6,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,number_format($arrayTmp[$fil]['monto_vigente_orig'],2,',','.'),"H$f",7,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,number_format($arrayTmp[$fil]['monto_actualiz'],2,',','.'),"I$f",8,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,number_format($arrayTmp[$fil]['actualiz_monto_vigente'],2,',','.'),"J$f",9,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,number_format($arrayTmp[$fil]['monto_actualiz'],2,',','.'),"K$f",10,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,$arrayTmp[$fil]['vida_util_usada'],"L$f",11,$f,"center",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,$arrayTmp[$fil]['vida_util'],"M$f",12,$f,"center",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,number_format($arrayTmp[$fil]['dep_acum_gest_ant'],2,',','.'),"N$f",13,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,$arrayTmp[$fil][''],"O$f",14,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,number_format($arrayTmp[$fil]['depreciacion_per'],2,',','.'),"P$f",15,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,number_format($arrayTmp[$fil]['depreciacion_acum'],2,',','.'),"Q$f",16,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
-			$this->cell($sheet,number_format($arrayTmp[$fil]['monto_vigente'],2,',','.'),"R$f",17,$f,"right",false,$this->tam_letra_detalle,Arial,true,true);
+			$this->cell($sheet,number_format($arrayTmp[$fil]['monto_vigente_orig_100'],2,',','.'),"G$f",6,$f,"right",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,number_format($arrayTmp[$fil]['monto_vigente_orig'],2,',','.'),"H$f",7,$f,"right",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,number_format($arrayTmp[$fil]['monto_actualiz'],2,',','.'),"I$f",8,$f,"right",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,number_format($arrayTmp[$fil]['actualiz_monto_vigente'],2,',','.'),"J$f",9,$f,"right",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,number_format($arrayTmp[$fil]['monto_actualiz'],2,',','.'),"K$f",10,$f,"right",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,$arrayTmp[$fil]['vida_util_usada'],"L$f",11,$f,"center",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,$arrayTmp[$fil]['vida_util'],"M$f",12,$f,"center",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,number_format($arrayTmp[$fil]['dep_acum_gest_ant'],2,',','.'),"N$f",13,$f,"right",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,$arrayTmp[$fil][''],"O$f",14,$f,"right",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,number_format($arrayTmp[$fil]['depreciacion_per'],2,',','.'),"P$f",15,$f,"right",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,number_format($arrayTmp[$fil]['depreciacion_acum'],2,',','.'),"Q$f",16,$f,"right",false,$this->tam_letra_detalle,'Arial',true,true);
+			$this->cell($sheet,number_format($arrayTmp[$fil]['monto_vigente'],2,',','.'),"R$f",17,$f,"right",false,$this->tam_letra_detalle,'Arial',true,true);
 		}
 
 		//Borde a la caja
@@ -457,9 +458,9 @@ class RKardexAFxls
 
 	function firmas($sheet){
 		$f=$this->fila;
-		$this->cell($sheet,'Jefe de Activos Fijos',"C$f",2,$f,"left",true,$this->tam_letra_cabecera,Arial,false,false);
+		$this->cell($sheet,'Jefe de Activos Fijos',"C$f",2,$f,"left",true,$this->tam_letra_cabecera,'Arial',false,false);
 		$f++;
-		$this->cell($sheet,$this->dataSet[0]['desc_funcionario1'],"C$f",2,$f,"left",true,$this->tam_letra_cabecera,Arial,false,false);
+		$this->cell($sheet,$this->dataSet[0]['desc_funcionario1'],"C$f",2,$f,"left",true,$this->tam_letra_cabecera,'Arial',false,false);
 	}
 	
 	function setDataSet($dataset){
