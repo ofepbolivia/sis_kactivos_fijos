@@ -47,9 +47,9 @@ header("content-type: text/javascript; charset=UTF-8");
                 iconCls : 'bpdf32',
                 disabled: true,
                 handler : this.onButtonReport,
-                tooltip : '<b>Reporte de Movimiennto</b><br/><b>Reporte de Movimiento efectuado y su detalle</b>'
+                tooltip : '<b>Reporte de Movimiento</b><br/><b>Reporte de Movimiento efectuado y su detalle</b>'
             });
-
+            /*fRnk: se quitó el reporte
             this.addButton('btnReporteDep',{
                 grupo: [0,5],
                 text :'Det. Dep',
@@ -57,7 +57,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 disabled: true,
                 handler : this.onButtonReportDepreciacion,
                 tooltip : '<b>Reporte Depreciación</b><br/><b>Reporte que detalla la depreciación del movimiento</b>'
-            });
+            });*/
 
             /*this.addButton('btnChequeoDocumentos',{
                 grupo:[0,1,2,3,4], text: 'Documentos Activo Fijo',
