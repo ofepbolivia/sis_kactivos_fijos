@@ -51,7 +51,7 @@ class RRespInventario extends ReportePDF {
         $x = $this->GetX();
         $y = $this->GetY();
         $this->SetXY($x, $y);
-
+/*
         //$this->Image(dirname(__FILE__).'/../../lib/'.$_SESSION['_DIR_LOGO'], 10,5,35,20);
         $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 17,5,35,16);
 		$inventa = $this->objParam->getParametro('inventario');
@@ -103,7 +103,36 @@ class RRespInventario extends ReportePDF {
         $this->Cell($width1-4, $height, '', "", 0, '', false, '', 0, false, 'T', 'C');
         $this->SetFont('', 'B');
         $this->Cell($w = $width2, $h = $height, $txt = '', $border = "", $ln = 0, $align = 'C', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
-        $this->setCellPaddings(2);
+        $this->setCellPaddings(2);*/
+        //fRnk: cabecera reporte modificado
+        $titulo='';
+        switch ($this->objParam->getParametro('tipo')){
+            case 'lug':$titulo='DETALLE DE ACTIVOS FIJOS POR LUGAR';break;
+            case 'resp':$titulo='DETALLE DE ACTIVOS FIJOS POR RESPONSABLE';break;
+            default:$titulo='DETALLE DE ACTIVOS FIJOS POR LUGAR FUNCIONARIO';break;
+        }
+
+        $content = '<table border="1" cellpadding="1" style="font-size: 11px">
+            <tr>
+                <td style="width: 23%; color: #444444;" rowspan="4">
+                    &nbsp;<img  style="width: 150px;" src="./../../../lib/' . $_SESSION['_DIR_LOGO'] . '" alt="Logo">
+                </td>		
+                <td style="width: 52%; color: #444444;text-align: center" rowspan="4">
+                   <h4 style="font-size: 14px">'.$titulo.'</h4>
+                </td>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Gestión:</b> </td>
+            </tr>
+            <tr>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Fecha:</b> ' . date('d/m/y h:i:s A') . '</td>
+            </tr>
+            <tr>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Depto.:</b> ' . $this->dataMaster['desc_depto'] . '</td>
+            </tr>
+            <tr>
+                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Usuario:</b> ' . $_SESSION['_LOGIN'] . '</td>
+            </tr>
+        </table>';
+        $this->writeHTML($content, false, false, true, false, '');
 
         $this->fieldsHeader();
         $this->generarCabecera();
@@ -127,14 +156,14 @@ class RRespInventario extends ReportePDF {
             $this->SetFont('', 'B');
             $this->Cell(25, $height,'DEPTO.:', "", 0, 'L', false, '', 0, false, 'T', 'C');
             $this->SetFont('', '');
-            $this->Cell($w = 100,$h = $hGlobal, $txt = $this->dataMaster['desc_depto'], $border = 0, $ln = 1, $align = 'L', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
+            $this->Cell($w = 100,$h = $hGlobal, $this->dataMaster['desc_depto'], $border = 0, $ln = 1, $align = 'L', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
 			$this->Ln(10);
         } else {
             //Responsable
             $this->SetFont('', 'B');
             $this->Cell(35, $height,'RESPONSABLE:', "", 0, 'L', false, '', 0, false, 'T', 'C');
             $this->SetFont('', '');
-            $this->Cell($w = 100,$h = $hGlobal, $txt = $this->dataMaster['responsable'], $border = 0, $ln = 0, $align = 'L', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
+            $this->Cell($w = 100,$h = $hGlobal, $this->dataMaster['responsable'], $border = 0, $ln = 0, $align = 'L', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
             $this->SetFont('', 'B');
 
             //Lugar

@@ -15,7 +15,7 @@ class RBajaRevalorizacionPDF extends ReportePDF  {
         $this->Image(dirname(__FILE__) . '/../../lib' . $_SESSION['_DIR_LOGO'], 275, 2, 30, 15);
         //$this->SetMargins(25,5);
         $this->SetFont('helvetica', 'B', 12);
-        $this->Write(0, 'BOLIVIANA DE AVIACION', '', 0, 'C', true, 0, false, false, 0);
+       //$this->Write(0, 'BOLIVIANA DE AVIACION', '', 0, 'C', true, 0, false, false, 0); //fRnk: comentado
         $this->Write(0, 'DETALLE DE ACTIVOS REVALORIZADOS CON VALOR 1', '', 0, 'C', true, 0, false, false, 0);
 
 

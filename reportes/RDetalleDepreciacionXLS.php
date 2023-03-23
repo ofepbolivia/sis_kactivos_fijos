@@ -90,7 +90,8 @@ class RDetalleDepreciacionXLS
 
         //$this->docexcel->getActiveSheet()->mergeCells('A1:A3');
         $sheet0->mergeCells('A1:V1');
-        $sheet0->setCellValue('A1', 'BOLIVIANA DE AVIACION');
+        //$sheet0->setCellValue('A1', 'BOLIVIANA DE AVIACION'); //fRnk: comentado y vacio
+        $sheet0->setCellValue('A1', '');
         $sheet0->mergeCells('A2:V2');
         $sheet0->setCellValue('A2', 'DETALLE DEPRECIACION DE ACTIVOS FIJOS');
         $sheet0->mergeCells('A3:V3');

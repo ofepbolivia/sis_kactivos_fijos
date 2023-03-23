@@ -2421,8 +2421,10 @@ header("content-type: text/javascript; charset=UTF-8");
                             }, {
                                 fieldLabel: 'Monto de rescate',
                                 name: 'monto_rescate',
-                                allowBlank: false,
-                                id: this.idContenedor+'_monto_rescate'
+                                allowBlank: true,
+                                id: this.idContenedor+'_monto_rescate',
+                                emptyText: '1',
+                                disabled: true
                             },
 
                                 {
@@ -2673,6 +2675,7 @@ header("content-type: text/javascript; charset=UTF-8");
         cargarValoresDefecto: function(){
             //fRnk: por defecto "Ninguno"
             Ext.getCmp(this.idContenedor+'_subtipo').setValue('Ninguno');
+            Ext.getCmp(this.idContenedor+'_monto_rescate').setValue(1);
         },
         onSubmit: function(o,x,force){
             var formData;
@@ -2848,6 +2851,7 @@ header("content-type: text/javascript; charset=UTF-8");
             Ext.getCmp(this.idContenedor+'_id_moneda_orig').enable();
             Ext.getCmp(this.idContenedor+'_monto_compra_orig').enable();
             Ext.getCmp(this.idContenedor+'_monto_compra_orig_100').enable();
+            Ext.getCmp(this.idContenedor+'_monto_rescate').setValue(1);
             Ext.getCmp(this.idContenedor+'_monto_rescate').disable(); //fRnk: modificado, deshabilitado
             Ext.getCmp(this.idContenedor+'_vida_util_real_af').disable();
             Ext.getCmp(this.idContenedor+'_vida_util_original').enable();
@@ -2892,7 +2896,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 Ext.getCmp(this.idContenedor+'_id_moneda_orig').enable();
                 Ext.getCmp(this.idContenedor+'_monto_compra_orig').enable();
                 Ext.getCmp(this.idContenedor+'_monto_compra_orig_100').enable();
-                Ext.getCmp(this.idContenedor+'_monto_rescate').enable();
+                Ext.getCmp(this.idContenedor+'_monto_rescate').disable();
                 Ext.getCmp(this.idContenedor+'_vida_util_original').enable();
                 Ext.getCmp(this.idContenedor+'_id_depto').enable();
                 Ext.getCmp(this.idContenedor+'_id_clasificacion').enable();
@@ -2910,7 +2914,7 @@ header("content-type: text/javascript; charset=UTF-8");
             }
             //diapra eventos de clasificaciones selecionada
             this.actualizarSegunClasificacion(data.tipo_activo, data.depreciable);
-
+            Ext.getCmp(this.idContenedor+'_monto_rescate').disable(); //fRnk: monto_rescate siempre deshabilitado
         },
 
         obtenerCadenaIDs: function(){
@@ -2963,7 +2967,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 Ext.getCmp(this.idContenedor+'_vida_util_original').enable();
                 Ext.getCmp(this.idContenedor+'_vida_util_original_anios').enable();
                 Ext.getCmp(this.idContenedor+'_vida_util_real_af').disable();
-                Ext.getCmp(this.idContenedor+'_monto_rescate').enable();
+                Ext.getCmp(this.idContenedor+'_monto_rescate').disable();
             } else {
                 Ext.getCmp(this.idContenedor+'_vida_util_original').disable();
                 Ext.getCmp(this.idContenedor+'_vida_util_original_anios').disable();
@@ -4006,7 +4010,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 }, {
                                     fieldLabel: 'Monto de rescate',
                                     name: 'monto_rescate',
-                                    allowBlank: false,
+                                    allowBlank: true,
                                     id: this.idContenedor + '_monto_rescate'
                                 },
 

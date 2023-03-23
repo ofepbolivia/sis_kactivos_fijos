@@ -22,7 +22,7 @@ class RDepreciacionActulizadoPDF extends  ReportePDF{
         $codigo == "11" && $title = "DETALLE DE AMORTIZACION DE ACTIVOS FIJOS INTANGIBLES";
 
         $this->SetFont('','B',10);
-        $this->Cell(0,5,"BOLIVIANA DE AVIACION",0,1,'C');
+        //$this->Cell(0,5,"BOLIVIANA DE AVIACION",0,1,'C'); fRnk: comentado
         $this->Cell(0,5,$title,0,1,'C');
 
         $this->SetFont('','B',5);

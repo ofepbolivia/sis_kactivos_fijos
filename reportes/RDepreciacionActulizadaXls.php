@@ -129,7 +129,8 @@ class RDepreciacionActulizadaXls
         $codigo == "11" && $title = "DETALLE DE AMORTIZACION DE ACTIVOS FIJOS INTANGIBLES";
 
         $sheet0->mergeCells('B1:Q1');
-        $sheet0->setCellValue('B1', 'BOLIVIANA DE AVIACIÓN');
+        //$sheet0->setCellValue('B1', 'BOLIVIANA DE AVIACIÓN'); //fRnk: comentado y vacio
+        $sheet0->setCellValue('B1', '');
         $sheet0->mergeCells('B2:Q2');
         $sheet0->setCellValue('B2', $title.$title_2);
         $sheet0->mergeCells('B3:Q3');
