@@ -142,7 +142,7 @@ class RRespInventario extends ReportePDF {
     public function fieldsHeader(){
 
         $this->SetFontSize(10);
-        $this->Ln(5);
+        $this->Ln(1);
 
         if($this->tipo=='lug' || $this->tipo=='lug_fun'){
             //Responsable

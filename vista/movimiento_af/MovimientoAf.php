@@ -74,7 +74,6 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 	},
 
 	cargarResumenAf: function(data){
-
 		this.Cmp.res_codigo.setValue(data.codigo);
 		this.Cmp.res_denominacion.setValue(data.denominacion);
 		this.Cmp.res_descripcion.setValue(data.descripcion);

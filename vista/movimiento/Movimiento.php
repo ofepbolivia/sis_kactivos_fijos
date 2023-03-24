@@ -568,7 +568,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     name:'id_persona',
                     hiddenName: 'id_persona',
                     origen:'PERSONA',
-                    fieldLabel:'Custodio?',
+                    fieldLabel:'¿Custodio?',
                     allowBlank:true,
                     gwidth:200,
                     valueField: 'id_persona',
@@ -617,6 +617,12 @@ header("content-type: text/javascript; charset=UTF-8");
                     minChars: 2,
                     renderer : function(value, p, record) {
                         return String.format('{0}', record.data['oficina']);
+                    },
+                    listeners: {
+                        select: function(combo, records) {
+                            //fRnk: set dirección
+                            Ext.getCmp('direccion').setValue(records.json.direccion);
+                        }
                     }
                 },
                 type: 'ComboBox',
@@ -628,12 +634,14 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config:{
                     name: 'direccion',
-                    fieldLabel: 'Direccion',
+                    id: 'direccion',
+                    fieldLabel: 'Dirección',
                     allowBlank: true,
                     anchor: '95%',
                     gwidth: 100,
                     maxLength:500,
-                    hidden: true
+                    hidden: true,
+                    disabled: true
                 },
                 type:'TextArea',
                 filters:{pfiltro:'mov.direccion',type:'string'},
@@ -791,7 +799,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             return String.format('<div style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:150px; height:45px; float:left;"><font>{0}</font></div>', value);
                         }
                         else{
-                            return String.format('<div><font>{0}</font></div>', value);
+                            return value==null?'':String.format('<div><font>{0}</font></div>', value);
                         }
                     },
                     gwidth: 40
@@ -812,7 +820,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             return String.format('<div style="background-color:#FA5E5E; margin-top:0px; position:absolute; width:50px; height:45px; float:left;"><font>{0}</font></div>', value);
                         }
                         else{
-                            return String.format('<div><font>{0}</font></div>', value);
+                            return value==null?'': String.format('<div><font>{0}</font></div>', value);
                         }
                     },
                     gwidth: 70

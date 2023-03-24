@@ -301,7 +301,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     minChars: 2,
                     anchor : '70%',
                     width : 200,
-                    enableMultiSelect: true
+                    enableMultiSelect: true,
+                    hidden: true
                 },
 
                 type : 'AwesomeCombo',
@@ -912,7 +913,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.nro_serie);
                     this.mostrarComponente(this.Cmp.id_oficina);
                     this.mostrarComponente(this.Cmp.id_clasificacion);
-                    this.mostrarComponente(this.Cmp.id_lugar);
+                    //this.mostrarComponente(this.Cmp.id_lugar); //fRnk: oculto
                     this.mostrarComponente(this.Cmp.tipo_activo);
                     this.ocultarComponente(this.Cmp.estado_mo);
                     this.ocultarComponente(this.Cmp.id_funcionario);
@@ -942,7 +943,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.nro_serie);
                     this.mostrarComponente(this.Cmp.id_oficina);
                     this.mostrarComponente(this.Cmp.id_clasificacion);
-                    this.mostrarComponente(this.Cmp.id_lugar);
+                    //this.mostrarComponente(this.Cmp.id_lugar);
                     this.mostrarComponente(this.Cmp.tipo_activo);
                     this.ocultarComponente(this.Cmp.estado_mo);
                     this.ocultarComponente(this.Cmp.id_funcionario);

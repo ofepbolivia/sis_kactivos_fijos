@@ -273,7 +273,7 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
             }),
             valueField: 'id_catalogo',
             displayField: 'descripcion',
-            gdisplayField: 'estado_fun',
+            gdisplayField: 'met_dep',
             mode: 'remote',
             triggerAction: 'all',
             lazyRender: true
@@ -534,14 +534,14 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 	onButtonNew: function(){
 		Phx.vista.ClasificacionAF.superclass.onButtonNew.call(this);
 		if(this.sm.getSelectedNode()&&this.sm.getSelectedNode().attributes){
-			var master = this.sm.getSelectedNode().attributes;
+			var master = this.sm.getSelectedNode().attributes;console.log('------------'); console.log(master);
 			//Setea valores del padre
 			this.Cmp['vida_util'].setValue(master.vida_util);
 			this.Cmp['tipo_activo'].setValue(master.tipo_activo);
 			this.Cmp['depreciable'].setValue(master.depreciable);
 			this.Cmp['contabilizar'].setValue(master.contabilizar);
 			this.Cmp['monto_residual'].setValue(master.monto_residual);
-			this.Cmp['id_cat_metodo_dep'].setValue(master.id_cat_metodo_dep);
+			//this.Cmp['id_cat_metodo_dep'].setValue(master.id_cat_metodo_dep);
             //fRnk: por defecto monto residual=1 y no modificable
 			this.Cmp['monto_residual'].setValue('1');
 			if(master.codigo){
