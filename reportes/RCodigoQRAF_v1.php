@@ -32,7 +32,7 @@ class RCodigoQRAF_v1 extends  ReportePDF {
     var $codigo_qr;
     var $cod;
     var $tipo;
-
+    var $datad;
 
 
 
@@ -52,7 +52,7 @@ class RCodigoQRAF_v1 extends  ReportePDF {
             $this->cod = array('id'  => $detalle['id_activo_fijo'],
                 'cod' => $detalle['codigo'],
                 'desc' => $detalle['descripcion']);
-
+            $this->datad = array('denominacion' => $detalle['denominacion'], 'clasif' => $detalle['clasif']);
             //formatea el codigo con el conteido requrido
             $this->codigo_qr = json_encode($this->cod);
         }
@@ -93,16 +93,14 @@ class RCodigoQRAF_v1 extends  ReportePDF {
             exit;*/
 
             foreach ($this->detalle as $val) {
-
                 $this->cod = array('id'  => $val['id_activo_fijo'],
                     'cod' => $val['codigo'],
                     'desc' => $val['descripcion']);
+                $this->datad = array('denominacion' => $val['denominacion'], 'clasif' => $val['clasif']);
 
                 //formatea el codigo con el conteido requrido
                 $this->codigo_qr = json_encode($this->cod);
                 $this->imprimirCodigo($style);
-
-
             }
         }
     }
@@ -125,8 +123,8 @@ class RCodigoQRAF_v1 extends  ReportePDF {
         $maxLengthLinea=100;
         $x=75;
         $y=38;
-        //fRnk: QR denominación y nodo padre
-        $codAux = $this->datos_detalle['denominacion'].chr(10).$this->datos_detalle['clasif'];
+        //fRnk: QR denominación y nodo padre, add datad
+        $codAux = $this->datad['denominacion'].chr(10).$this->datad['clasif'];
         if(strlen($codAux) > $maxLength){
             $codAux = substr($codAux,0,$maxLength-23).'...';
         }

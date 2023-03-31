@@ -641,6 +641,7 @@ class MODActivoFijo extends MODbase{
         $this->captura('nombre_entidad','varchar');
         $this->captura('descripcion','varchar');
         $this->captura('clase_rep','varchar');
+        $this->captura('clasif','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
