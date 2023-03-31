@@ -491,8 +491,9 @@ class RAsig_Trans_DevAFXls
                     'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
                 )
             );
-
-            $this->docexcel->getActiveSheet()->getStyle('B'.$filas.':G'.$filas+2)->getAlignment()->setWrapText(true);
+            //fRnk: corrección de incremento not string
+            $incr=($filas+2);
+            $this->docexcel->getActiveSheet()->getStyle('B'.$filas.':G'.$incr)->getAlignment()->setWrapText(true);
             if($this->datos_maestro[0]['custodio']!='') {
 
 

@@ -9,14 +9,33 @@ class RActivoFijoPDF extends  ReportePDF{
 	var $codigo;
 	
     function Header() {
-        $height = 30;
+        /*$height = 30;
         //cabecera del reporte
         $this->Image(dirname(__FILE__).'/../../lib'.$_SESSION['_DIR_LOGO'], 5, 8, 60, 15);
         $this->Cell(40, $height, '', 0, 0, 'C', false, '', 0, false, 'T', 'C');
         $this->SetFontSize(16);
         $this->SetFont('','B');
         $this->Cell(105, $height, 'REPORTE DE ACTIVOS POR GRUPO', 0, 0, 'C', false, '', 0, false, 'T', 'C');
-        $this->Ln();
+        $this->Ln();*/
+        //fRnk: se modificó la cabecera del reporte
+        $this->SetMargins(12, 40, 12);
+        $content = '<table border="1" cellpadding="1" style="font-size: 10px;">
+            <tr>
+                <td style="width: 23%; color: #444444;" rowspan="2">
+                    &nbsp;<img  style="width: 150px;" src="./../../../lib/' . $_SESSION['_DIR_LOGO'] . '" alt="Logo">
+                </td>		
+                <td style="width: 54%; color: #444444;text-align: center" rowspan="2">
+                   <h4 style="font-size: 12px">DEPARTAMENTO ACTIVOS FIJOS</h4>
+                   <b style="font-size: 10px">REPORTE DE ACTIVOS POR GRUPO</b>
+                </td>
+                <td style="width: 23%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Fecha:</b> ' . date('d/m/y h:i:s A') . '<br></td>
+            </tr>
+            <tr>
+                <td style="width: 23%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Usuario:</b> ' . $_SESSION['_LOGIN'] . '</td>
+            </tr>
+        </table>';
+        $this->writeHTMLCell(0, 10, 12, 4, $content, 0, 0, 0, true, 'L', true);
+        $this->Ln(24);
     }
 	
     function setDatos($datos) {
@@ -37,7 +56,7 @@ class RActivoFijoPDF extends  ReportePDF{
         //$this->SetHeaderMargin(10);
         $this->SetMargins(15, 25, 15,true);
         $this->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
+        $this->SetFontSize(10);
         $height = 8;
         $width2 = 5;
         $width3 = 46;

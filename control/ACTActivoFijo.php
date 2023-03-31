@@ -771,7 +771,7 @@ class ACTActivoFijo extends ACTbase{
                 $nombreArchivo = uniqid(md5(session_id()).'[Reporte - Activos en Deposito').'.xls';
             }            
         }
-
+//echo var_dump($this->objParam);exit(); fRnk: desde aquí llama a reportes de uso general
         //Definicion de parametros adicionales para el reporte.
         $this->objParam->addParametro('tamano','LETTER');
         $this->objParam->addParametro('nombre_archivo',$nombreArchivo);

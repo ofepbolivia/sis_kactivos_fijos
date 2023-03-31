@@ -11,7 +11,7 @@ class RPendientesAprobAFPDF extends  ReportePDF{
     var $sum=0;
 
     function Header() {
-        $this->Ln(3);
+        /*$this->Ln(3);
 
         //cabecera del reporte
         $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 16,5,30,20);
@@ -21,6 +21,45 @@ class RPendientesAprobAFPDF extends  ReportePDF{
         $this->Cell(0,5,'DEPARTAMENTO ACTIVOS FIJOS',0,1,'C');
         $this->Cell(0,5,'ACTIVOS FIJOS PENDIENTES DE APROBACIÓN',0,1,'C');
         $this->Cell(0,5,'Del: '.$this->objParam->getParametro('fecha_ini').' Al '.$this->objParam->getParametro('fecha_fin').' Estado: PENDIENTE',0,1,'C');
+        */
+        //fRnk: se añadió la cabera del reporte
+        $this->SetMargins(12, 40, 16);
+        $fecha_ini = $this->objParam->getParametro('fecha_ini');
+        $fecha_fin = $this->objParam->getParametro('fecha_fin');
+        $fini = explode("/", $fecha_ini);
+        $ffin = explode("/", $fecha_fin);
+        $gini = count($fini) > 2 ? intval($fini[2]) : '';
+        $gfin = count($ffin) > 2 ? intval($ffin[2]) : '';
+        $gestion = $gini != $gfin ? $gini . ' - ' . $gfin : $gini;
+        $content = '<table border="1" cellpadding="1" style="font-size: 10px;">
+            <tr>
+                <td style="width: 23%; color: #444444;" rowspan="5">
+                    &nbsp;<img  style="width: 150px;" src="./../../../lib/' . $_SESSION['_DIR_LOGO'] . '" alt="Logo">
+                </td>		
+                <td style="width: 54%; color: #444444;text-align: center" rowspan="5">
+                   <h4 style="font-size: 12px">DEPARTAMENTO ACTIVOS FIJOS</h4>
+                   <b style="font-size: 10px">ACTIVOS FIJOS PENDIENTES DE APROBACIÓN</b><br>
+                   <b style="font-size: 10px">Del: '. $fecha_ini.' Al '.$fecha_fin.'</b>
+                   
+                </td>
+                <td style="width: 23%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Gestión:</b> ' . $gestion . '</td>
+            </tr>
+            <tr>
+                <td style="width: 23%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Fecha:</b> ' . date('d/m/y h:i:s A') . '</td>
+            </tr>
+            <tr>
+                <td style="width: 23%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Depto.:</b> </td>
+            </tr>
+            <tr>
+                <td style="width: 23%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Usuario:</b> ' . $_SESSION['_LOGIN'] . '</td>
+            </tr>
+            <tr>
+                <td style="width: 23%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Estado:</b> '.$this->objParam->getParametro('estado').'</td>
+            </tr>
+        </table>';
+        $this->writeHTMLCell(0, 10, 12, 4, $content, 0, 0, 0, true, 'L', true);
+        $this->Ln(24);
+        $this->SetMargins(12, 40, 12);
 
         $this->SetFont('','',7);
         $this->ln(5);

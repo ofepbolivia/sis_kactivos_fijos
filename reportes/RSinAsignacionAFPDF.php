@@ -15,7 +15,7 @@ class RSinAsignacionAFPDF extends ReportePDF
     function Header()
     {
         $this->Ln(3);
-
+        $this->SetMargins(12, 40, 14);
         //cabecera del reporte
         /*    $this->Image(dirname(__FILE__) . '/../../lib/imagenes/logos/logo.jpg', 16, 5, 40, 20);
             $this->ln(5);
@@ -72,8 +72,9 @@ class RSinAsignacionAFPDF extends ReportePDF
                 <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Estado:</b></td>
             </tr>
         </table>';
-        $this->writeHTML($content, false, false, true, false, '');
-        $this->ln(5);
+        //$this->writeHTML($content, false, false, true, false, '');
+        $this->writeHTMLCell(0, 10, 12, 4, $content, 0, 0, 0, true, 'L', true);
+        $this->ln(29);
 
         $control = $this->objParam->getParametro('rep_sin_asignacion');
         $this->columnsGrid($control);
@@ -95,11 +96,11 @@ class RSinAsignacionAFPDF extends ReportePDF
 
         //widths
         $tam1 = 30;
-        $tam2 = 50;
+        $tam2 = 55;
         $tam3 = 20;
         $tam4 = 20;
         $tam5 = 20;
-        $tam6 = 40;
+        $tam6 = 50;
         $tam7 = 30;
         $tam8 = 20;
 
@@ -233,11 +234,11 @@ class RSinAsignacionAFPDF extends ReportePDF
         $sac31 = '';
 
         $tam1 = 30;
-        $tam2 = 50;
+        $tam2 = 55;
         $tam3 = 20;
         $tam4 = 20;
         $tam5 = 20;
-        $tam6 = 40;
+        $tam6 = 50;
         $tam7 = 30;
         $tam8 = 20;
 

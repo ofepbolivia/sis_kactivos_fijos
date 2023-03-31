@@ -1,210 +1,86 @@
-
 <?php
 
-class RActiDepaPFunFPDF extends ReportePDF {
+class RActiDepaPFunFPDF extends ReportePDF
+{
+    //fRnk: modificado todo el reporte
     var $dataMaster;
     var $datos_detalle;
-    var $ancho_hoja;        
+    var $ancho_hoja;
     var $oficina;
     var $tipo;
 
-    function getDataSource(){    	
-        return  $this->datos_detalle;
+    function getDataSource()
+    {
+        return $this->datos_detalle;
     }
 
-    function setOficina($val){
-        $this->oficina = $val;
-        if($val==''||$val=='%'){
-            $this->oficina = 'todos';
-        }
-    }
-
-    function setTipo($val){
-        $this->tipo = $val;
-    }
-
-    function  setColumna($val){
-        $this->columna = $val;
-    }
-
-    function setDatos ($data) {
-
-        $this->ancho_hoja = $this->getPageWidth()-PDF_MARGIN_LEFT-PDF_MARGIN_RIGHT-10;
+    function setDatos($data)
+    {
+        $this->ancho_hoja = $this->getPageWidth() - PDF_MARGIN_LEFT - PDF_MARGIN_RIGHT - 10;
         $this->dataMaster = $data[0];
         $this->datos_detalle = $data;
-        //var_dump($this->dataMaster);exit;
         $this->SetMargins(2, 45, 3);
     }
 
-    function Header() {
-        $height = 6;
-        $midHeight = 9;
-        $longHeight = 18;
-
-        $x = $this->GetX();
-        $y = $this->GetY();
-        $this->SetXY($x, $y);
-       
-        $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 17,5,35,16);		
-
-        $this->SetFontSize(12);
-        $this->SetFont('', 'B');
-        $this->Cell(53, $midHeight, '', 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');
-        $this->Cell(168, $midHeight, 'ACTIVOS FIJOS POR DEPOSITO', 'LRT', 0, 'C', false, '', 0, false, 'T', 'C');		
-		
-        $x = $this->GetX();
-        $y = $this->GetY();
-        $this->Ln();
-        $this->SetFontSize(10);
-        $this->SetFont('', 'B');
-        $this->Cell(53, $midHeight, '', 'LRB', 0, 'C', false, '', 0, false, 'T', 'C');
-        $this->Cell(168, $midHeight, '', 'LRB', 0, 'C', false, '', 0, false, 'T', 'C');
-
-        $this->SetFontSize(7);
-
-        $width1 = 15;
-        $width2 = 25;
-        $this->SetXY($x, $y);
-
-        $this->SetFont('', '');
-        $this->Cell(54, $longHeight, '', 1, 0, 'C', false, '', 0, false, 'T', 'C');
-
-        $this->SetXY($x, $y+3);
-        $this->setCellPaddings(2);
-        //$this->Cell($width1-4, $height, '', "B", 0, '', false, '', 0, false, 'T', 'C');
-        $this->SetFont('', 'B');
-        $this->SetFontSize(6);
-        //$this->Cell($width2+8, $height,'', "B", 0, 'L', false, '', 0, false, 'T', 'C');
-        $this->SetFontSize(7);
-        $this->setCellPaddings(2);
-        $this->Ln();
-        $this->SetX($x);
-        $this->SetFont('', '');
-        $this->Cell($width1-4, $height, '', "", 0, '', false, '', 0, false, 'T', 'C');
-        $this->SetFont('', 'B');        
-        $this->Cell($width2+8, $height,'', "", 0, 'L', false, '', 0, false, 'T', 'C');
-        $this->setCellPaddings(2);
-        $this->Ln();
-        $this->SetX($x);
-        $this->SetFont('', '');        
-        $this->Cell($width1-4, $height, '', "", 0, '', false, '', 0, false, 'T', 'C');
-        $this->SetFont('', 'B');        
-        $this->Cell($w = $width2, $h = $height, $txt = '', $border = "", $ln = 0, $align = 'C', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
-        $this->setCellPaddings(2);
-
+    function Header()
+    {
+        $this->SetMargins(2, 40, 2);
+        $content = '<table border="1" cellpadding="1" style="font-size: 10px;">
+            <tr>
+                <td style="width: 23%; color: #444444;" rowspan="2">
+                    &nbsp;<img  style="width: 150px;" src="./../../../lib/' . $_SESSION['_DIR_LOGO'] . '" alt="Logo">
+                </td>		
+                <td style="width: 54%; color: #444444;text-align: center" rowspan="2">
+                   <h4 style="font-size: 12px">DEPARTAMENTO ACTIVOS FIJOS</h4>
+                   <b style="font-size: 10px">ACTIVOS FIJOS POR DEPÓSITO</b>
+                </td>
+                <td style="width: 23%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Fecha:</b> ' . date('d/m/y h:i:s A') . '</td>
+            </tr>
+            <tr>
+                <td style="width: 23%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Usuario:</b> ' . $_SESSION['_LOGIN'] . '</td>
+            </tr>
+        </table>';
+        $this->writeHTMLCell(0, 10, 2, 4, $content, 0, 0, 0, true, 'L', true);
+        $this->Ln(24);
         $this->fieldsHeader();
-        $this->generarCabecera();		
     }
 
-    public function fieldsHeader(){
-
-        $this->SetFontSize(10);
-        $this->Ln(-5);
-            //Responsable
-            $this->SetFont('', 'B');
-            $this->Cell(35, $height,'RESPONSABLE:', "", 0, 'L', false, '', 0, false, 'T', 'C');
-            $this->SetFont('', '');
-            $this->Cell($w = 100,$h = $hGlobal, $txt = $this->dataMaster['encargado'], $border = 0, $ln = 0, $align = 'L', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
-            $this->SetFont('', 'B');
-
-            //Lugar
-            $this->SetFont('', 'B');
-            $this->Cell(40, $height,'', "", 0, 'L', false, '', 0, false, 'T', 'C');
-            $this->SetFont('', '');
-            $this->Cell($w = 100,$h = $hGlobal, $txt = '', $border = 0, $ln = 1, $align = 'L', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
-
-            //Cargo
-            $this->SetFont('', 'B');
-            $this->Cell(35, $height,"DEPOSITO", "", 0, 'L', false, '', 0, false, 'T', 'C');
-            $this->SetFont('', '');
-            $this->Cell($w = 100,$h = $hGlobal, $txt = $this->dataMaster['almacen'], $border = 0, $ln = 0, $align = 'L', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
-
-            //Depto
-            $this->SetFont('', 'B');
-            $this->Cell(40, $height,'', "", 0, 'L', false, '', 0, false, 'T', 'C');
-            $this->SetFont('', '');
-            $this->Cell($w = 50,$h = $hGlobal, $txt = '', $border = 0, $ln = 1, $align = 'L', $fill = false, $link = '', $stretch = 0, $ignore_min_height = false, $calign = 'T', $valign = 'M');
-
-            //Dirección
-            $this->SetFont('', 'B');
-            $this->Cell(135, $height,'', "", 0, 'L', false, '', 0, false, 'T', 'C');
-            $this->Cell(25, $height,'', "", 0, 'L', false, '', 0, false, 'T', 'C');
-            $this->SetFont('', '');
-            $this->MultiCell($w = 100, $h = $hGlobal, $txt ='', $border = 0, $align = 'L', $fill = false, $ln = 1, $x = '', $y = '', $reseth = true, $stretch = 0, $ishtml = false, $autopadding = true, $maxh = $hMedium, $valign = 'M', $fitcell = false);
-            $this->Cell(135, $height,'', "", 0, 'L', false, '', 0, false, 'T', 'C');
-     
-
-
-        $this->Ln(11.5);
-        $this->SetFont('', 'B');
-        $this->SetFont('', '');
-        $this->firstPage++;
+    public function fieldsHeader()
+    {
+        $html = '<table>
+            <tr><td style="width: 17%;"><b>RESPONSABLE:</b></td><td>' . $this->dataMaster['encargado'] . '</td></tr>
+            <tr><td><b>DEPÓSITO</b></td><td>' . $this->dataMaster['almacen'] . '</td></tr></table><br><br>';
+        $this->writeHTML($html, false, false, true, false, '');
     }
 
-
-    function generarReporte() {    	    	           
-        $this->AddPage();		
-        $this->SetFont('', '',8);
-		//$this->Ln(3.5);		
- 		$i=1;
+    function generarReporte()
+    {
+        $this->AddPage();
+        $html = '<table border="1" cellpadding="2" style="font-size: 11px"><tr>
+                <td style="text-align: center;width: 4%"><b>N°</b></td>
+                <td style="text-align: center;width: 8%"><b>CÓDIGO</b></td>
+                <td style="text-align: center;width: 20%"><b>NOMBRE</b></td>
+                <td style="text-align: center;width: 25%"><b>DESCRIPCIÓN</b></td>
+                <td style="text-align: center;width: 8%"><b>ESTADO<br>FUNCIONAL</b></td>
+                <td style="text-align: center;width: 15%"><b>FECHA DE INGRESO<br>DE DEPÓSITO</b></td>
+                <td style="text-align: center;width: 20%"><b>UBICACIÓN</b></td></tr>';
+        $i = 1;
         foreach ($this->getDataSource() as $datarow) {
-		    $this->tablewidthsHD = array(10, 28, 55, 75, 22, 35,50);
-	        $this->tablealigns = array('C', 'C', 'L', 'L', 'C', 'C', 'L');
-	        $this->tablenumbers = array(0, 0, 0, 0, 0, 0, 0);
-	        $this->tableborders = array('RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB', 'RLTB');
-	        $this->tabletextcolor = array(); 
-		        	                  
-                    $RowArray = array(
-                        's0' => $i,
-                        's1' => $datarow['codigo'],
-                        's2' => $datarow['denominacion'],
-                        's3' => $datarow['descripcion'],
-                        's4' => $datarow['cat_desc'],
-                        's5' => date("d/m/Y",strtotime($datarow['fecha_mov'])),
-                        's6' => $datarow['ubicacion']                       
-                    );    
-					$i++;        	
-            $this-> MultiRow($RowArray,false,1);            					
-			 }                       
-
-     }
-    
-
-    function generarCabecera(){
-		$this->Ln(-15);        
-        $this->SetFont('', 'B',9);
-    
-		$this->tablewidthsHD = array(10, 28, 55, 75, 22, 35,50);
-		$this->tablealignsHD = array('C', 'C', 'C', 'C', 'C', 'C','C');
-		$this->tablenumbersHD = array(0, 0, 0, 0, 0, 0, 0);
-		$this->tablebordersHD = array('LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LTRB');
-		$this->tabletextcolorHD = array();
-            $RowArray = array(
-                's0' => 'Nro',
-                's1' => 'CODIGO',
-                's2' => 'NOMBRE',
-                's3' => 'DESCRIPCION',
-                's4' => 'ESTADO'."\n".'FUNCIONAL',		                
-                's5' => 'FECHA DE INGRESO'."\n".'DE DEPOSITO',
-                's6' => 'UBICACION'
-            );      		
-	                
- 		$this->MultiRowHeader($RowArray,false,1);
-        $this->tablewidths = $this->tablewidthsHD;		
-    }
-
-    function revisarfinPagina(){
-        $dimensions = $this->getPageDimensions();
-        $hasBorder = false; //flag for fringe case
-
-        $startY = $this->GetY();
-        $this->getNumLines($row['cell1data'], 80);
-
-        if (($startY + 4 * 3) + $dimensions['bm'] > ($dimensions['hk'])) {
-            if($this->total!= 0){
-                $this->AddPage();
-            }
+            $fecha_ing = empty($datarow['fecha_mov']) ? '' : date("d/m/Y", strtotime($datarow['fecha_mov']));
+            $html .= '<tr>';
+            $html .= '<td style="text-align: center">' . $i . '</td>';
+            $html .= '<td style="text-align: center">' . $datarow['codigo'] . '</td>';
+            $html .= '<td>' . $datarow['denominacion'] . '</td>';
+            $html .= '<td>' . $datarow['descripcion'] . '</td>';
+            $html .= '<td style="text-align: center">' . $datarow['cat_desc'] . '</td>';
+            $html .= '<td style="text-align: center">' . $fecha_ing . '</td>';
+            $html .= '<td>' . $datarow['ubicacion'] . '</td>';
+            $html .= '</tr>';
+            $i++;
         }
+        $html .= '</table>';
+        $this->writeHTML($html, false, false, true, false, '');
     }
 }
+
 ?>

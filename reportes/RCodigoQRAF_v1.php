@@ -118,7 +118,6 @@ class RCodigoQRAF_v1 extends  ReportePDF {
         $this->SetFont('','B',25);
         $this->SetXY(80,25);
         $this->cell(79, 5, $this->cod['cod'], 0, 1, 'C',false,'',0);
-        $this->SetFont('','',20);
         $this->SetXY(75,38);
 
         //Descripcion
@@ -126,10 +125,15 @@ class RCodigoQRAF_v1 extends  ReportePDF {
         $maxLengthLinea=100;
         $x=75;
         $y=38;
-        //fRnk: QR sólo denominación
-        $codAux = empty($this->datos_detalle['denominacion'])?substr($this->cod['desc'],0,$maxLength):$this->datos_detalle['denominacion'];
-        if(strlen($this->cod['desc']) > $maxLength){
-            $codAux = substr($this->cod['desc'],0,$maxLength-23).'...';
+        //fRnk: QR denominación y nodo padre
+        $codAux = $this->datos_detalle['denominacion'].chr(10).$this->datos_detalle['clasif'];
+        if(strlen($codAux) > $maxLength){
+            $codAux = substr($codAux,0,$maxLength-23).'...';
+        }
+        if(strlen($codAux)>60){
+            $this->SetFont('','',19);
+        }else{
+            $this->SetFont('','',20);
         }
         while (strlen($codAux)>0) {
             //fRnk: modificado, no funcionaba la impresión del código QR, maxh
