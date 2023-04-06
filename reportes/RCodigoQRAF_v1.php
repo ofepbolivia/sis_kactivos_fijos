@@ -51,8 +51,9 @@ class RCodigoQRAF_v1 extends  ReportePDF {
             //para imprimir un solo codigo
             $this->cod = array('id'  => $detalle['id_activo_fijo'],
                 'cod' => $detalle['codigo'],
+                'cod_ant' => $detalle['codigo_ant'],
                 'desc' => $detalle['descripcion']);
-            $this->datad = array('denominacion' => $detalle['denominacion'], 'clasif' => $detalle['clasif']);
+            $this->datad = array('cod_ant' => $detalle['codigo_ant'], 'denominacion' => $detalle['denominacion'], 'clasif' => $detalle['clasif']);
             //formatea el codigo con el conteido requrido
             $this->codigo_qr = json_encode($this->cod);
         }
@@ -60,7 +61,6 @@ class RCodigoQRAF_v1 extends  ReportePDF {
             // para imprimir varios codigos
             $this->detalle = $detalle;
         }
-
 
         $this->SetMargins(1, 1, 1, true);
         $this->SetAutoPageBreak(false,0.1);
@@ -95,8 +95,9 @@ class RCodigoQRAF_v1 extends  ReportePDF {
             foreach ($this->detalle as $val) {
                 $this->cod = array('id'  => $val['id_activo_fijo'],
                     'cod' => $val['codigo'],
+                    'cod_ant' => $val['codigo_ant'],
                     'desc' => $val['descripcion']);
-                $this->datad = array('denominacion' => $val['denominacion'], 'clasif' => $val['clasif']);
+                $this->datad = array('cod_ant' => $val['codigo_ant'], 'denominacion' => $val['denominacion'], 'clasif' => $val['clasif']);
 
                 //formatea el codigo con el conteido requrido
                 $this->codigo_qr = json_encode($this->cod);
@@ -114,7 +115,7 @@ class RCodigoQRAF_v1 extends  ReportePDF {
         $this->cell(75, 5, 'Activos Fijos', 0, 1, 'C');
         $this->Image(dirname(__FILE__).'/../../lib'.$_SESSION['_DIR_LOGO'], 105, 15, 25, 0,'','','C');
         $this->SetFont('','B',25);
-        $this->SetXY(80,25);
+        $this->SetXY(79,25);
         $this->cell(79, 5, $this->cod['cod'], 0, 1, 'C',false,'',0);
         $this->SetXY(75,38);
 
@@ -124,7 +125,8 @@ class RCodigoQRAF_v1 extends  ReportePDF {
         $x=75;
         $y=38;
         //fRnk: QR denominación y nodo padre, add datad
-        $codAux = $this->datad['denominacion'].chr(10).$this->datad['clasif'];
+        $cod_ant=empty($this->datad['cod_ant'])?'':$this->datad['cod_ant'].chr(10);
+        $codAux = $cod_ant.$this->datad['denominacion'].chr(10).$this->datad['clasif'];
         if(strlen($codAux) > $maxLength){
             $codAux = substr($codAux,0,$maxLength-23).'...';
         }
