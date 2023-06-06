@@ -273,7 +273,7 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
             }),
             valueField: 'id_catalogo',
             displayField: 'descripcion',
-            gdisplayField: 'met_dep',
+            gdisplayField: 'estado_fun',
             mode: 'remote',
             triggerAction: 'all',
             lazyRender: true
