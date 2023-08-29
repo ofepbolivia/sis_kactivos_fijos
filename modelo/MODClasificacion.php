@@ -51,7 +51,7 @@ class MODClasificacion extends MODbase{
 		$this->captura('contabilizar','varchar');
 		$this->captura('codigo_final','varchar');
 		$this->captura('vida_util_anios','numeric');
-		
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -82,6 +82,7 @@ class MODClasificacion extends MODbase{
 		$this->setParametro('tipo_activo','tipo_activo','varchar');
 		$this->setParametro('depreciable','depreciable','varchar');		
 		$this->setParametro('contabilizar','contabilizar','varchar');
+        $this->setParametro('sw_transaccional', 'sw_transaccional', 'varchar'); //fRnk: adicionado para identificar el tipo: titular o movimiento
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -114,6 +115,7 @@ class MODClasificacion extends MODbase{
 		$this->setParametro('tipo_activo','tipo_activo','varchar');
 		$this->setParametro('depreciable','depreciable','varchar');
 		$this->setParametro('contabilizar','contabilizar','varchar');
+        $this->setParametro('sw_transaccional', 'sw_transaccional', 'varchar'); //fRnk: adicionado para identificar el tipo: titular o movimiento
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -180,7 +182,8 @@ class MODClasificacion extends MODbase{
 		$this->captura('contabilizar','varchar');
 		$this->captura('codigo_final','varchar');
 		$this->captura('vida_util_anios','numeric');
-		
+        $this->captura('sw_transaccional', 'varchar'); //fRnk: adicionado para identificar el tipo: titular o movimiento
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		//echo $this->consulta;exit;
@@ -204,6 +207,7 @@ class MODClasificacion extends MODbase{
 		$this->captura('tipo_activo','varchar');
 		$this->captura('depreciable','varchar');
 		$this->captura('vida_util','integer');
+        $this->captura('sw_transaccional', 'varchar'); //fRnk: adicionado para identificar el tipo de nodo: titular o movimiento
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -227,7 +231,8 @@ class MODClasificacion extends MODbase{
 		$this->captura('tipo_activo','varchar');
 		$this->captura('depreciable','varchar');
 		$this->captura('vida_util','integer');
-		
+        $this->captura('sw_transaccional', 'varchar');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();		
 		$this->ejecutarConsulta();

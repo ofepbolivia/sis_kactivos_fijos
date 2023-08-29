@@ -114,7 +114,10 @@ class RCodigoQRAF_v1 extends  ReportePDF {
         $this->SetXY(80,5);
         $this->cell(75, 5, 'Activos Fijos', 0, 1, 'C');
         $this->Image(dirname(__FILE__).'/../../lib'.$_SESSION['_DIR_LOGO'], 105, 15, 25, 0,'','','C');
-        $this->SetFont('','B',25);
+        if(strlen($this->cod['cod'])>15)//fRnk: tamaño fuente código del activo
+            $this->SetFont('','B',18);
+        else
+            $this->SetFont('','B',25);
         $this->SetXY(79,25);
         $this->cell(79, 5, $this->cod['cod'], 0, 1, 'C',false,'',0);
         $this->SetXY(75,38);
@@ -131,9 +134,9 @@ class RCodigoQRAF_v1 extends  ReportePDF {
             $codAux = substr($codAux,0,$maxLength-23).'...';
         }
         if(strlen($codAux)>60){
-            $this->SetFont('','',19);
+            $this->SetFont('','',16);
         }else{
-            $this->SetFont('','',20);
+            $this->SetFont('','',18);
         }
         while (strlen($codAux)>0) {
             //fRnk: modificado, no funcionaba la impresión del código QR, maxh

@@ -417,7 +417,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 '<span>{vida_util_real_af}</span>',
                 '<br><b>¿En depósito?: </b>',
                 '<span>{en_deposito}</span>',
-                '<br><b>Responsable Deposito: </b>',
+                '<br><b>Responsable Depósito: </b>',
                 '<span>{resp_deposito}</span>',
                 '<br><b>Depósito: </b>',
                 '<span>{deposito}</span>',
@@ -1834,7 +1834,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 }]
                             }, {
                                 xtype: 'combo',
-                                fieldLabel: 'Depto.',
+                                fieldLabel: '*Depto.',
                                 name: 'id_depto',
                                 allowBlank: false,
                                 id: this.idContenedor+'_id_depto',
@@ -1867,7 +1867,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 pageSize: 15
                             }, {
                                 xtype: 'combo',
-                                fieldLabel: 'Clasificación',
+                                fieldLabel: '*Clasificación',
                                 name: 'id_clasificacion',
                                 allowBlank: false,
                                 id: this.idContenedor+'_id_clasificacion',
@@ -1900,7 +1900,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 minChars: 2
                             }, {
                                 xtype: 'compositefield',
-                                fieldLabel: 'Vida útil inicial',
+                                fieldLabel: '*Vida útil inicial',
                                 items: [{
                                     xtype: 'label',
                                     text: 'Meses'
@@ -1933,26 +1933,26 @@ header("content-type: text/javascript; charset=UTF-8");
                                 allowBlank: true,
                                 id: this.idContenedor+'_marca'
                             }, {
-                                fieldLabel: 'Denominación',
+                                fieldLabel: '*Denominación',
                                 name: 'denominacion',
                                 allowBlank: false,
                                 id: this.idContenedor+'_denominacion'
                             }, {
                                 xtype: 'textarea',
-                                fieldLabel: 'Descripción',
+                                fieldLabel: '*Descripción',
                                 name: 'descripcion',
                                 allowBlank: false,
                                 id: this.idContenedor+'_descripcion'
                             }, {
                                 xtype: 'numberfield',
-                                fieldLabel: 'Cantidad',
+                                fieldLabel: '*Cantidad',
                                 width: 60,
                                 name: 'cantidad_af',
                                 allowBlank: false,
                                 id: this.idContenedor+'_cantidad_af'
                             }, {
                                 xtype: 'combo',
-                                fieldLabel: 'Unidad de Medida',
+                                fieldLabel: '*Unidad de Medida',
                                 name: 'id_unidad_medida',
                                 //hiddenName: 'id_cat_estado_fun',
                                 allowBlank: false,
@@ -1986,7 +1986,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 tpl : '<tpl for="."><div class="x-combo-list-item"><p>{codigo} - {descripcion}</p></div></tpl>',
                             }, {
                                 xtype: 'combo',
-                                fieldLabel: 'Estado funcional Actual',
+                                fieldLabel: '*Estado funcional Actual',
                                 name: 'id_cat_estado_fun',
                                 //hiddenName: 'id_cat_estado_fun',
                                 allowBlank: false,
@@ -2064,7 +2064,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 id: this.idContenedor+'_fecha_dev_prestamo'
                             }, {
                                 xtype: 'combo',
-                                fieldLabel: 'Depósito',
+                                fieldLabel: '*Depósito',
                                 name: 'id_deposito',
                                 allowBlank: false,
                                 id: this.idContenedor+'_id_deposito',
@@ -2174,7 +2174,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 pageSize: 15
                             }, {
                                 xtype: 'datefield',
-                                fieldLabel: 'Fecha Compra',
+                                fieldLabel: '*Fecha Compra',
                                 name: 'fecha_compra',
                                 allowBlank: false,
                                 id: this.idContenedor+'_fecha_compra'
@@ -2184,7 +2184,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 id: this.idContenedor+'_documento'
                             },{
                                 xtype: 'compositefield',
-                                fieldLabel: 'Importe',
+                                fieldLabel: '*Importe',
                                 // msgTarget: 'side',
                                 anchor: '-20',
                                 /* defaults: {
@@ -2247,7 +2247,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 }]
                             }, {
                                 xtype: 'combo',
-                                fieldLabel: 'Estado Activo Compra',
+                                fieldLabel: '*Estado Activo Compra',
                                 name: 'id_cat_estado_compra',
                                 allowBlank: false,
                                 id: this.idContenedor+'_id_cat_estado_compra',
@@ -2382,7 +2382,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             defaultType: 'textfield',
                             items: [{
                                 xtype: 'datefield',
-                                fieldLabel: 'Fecha inicio Dep/Act',
+                                fieldLabel: '*Fecha inicio Dep/Act',
                                 qtip:'Fecha de inicio de depreciación o de actualización',
                                 name: 'fecha_ini_dep',
                                 allowBlank: false,
@@ -2432,7 +2432,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                     name:'id_proyecto',
                                     id: this.idContenedor+'_id_proyecto',
                                     qtip: 'Proyecto o aplicación del activo fijo, se utliza para cargar los gastos  de depreciación (Determinar los centro de costos)',
-                                    fieldLabel:'Proyecto / Aplicación',
+                                    fieldLabel:'*Proyecto / Aplicación',
                                     allowBlank:false,
                                     emptyText:'Proyecto...',
                                     store: new Ext.data.JsonStore({
@@ -2706,7 +2706,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                 scope:this
                             });
             } else {
-                Ext.MessageBox.alert('Validación','Existen datos inválidos en el formulario. Corrija y vuelva a intentarlo');
+                Ext.MessageBox.alert('Validación','Existen datos obligatorios (*) sin información en el formulario. Complete la información y vuelva a intentarlo.'); //fRnk: mod HR915
             }
         },
         registrar: function(){
@@ -3780,7 +3780,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                     id: this.idContenedor + '_cantidad_af'
                                 }, {
                                     xtype: 'combo',
-                                    fieldLabel: 'Unidad de Medida',
+                                    fieldLabel: '*Unidad de Medida',
                                     name: 'id_unidad_medida',
                                     //hiddenName: 'id_cat_estado_fun',
                                     allowBlank: false,

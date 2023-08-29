@@ -35,7 +35,25 @@ class RActivoDetallePDF extends  ReportePDF{
             </tr>
         </table>';
         $this->writeHTMLCell(0, 10, 2, 4, $content, 0, 0, 0, true, 'L', true);
-        $this->Ln(18);
+        //fRnk: modificado cabecera reporte tabla, HR
+        $content='<table style="font-weight: bold;width: 100%;text-align: center;font-size: 10px;background-color: #ddd"><tr>
+            <td style="border:0.8px solid #000;width:2.9%">No.</td>
+            <td style="border:0.8px solid #000;width:3.6%">TIPO</td>
+            <td style="border:0.8px solid #000;width:4.75%">SUB-TIPO</td>
+            <td style="border:0.8px solid #000;width:7.62%">CÓDIGO</td>
+            <td style="border:0.8px solid #000;width:13.8%">DESCRIPCIÓN</td>
+            <td style="border:0.8px solid #000;width:12%">CLASIFICACIÓN</td>
+            <td style="border:0.8px solid #000;width:5.1%">MARCA</td>
+            <td style="border:0.8px solid #000;width:5.07%">SERIAL</td>
+            <td style="border:0.8px solid #000;width:5.08%">ESTADO</td>
+            <td style="border:0.8px solid #000;width:7.25%">ESTADO FUNCIONAL</td>
+            <td style="border:0.8px solid #000;width:5.83%">FECHA COMPRA</td>
+            <td style="border:0.8px solid #000;width:5.42%">C31</td>
+            <td style="border:0.8px solid #000;width:10.9%">UBICACIÓN</td>
+            <td style="border:0.8px solid #000;width:10.57%">RESPONSABLE</td>
+            </tr></table>';
+        $this->writeHTMLCell(0, 10, 2, 33, $content, 0, 0, 0, true, 'L', true);
+        $this->Ln(14);
     }
 	
     function setDatos($datos) {
@@ -48,12 +66,12 @@ class RActivoDetallePDF extends  ReportePDF{
 	
     function  reporteActivo()
     {    					
-        $this->SetMargins(1,35,2);
+        $this->SetMargins(2,35,3);
         $this->setFontSubsetting(false);
         $this->AddPage();
-        $this->SetFont('','B',8);
+        /*$this->SetFont('','B',8);
 
-        $conf_det_tablewidths=array(8,10,13,21,38,33,14,14,14,20,16,15,31,30);
+        $conf_det_tablewidths=array(8,10,13,21,38,33,14,14,14,20,16,15,30,29);
         $conf_det_tablealigns=array('C','C','C','C','L','C','C','C','C','C','C','C','L','L');
 
         $this->tablewidths=$conf_det_tablewidths;
@@ -76,9 +94,9 @@ class RActivoDetallePDF extends  ReportePDF{
             'UBICACIÓN',
             'RESPONSABLE'
         );
-        $this-> MultiRow($RowArray,false,1);
+        $this-> MultiRow($RowArray,false,1);*/
         $this->SetFont('','',7);
-        $conf_det_tablewidths=array(8,10,13,21,38,33,14,14,14,20,16,15,31,30);
+        $conf_det_tablewidths=array(8,10,13,21,38,33,14,14,14,20,16,15,30,29);
         $conf_det_tablealigns=array('L','C','C','L','L','L','C','C','C','C','C','C','L','L');
         $this->tablewidths=$conf_det_tablewidths;
         $this->tablealigns=$conf_det_tablealigns;

@@ -79,7 +79,7 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 	}, {
 		config : {
 			name : 'descripcion',
-			fieldLabel : 'Descripcion',
+			fieldLabel : 'Descripción',
 			allowBlank : true,
 			anchor : '100%',
 			gwidth : 100,
@@ -97,7 +97,7 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 	{
 		config:{
 			name: 'tipo_activo',
-			fieldLabel: 'Tipo?',
+			fieldLabel: '¿Tipo?',
 			qtip:'Activo tangible o intagible, los intangibles no entran a deposito',
 			allowBlank: false,
    			typeAhead: true,
@@ -118,7 +118,7 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 	{
 		config:{
 			name: 'depreciable',
-			fieldLabel: 'Deprecia?',
+			fieldLabel: '¿Deprecia?',
 			qtip:'Indica si el activo se deprecia o no',
 			allowBlank: false,
 			emptyText:'si/no...',       			
@@ -140,7 +140,7 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 	{
 		config:{
 			name: 'contabilizar',
-			fieldLabel: 'Contabilizar?',
+			fieldLabel: '¿Contabilizar?',
 			qtip:'Indica si a este nivel se busca al relación contable para los comprobantes',
 			allowBlank: false,
 			emptyText:'si/no...',       			
@@ -356,7 +356,25 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 		id_grupo : 1,
 		grid : true,
 		form : true
-    }],
+    },{//fRnk: adicionado a solicitud HR915
+            config: {
+                name: 'sw_transaccional',
+                fieldLabel: 'Operación',
+                allowBlank: false,
+                emptyText: 'Tipo...',
+                typeAhead: true,
+                triggerAction: 'all',
+                lazyRender: true,
+                mode: 'local',
+                gwidth: 100,
+                store: ['movimiento', 'titular']
+            },
+            type: 'ComboBox',
+            filters: {pfiltro: 'tco.sw_trans', type: 'string'},
+            id_grupo: 0,
+            grid: true,
+            form: true
+        }],
 	title : 'Clasificación',
 	ActSave : '../../sis_kactivos_fijos/control/Clasificacion/insertarClasificacion',
 	ActDel : '../../sis_kactivos_fijos/control/Clasificacion/eliminarClasificacion',
@@ -469,7 +487,11 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 	{
 		name: 'desc_ingas',
 		type : 'string'
-	}, 'depreciable','tipo_activo','contabilizar','codigo_final','vida_util_anios'
+	},
+        {
+            name : 'sw_transaccional',
+            type : 'string'
+        }, 'depreciable','tipo_activo','contabilizar','codigo_final','vida_util_anios'
 	
 	],
 	sortInfo : {
@@ -534,7 +556,7 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 	onButtonNew: function(){
 		Phx.vista.ClasificacionAF.superclass.onButtonNew.call(this);
 		if(this.sm.getSelectedNode()&&this.sm.getSelectedNode().attributes){
-			var master = this.sm.getSelectedNode().attributes;console.log('------------'); console.log(master);
+			var master = this.sm.getSelectedNode().attributes;
 			//Setea valores del padre
 			this.Cmp['vida_util'].setValue(master.vida_util);
 			this.Cmp['tipo_activo'].setValue(master.tipo_activo);

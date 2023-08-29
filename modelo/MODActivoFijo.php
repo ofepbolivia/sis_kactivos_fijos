@@ -394,7 +394,7 @@ class MODActivoFijo extends MODbase{
             $this->tipo_procedimiento='IME';
 
             $ext = pathinfo($this->arregloFiles['archivo']['name']);
-            $this->arreglo['extension'] = $ext['extension'];
+            $this->arreglo['extension'] = strtolower($ext['extension']);
 
             //validar que no sea un arhvio en blanco
             $file_name = $this->getFileName2('archivo', 'id_activo_fijo', '', false);
@@ -443,7 +443,7 @@ class MODActivoFijo extends MODbase{
                 }
 
                 //cipiamos el nuevo archivo
-                $this->setFile('archivo','id_activo_fijo', false,100000 ,array('jpg','jpeg','bmp','gif','png'));
+                $this->setFile('archivo','id_activo_fijo', false,100000 ,array('jpg','jpeg','bmp','gif','png','JPG','JPEG','BMP','GIF','PNG'));
             }
 
             $link->commit();
@@ -770,6 +770,7 @@ class MODActivoFijo extends MODbase{
         $this->captura('nombre','varchar');
         $this->captura('nivel','int4');
         $this->captura('hijos','varchar');
+        $this->captura('sw_transaccional', 'varchar'); //fRnk: añadido HR915
         //Ejecuta la instruccion
         $this->armarConsulta();
         //var_dump($this->consulta);exit;

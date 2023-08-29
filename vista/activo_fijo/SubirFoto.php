@@ -42,7 +42,7 @@ Phx.vista.SubirFoto=Ext.extend(Phx.frmInterfaz,{
         },
         {
             config:{
-                fieldLabel: "Foto",
+                fieldLabel: "Foto (JPG, PNG)", //fRnk: adicionado HR915
                 gwidth: 130,
                 inputType: 'file',
                 name: 'archivo',
