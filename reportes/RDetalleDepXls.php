@@ -136,7 +136,7 @@ class RDetalleDepXls
 		$this->docexcel->getActiveSheet()->getStyle($this->equivalencias[9])->getNumberFormat()->setFormatCode($this->FORMAT_ACCOUNTING);
 			
 		$this->docexcel->getActiveSheet()->getColumnDimension($this->equivalencias[10])->setWidth(15);
-		$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$inicio_filas,'Valor Actulizado');
+		$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$inicio_filas,'Valor Actualizado');
 		$this->docexcel->getActiveSheet()->getStyle($this->equivalencias[10])->getNumberFormat()->setFormatCode($this->FORMAT_ACCOUNTING);	
 			
 		$this->docexcel->getActiveSheet()->getColumnDimension($this->equivalencias[11])->setWidth(15);
@@ -192,8 +192,8 @@ class RDetalleDepXls
 		
 		
 		
-		
-		
+
+
 	}
 
     function cerrarDetalle($tmp_rec){
@@ -203,11 +203,12 @@ class RDetalleDepXls
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3,$this->fila,$this->cont_detalle);
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5,$this->fila,$tmp_rec['codigo_raiz']);
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,$this->fila,$tmp_rec['nombre_raiz']);					
-					
+
 					$this->fila_fin_par = $this->fila;
-					$formula = 'SUM(J'.$this->fila_ini_par.':J'.($this->fila_fin_par-1).')';	
+                    array_push($this->array_clasificacion, $this->fila_fin_par); //fRnk: adicionado para el totalizador de la gestión HR1166
+					$formula = 'SUM(J'.$this->fila_ini_par.':J'.($this->fila_fin_par-1).')';
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$this->fila,'='.$formula);
-					
+
 					$formula = 'SUM(K'.$this->fila_ini_par.':K'.($this->fila_fin_par-1).')';	
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$this->fila,'='.$formula);
 					
@@ -268,7 +269,7 @@ class RDetalleDepXls
 					
 					
 					
-					
+
 					
 					$formulaJ = '';
 					$formulaK = '';
@@ -357,7 +358,7 @@ class RDetalleDepXls
 					$formulaN = '';
 					$formulaO = '';
 					$formulaP = '';
-					
+
 					//definir agrupador de filas
 					foreach ($this->array_clasificacion as $row){
 						$this->docexcel->setActiveSheetIndex(0)
@@ -375,8 +376,8 @@ class RDetalleDepXls
 						$formulaP.= '+P'.$row;	
 						
 					}
-					
-					//sumatoria del grupo	
+                    $this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6,$this->fila,'TOTAL AÑO '.$tmp_rec['gestion_final']);
+					//sumatoria del grupo
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9,$this->fila,'='.$formulaJ);
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10,$this->fila,'='.$formulaK);
 					$this->docexcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11,$this->fila,'='.$formulaL);
@@ -635,8 +636,11 @@ class RDetalleDepXls
 
    
    function imprimeTitulo($sheet){
-		$titulo = "CUADRO DE ACTUALIZACION Y DEPRECIACION DEL ACTIVO FIJO";
-		$fechas = 'Practicado al  '.date("d/m/Y", strtotime( $this->objParam->getParametro('fecha_hasta')));
+		$titulo = "CUADRO DE DEPRECIACIÓN Y ACTUALIZACIÓN DE ACTIVOS FIJOS";
+        $date = new DateTime($this->objParam->getParametro('fecha_hasta'));
+        $f=explode('-', $date->format('Y-m-d'));
+        $mes = array('', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+		$fechas = 'Al '.$f[2].' de '.$mes[(int)$f[1]].' de '.$f[0];
 		
 		
 		
@@ -656,16 +660,16 @@ class RDetalleDepXls
 															    'name'=>'Arial'));	
 																															
 		$sheet->getStyle('C2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		$sheet->setCellValue('C2',strtoupper("ID ".$this->objParam->getParametro('id_movimiento')));		
+		//$sheet->setCellValue('C2',strtoupper("ID ".$this->objParam->getParametro('id_movimiento')));
+        $sheet->setCellValue('C2',$fechas);
 		$sheet->mergeCells('C2:P2');
-		//FECHAS
 		$sheet->getStyle('C3')->getFont()->applyFromArray(array(
 															    'bold'=>true,
 															    'size'=>10,
 															    'name'=>'Arial'));	
 																															
 		$sheet->getStyle('C3')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		$sheet->setCellValue('C3',$fechas);		
+		$sheet->setCellValue('C3','(Expresado en bolivianos)');
 		$sheet->mergeCells('C3:P3');
 		
 		
@@ -685,9 +689,11 @@ class RDetalleDepXls
 	function generarReporte(){
 		
 		
-		$this->imprimeTitulo($this->docexcel->setActiveSheetIndex(0));		
-		$this->imprimeDatos();
-		
+		$this->imprimeTitulo($this->docexcel->setActiveSheetIndex(0));
+        if(!empty($this->datos_detalle)){ //fRnk: adicionado para evitar error: Invalid cell coordinate C
+            $this->imprimeDatos();
+        }
+
 		//echo $this->nombre_archivo; exit;
 		// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 		$this->docexcel->setActiveSheetIndex(0);

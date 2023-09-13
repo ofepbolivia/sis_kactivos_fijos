@@ -65,7 +65,7 @@ class RMovimiento2 extends ReportePDF {
                     &nbsp;<br><img  style="width: 150px;" src="./../../../lib/' . $_SESSION['_DIR_LOGO'] . '" alt="Logo">
                 </td>		
                 <td style="width: 52%; color: #444444;text-align: center" rowspan="5">
-                   <h1 style="font-size: 16px">FORMULARIO DE ' . strtoupper($this->dataMaster[0]['movimiento']) . $title_motivo . ' DE ACTIVOS FIJOS ' . $title_motivo_ret . '</h1>
+                   <h1 style="font-size: 16px">FORMULARIO DE ' . mb_strtoupper($this->dataMaster[0]['movimiento'], 'UTF-8') . $title_motivo . ' DE ACTIVOS FIJOS ' . $title_motivo_ret . '</h1>
                    <h4 style="font-size: 14px">' . strtoupper($this->dataMaster[0]['depto']) . '</h4>
                 </td>
                 <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Gestión:</b> ' . $gestion . '</td>

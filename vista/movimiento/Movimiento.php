@@ -55,9 +55,28 @@ header("content-type: text/javascript; charset=UTF-8");
                 text :'Det. Dep',
                 iconCls : 'bpdf32',
                 disabled: true,
-                hidden: true, //fRnk: botón oculto porque no se envuentra la vista kaf.vdetalle_depreciacion_activo_por_gestion
-                handler : this.onButtonReportDepreciacion,
-                tooltip : '<b>Reporte Depreciación</b><br/><b>Reporte que detalla la depreciación del movimiento</b>'
+                hidden: true,
+               // handler : this.onButtonReportDepreciacion, //fRnk: se añadió el reporte en PDF y se modificó el reporte Excel HR1166
+                tooltip : '<b>Reporte Depreciación</b><br/><b>Reporte que detalla la depreciación del movimiento</b>',
+                menu: [{
+                    text: 'Rep. Depreciación Excel',
+                    iconCls: 'bexcel',
+                    argument: {
+                        'news': true,
+                        def: 'csv'
+                    },
+                    handler: this.onButtonReportDepreciacionXls,
+                    scope: this
+                }, {
+                    text: 'Rep. Depreciación PDF',
+                    iconCls: 'bpdf',
+                    argument: {
+                        'news': true,
+                        def: 'pdf'
+                    },
+                    handler: this.onButtonReportDepreciacion,
+                    scope: this
+                }]
             });
 
             /*this.addButton('btnChequeoDocumentos',{
@@ -1130,7 +1149,10 @@ header("content-type: text/javascript; charset=UTF-8");
             {name:'tipo_documento', type: 'string'},
             {name:'codigo_mov_motivo', type: 'string'},
             {name:'fecha_finalizacion', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
-            {name:'tipo_drepeciacion',type:'string'}
+            {name:'tipo_drepeciacion',type:'string'},
+            {name:'nombre_archivo',type:'string'},
+            {name:'firma_digital',type:'string'},
+            {name:'firmado',type:'string'}
 
         ],
         sortInfo:{
@@ -1153,6 +1175,20 @@ header("content-type: text/javascript; charset=UTF-8");
                     scope:this
                 });
             }
+        },
+
+        onButtonReportDepreciacionXls:function(){
+            var rec=this.sm.getSelected();
+            Phx.CP.loadingShow();
+            Ext.Ajax.request({
+
+                url:'../../sis_kactivos_fijos/control/Movimiento/generarReporteDepreciacionXls',
+                params:{'id_movimiento':rec.data.id_movimiento, fecha_hasta: rec.data.fecha_mov},
+                success: this.successExport,
+                failure: this.conexionFailure,
+                timeout:this.timeout,
+                scope:this
+            });
         },
 
         onButtonReportDepreciacion:function(){

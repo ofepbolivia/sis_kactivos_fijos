@@ -163,7 +163,7 @@ Phx.vista.MovimientoPrincipal = {
         }, this);
 
         this.addButton('ant_estado',{grupo: [0,1,2,3,4,5,6],argument: {estado: 'anterior'},text:'Anterior',iconCls: 'batras',disabled:true,handler:this.antEstado,tooltip: '<b>Pasar al Anterior Estado</b>'});
-        this.addButton('sig_estado',{text:'Siguiente',iconCls: 'badelante',disabled:true,handler:this.sigEstado,tooltip: '<b>Pasar al Siguiente Estado</b>',grupo: [0,1,2,3,4,5,6],});
+        this.addButton('sig_estado',{text:'Siguiente',iconCls: 'badelante',disabled:true,handler:this.sigEstado,tooltip: '<b>Pasar al Siguiente Estado</b><br/>Si el estado requiere Firma Digital, primero debe firmar el documento para que se habilite.',grupo: [0,1,2,3,4,5,6],});
 		this.addButton('diagrama_gantt',{text:'Gant',iconCls: 'bgantt',disabled:true,handler:diagramGantt,tooltip: '<b>Diagrama Gantt del proceso</b>',grupo: [0,1,2,3,4,5,6],});
 		this.addButton('btnChequeoDocumentosWf',
             {
@@ -182,6 +182,16 @@ Phx.vista.MovimientoPrincipal = {
           disabled: true,
           handler: this.loadCheckDocumentosSol,
           tooltip: '<b>Documentos del Proceso</b><br/>Subir los documetos requeridos en el proceso seleccionada.'
+        });
+
+        //fRnk: add button for Firma Digital
+        this.addButton('btnFirmaDigital',{
+            grupo:[0,1,2,3,4],
+            text: 'Firma Digital',
+            iconCls: 'blist-firma-digital',
+            disabled: false,
+            handler: this.onOpenPendientesFirmaD,
+            tooltip: '<b>Pendientes de Firma Digital</b><br/>Procesos pendientes de Firma Digital.'
         });
 
         function diagramGantt(){
@@ -221,7 +231,12 @@ Phx.vista.MovimientoPrincipal = {
         Phx.CP.loadingShow();
         Ext.Ajax.request({
             url:'../../sis_kactivos_fijos/control/Movimiento/generarReporteMovimientoUpdate',
-            params:{'id_movimiento':rec.data.id_movimiento},
+            params:{
+                'id_movimiento':rec.data.id_movimiento,
+                'num_tramite':rec.data.num_tramite,
+                'nombre_archivo':rec.data.nombre_archivo,
+                'firma_digital':rec.data.firma_digital
+            },
             success: this.successExport,
             failure: this.conexionFailure,
             timeout:this.timeout,
@@ -499,6 +514,21 @@ Phx.vista.MovimientoPrincipal = {
  }
    this.reload();
  },
+    onOpenPendientesFirmaD:function() {
+        var data = {
+            tipo_interfaz: this.nombreVista
+        };
+        Phx.CP.loadWindows('../../../sis_kactivos_fijos/vista/movimiento/Obs.php',
+            'Pendientes de Firma Digital',
+            {
+                width:'80%',
+                height:'70%'
+            },
+            data,
+            this.idContenedor,
+            'Obs'
+        )
+    },
 
 	liberaMenu:function(){
         var tb = Phx.vista.Movimiento.superclass.liberaMenu.call(this);
@@ -507,7 +537,7 @@ Phx.vista.MovimientoPrincipal = {
             this.getBoton('btnReporteDep').disable();
             this.getBoton('ant_estado').disable();
 	        this.getBoton('sig_estado').disable();
-          this.getBoton('btnChequeoDocumentosWf').disable();
+            this.getBoton('btnChequeoDocumentosWf').disable();
 	        this.getBoton('btnChequeoDocumentosAF').disable();
 	        this.getBoton('diagrama_gantt').disable();
 	        this.getBoton('btnAsignacion').disable();
@@ -540,6 +570,16 @@ Phx.vista.MovimientoPrincipal = {
             //Deshabilita el botón siguiente cuando no está en borrador para la vista transaccional, porque las aprobaciones se deben hacer por la interfaz de VoBo
             if(this.nombreVista=='MovimientoPrincipal'){
                 this.getBoton('sig_estado').disable();
+            }
+
+            if(this.nombreVista=='MovimientoVb'){ //fRnk: condición añadida para firma digital
+                //debugger;
+                if(data.firma_digital=='si' && (data.firmado==null || data.firmado=='no')){
+                    this.getBoton('sig_estado').disable();
+                }
+                if(data.firma_digital=='si' && data.firmado=='si'){
+                    this.getBoton('sig_estado').enable();
+                }
             }
         }
 
@@ -615,6 +655,16 @@ Phx.vista.MovimientoPrincipal = {
 	        });
     },
     onSaveWizard:function(wizard,resp){
+        //fRnk: adicionado para enviar si el estado seleccionado tiene Firma Digital
+        var firma_digital='';
+        try {
+            resp.estados.forEach((item) => {
+                if(resp.id_tipo_estado == item.json.id_tipo_estado){
+                    firma_digital = item.json.firma_digital;
+                }
+            });
+        } catch(err) {}
+
         Phx.CP.loadingShow();
         Ext.Ajax.request({
             url:'../../sis_kactivos_fijos/control/Movimiento/siguienteEstadoMovimiento',
@@ -625,7 +675,8 @@ Phx.vista.MovimientoPrincipal = {
                 id_funcionario_wf:  resp.id_funcionario_wf,
                 id_depto_wf:        resp.id_depto_wf,
                 obs:                resp.obs,
-                json_procesos:      Ext.util.JSON.encode(resp.procesos)
+                json_procesos:      Ext.util.JSON.encode(resp.procesos),
+                firma_digital:      firma_digital
                 },
             success:this.successWizard,
             failure: this.conexionFailure,

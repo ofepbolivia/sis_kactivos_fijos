@@ -16,13 +16,16 @@ class RMovimientoUpdate extends  ReportePDF {
     var $ancho_sin_totales;
     var $tipoMov;
     var $numPag;
+    private $id_movimiento;
+
     function getDataSource(){
         return  $this->datos_detalle;
     }
-    function datosHeader  ( $maestro, $detalle ) {
+    function datosHeader( $maestro, $detalle, $id_movimiento=0) {
         $this->ancho_hoja = $this->getPageWidth()-PDF_MARGIN_LEFT-PDF_MARGIN_RIGHT-10;
         $this->datos_detalle = $detalle;
         $this->dataMaster = $maestro;
+        $this->id_movimiento = $id_movimiento;
         $this->tipoMov = $this->dataMaster[0]['cod_movimiento'];
         $this->numPag = 1;
         if($this->tipoMov=='asig' || $this->tipoMov=='devol' || $this->tipoMov=='transf'){
@@ -1326,7 +1329,7 @@ class RMovimientoUpdate extends  ReportePDF {
         $this->Ln();
         $barcode = $this->getBarcode();
         $style = array(
-            'position' => $this->rtl?'R':'L',
+            'position' => 'C',
             'align' => $this->rtl?'R':'L',
             'stretch' => false,
             'fitwidth' => true,
@@ -1335,10 +1338,32 @@ class RMovimientoUpdate extends  ReportePDF {
             'padding' => 0,
             'fgcolor' => array(0,0,0),
             'bgcolor' => false,
-            'text' => false,
-            'position' => 'R'
+            'text' => false
         );
-        $this->write1DBarcode($barcode, 'C128B', $ancho*2, $cur_y + $line_width+5, '', (($this->getFooterMargin() / 3) - $line_width), 0.3, $style, '');
+
+        if($this->dataMaster[0]['con_firma_digital']=='si') { //fRnk: adicionado para firma digital
+            $this->write1DBarcode($barcode, 'C128B', $ancho*2, $cur_y + $line_width+5, '', (($this->getFooterMargin() / 3) - $line_width), 0.3, $style, '');
+            $style = array(
+                'position' => 'R',
+                'vpadding' => 'auto',
+                'hpadding' => 'auto',
+                'fgcolor' => array(0,0,0),
+                'bgcolor' => false,
+                'module_width' => 1,
+                'module_height' => 1
+            );
+            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+                $url = "https://";
+            else
+                $url = "http://";
+            $url.= $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+            $aurl=explode('/lib/', $url);
+            $this->write2DBarcode($aurl[0].'/sis_kactivos_fijos/reportes/FirmaDigital.php?m='.$this->id_movimiento, 'QRCODE,H', 10, 193, 20, 20, $style, 'N');
+            $this->SetFontSize(6);
+            $this->Text(246.7, 192, 'FIRMA DIGITAL');
+        } else {
+            $this->write1DBarcode($barcode, 'C128B', $ancho*2, $cur_y + $line_width+5, '', (($this->getFooterMargin() / 3) - $line_width), 0.3, $style, '');
+        }
     }
 }
 ?>
