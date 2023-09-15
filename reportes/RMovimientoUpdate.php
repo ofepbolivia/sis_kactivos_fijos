@@ -1358,9 +1358,9 @@ class RMovimientoUpdate extends  ReportePDF {
                 $url = "http://";
             $url.= $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
             $aurl=explode('/lib/', $url);
-            $this->write2DBarcode($aurl[0].'/sis_kactivos_fijos/reportes/FirmaDigital.php?m='.$this->id_movimiento, 'QRCODE,H', 10, 193, 20, 20, $style, 'N');
+            $this->write2DBarcode($aurl[0].'/sis_kactivos_fijos/reportes/FirmaDigital.php?m='.$this->id_movimiento, 'QRCODE,H', 10, 185, 28, 28, $style, 'N');
             $this->SetFontSize(6);
-            $this->Text(246.7, 192, 'FIRMA DIGITAL');
+            //$this->Text(236.7, 182, 'FIRMA DIGITAL');
         } else {
             $this->write1DBarcode($barcode, 'C128B', $ancho*2, $cur_y + $line_width+5, '', (($this->getFooterMargin() / 3) - $line_width), 0.3, $style, '');
         }

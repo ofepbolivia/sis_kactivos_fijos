@@ -319,7 +319,6 @@ header("content-type: text/javascript; charset=UTF-8");
                         gwidth: 250,
                         minChars: 2,
                         renderer: function (value, p, record) {
-
                             //return String.format('{0}', record.data['depto']);
                             /*	if(record.data.tipo_movimiento=='Transito'){
                                         //return String.format('<div ><font weight="bold"; color="#ffffff";>{0}</font></div>',value);
@@ -1049,7 +1048,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 {name: 'tipo_drepeciacion', type: 'string'},
                 {name: 'firmado', type: 'string'},
                 {name: 'nombre_archivo', type: 'string'},
-                {name: 'firma_digital', type: 'string'}
+                {name: 'firma_digital', type: 'string'},
+                {name: 'ci_login', type: 'string'}
             ],
 
             onButtonATDPdf: function () {
@@ -1057,11 +1057,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 Phx.CP.loadingShow();
                 Ext.Ajax.request({
                     url: '../../sis_kactivos_fijos/control/Movimiento/generarReporteMovimientoUpdate',
-                    params:{
-                        'id_movimiento':rec.data.id_movimiento,
-                        'num_tramite':rec.data.num_tramite,
-                        'nombre_archivo':rec.data.nombre_archivo,
-                        'firma_digital':rec.data.firma_digital
+                    params: {
+                        'id_movimiento': rec.data.id_movimiento,
+                        'num_tramite': rec.data.num_tramite,
+                        'nombre_archivo': rec.data.nombre_archivo,
+                        'firma_digital': rec.data.firma_digital
                     },
                     success: this.successExport,
                     failure: this.conexionFailure,
@@ -1195,154 +1195,86 @@ header("content-type: text/javascript; charset=UTF-8");
                         contentType: 'application/json',
                         success: function (data2) {
                             if (data2.finalizado === true) {
-                                var alias = data2.datos.data_token.data[1].alias;
-                                Ext.Ajax.request({
-                                    url: '../../sis_kactivos_fijos/control/Movimiento/obtenerDocumentoFirma',
-                                    params: {
-                                        'id_movimiento': rec.data.id_movimiento,
-                                        'nombre_archivo': rec.data.nombre_archivo,
-                                        'firmado': rec.data.firmado,
-                                        'nuevo_archivo': nuevoArchivo
-                                    },
-                                    success: function (response) {
-                                        var archivoBase64 = response.responseText;
-                                        $.ajax({
-                                            type: 'POST',
-                                            url: url + endpoint_post_firmar_pdf,
-                                            data: JSON.stringify({
-                                                slot: slot,
-                                                pin: pin,
-                                                alias: alias,
-                                                pdf: archivoBase64
-                                            }),
-                                            dataType: 'json',
-                                            contentType: 'application/json',
-                                            success: function (data3) {
-                                                if (data3.finalizado === true) {
-                                                    var pdfFirmadoBase64 = data3.datos.pdf_firmado;
-                                                    var nombreArchivo = rec.data.nombre_archivo;
-                                                    if (nuevoArchivo !== '') {
-                                                        nombreArchivo = nuevoArchivo;
+                                //validación, hacer que sea configurable
+                                var valido = true;
+                                var login_session = Phx.CP.config_ini.nombre_usuario.trim();
+                                if (rec.data.ci_login != data2.datos.data_token.data[1].titular.uidNumber) {
+                                    alert('No es posible continuar, el CI del Firmador y el CI del titular del Token, no coinciden. "' + rec.data.ci_login + '" ' + String.fromCharCode(8800) + ' "' + data2.datos.data_token.data[1].titular.uidNumber + '"');
+                                    valido = false;
+                                }
+                                if (login_session != data2.datos.data_token.data[1].titular.CN) {
+                                    alert('No es posible continuar, el nombre del Firmador y el nombre del titular del Token, no coinciden. "' + login_session + '" ' + String.fromCharCode(8800) + ' "' + data2.datos.data_token.data[1].titular.CN + '"');
+                                    valido = false;
+                                }
+                                if (valido) {
+                                    var alias = data2.datos.data_token.data[1].alias;
+                                    Ext.Ajax.request({
+                                        url: '../../sis_kactivos_fijos/control/Movimiento/obtenerDocumentoFirma',
+                                        params: {
+                                            'id_movimiento': rec.data.id_movimiento,
+                                            'nombre_archivo': rec.data.nombre_archivo,
+                                            'firmado': rec.data.firmado,
+                                            'nuevo_archivo': nuevoArchivo
+                                        },
+                                        success: function (response) {
+                                            var archivoBase64 = response.responseText;
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: url + endpoint_post_firmar_pdf,
+                                                data: JSON.stringify({
+                                                    slot: slot,
+                                                    pin: pin,
+                                                    alias: alias,
+                                                    pdf: archivoBase64
+                                                }),
+                                                dataType: 'json',
+                                                contentType: 'application/json',
+                                                success: function (data3) {
+                                                    if (data3.finalizado === true) {
+                                                        var pdfFirmadoBase64 = data3.datos.pdf_firmado;
+                                                        var nombreArchivo = rec.data.nombre_archivo;
+                                                        if (nuevoArchivo !== '') {
+                                                            nombreArchivo = nuevoArchivo;
+                                                        }
+                                                        Ext.Ajax.request({
+                                                            url: '../../sis_kactivos_fijos/control/Movimiento/firmarDocumento',
+                                                            params: {
+                                                                'nombre_archivo': nombreArchivo,
+                                                                'firmado': rec.data.firmado,
+                                                                'id_movimiento': rec.data.id_movimiento,
+                                                                'pdf_firmado_base64': pdfFirmadoBase64
+                                                            },
+                                                            success: function (response) {
+                                                                me.reload();
+                                                                if (!pdfFirmadoBase64.startsWith('data:application/pdf;base64,')) {
+                                                                    pdfFirmadoBase64 = 'data:application/pdf;base64,' + pdfFirmadoBase64;
+                                                                }
+                                                                const enlace = pdfFirmadoBase64;
+                                                                const enlaceDescarga = document.createElement("a");
+                                                                enlaceDescarga.href = enlace;
+                                                                enlaceDescarga.download = nombreArchivo;
+                                                                enlaceDescarga.click();
+                                                            },
+                                                            failure: me.conexionFailure,
+                                                            timeout: me.timeout,
+                                                            scope: me
+                                                        });
+                                                    } else {
+                                                        alert('El documento no se pudo firmar, intentelo nuevamente.');
                                                     }
-                                                    Ext.Ajax.request({
-                                                        url: '../../sis_kactivos_fijos/control/Movimiento/firmarDocumento',
-                                                        params: {
-                                                            'nombre_archivo': nombreArchivo,
-                                                            'firmado': rec.data.firmado,
-                                                            'id_movimiento': rec.data.id_movimiento,
-                                                            'pdf_firmado_base64': pdfFirmadoBase64
-                                                        },
-                                                        success: function (response) {
-                                                            me.reload();
-                                                            if (!pdfFirmadoBase64.startsWith('data:application/pdf;base64,')) {
-                                                                pdfFirmadoBase64 = 'data:application/pdf;base64,' + pdfFirmadoBase64;
-                                                            }
-                                                            const enlace = pdfFirmadoBase64;
-                                                            const enlaceDescarga = document.createElement("a");
-                                                            enlaceDescarga.href = enlace;
-                                                            enlaceDescarga.download = nombreArchivo;
-                                                            enlaceDescarga.click();
-                                                        },
-                                                        failure: me.conexionFailure,
-                                                        timeout: me.timeout,
-                                                        scope: me
-                                                    });
-                                                } else {
-                                                    alert('El documento no se pudo firmar, intentelo nuevamente.');
                                                 }
-                                            }
-                                        });
-                                    },
-                                    failure: me.conexionFailure,
-                                    timeout: me.timeout,
-                                    scope: me
-                                });
+                                            });
+                                        },
+                                        failure: me.conexionFailure,
+                                        timeout: me.timeout,
+                                        scope: me
+                                    });
+                                }
                             } else {
                                 alert('No se ha podido iniciar la sesión de firma de documentos, verifique su PIN e intentelo nuevamente.');
                             }
                         }
                     });
-
-                    /*
-                                        Ext.Ajax.request({
-                                            url: '../../sis_kactivos_fijos/control/Movimiento/obtenerDocumentoFirma',
-                                            params: {
-                                                'id_movimiento': rec.data.id_movimiento,
-                                                'nombre_archivo': rec.data.nombre_archivo,
-                                                'firmado': rec.data.firmado,
-                                                'nuevo_archivo': nuevoArchivo
-                                            },
-                                            success: function (response) {
-                                                var archivoBase64 = response.responseText;
-                                                $.ajax({
-                                                    type: 'POST',
-                                                    url: url + endpoint_post_pin,
-                                                    data: JSON.stringify({
-                                                        pin: pin,
-                                                        slot: slot
-                                                    }),
-                                                    dataType: 'json',
-                                                    contentType: 'application/json',
-                                                    success: function (data2) {
-                                                        if (data2.finalizado === true) {
-                                                            var alias = data2.datos.data_token.data[1].alias;
-                                                            $.ajax({
-                                                                type: 'POST',
-                                                                url: url + endpoint_post_firmar_pdf,
-                                                                data: JSON.stringify({
-                                                                    slot: slot,
-                                                                    pin: pin,
-                                                                    alias: alias,
-                                                                    pdf: archivoBase64
-                                                                }),
-                                                                dataType: 'json',
-                                                                contentType: 'application/json',
-                                                                success: function (data3) {
-                                                                    if (data3.finalizado === true) {
-                                                                        var pdfFirmadoBase64 = data3.datos.pdf_firmado;
-                                                                        var nombreArchivo = rec.data.nombre_archivo;
-                                                                        if (nuevoArchivo !== '') {
-                                                                            nombreArchivo = nuevoArchivo;
-                                                                        }
-                                                                        Ext.Ajax.request({
-                                                                            url: '../../sis_kactivos_fijos/control/Movimiento/firmarDocumento',
-                                                                            params: {
-                                                                                'nombre_archivo': nombreArchivo,
-                                                                                'firmado': rec.data.firmado,
-                                                                                'id_movimiento': rec.data.id_movimiento,
-                                                                                'pdf_firmado_base64': pdfFirmadoBase64
-                                                                            },
-                                                                            success: function (response) {
-                                                                                me.reload();
-                                                                                if (!pdfFirmadoBase64.startsWith('data:application/pdf;base64,')) {
-                                                                                    pdfFirmadoBase64 = 'data:application/pdf;base64,' + pdfFirmadoBase64;
-                                                                                }
-                                                                                const enlace = pdfFirmadoBase64;
-                                                                                const enlaceDescarga = document.createElement("a");
-                                                                                enlaceDescarga.href = enlace;
-                                                                                enlaceDescarga.download = nombreArchivo;
-                                                                                enlaceDescarga.click();
-                                                                            },
-                                                                            failure: me.conexionFailure,
-                                                                            timeout: me.timeout,
-                                                                            scope: me
-                                                                        });
-                                                                    } else {
-                                                                        alert('El documento no se pudo firmar, intentelo nuevamente.');
-                                                                    }
-                                                                }
-                                                            });
-                                                        } else {
-                                                            alert('No se ha podido iniciar la sesión de firma de documentos, verifique su PIN e intentelo nuevamente.');
-                                                        }
-                                                    }
-                                                });
-                                            },
-                                            failure: this.conexionFailure,
-                                            timeout: this.timeout,
-                                            scope: this
-                                        });
-                                        */
                     win.hide();
                     this.reload();
                 }

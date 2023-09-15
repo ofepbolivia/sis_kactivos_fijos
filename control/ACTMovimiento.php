@@ -377,7 +377,7 @@ class ACTMovimiento extends ACTbase
 
         if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
             $this->objReporte = new Reporte($this->objParam, $this);
-            $this->res = $this->objReporte->generarReporteListado('MODMovimiento', 'listarMovimiento');
+            $this->res = $this->objReporte->generarReporteListado('MODMovimiento', 'listarMovimientoPendienteFirma');
         } else {
             $this->objFunc = $this->create('MODMovimiento');
             $this->res = $this->objFunc->listarMovimientoPendienteFirma($this->objParam);

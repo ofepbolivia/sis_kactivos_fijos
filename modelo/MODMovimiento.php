@@ -546,6 +546,7 @@ class MODMovimiento extends MODbase{
 		$this->captura('firmado','varchar');
 		$this->captura('nombre_archivo','varchar');
 		$this->captura('firma_digital','varchar'); //fRnk: si en el workflow requiere firma digital
+		$this->captura('ci_login','varchar');
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
 		return $this->respuesta;

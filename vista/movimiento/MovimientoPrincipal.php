@@ -189,7 +189,7 @@ Phx.vista.MovimientoPrincipal = {
             grupo:[0,1,2,3,4],
             text: 'Firma Digital',
             iconCls: 'blist-firma-digital',
-            disabled: false,
+            disabled: true,
             handler: this.onOpenPendientesFirmaD,
             tooltip: '<b>Pendientes de Firma Digital</b><br/>Procesos pendientes de Firma Digital.'
         });
@@ -539,6 +539,7 @@ Phx.vista.MovimientoPrincipal = {
 	        this.getBoton('sig_estado').disable();
             this.getBoton('btnChequeoDocumentosWf').disable();
 	        this.getBoton('btnChequeoDocumentosAF').disable();
+	        this.getBoton('btnFirmaDigital').disable();
 	        this.getBoton('diagrama_gantt').disable();
 	        this.getBoton('btnAsignacion').disable();
         }
@@ -558,6 +559,9 @@ Phx.vista.MovimientoPrincipal = {
         }
 		if(data.cod_movimiento == 'asig' || data.cod_movimiento == 'transf' || data.cod_movimiento == 'devol'){
             this.getBoton('btnAsignacion').enable();
+            if(data.cod_movimiento == 'asig') {//fRnk: añadir más estados para que el botón de firma digital se habilite
+                this.getBoton('btnFirmaDigital').enable();
+            }
         }
 
 
