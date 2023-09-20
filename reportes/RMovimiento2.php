@@ -1,4 +1,5 @@
 <?php
+set_time_limit(0);
 // Extend the TCPDF class to create custom MultiRow
 /*
  * Autor RAC
@@ -29,7 +30,7 @@ class RMovimiento2 extends ReportePDF {
         $this->motivo_ajuste = $this->dataMaster[0]['codigo_mov_motivo'];
          
         $this->nro_documento_ajuste = $this->dataMaster[0]['nro_documento'];
-         
+
 		if($this->tipoMov=='asig'||$tipo=='devol'){
 			$this->SetMargins(7, 55, 5);
         } 
@@ -37,7 +38,7 @@ class RMovimiento2 extends ReportePDF {
         	$this->SetMargins(7, 53, 5);
          }
 		else{
-			$this->SetMargins(7, 52, 5);
+			$this->SetMargins(7, 58, 5);
 		}	
 	}
 	

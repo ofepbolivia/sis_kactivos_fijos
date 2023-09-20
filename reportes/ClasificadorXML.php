@@ -10,7 +10,7 @@ try {
     if (isset($_GET['proveedor']))
         $sql = "SELECT DISTINCT rotulo_comercial AS nombre, nit AS codigo FROM param.tproveedor WHERE rotulo_comercial<>''";
     else
-        $sql = "SELECT DISTINCT nombre, codigo_completo_tmp AS codigo FROM kaf.tclasificacion";
+        $sql = "SELECT DISTINCT nombre, codigo_completo_tmp AS codigo FROM kaf.tclasificacion WHERE sw_transaccional='movimiento'";
     $consulta = $link->query($sql);
     $consulta->execute();
     $data = $consulta->fetchAll(PDO::FETCH_ASSOC);
