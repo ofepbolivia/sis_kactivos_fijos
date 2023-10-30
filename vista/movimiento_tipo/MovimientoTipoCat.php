@@ -31,7 +31,14 @@ Phx.vista.MovimientoTipoCat = {
                 catalogoTipo: 'tmovimiento__id_cat_movimiento'
             }
         });
-
+        this.addButton('btnReporte',{ //fRnk: nuevo reporte "Tipos de movimientos"
+            grupo: [0],
+            text :'Reporte',
+            iconCls : 'bpdf32',
+            disabled: false,
+            handler : this.onButtonReport,
+            tooltip : '<b>Reporte de Motivos</b><br/><span>Reporte de Motivos de Movimiento</span>'
+        });
     },
 
     east: {
@@ -40,7 +47,18 @@ Phx.vista.MovimientoTipoCat = {
         width: '30%',
         cls: 'MovimientoMotivo'
     },
-
+    onButtonReport:function(){
+        //fRnk: nuevo reporte HR1341
+        Phx.CP.loadingShow();
+        Ext.Ajax.request({
+            url:'../../sis_kactivos_fijos/control/MovimientoMotivo/generaReporteMotivos',
+            params:{id:1},
+            success: this.successExport,
+            failure: this.conexionFailure,
+            timeout:this.timeout,
+            scope:this
+        });
+    },
     
 };
 </script>

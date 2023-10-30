@@ -13,7 +13,7 @@ Phx.vista.MovimientoPorActivo = {
     bsave:false,
     require:'../../../sis_kactivos_fijos/vista/movimiento/Movimiento.php',
     requireclase:'Phx.vista.Movimiento',
-    title:'Venta',
+    title:'Detalle de registros de Activos Fijos', //fRnk: HR01341
     nombreVista: 'MovimientoPorActivo',
     bdel:false,
 	bsave:false,

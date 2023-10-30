@@ -95,6 +95,14 @@ class ACTClasificacion extends ACTbase{
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
+    function listarClasificacionTreeQR(){ //fRnk: adicionado para HR01341
+        $this->objParam->defecto('ordenacion','orden');
+        $this->objParam->defecto('dir_ordenacion','asc');
+        $this->objFunc=$this->create('MODClasificacion');
+        $this->res=$this->objFunc->listarClasificacionTreeQR($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 	function listarClasificacionActivo(){
 		$this->objParam->defecto('ordenacion','orden');
 		$this->objParam->defecto('dir_ordenacion','asc');

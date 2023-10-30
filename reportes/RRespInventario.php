@@ -40,7 +40,7 @@ class RRespInventario extends ReportePDF {
         $this->dataMaster = $data[0];
         $this->datos_detalle = $data;
         //var_dump($this->dataMaster);exit;
-        $this->SetMargins(2, 52, 3);
+        $this->SetMargins(2, 50, 3);
     }
 
     function Header() {
@@ -387,6 +387,9 @@ class RRespInventario extends ReportePDF {
                     's9' => 'Oficina Asig.',
                     's10' => 'Observaciones'
                 );
+                if($this->columna == 'nombre' || $this->columna == 'desc') {
+                    $this->Ln(-3);
+                }
             }else if($this->columna == 'ambos'){
                 $this->tablewidthsHD=array(8,20,24,40,19,19,19,30,20,20,28,40);
                 $this->tablealignsHD=array('C','C','C','C','C','C','C','C','C','C','C','C');
@@ -492,7 +495,9 @@ class RRespInventario extends ReportePDF {
     function revisarfinPagina(){
         $dimensions = $this->getPageDimensions();
         $hasBorder = false; //flag for fringe case
-
+        if($this->columna == 'nombre' || $this->columna == 'desc') {
+            $this->SetMargins(2, 47, 3);
+        }
         $startY = $this->GetY();
         $this->getNumLines($row['cell1data'], 80);
 

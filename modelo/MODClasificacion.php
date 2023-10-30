@@ -51,7 +51,7 @@ class MODClasificacion extends MODbase{
 		$this->captura('contabilizar','varchar');
 		$this->captura('codigo_final','varchar');
 		$this->captura('vida_util_anios','numeric');
-
+        $this->captura('sw_transaccional','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -216,6 +216,23 @@ class MODClasificacion extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+    function listarClasificacionTreeQR(){ //fRnk: adicionado para HR01341
+        $this->procedimiento='kaf.ft_clasificacion_sel';
+        $this->transaccion='SKA_CLAFTREE1_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->captura('id_clasificacion','int4');
+        $this->captura('id_clasificacion_fk','int4');
+        $this->captura('clasificacion','varchar');
+        $this->captura('nivel','integer');
+        $this->captura('tipo_activo','varchar');
+        $this->captura('depreciable','varchar');
+        $this->captura('vida_util','integer');
+        $this->captura('sw_transaccional', 'varchar');
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        return $this->respuesta;
+    }
 	
 	function listarClasificacionActivo(){
 		//Definicion de variables para ejecucion del procedimientp

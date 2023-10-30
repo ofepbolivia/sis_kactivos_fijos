@@ -129,6 +129,37 @@ Ext.define('Phx.vista.ParametrosBase', {
             minChars: 2,
             style: this.setBackgroundColor('cmbClasificacion')
 		});
+        this.cmbClasificacion2 = new Ext.form.ComboBox({ //fRnk: adicionado para HR01341
+            fieldLabel: 'Clasificación',
+            anchor: '100%',
+            emptyText: 'Elija una opción...',
+            store: new Ext.data.JsonStore({
+                url: '../../sis_kactivos_fijos/control/Clasificacion/listarClasificacionTreeQR',
+                id: 'id_clasificacion',
+                root: 'datos',
+                sortInfo: {
+                    field: 'orden',
+                    direction: 'ASC'
+                },
+                totalProperty: 'total',
+                fields: ['id_clasificacion', 'clasificacion', 'id_clasificacion_fk'],
+                remoteSort: true,
+                baseParams: {
+                    par_filtro: 'claf.clasificacion'
+                }
+            }),
+            valueField: 'id_clasificacion',
+            displayField: 'clasificacion',
+            typeAhead: false,
+            triggerAction: 'all',
+            lazyRender: true,
+            mode: 'remote',
+            pageSize: 15,
+            queryDelay: 1000,
+            anchor: '100%',
+            minChars: 2,
+            style: this.setBackgroundColor('cmbClasificacion2')
+        });
 		this.cmbClasificacionMulti = new Ext.form.AwesomeCombo({
 			fieldLabel: 'Clasificación Multiple',
 			emptyText: 'Elija una opción...',
@@ -692,7 +723,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.fieldSetGeneral = new Ext.form.FieldSet({
         	collapsible: true,
         	title: 'General',
-        	items: [this.cmbTipoRep,this.cmbPeriodo,this.cmpFechas,this.cmbClasificacion,this.cmbClasificacionMulti,this.cmbTipoMov,this.cmbBajaReti,this.cmbUbiacion,this.cmbEstadoDepre,this.cmbActivo,this.txtDenominacion,this.cmbMoneda,this.cmpFechaCompra,this.cmpMontos,this.cmbTipo,this.cmbLugar,this.txtNroCbteAsociado,
+        	items: [this.cmbTipoRep,this.cmbPeriodo,this.cmpFechas,this.cmbClasificacion,this.cmbClasificacion2,this.cmbClasificacionMulti,this.cmbTipoMov,this.cmbBajaReti,this.cmbUbiacion,this.cmbEstadoDepre,this.cmbActivo,this.txtDenominacion,this.cmbMoneda,this.cmpFechaCompra,this.cmpMontos,this.cmbTipo,this.cmbLugar,this.txtNroCbteAsociado,
         		this.dteFechaIniDep,this.cmbEstado,this.cmbCentroCosto,this.txtUbicacionFisica,
 				this.cmbOficina,this.cmbResponsable,this.cmbDepto, this.cmbInventa, this.descNombre, this.cmpUbicacion, this.cmbDeposito,this.radGroupDeprec]
         });
@@ -878,6 +909,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.dteFechaHasta.setValue('');
 		this.cmbActivo.setValue('');
 		this.cmbClasificacion.setValue('');
+		this.cmbClasificacion2.setValue('');
 		this.cmbClasificacionMulti.reset();
 		this.cmbTipoMov.setValue('');
 		this.cmbBajaReti.setValue('');
@@ -913,6 +945,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.cmbPeriodo.setValue('');
 
 		this.cmbClasificacion.selectedIndex=-1;
+		this.cmbClasificacion2.selectedIndex=-1;
 		this.cmbClasificacionMulti.selectedIndex=-1;
 
 	},
@@ -1072,6 +1105,7 @@ Ext.define('Phx.vista.ParametrosBase', {
 		this.configElement(this.dteFechaHasta,false,true);
 		this.configElement(this.cmbActivo,false,true);
 		this.configElement(this.cmbClasificacion,false,true);
+		this.configElement(this.cmbClasificacion2,false,true);
 		this.configElement(this.cmbClasificacionMulti,false,true);
 		this.configElement(this.cmbEstadoDepre,false,true);
 		this.configElement(this.cmbTipoMov,false,true);

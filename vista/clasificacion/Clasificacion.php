@@ -16,6 +16,14 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
 		Phx.vista.ClasificacionAF.superclass.constructor.call(this, config);
 		this.init();
 		this.definirEventos();
+        this.addButton('btnReporte',{ //fRnk: nuevo reporte "Clasificación de Activos Fijos" HR01341
+            grupo: [0],
+            text :'Reporte',
+            iconCls : 'bpdf32',
+            disabled: false,
+            handler : this.onButtonReport,
+            tooltip : '<b>Reporte Clasificación de Activos</b><br/><span>Reporte Clasificación de Activos Fijos</span>'
+        });
 	},
 	Atributos : [{
 		config : {
@@ -604,6 +612,18 @@ Phx.vista.ClasificacionAF = Ext.extend(Phx.arbInterfaz, {
             valor = Ext.util.Format.round(cantidad / 12,2);
         }
         return valor;
-    }
+    },
+    onButtonReport:function(){
+        //fRnk: nuevo reporte HR01341
+        Phx.CP.loadingShow();
+        Ext.Ajax.request({
+            url:'../../sis_kactivos_fijos/control/ClasificacionVariable/listarClasificacionPartidas',
+            params:{id:1},
+            success: this.successExport,
+            failure: this.conexionFailure,
+            timeout:this.timeout,
+            scope:this
+        });
+    },
 }); 
 </script>

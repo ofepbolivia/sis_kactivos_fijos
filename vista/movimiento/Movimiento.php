@@ -121,7 +121,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     origen: 'CATALOGO',
                     gdisplayField: 'movimiento',
                     hiddenName: 'id_cat_movimiento',
-                    gwidth: 55,
+                    //gwidth: 55,
                     baseParams:{
                         cod_subsistema:'KAF',
                         catalogo_tipo:'tmovimiento__id_cat_movimiento'
@@ -246,7 +246,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     fieldLabel: 'Num.Trámite/Fecha',
                     allowBlank: true,
                     anchor: '80%',
-                    gwidth: 250,
+                    gwidth: 200,
                     maxLength:200,
                     disabled: true,
                     renderer: function(value,p,record){
@@ -275,30 +275,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo:0,
                 grid:true,
                 form:false,
-                bottom_filter:true
-            },
-            {
-                config:{
-                    name: 'estado',
-                    fieldLabel: 'Estado',
-                    allowBlank: true,
-                    anchor: '80%',
-                    gwidth: 90,
-                    maxLength:15,
-                    disabled: true,
-                    renderer: function (value,p,record) {
-                        var result;
-                        //if(value == "Borrador") {
-                        result = "<div style='text-align:center'><img src = '../../../lib/imagenes/"+record.data.icono_estado+"' align='center' width='18' height='18' title='"+record.data.estado+"'/><br><u>"+record.data.estado+"</u></div>";
-                        //}
-                        return result;
-                    }
-                },
-                type:'TextField',
-                filters:{pfiltro:'mov.estado',type:'string'},
-                id_grupo:0,
-                grid:false,
-                form:true,
                 bottom_filter:true
             },
             {
@@ -465,7 +441,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type: 'ComboBox',
                 id_grupo: 0,
                 filters: {pfiltro: 'depo.nombre',type: 'string'},
-                grid: true,
+                grid: false,
                 form: true
             },
 
@@ -531,7 +507,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'DateField',
                 filters:{pfiltro:'mov.fecha_hasta',type:'date'},
                 id_grupo:0,
-                grid:true,
+                grid:false,
                 form:true
             },
             {
@@ -784,7 +760,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type: 'ComboBox',
                 id_grupo: 0,
                 filters: {pfiltro: 'depo.nombre',type: 'string'},
-                grid: true,
+                grid: false,
                 form: true
             },
             {
@@ -804,7 +780,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'ComboRec',//ComboRec
                 id_grupo:0,
                 filters:{pfiltro:'fundest.desc_funcionario2',type:'string'},
-                grid:true,
+                grid:false,
                 form:true,
                 bottom_filter:true
             },
@@ -847,7 +823,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'TextField',
                 filters:{pfiltro:'mov.id_int_comprobante_aitb',type:'numeric'},
                 id_grupo:0,
-                grid:true,
+                grid:false,
                 form:true
             },
             {
@@ -871,7 +847,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type: 'ComboRec',
                 id_grupo: 0,
                 filters:{pfiltro:'mov.prestamo',type:'string'},
-                grid: true,
+                grid: false,
                 form: true
             },
             {
@@ -983,9 +959,32 @@ header("content-type: text/javascript; charset=UTF-8");
                 form:false
             },
             {
+                config:{ //fRnk: HR01314
+                    name: 'estado',
+                    fieldLabel: 'Estado',
+                    allowBlank: true,
+                    anchor: '80%',
+                    maxLength:20,
+                    disabled: true,
+                    /*renderer: function (value,p,record) {
+                        var result;
+                        //if(value == "Borrador") {
+                        result = "<div style='text-align:center'><img src = '../../../lib/imagenes/"+record.data.icono_estado+"' align='center' width='18' height='18' title='"+record.data.estado+"'/><br><u>"+record.data.estado+"</u></div>";
+                        //}
+                        return result;
+                    }*/
+                },
+                type:'TextField',
+                filters:{pfiltro:'mov.estado',type:'string'},
+                id_grupo:0,
+                grid:true,
+                form:true,
+                bottom_filter:true
+            },
+            {
                 config:{
                     name: 'usuario_ai',
-                    fieldLabel: 'Funcionaro AI',
+                    fieldLabel: 'Funcionario AI',
                     allowBlank: true,
                     anchor: '80%',
                     gwidth: 100,
@@ -994,7 +993,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'TextField',
                 filters:{pfiltro:'mov.usuario_ai',type:'string'},
                 id_grupo:0,
-                grid:true,
+                grid:false,
                 form:false
             },
             {
@@ -1010,7 +1009,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'DateField',
                 filters:{pfiltro:'mov.fecha_mod',type:'date'},
                 id_grupo:0,
-                grid:true,
+                grid:false,
                 form:false
             },
             {
@@ -1025,7 +1024,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type:'Field',
                 filters:{pfiltro:'usu2.cuenta',type:'string'},
                 id_grupo:0,
-                grid:true,
+                grid:false,
                 form:false
             },
             {
@@ -1168,7 +1167,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 Phx.CP.loadingShow();
                 Ext.Ajax.request({
                     url:'../../sis_kactivos_fijos/control/Movimiento/generarReporteMovimiento',
-                    params:{'id_movimiento':rec.data.id_movimiento},
+                    params:{
+                        'id_movimiento':rec.data.id_movimiento,
+                        'nombre_archivo':rec.data.nombre_archivo,
+                        'firma_digital':rec.data.firma_digital
+                    },
                     success: this.successExport,
                     failure: this.conexionFailure,
                     timeout:this.timeout,

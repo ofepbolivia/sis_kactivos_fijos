@@ -276,7 +276,7 @@ Phx.vista.Deposito=Ext.extend(Phx.gridInterfaz,{
 		}
 	],
 	tam_pag:50,	
-	title:'Depósito',
+	title:'Detalle de Depósitos de Activos Fijos',
 	ActSave:'../../sis_kactivos_fijos/control/Deposito/insertarDeposito',
 	ActDel:'../../sis_kactivos_fijos/control/Deposito/eliminarDeposito',
 	ActList:'../../sis_kactivos_fijos/control/Deposito/listarDeposito',

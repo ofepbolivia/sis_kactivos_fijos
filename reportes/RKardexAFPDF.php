@@ -155,75 +155,82 @@ class RKardexAFPDF extends  ReportePDF{
 
         $this->writeHTML($html);				
 		$this->Ln();
-		$this->firstBox();
-		
-		$arrayTmp=array();
-		for ($fil=0; $fil < count($this->datos); $fil++) {
-			if($this->datos[$fil]['codigo_mov']=='asig'||$this->datos[$fil]['codigo_mov']=='devol'||$this->datos[$fil]['codigo_mov']=='transf'||$this->datos[$fil]['codigo_mov']=='tranfdep') {
-				array_push($arrayTmp,$this->datos[$fil]);
-			}
-		}
-			$this->SetFont('','',8);
-		    $this->SetMargins(15, 50, 40);		
-			$this->tablewidthsHD = array(8, 40, 40, 20, 20, 45, 45);
-			$this->tablealignsHD = array('C', 'C', 'C', 'C','C', 'C', 'C');
-			$this->tablenumbersHD = array(0, 0, 0, 0, 0, 0, 0);
-			$this->tablebordersHD = array('LRTB', 'LRTB', 'LRTB','LRTB', 'LRTB', 'LRTB', 'LRTB');
-			$this->tabletextcolorHD = array();
-	        $cont=0;
-	        for ($fil=0; $fil < count($arrayTmp); $fil++) {            
-	            $cont++;	                       
-	            $fecha_sig='';            	            	            
-	            if($arrayTmp[$fil+1]['fecha_mov']!=''){
-	                $fecha_sig = date("d/m/Y",strtotime($arrayTmp[$fil-1]['fecha_mov']. ' -1 day'));                
-	                if($fecha_sig < date("d/m/Y",strtotime($arrayTmp[$fil]['fecha_mov']))){
-	                    $fecha_sig = date("d/m/Y",strtotime($arrayTmp[$fil]['fecha_mov']));
-	                }
-	            }
-			
-	            $RowArray = array(
-	                's0' => $cont,
-	                's1' => $arrayTmp[$fil]['num_tramite'],
-	                's2' => $arrayTmp[$fil]['desc_mov'],
-	                's3' => date("d/m/Y",strtotime($arrayTmp[$fil]['fecha_mov'])),
-	                's4' => $fecha_sig,		                                
-	                's5' => $arrayTmp[$fil]['responsable'],
-	                's6' => $arrayTmp[$fil]['cargo']
-	            	);                
-	        $this->MultiRowHeader($RowArray,false,1);
-	        $this->tablewidths = $this->tablewidthsHD;			
-		}	
-		
-		$this->secondBox();	
-		
-		$con=0;
-		$this->SetFont('','',8);
-	    $this->SetMargins(15, 50, 40);		
-		$this->tablewidthsHD = array(8, 22, 23, 40, 25, 25, 25, 25, 25);		
-		$this->tablealignsHD = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
-		$this->tablenumbersHD = array(0, 0, 0, 0, 0, 0, 0, 0, 0);
-		$this->tablebordersHD = array('LRTB', 'LRTB', 'LRTB','LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB');
-		$this->tabletextcolorHD = array();		
-				
-		for ($fil=0; $fil < count($this->datos); $fil++) {			
-			if($this->datos[$fil]['codigo_mov']=='reval'||$this->datos[$fil]['codigo_mov']=='mejora'||$this->datos[$fil]['codigo_mov']=='ajuste'||$this->datos[$fil]['codigo_mov']=='retiro') {
-				$con++;
-				$monto=number_format($this->datos[$fil]['importe'],2,',','.');											
-	            $RowArray = array(
-	                's0' => $con,
-	                's1' => date("d/m/Y",strtotime($this->datos[$fil]['fecha_mov'])),
-	                's2' => $this->datos[$fil]['ufv_mov'],
-	                's3' => $this->datos[$fil]['num_tramite'],	                		                                
-	                's4' => ($this->datos[$fil]['codigo_mov']=='mejora')?$monto:'',
-	                's5' => ($this->datos[$fil]['codigo_mov']=='reval')?$monto:'',
-	                's6' => ($this->datos[$fil]['codigo_mov']=='ajuste')?$monto:'',
-	                's7' => ($this->datos[$fil]['codigo_mov']=='retiro')?$monto:'',
-	                's8' => $this->datos[$fil]['meses']
-	            	);                
-	        	$this->MultiRowHeader($RowArray,false,1);
-	        	$this->tablewidths = $this->tablewidthsHD;
-			}			
-		}
+        $arrayTmp=array();
+        for ($fil=0; $fil < count($this->datos); $fil++) {
+            if($this->datos[$fil]['codigo_mov']=='asig'||$this->datos[$fil]['codigo_mov']=='devol'||$this->datos[$fil]['codigo_mov']=='transf'||$this->datos[$fil]['codigo_mov']=='tranfdep') {
+                array_push($arrayTmp,$this->datos[$fil]);
+            }
+        }
+        if(!empty($arrayTmp)){//fRnk: adicionado para que no muestre en caso de estar vacío, HR1163
+            $this->firstBox();
+            $this->SetFont('','',8);
+            $this->SetMargins(15, 50, 40);
+            $this->tablewidthsHD = array(8, 40, 40, 20, 20, 45, 45);
+            $this->tablealignsHD = array('C', 'C', 'C', 'C','C', 'C', 'C');
+            $this->tablenumbersHD = array(0, 0, 0, 0, 0, 0, 0);
+            $this->tablebordersHD = array('LRTB', 'LRTB', 'LRTB','LRTB', 'LRTB', 'LRTB', 'LRTB');
+            $this->tabletextcolorHD = array();
+            $cont=0;
+            for ($fil=0; $fil < count($arrayTmp); $fil++) {
+                $cont++;
+                $fecha_sig='';
+                if($arrayTmp[$fil+1]['fecha_mov']!=''){
+                    $fecha_sig = date("d/m/Y",strtotime($arrayTmp[$fil-1]['fecha_mov']. ' -1 day'));
+                    if($fecha_sig < date("d/m/Y",strtotime($arrayTmp[$fil]['fecha_mov']))){
+                        $fecha_sig = date("d/m/Y",strtotime($arrayTmp[$fil]['fecha_mov']));
+                    }
+                }
+
+                $RowArray = array(
+                    's0' => $cont,
+                    's1' => $arrayTmp[$fil]['num_tramite'],
+                    's2' => $arrayTmp[$fil]['desc_mov'],
+                    's3' => date("d/m/Y",strtotime($arrayTmp[$fil]['fecha_mov'])),
+                    's4' => $fecha_sig,
+                    's5' => $arrayTmp[$fil]['responsable'],
+                    's6' => $arrayTmp[$fil]['cargo']
+                );
+                $this->MultiRowHeader($RowArray,false,1);
+                $this->tablewidths = $this->tablewidthsHD;
+            }
+        }
+
+        $arrayTmp=array();
+        for ($fil=0; $fil < count($this->datos); $fil++) {
+            if($this->datos[$fil]['codigo_mov']=='reval'||$this->datos[$fil]['codigo_mov']=='mejora'||$this->datos[$fil]['codigo_mov']=='ajuste'||$this->datos[$fil]['codigo_mov']=='retiro') {
+                array_push($arrayTmp,$this->datos[$fil]);
+            }
+        }
+        if(!empty($arrayTmp)) {//fRnk: adicionado para que no muestre en caso de estar vacío, HR1163
+            $this->secondBox();
+
+            $con=0;
+            $this->SetFont('','',8);
+            $this->SetMargins(15, 50, 40);
+            $this->tablewidthsHD = array(8, 22, 23, 40, 25, 25, 25, 25, 25);
+            $this->tablealignsHD = array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C');
+            $this->tablenumbersHD = array(0, 0, 0, 0, 0, 0, 0, 0, 0);
+            $this->tablebordersHD = array('LRTB', 'LRTB', 'LRTB','LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB', 'LRTB');
+            $this->tabletextcolorHD = array();
+
+            for ($fil=0; $fil < count($arrayTmp); $fil++) {
+                $con++;
+                $monto=number_format($this->datos[$fil]['importe'],2,',','.');
+                $RowArray = array(
+                    's0' => $con,
+                    's1' => date("d/m/Y",strtotime($this->datos[$fil]['fecha_mov'])),
+                    's2' => $this->datos[$fil]['ufv_mov'],
+                    's3' => $this->datos[$fil]['num_tramite'],
+                    's4' => ($this->datos[$fil]['codigo_mov']=='mejora')?$monto:'',
+                    's5' => ($this->datos[$fil]['codigo_mov']=='reval')?$monto:'',
+                    's6' => ($this->datos[$fil]['codigo_mov']=='ajuste')?$monto:'',
+                    's7' => ($this->datos[$fil]['codigo_mov']=='retiro')?$monto:'',
+                    's8' => $this->datos[$fil]['meses']
+                );
+                $this->MultiRowHeader($RowArray,false,1);
+                $this->tablewidths = $this->tablewidthsHD;
+            }
+        }
 	
 		$this->mainBox();
 		$cont=0;

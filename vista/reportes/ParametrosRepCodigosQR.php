@@ -49,7 +49,8 @@ Phx.vista.ParametrosRepCodigosQR = {
 		this.configElement(this.dteFechaDesde,false,true);
 		this.configElement(this.dteFechaHasta,false,true);
 		this.configElement(this.cmbActivo,true,true);
-		this.configElement(this.cmbClasificacion,true,true);
+		this.configElement(this.cmbClasificacion,false,true);
+		this.configElement(this.cmbClasificacion2,true,true); //fRnk: adicionado para HR01341
 		this.configElement(this.cmbClasificacionMulti,false,true);
 		this.configElement(this.cmbTipoMov,false,true)
 		this.configElement(this.txtDenominacion,false,true);
@@ -85,14 +86,14 @@ Phx.vista.ParametrosRepCodigosQR = {
 	onSubmit: function(){
 		console.log('aaa',Phx.CP.successExport);
 		if(this.formParam.getForm().isValid()){
-			if(this.cmbActivo.getValue()!=''||this.cmbClasificacion.getValue()!=''||this.cmbClasificacionMulti.getValue()!=''){
+			if(this.cmbActivo.getValue()!=''||this.cmbClasificacion2.getValue()!=''||this.cmbClasificacionMulti.getValue()!=''){
 				Phx.CP.loadingShow();
 				//Generación del reporte
 		        Ext.Ajax.request({
 	                url: '../../sis_kactivos_fijos/control/ActivoFijo/repCodigoQRVarios',
 	                params: {
 	                	id_activo_fijo: this.cmbActivo.getValue(),
-	                	id_clasificacion: this.cmbClasificacion.getValue(),
+	                	id_clasificacion: this.cmbClasificacion2.getValue(),
 	                	id_clasificacion_multi:this.cmbClasificacionMulti.getValue()//
 	                },
 	                success: this.successExport,

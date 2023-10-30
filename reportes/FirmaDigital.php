@@ -51,11 +51,26 @@
     try {
         $cone = new conexion();
         $link = $cone->conectarpdo();
-        $sql = "SELECT  mov.num_tramite, mov.fecha_mov, fun.desc_funcionario2, cat.descripcion as proceso
+        $sql = "SELECT cat.codigo
+                FROM kaf.tmovimiento mov 
+                INNER JOIN  param.tcatalogo cat on  cat.id_catalogo = mov.id_cat_movimiento
+                WHERE mov.id_movimiento = " . $_GET['m'];
+        $consulta = $link->query($sql);
+        $consulta->execute();
+        $data_cod = $consulta->fetchAll(PDO::FETCH_ASSOC);
+        if ($data_cod[0]['codigo'] == 'alta') {
+            $sql = "SELECT  mov.num_tramite, mov.fecha_mov,  cat.descripcion as proceso
+                    FROM kaf.tmovimiento mov 
+                    INNER JOIN  param.tcatalogo cat on  cat.id_catalogo = mov.id_cat_movimiento
+                    WHERE mov.id_movimiento=" . $_GET['m'];
+        } else {
+            $sql = "SELECT  mov.num_tramite, mov.fecha_mov, fun.desc_funcionario2, cat.descripcion as proceso
                 FROM orga.vfuncionario fun inner join segu.tpersona per on  fun.id_persona = per.id_persona
                 LEFT JOIN kaf.tmovimiento mov on fun.id_funcionario = mov.id_funcionario
                 LEFT JOIN  param.tcatalogo cat on  cat.id_catalogo = mov.id_cat_movimiento
                 where mov.id_movimiento = " . $_GET['m'];
+        }
+
         $consulta = $link->query($sql);
         $consulta->execute();
         $data = $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -64,7 +79,9 @@
         $html .= '<tr><td class="bold">Tipo de Proceso:</td><td>' . $data[0]['proceso'] . '</td></tr>';
         $html .= '<tr><td class="bold">Trámite:</td><td>' . $data[0]['num_tramite'] . '</td></tr>';
         $html .= '<tr><td class="bold">Fecha:</td><td>' . date("d/m/Y", $fecha) . '</td></tr>';
-        $html .= '<tr><td class="bold">A/De:</td><td>' . $data[0]['desc_funcionario2'] . '</td></tr>';
+        if ($data_cod[0]['codigo'] == 'asig') {
+            $html .= '<tr><td class="bold">A/De:</td><td>' . $data[0]['desc_funcionario2'] . '</td></tr>';
+        }
         $html .= '</table>';
         $html .= '<h4 style="font-size: 14px;margin-bottom: 5px">Firmas:</h4>';
         $sql = "SELECT
@@ -88,6 +105,7 @@
             WHERE mov.id_movimiento = " . $_GET['m'] . "
             AND te.codigo <> 'borrador'
             AND fir.firmado='si'
+            AND fir.estado_reg='activo' 
             ORDER BY ewf.fecha_reg,ewf.id_estado_wf";
         $consulta = $link->query($sql);
         $consulta->execute();

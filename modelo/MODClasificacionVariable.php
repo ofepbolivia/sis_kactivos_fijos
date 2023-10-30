@@ -234,6 +234,21 @@ class MODClasificacionVariable extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;		
 	}
-			
+
+    function listarClasificacionPartidas(){//fRnk: nuevo reporte
+        $this->procedimiento='kaf.ft_clasificacion_variable_sel';
+        $this->transaccion='SKA_CLASIFPAR_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->captura('clasif_codigo','varchar');
+        $this->captura('clasif_detalle','varchar');
+        $this->captura('clasif_operacion','varchar');
+        $this->captura('gestion','varchar');
+        $this->captura('partida','varchar');
+        $this->captura('usr_reg','varchar');
+        $this->captura('fecha_registro','varchar');
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        return $this->respuesta;
+    }
 }
 ?>

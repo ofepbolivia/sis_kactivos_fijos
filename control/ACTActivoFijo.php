@@ -360,7 +360,7 @@ class ACTActivoFijo extends ACTbase{
     function listarActivoFijoFecha(){
         $this->objParam->defecto('ordenacion','id_activo_fijo');
         $this->objParam->defecto('dir_ordenacion','asc');
-
+        $this->objParam->addParametro('cod_mov', $this->objParam->getParametro('codMov')); //fRnk: adicionado para obtener sólo aquellos con código
         //General filter by: depto, clasificacion, oficina, organigrama
         if($this->objParam->getParametro('col_filter_panel')!=''){
             $colFilter = $this->objParam->getParametro('col_filter_panel');

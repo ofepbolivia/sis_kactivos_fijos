@@ -100,6 +100,23 @@ class MODMovimientoMotivo extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-			
+
+    function listarReporteMovimientoMotivo(){ //fRnk: reporte motivos
+        $this->procedimiento='kaf.ft_movimiento_motivo_sel';
+        $this->transaccion='SKA_MOVMOT_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+        $this->captura('nro','varchar');
+        $this->captura('codigo_tipoMov','varchar');
+        $this->captura('descripcion_tipoMov','varchar');
+        $this->captura('codigo_motivo','varchar');
+        $this->captura('descripcion_motivo','varchar');
+        $this->captura('creado_por','varchar');
+        $this->captura('fecha_creacion','varchar');
+        $this->captura('estado','varchar');
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        return $this->respuesta;
+    }
 }
 ?>

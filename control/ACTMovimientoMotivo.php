@@ -6,6 +6,7 @@
 *@date 18-03-2016 07:25:59
 *@description Clase que recibe los parametros enviados por la vista para mandar a la capa de Modelo
 */
+require_once(dirname(__FILE__) . '/../reportes/RMovimientoMotivos.php');
 
 class ACTMovimientoMotivo extends ACTbase{    
 			
@@ -43,6 +44,27 @@ class ACTMovimientoMotivo extends ACTbase{
 		$this->res=$this->objFunc->eliminarMovimientoMotivo($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
+    function generaReporteMotivos(){//fRnk: nuevo reporte Tipos de movimientos HR0341
+        $nombreArchivo = 'Motivos' . uniqid(md5(session_id())) . '.pdf';
+        $this->objFunc = $this->create('MODMovimientoMotivo');
+        $datos = $this->objFunc->listarReporteMovimientoMotivo();
+        $tamano = 'LETTER';
+        $orientacion = 'P';
+        $titulo = 'Consolidado';
+        $this->objParam->addParametro('orientacion', $orientacion);
+        $this->objParam->addParametro('tamano', $tamano);
+        $this->objParam->addParametro('titulo_archivo', $titulo);
+        $this->objParam->addParametro('nombre_archivo', $nombreArchivo);
+        $reporte = new RMovimientoMotivos($this->objParam);
+        $reporte->datosHeader($datos->getDatos());
+        $reporte->generarReporte();
+        $reporte->output($reporte->url_archivo, 'F');
+        $this->mensajeExito = new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO', 'Reporte.php', 'Reporte generado', 'Se generó con éxito el reporte: ' . $nombreArchivo, 'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
 			
 }
 

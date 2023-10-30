@@ -32,9 +32,20 @@ Phx.vista.ActivoFijoUsuario = Ext.extend(Phx.gridInterfaz, {
 			type:'Field',
 			form:true 
 		}, {
+            config:{
+                name: 'clasif_codigo',
+                fieldLabel: 'Sub-Tipo',
+                gwidth: 100
+            },
+            type:'TextField',
+            filters:{pfiltro:'afij.clasif_codigo',type:'string'},
+            id_grupo:1,
+            grid:true,
+            form:false
+        }, {
 			config:{
 				name: 'codigo',
-				fieldLabel: 'Codigo',
+				fieldLabel: 'Código',
 				gwidth: 100
 			},
 			type:'TextField',
@@ -51,24 +62,24 @@ Phx.vista.ActivoFijoUsuario = Ext.extend(Phx.gridInterfaz, {
 			type: 'TextField',
 			filters: {pfiltro:'afij.denominacion',type:'string'},
 			id_grupo: 1,
-			grid: true,
+			grid: false,
 			form: false
 		}, {
 			config:{
 				name: 'descripcion',
 				fieldLabel: 'Descripción',
-				gwidth: 100
+				gwidth: 250
 			},
 			type: 'TextField',
 			filters: {pfiltro:'afij.denominacion',type:'string'},
 			id_grupo: 1,
 			grid: true,
 			form: false
-		}, {
+		},/* {
 			config:{
 				name: 'id_clasificacion',
 				fieldLabel: 'Clasificación',
-				gwidth: 250,
+				gwidth: 180,
 				renderer:function (value, p, record){return String.format('{0}', record.data['clasificacion']);}
 			},
 			type: 'TextField',
@@ -76,7 +87,29 @@ Phx.vista.ActivoFijoUsuario = Ext.extend(Phx.gridInterfaz, {
 			id_grupo: 1,
 			grid: true,
 			form: false
-		}, {
+		},*/ {
+        config:{
+            name: 'clasif_nombre',
+            fieldLabel: 'Clasificación',
+            gwidth: 180
+        },
+        type: 'TextField',
+        filters: {pfiltro:'afij.clasif_nombre',type:'string'},
+        id_grupo: 1,
+        grid: true,
+        form: false
+    }, {
+            config:{
+                name: 'marca',
+                fieldLabel: 'Marca',
+                gwidth: 100
+            },
+            type: 'TextField',
+            filters: {pfiltro:'afij.marca',type:'string'},
+            id_grupo: 1,
+            grid: true,
+            form: false
+        }, {
 			config:{
 				name: 'nro_serie',
 				fieldLabel: 'Nro.Serie',
@@ -88,17 +121,39 @@ Phx.vista.ActivoFijoUsuario = Ext.extend(Phx.gridInterfaz, {
 			grid: true,
 			form: false
 		}, {
-			config:{
-				name: 'marca',
-				fieldLabel: 'Marca',
-				gwidth: 100
-			},
-			type: 'TextField',
-			filters: {pfiltro:'afij.marca',type:'string'},
-			id_grupo: 1,
-			grid: true,
-			form: false
-		}, {
+            config:{
+                name: 'estado',
+                fieldLabel: 'Estado',
+                gwidth: 100
+            },
+            type: 'TextField',
+            filters: {pfiltro:'afij.estado',type:'string'},
+            id_grupo: 1,
+            grid: true,
+            form: false
+        }, {
+            config:{
+                name: 'estado_fun',
+                fieldLabel: 'Estado Funcional',
+                gwidth: 100
+            },
+            type: 'TextField',
+            filters: {pfiltro:'afij.estado_fun',type:'string'},
+            id_grupo: 1,
+            grid: true,
+            form: false
+        }, {
+            config:{
+                name: 'fecha_compra',
+                fieldLabel: 'Fecha compra',
+                gwidth: 100
+            },
+            type: 'TextField',
+            filters: {pfiltro:'afij.fecha_compra',type:'string'},
+            id_grupo: 1,
+            grid: true,
+            form: false
+        }, {
 			config:{
 				name: 'cantidad',
 				fieldLabel: 'Cantidad',
@@ -107,7 +162,7 @@ Phx.vista.ActivoFijoUsuario = Ext.extend(Phx.gridInterfaz, {
 			type: 'TextField',
 			filters: {pfiltro:'afij.cantidad',type:'numeric'},
 			id_grupo: 1,
-			grid: true,
+			grid: false,
 			form: false
 		}, {
 			config:{
@@ -119,15 +174,27 @@ Phx.vista.ActivoFijoUsuario = Ext.extend(Phx.gridInterfaz, {
 			type: 'TextField',
 			filters: {pfiltro:'afij.denominacion',type:'string'},
 			id_grupo: 1,
-			grid: true,
+			grid: false,
 			form: false
-		}
+		}, {
+        config:{
+            name: 'ofi_ubicacion',
+            fieldLabel: 'Ubicación',
+            gwidth: 100
+        },
+        type: 'TextField',
+        filters: {pfiltro:'afij.ofi_ubicacion',type:'string'},
+        id_grupo: 1,
+        grid: true,
+        form: false
+    }
 		
 	],
 	bnew: false,
 	bedit: false,
 	bsave: false,
 	bdel: false,
+    title: 'Detalle de Activos Fijos', //fRnk: adicionado título, y varios campos modificados y adicionados clasif_codigo, clasif_nombre, ofi_ubicacion
 	ActList: '../../sis_kactivos_fijos/control/ActivoFijo/listarActivoFijo',
 	id_store: 'id_activo_fijo',
     fields: [{name: 'id_activo_fijo',type: 'numeric'}, 
@@ -136,7 +203,7 @@ Phx.vista.ActivoFijoUsuario = Ext.extend(Phx.gridInterfaz, {
              {name: 'foto',type: 'string'}, 
              {name: 'id_proveedor',type: 'numeric'}, 
              {name: 'estado_reg',type: 'string'}, 
-             {name: 'fecha_compra',type: 'date',dateFormat: 'Y-m-d'}, 
+             {name: 'fecha_compra',type: 'string'},
              {name: 'monto_vigente',type: 'numeric'}, 
              {name: 'id_cat_estado_fun',type: 'numeric'}, 
              {name: 'ubicacion',type: 'string'}, 
@@ -152,7 +219,8 @@ Phx.vista.ActivoFijoUsuario = Ext.extend(Phx.gridInterfaz, {
              {name: 'id_moneda',type: 'numeric'}, 
              {name: 'depreciacion_mes',type: 'numeric'}, 
              {name: 'codigo',type: 'string'}, 
-             {name: 'descripcion',type: 'string'}, 
+             {name: 'clasif_codigo',type: 'string'},
+             {name: 'descripcion',type: 'string'},
              {name: 'id_moneda_orig',type: 'numeric'}, 
              {name: 'fecha_ini_dep',type: 'date',dateFormat: 'Y-m-d'}, 
              {name: 'id_cat_estado_compra',type: 'numeric'}, 
@@ -161,7 +229,8 @@ Phx.vista.ActivoFijoUsuario = Ext.extend(Phx.gridInterfaz, {
              {name: 'depreciacion_acum',type: 'numeric'}, 
              {name: 'estado',type: 'string'}, 
              {name: 'id_clasificacion',type: 'numeric'}, 
-             {name: 'id_centro_costo',type: 'numeric'}, 
+             {name: 'clasif_nombre',type: 'string'},
+             {name: 'id_centro_costo',type: 'numeric'},
              {name: 'id_oficina',type: 'numeric'}, 
              {name: 'id_depto',type: 'numeric'}, 
              {name: 'id_usuario_reg',type: 'numeric'}, 
@@ -188,6 +257,7 @@ Phx.vista.ActivoFijoUsuario = Ext.extend(Phx.gridInterfaz, {
              {name:'nro_cbte_asociado',type:'string'},
              {name:'fecha_cbte_asociado',type:'date',dateFormat: 'Y-m-d'},
              {name:'vida_util_original_anios',type:'numeric'},
+             {name:'ofi_ubicacion',type:'string'},
     ],
     /*east: {
         url: '../../../sis_kactivos_fijos/vista/movimiento/MovimientoPorActivo.php',

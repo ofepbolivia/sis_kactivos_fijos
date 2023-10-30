@@ -1,4 +1,6 @@
 <?php
+set_time_limit(0);
+ini_set('memory_limit', '-1');
 /*
  * para imrpesora Zebra TPL 2844
  * Autor RCM

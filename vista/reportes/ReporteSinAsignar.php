@@ -184,7 +184,7 @@ Phx.vista.ReporteSinAsignar=Ext.extend(Phx.gridInterfaz,{
 		}
 	],
 	tam_pag:50,	
-	title:'Reporte',
+	title:'DETALLE DE ACTIVOS FIJOS SIN ASIGNACIÓN',
 	ActList:'../../sis_kactivos_fijos/control/Reportes/ReporteGralAF',
 	fields: [
 		{name:'codigo', type: 'string'},
@@ -202,7 +202,7 @@ Phx.vista.ReporteSinAsignar=Ext.extend(Phx.gridInterfaz,{
 		field: 'codigo',
 		direction: 'ASC'
 	},
-	title2: 'DETALLE DE ACTIVOS FIJOS SIN ASIGNACIÓN',
+	title2: '',
 	desplegarMaestro: 'si',
 	repFilaInicioEtiquetas: 30,
 	repFilaInicioDatos: 3,

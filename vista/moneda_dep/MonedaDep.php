@@ -255,7 +255,7 @@ Phx.vista.MonedaDep=Ext.extend(Phx.gridInterfaz,{
 		}
 	],
 	tam_pag:50,	
-	title:'Configuracion',
+	title:'Monedas de Depreciación',
 	ActSave:'../../sis_kactivos_fijos/control/MonedaDep/insertarMonedaDep',
 	ActDel:'../../sis_kactivos_fijos/control/MonedaDep/eliminarMonedaDep',
 	ActList:'../../sis_kactivos_fijos/control/MonedaDep/listarMonedaDep',

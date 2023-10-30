@@ -118,7 +118,7 @@ class MODReporte extends MODbase{
         //Definicion de variables para ejecucion del procedimientp
         $this->setCount(false);
         $this->setTipoRetorno('record');
-        $this->procedimiento='af.f_reportes_sel';
+        $this->procedimiento='kaf.f_reportes_sel';
         $this->transaccion='AF_REPDF_SEL';
         $this->tipo_procedimiento='SEL';//tipo de transaccion
 

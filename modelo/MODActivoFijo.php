@@ -28,7 +28,7 @@ class MODActivoFijo extends MODbase{
         $this->captura('foto','varchar');
         $this->captura('id_proveedor','int4');
         $this->captura('estado_reg','varchar');
-        $this->captura('fecha_compra','date');
+        $this->captura('fecha_compra','varchar');
         $this->captura('monto_vigente','numeric');
         $this->captura('id_cat_estado_fun','int4');
         $this->captura('ubicacion','varchar');
@@ -116,6 +116,10 @@ class MODActivoFijo extends MODbase{
         $this->captura('fecha_fin','date');
         $this->captura('resp_deposito','text');
 
+        //fRnk: campos adicionados HR1163
+        $this->captura('clasif_codigo','varchar');
+        $this->captura('clasif_nombre','varchar');
+        $this->captura('ofi_ubicacion','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -498,6 +502,7 @@ class MODActivoFijo extends MODbase{
 
         $this->setParametro('fecha_mov','fecha_mov','date');
         $this->setParametro('no_asignado','no_asignado','varchar');
+        $this->setParametro('cod_mov','cod_mov','varchar');
 
         //Definicion de la lista del resultado del query
         $this->captura('id_activo_fijo','int4');

@@ -15,6 +15,7 @@ Phx.vista.MovimientoPrincipal = {
     require:'../../../sis_kactivos_fijos/vista/movimiento/Movimiento.php',
     requireclase:'Phx.vista.Movimiento',
     title:'Movimientos',
+   //fRnk: anadir html to pdf-> title2:'<span style="font-size: 12px">Tipo de Proceso: "Todos"</span>',
     nombreVista: 'MovimientoPrincipal',
 
     gruposBarraTareas:[
@@ -28,21 +29,28 @@ Phx.vista.MovimientoPrincipal = {
     ],
 
     actualizarSegunTab: function(name, indice){
-    	if(indice==0){
+    	if(indice==0){//fRnk: títulos específicos de los reportes de los movimientos HR01314
     		this.filterMov='%';
+            this.title='Movimientos de Activos Fijos<br><br><span style="font-size: 12px">Tipo de Proceso: "Todos"</span>';
     	} else if(indice==1){
     		this.filterMov='alta';
+            this.title='Movimientos de Activos Fijos<br><br><span style="font-size: 12px">Tipo de Proceso: "Altas"</span>';
     	} else if(indice==2){
     		this.filterMov='baja,retiro';
+            this.title='Movimientos de Activos Fijos<br><br><span style="font-size: 12px">Tipo de Proceso: "Bajas y Retiros"</span>';
     	} else if(indice==3){
     		this.filterMov='reval,ajuste,mejora,transito';
+            this.title='Movimientos de Activos Fijos<br><br><span style="font-size: 12px">Tipo de Proceso: "Revalorizaciones y Ajustes"</span>';
     	} else if(indice==4){
     		this.filterMov='asig,devol,transf,tranfdep';
+            this.title='Movimientos de Activos Fijos<br><br><span style="font-size: 12px">Tipo de Proceso: "Asignaciones, Devoluciones y Transferencias"</span>';
             this.getBoton('btnReporte').setVisible(false);
     	} else if(indice==5){
     		this.filterMov='deprec,actua';
+            this.title='Movimientos de Activos Fijos<br><br><span style="font-size: 12px">Tipo de Proceso: "Depreciaciones"</span>';
     	} else if(indice==6){
             this.filterMov='divis,desgl,intpar';
+            this.title='Movimientos de Activos Fijos<br><br><span style="font-size: 12px">Tipo de Proceso: "Desglose, División e intercambio de partes"</span>';
         }
     	this.store.baseParams.cod_movimiento = this.filterMov;
         this.store.baseParams.id_movimiento = this.maestro.lnk_id_movimiento;
@@ -258,13 +266,58 @@ Phx.vista.MovimientoPrincipal = {
         )
     },
 
-    habilitarCampos: function(mov){
+    habilitarCampos: function(mov, estado='borrador'){
+        this.Cmp.id_cat_movimiento.disable();
+        if(estado!='borrador'){ //fRnk: adicionado para evitar la edición en un estado diferente de borrador HR1436
+            this.Cmp.id_cat_movimiento.disable();
+            this.Cmp.fecha_mov.disable();
+            this.Cmp.glosa.disable();
+            this.Cmp.id_depto.disable();
+            this.Cmp.direccion.disable();
+            this.Cmp.fecha_hasta.disable();
+            this.Cmp.id_funcionario.disable();
+            this.Cmp.id_oficina.disable();
+            this.Cmp.id_persona.disable();
+            this.Cmp.id_depto_dest.disable();
+            this.Cmp.id_deposito_dest.disable();
+            this.Cmp.id_funcionario_dest.disable();
+            this.Cmp.id_movimiento_motivo.disable();
+            this.Cmp.prestamo.disable();
+            this.Cmp.fecha_dev_prestamo.disable();
+            this.Cmp.tipo_asig.disable();
+            this.Cmp.id_deposito.disable();
+            this.Cmp.tipo_movimiento.disable();
+            this.Cmp.nro_documento.disable();
+            this.Cmp.tipo_documento.disable();
+            this.Cmp.tipo_drepeciacion.disable();
+        }else{
+            this.Cmp.fecha_mov.enable();
+            this.Cmp.glosa.enable();
+            this.Cmp.id_depto.enable();
+            this.Cmp.direccion.enable();
+            this.Cmp.fecha_hasta.enable();
+            this.Cmp.id_funcionario.enable();
+            this.Cmp.id_oficina.enable();
+            this.Cmp.id_persona.enable();
+            this.Cmp.id_depto_dest.enable();
+            this.Cmp.id_deposito_dest.enable();
+            this.Cmp.id_funcionario_dest.enable();
+            this.Cmp.id_movimiento_motivo.enable();
+            this.Cmp.prestamo.enable();
+            this.Cmp.fecha_dev_prestamo.enable();
+            this.Cmp.tipo_asig.enable();
+            this.Cmp.id_deposito.enable();
+            this.Cmp.tipo_movimiento.enable();
+            this.Cmp.nro_documento.enable();
+            this.Cmp.tipo_documento.enable();
+            this.Cmp.tipo_drepeciacion.enable();
+        }
     	var swTipoMovimiento=false,swDeposito=false,swDireccion=false,swFechaHasta=false,swFuncionario=false,swOficina=false,swPersona=false,h=600,w=600,swDeptoDest=false,swDepositoDest=false,swFuncionarioDest=false,swCatMovMotivo=false,swPrestamo=false,swTipoAsig=false, swNroDoc=false,swTiDoc=false,swTipoDepre=false;
       console.log('MUESTRA LO SIGUIENTE:',this.Cmp.glosa);
     	//Muesta y habilita los campos basicos
     	this.Cmp.fecha_mov.setVisible(true);
     	this.Cmp.glosa.setVisible(true);
-      this.Cmp.id_depto.setVisible(true);
+        this.Cmp.id_depto.setVisible(true);
 
 
     	this.form.getForm().clearInvalid();
@@ -481,7 +534,10 @@ Phx.vista.MovimientoPrincipal = {
     onButtonEdit: function() {
     	Phx.vista.Movimiento.superclass.onButtonEdit.call(this);
     	var data = this.getSelectedData();
-    	this.habilitarCampos(data.cod_movimiento);
+        if(!['borrador', 'finalizado'].includes(data.estado)){
+            alert('Para modificar el documento, debe estar en estado BORRADOR.');
+        }
+    	this.habilitarCampos(data.cod_movimiento, data.estado);
 
     },
 
@@ -559,15 +615,19 @@ Phx.vista.MovimientoPrincipal = {
         }
 		if(data.cod_movimiento == 'asig' || data.cod_movimiento == 'transf' || data.cod_movimiento == 'devol'){
             this.getBoton('btnAsignacion').enable();
-            if(data.cod_movimiento == 'asig') {//fRnk: añadir más estados para que el botón de firma digital se habilite
-                this.getBoton('btnFirmaDigital').enable();
-            }
         }
-
+        if(data.cod_movimiento == 'asig' || data.cod_movimiento == 'alta') {//fRnk: añadir más estados para que el botón de firma digital se habilite
+            this.getBoton('btnFirmaDigital').enable();
+        }
 
 		//Enable/disable WF buttons by status
         this.getBoton('ant_estado').enable();
         this.getBoton('sig_estado').enable();
+
+        if(data.cod_movimiento == 'alta' && data.estado=='aprobado'){//fRnk: específico para movimiento de alta y estado aprobado
+            this.getBoton('ant_estado').disable();
+        }
+
         if(data.estado=='borrador'){
         	this.getBoton('ant_estado').disable();
         } else {
@@ -620,13 +680,16 @@ Phx.vista.MovimientoPrincipal = {
         })
     },
     onAntEstado:function(wizard,resp){
+
         Phx.CP.loadingShow();
         Ext.Ajax.request({
             url:'../../sis_kactivos_fijos/control/Movimiento/anteriorEstadoMovimiento',
             params:{
                     id_proceso_wf:resp.id_proceso_wf,
                     id_estado_wf:resp.id_estado_wf,
-                    obs:resp.obs
+                    obs:resp.obs,
+                    firma_digital:resp.data.firma_digital, //fRnk: adicionado para enviar si el estado seleccionado tiene Firma Digital
+                    id_movimiento:resp.data.id_movimiento
              },
             argument:{wizard:wizard},
             success:this.successWizard,
@@ -719,6 +782,7 @@ Phx.vista.MovimientoPrincipal = {
     },
 
     hideFields: function() {
+        this.Cmp.id_cat_movimiento.enable();
     	this.Cmp.estado.hide();
     	this.Cmp.codigo.hide();
     	this.Cmp.fecha_mov.hide();

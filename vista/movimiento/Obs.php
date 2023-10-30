@@ -1055,19 +1055,34 @@ header("content-type: text/javascript; charset=UTF-8");
             onButtonATDPdf: function () {
                 var rec = this.sm.getSelected();
                 Phx.CP.loadingShow();
-                Ext.Ajax.request({
-                    url: '../../sis_kactivos_fijos/control/Movimiento/generarReporteMovimientoUpdate',
-                    params: {
-                        'id_movimiento': rec.data.id_movimiento,
-                        'num_tramite': rec.data.num_tramite,
-                        'nombre_archivo': rec.data.nombre_archivo,
-                        'firma_digital': rec.data.firma_digital
-                    },
-                    success: this.successExport,
-                    failure: this.conexionFailure,
-                    timeout: this.timeout,
-                    scope: this
-                });
+                if (rec.data.cod_movimiento == 'alta') {
+                    Ext.Ajax.request({
+                        url: '../../sis_kactivos_fijos/control/Movimiento/generarReporteMovimiento',
+                        params: {
+                            'id_movimiento': rec.data.id_movimiento,
+                            'nombre_archivo': rec.data.nombre_archivo,
+                            'firma_digital': rec.data.firma_digital
+                        },
+                        success: this.successExport,
+                        failure: this.conexionFailure,
+                        timeout: this.timeout,
+                        scope: this
+                    });
+                } else {
+                    Ext.Ajax.request({
+                        url: '../../sis_kactivos_fijos/control/Movimiento/generarReporteMovimientoUpdate',
+                        params: {
+                            'id_movimiento': rec.data.id_movimiento,
+                            'num_tramite': rec.data.num_tramite,
+                            'nombre_archivo': rec.data.nombre_archivo,
+                            'firma_digital': rec.data.firma_digital
+                        },
+                        success: this.successExport,
+                        failure: this.conexionFailure,
+                        timeout: this.timeout,
+                        scope: this
+                    });
+                }
             },
 
             onButtonFirmar: function () {
@@ -1078,11 +1093,13 @@ header("content-type: text/javascript; charset=UTF-8");
                 });*/
                 var mef = this;
                 slot = '';
+                Phx.CP.loadingShow();
                 $.ajax({
                     type: 'GET',
                     url: url + endpoint_get_token,
                     contentType: 'application/json',
                     success: function (data) {
+                        Phx.CP.loadingHide();
                         if (data !== null || data != '') {
                             if (data.finalizado === true && data.datos.tokens.length > 0) {
                                 slot = data.datos.tokens[0].slot;
@@ -1148,6 +1165,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     } else {
                         alert('Error: ' + jqXHR.responseText);
                     }
+                    Phx.CP.loadingHide();
                 });
 
             },
@@ -1214,7 +1232,8 @@ header("content-type: text/javascript; charset=UTF-8");
                                             'id_movimiento': rec.data.id_movimiento,
                                             'nombre_archivo': rec.data.nombre_archivo,
                                             'firmado': rec.data.firmado,
-                                            'nuevo_archivo': nuevoArchivo
+                                            'nuevo_archivo': nuevoArchivo,
+                                            'cod_movimiento': rec.data.cod_movimiento
                                         },
                                         success: function (response) {
                                             var archivoBase64 = response.responseText;
