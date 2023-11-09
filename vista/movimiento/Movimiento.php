@@ -10,6 +10,8 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
+    var dataDep=[['deprec_ministerio', 'Depreciación Ministerio'],
+        ['deprec_impuesto', 'Depreciación Impuestos']];
     Phx.vista.Movimiento=Ext.extend(Phx.gridInterfaz,{
         constructor:function(config){
             this.maestro=config.maestro;
@@ -289,8 +291,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     mode : 'local',
                     store : new Ext.data.ArrayStore({
                         fields : ['tipo', 'valor'],
-                        data : [['deprec_ministerio', 'Depreciación Ministerio'],
-                            ['deprec_impuesto', 'Depreciación Impuestos']]
+                        data : dataDep
                     }),
                     valueField : 'tipo',
                     displayField : 'valor'

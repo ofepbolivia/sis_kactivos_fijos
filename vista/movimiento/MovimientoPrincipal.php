@@ -310,6 +310,13 @@ Phx.vista.MovimientoPrincipal = {
             this.Cmp.tipo_movimiento.enable();
             this.Cmp.nro_documento.enable();
             this.Cmp.tipo_documento.enable();
+            if(dataDep!=null){//fRnk: para resolver problema de la HR01436
+                var sel=-1; var indice=0;
+                dataDep.forEach((item) => {if(item[1]==this.Cmp.tipo_drepeciacion.value) sel=indice;indice++;})
+                if(sel!=-1){
+                    this.Cmp.tipo_drepeciacion.value=dataDep[sel][0];
+                }
+            }
             this.Cmp.tipo_drepeciacion.enable();
         }
     	var swTipoMovimiento=false,swDeposito=false,swDireccion=false,swFechaHasta=false,swFuncionario=false,swOficina=false,swPersona=false,h=600,w=600,swDeptoDest=false,swDepositoDest=false,swFuncionarioDest=false,swCatMovMotivo=false,swPrestamo=false,swTipoAsig=false, swNroDoc=false,swTiDoc=false,swTipoDepre=false;
