@@ -1,6 +1,6 @@
 <?php
 set_time_limit(0);
-ini_set('memory_limit','256M');
+ini_set('memory_limit','-1');
 // Extend the TCPDF class to create custom MultiRow
 /*
  * Autor RAC
@@ -68,12 +68,20 @@ class RMovimiento2 extends ReportePDF {
         }else{
                 $title='FORMULARIO DE ' . mb_strtoupper($this->dataMaster[0]['movimiento'], 'UTF-8') . $title_motivo . ' DE ACTIVOS FIJOS ' . $title_motivo_ret;
         }
+        $rowspan=5;
+        $tr_estado='<tr>
+                        <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Estado:</b> ' . $this->dataMaster[0]['estado'] . '</td>
+                    </tr>';
+        if($this->tipoMov=='deprec'){
+            $rowspan=4;
+            $tr_estado='';
+        }
         $content='<table border="1" cellpadding="1" style="font-size: 11px">
             <tr>
-                <td style="width: 23%; color: #444444;" rowspan="5">
+                <td style="width: 23%; color: #444444;" rowspan="'.$rowspan.'">
                     &nbsp;<br><img  style="width: 150px;" src="./../../../lib/' . $_SESSION['_DIR_LOGO'] . '" alt="Logo">
                 </td>		
-                <td style="width: 52%; color: #444444;text-align: center" rowspan="5">
+                <td style="width: 52%; color: #444444;text-align: center" rowspan="'.$rowspan.'">
                    <h1 style="font-size: 16px">'. $title . '</h1>
                    <!--<h4 style="font-size: 14px">' . strtoupper($this->dataMaster[0]['depto']) . '</h4>-->
                 </td>
@@ -88,9 +96,7 @@ class RMovimiento2 extends ReportePDF {
             <tr>
                 <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Usuario:</b> ' . $_SESSION['_LOGIN'] . '</td>
             </tr>
-            <tr>
-                <td style="width: 25%; color: #444444; text-align: left;">&nbsp;&nbsp;<b>Estado:</b> ' . $this->dataMaster[0]['estado'] . '</td>
-            </tr>
+            '.$tr_estado.'
         </table>';
         $this->writeHTML($content, false, false, true, false, '');
        //echo var_dump($this->dataMaster[0]); exit();

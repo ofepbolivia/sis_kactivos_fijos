@@ -1055,7 +1055,7 @@ header("content-type: text/javascript; charset=UTF-8");
             onButtonATDPdf: function () {
                 var rec = this.sm.getSelected();
                 Phx.CP.loadingShow();
-                if (rec.data.cod_movimiento == 'alta') {
+                if (rec.data.cod_movimiento == 'alta' || rec.data.cod_movimiento == 'deprec') {
                     Ext.Ajax.request({
                         url: '../../sis_kactivos_fijos/control/Movimiento/generarReporteMovimiento',
                         params: {
@@ -1202,6 +1202,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     if (rec.data.nombre_archivo == null || rec.data.nombre_archivo == '') {
                         nuevoArchivo = rec.data.num_tramite + '-' + Date.now() + '.pdf';
                     }
+                    Phx.CP.loadingShow();
                     $.ajax({
                         type: 'POST',
                         url: url + endpoint_post_pin,
@@ -1217,10 +1218,12 @@ header("content-type: text/javascript; charset=UTF-8");
                                 var valido = true;
                                 var login_session = Phx.CP.config_ini.nombre_usuario.trim();
                                 if (rec.data.ci_login != data2.datos.data_token.data[1].titular.uidNumber) {
+                                    Phx.CP.loadingHide();
                                     alert('No es posible continuar, el CI del Firmador y el CI del titular del Token, no coinciden. "' + rec.data.ci_login + '" ' + String.fromCharCode(8800) + ' "' + data2.datos.data_token.data[1].titular.uidNumber + '"');
                                     valido = false;
                                 }
                                 if (login_session != data2.datos.data_token.data[1].titular.CN) {
+                                    Phx.CP.loadingHide();
                                     alert('No es posible continuar, el nombre del Firmador y el nombre del titular del Token, no coinciden. "' + login_session + '" ' + String.fromCharCode(8800) + ' "' + data2.datos.data_token.data[1].titular.CN + '"');
                                     valido = false;
                                 }
@@ -1273,12 +1276,14 @@ header("content-type: text/javascript; charset=UTF-8");
                                                                 enlaceDescarga.href = enlace;
                                                                 enlaceDescarga.download = nombreArchivo;
                                                                 enlaceDescarga.click();
+                                                                Phx.CP.loadingHide();
                                                             },
                                                             failure: me.conexionFailure,
                                                             timeout: me.timeout,
                                                             scope: me
                                                         });
                                                     } else {
+                                                        Phx.CP.loadingHide();
                                                         alert('El documento no se pudo firmar, intentelo nuevamente.');
                                                     }
                                                 }
@@ -1290,6 +1295,7 @@ header("content-type: text/javascript; charset=UTF-8");
                                     });
                                 }
                             } else {
+                                Phx.CP.loadingHide();
                                 alert('No se ha podido iniciar la sesión de firma de documentos, verifique su PIN e intentelo nuevamente.');
                             }
                         }
