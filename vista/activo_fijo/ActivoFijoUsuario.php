@@ -121,6 +121,17 @@ Phx.vista.ActivoFijoUsuario = Ext.extend(Phx.gridInterfaz, {
 			grid: true,
 			form: false
 		}, {
+            config:{//fRnk: adicionado HR1599
+                name: 'cod_ant',
+                fieldLabel: 'Código anterior',
+                gwidth: 100
+            },
+            type: 'TextField',
+            filters: {pfiltro:'afij.cod_ant',type:'string'},
+            id_grupo: 1,
+            grid: true,
+            form: false
+        }, {
             config:{
                 name: 'estado',
                 fieldLabel: 'Estado',
@@ -258,6 +269,7 @@ Phx.vista.ActivoFijoUsuario = Ext.extend(Phx.gridInterfaz, {
              {name:'fecha_cbte_asociado',type:'date',dateFormat: 'Y-m-d'},
              {name:'vida_util_original_anios',type:'numeric'},
              {name:'ofi_ubicacion',type:'string'},
+             {name:'cod_ant',type:'string'},
     ],
     /*east: {
         url: '../../../sis_kactivos_fijos/vista/movimiento/MovimientoPorActivo.php',

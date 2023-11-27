@@ -61,7 +61,8 @@ class MODMovimientoAf extends MODbase{
         $this->captura('observacion', 'text');
         $this->captura('id_activo_fijo_valor','integer');
         $this->captura('codigo', 'varchar');
-				$this->captura('deprec_acu_ges_ant','numeric');
+		$this->captura('deprec_acu_ges_ant','numeric');
+		$this->captura('cod_ant', 'varchar'); //fRnk: adicionado HR1599
 		//Ejecuta la instruccion
         $this->armarConsulta();
         //echo($this->consulta);exit;

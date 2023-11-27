@@ -115,11 +115,12 @@ class MODActivoFijo extends MODbase{
         $this->captura('fecha_inicio','date');
         $this->captura('fecha_fin','date');
         $this->captura('resp_deposito','text');
-
         //fRnk: campos adicionados HR1163
         $this->captura('clasif_codigo','varchar');
         $this->captura('clasif_nombre','varchar');
         $this->captura('ofi_ubicacion','varchar');
+        //fRnk: campo adicionado HR1599
+        $this->captura('cod_ant','varchar');
 
         //Ejecuta la instruccion
         $this->armarConsulta();

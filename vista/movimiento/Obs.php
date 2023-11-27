@@ -1055,7 +1055,7 @@ header("content-type: text/javascript; charset=UTF-8");
             onButtonATDPdf: function () {
                 var rec = this.sm.getSelected();
                 Phx.CP.loadingShow();
-                if (rec.data.cod_movimiento == 'alta' || rec.data.cod_movimiento == 'deprec') {
+                if (rec.data.cod_movimiento == 'alta' || rec.data.cod_movimiento == 'deprec' || rec.data.cod_movimiento == 'baja' || rec.data.cod_movimiento == 'reval') {
                     Ext.Ajax.request({
                         url: '../../sis_kactivos_fijos/control/Movimiento/generarReporteMovimiento',
                         params: {

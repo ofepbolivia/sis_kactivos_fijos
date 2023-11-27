@@ -194,7 +194,7 @@ Phx.vista.MovimientoPrincipal = {
 
         //fRnk: add button for Firma Digital
         this.addButton('btnFirmaDigital',{
-            grupo:[0,1,2,3,4],
+            grupo:[0,1,2,3,4,5],
             text: 'Firma Digital',
             iconCls: 'blist-firma-digital',
             disabled: true,
@@ -623,9 +623,9 @@ Phx.vista.MovimientoPrincipal = {
 		if(data.cod_movimiento == 'asig' || data.cod_movimiento == 'transf' || data.cod_movimiento == 'devol'){
             this.getBoton('btnAsignacion').enable();
         }
-        if(data.cod_movimiento == 'asig' || data.cod_movimiento == 'alta') {//fRnk: añadir más estados para que el botón de firma digital se habilite
+       // if(data.cod_movimiento == 'asig' || data.cod_movimiento == 'alta') {//fRnk: añadir más estados para que el botón de firma digital se habilite
             this.getBoton('btnFirmaDigital').enable();
-        }
+     //   }
 
 		//Enable/disable WF buttons by status
         this.getBoton('ant_estado').enable();

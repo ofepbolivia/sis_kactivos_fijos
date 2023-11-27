@@ -58,17 +58,24 @@
         $consulta = $link->query($sql);
         $consulta->execute();
         $data_cod = $consulta->fetchAll(PDO::FETCH_ASSOC);
-        if ($data_cod[0]['codigo'] == 'alta') {
-            $sql = "SELECT  mov.num_tramite, mov.fecha_mov,  cat.descripcion as proceso
+
+        switch ($data_cod[0]['codigo']) {
+            case 'alta':
+            case 'baja':
+            case 'deprec':
+            case 'reval':
+                $sql = "SELECT  mov.num_tramite, mov.fecha_mov,  cat.descripcion as proceso
                     FROM kaf.tmovimiento mov 
                     INNER JOIN  param.tcatalogo cat on  cat.id_catalogo = mov.id_cat_movimiento
                     WHERE mov.id_movimiento=" . $_GET['m'];
-        } else {
-            $sql = "SELECT  mov.num_tramite, mov.fecha_mov, fun.desc_funcionario2, cat.descripcion as proceso
+                break;
+            default:
+                $sql = "SELECT  mov.num_tramite, mov.fecha_mov, fun.desc_funcionario2, cat.descripcion as proceso
                 FROM orga.vfuncionario fun inner join segu.tpersona per on  fun.id_persona = per.id_persona
                 LEFT JOIN kaf.tmovimiento mov on fun.id_funcionario = mov.id_funcionario
                 LEFT JOIN  param.tcatalogo cat on  cat.id_catalogo = mov.id_cat_movimiento
                 where mov.id_movimiento = " . $_GET['m'];
+                break;
         }
 
         $consulta = $link->query($sql);
@@ -91,13 +98,12 @@
             to_char(fir.fecha_firma, 'HH24:MI:SS') as hora,
             te.nombre_estado as nombre,
             usu.cuenta,
-            fun.desc_funcionario1  as funcionario,
-            fun.descripcion_cargo,
+            fir.nombre_funcionario as funcionario,
+            fir.nombre_cargo,
             fir.firmado
-            FROM  wf.testado_wf ewf
+            FROM wf.testado_wf ewf
             INNER JOIN wf.ttipo_estado te on ewf.id_tipo_estado = te.id_tipo_estado
             LEFT JOIN segu.tusuario usu on usu.id_usuario = ewf.id_usuario_reg
-            LEFT JOIN orga.vfuncionario_cargo_lugar_todos fun on fun.id_funcionario = ewf.id_funcionario
             LEFT JOIN param.tdepto depto on depto.id_depto = ewf.id_depto
             LEFT JOIN kaf.tmovimiento mov on mov.id_proceso_wf = ewf.id_proceso_wf
             INNER JOIN kaf.tfirma_dig fir on fir.id_movimiento = mov.id_movimiento and fir.id_proceso_wf = mov.id_proceso_wf 
@@ -118,7 +124,7 @@
                 $html .= '<tr>';
                 $html .= '<td>' . $item['nombre'] . '</td>';
                 $html .= '<td>' . $item['funcionario'] . '</td>';
-                $html .= '<td>' . $item['descripcion_cargo'] . '</td>';
+                $html .= '<td>' . $item['nombre_cargo'] . '</td>';
                 $html .= '<td>' . date("d/m/Y", $fecha) . '</td>';
                 $html .= '<td>' . $item['hora'] . '</td>';
                 $html .= '</tr>';

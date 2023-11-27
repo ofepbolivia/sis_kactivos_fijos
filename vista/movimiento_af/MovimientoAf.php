@@ -143,7 +143,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_activo_fijo', 'denominacion', 'codigo','descripcion','cantidad_revaloriz','desc_moneda_orig','monto_compra','vida_util','fecha_ini_dep','monto_vigente_real_af','vida_util_real_af','fecha_ult_dep_real_af','depreciacion_acum_real_af','depreciacion_per_real_af'],
+					fields: ['id_activo_fijo', 'denominacion', 'codigo', 'codigo_ant','descripcion','cantidad_revaloriz','desc_moneda_orig','monto_compra','vida_util','fecha_ini_dep','monto_vigente_real_af','vida_util_real_af','fecha_ult_dep_real_af','depreciacion_acum_real_af','depreciacion_per_real_af'],
 					remoteSort: true,
 					baseParams: {par_filtro: 'afij.denominacion#afij.codigo#afij.descripcion', fecha_mov:''}
 				}),
@@ -164,8 +164,8 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 				resizable: true,
 				renderer : function(value, p, record) {
 					return String.format('{0}', record.data['denominacion']);
-				},
-				tpl : '<tpl for="."><div class="x-combo-list-item"><p><b>Codigo:</b> {codigo}</p><p><b>Activo Fijo:</b> {denominacion}</p><p><b>Descripcion:</b> {descripcion}</p></div></tpl>',
+				},//fRnk: adicionado codigo_ant HR1599
+				tpl : '<tpl for="."><div class="x-combo-list-item"><p><b>Código:</b> {codigo}</p><p><b>Código Ant.:</b> {codigo_ant}</p><p><b>Activo Fijo:</b> {denominacion}</p><p><b>Descripcion:</b> {descripcion}</p></div></tpl>',
 			},
 			type: 'ComboBox',
 			id_grupo: 0,
@@ -339,9 +339,24 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 			type:'TextField',
 			filters:{pfiltro:'movaf.respuesta',type:'string'},
 			id_grupo:0,
-			grid:true,
+			grid:false,
 			form:false
 		},
+        {
+            config:{ //fRnk: adiciona HR 1599
+                name: 'cod_ant',
+                fieldLabel: 'Código anterior',
+                allowBlank: true,
+                anchor: '100%',
+                gwidth: 200,
+                maxLength:20
+            },
+            type:'TextField',
+            filters:{pfiltro:'movaf.cod_ant',type:'string'},
+            id_grupo:0,
+            grid:true,
+            form:false
+        },
 		{
 			config:{
 				name: 'estado_reg',
@@ -757,6 +772,7 @@ Phx.vista.MovimientoAf=Ext.extend(Phx.gridInterfaz,{
 		{name:'denominacion', type: 'string'},
 		{name:'estado_fun', type: 'string'},
 		{name:'motivo', type: 'string'},
+		{name:'cod_ant', type: 'string'},
 		'descripcion','monto_vigente_real_af','vida_util_real_af','fecha_ult_dep_real_af','depreciacion_acum_real_af','depreciacion_per_real_af','desc_moneda_orig','monto_compra','vida_util_af','fecha_ini_dep','depreciacion_acum',
         'vida_util_residual', 'valor_residual', 'deprec_acum_ant', 'monto_vig_actu','observacion','id_activo_fijo_valor','codigo','deprec_acu_ges_ant'
 	],

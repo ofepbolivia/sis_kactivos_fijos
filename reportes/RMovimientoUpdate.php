@@ -1362,6 +1362,7 @@ class RMovimientoUpdate extends  ReportePDF {
             $this->SetFontSize(6);
             //$this->Text(236.7, 182, 'FIRMA DIGITAL');
         } else {
+            $style['position']='R';
             $this->write1DBarcode($barcode, 'C128B', $ancho*2, $cur_y + $line_width+5, '', (($this->getFooterMargin() / 3) - $line_width), 0.3, $style, '');
         }
     }

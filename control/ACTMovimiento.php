@@ -464,7 +464,7 @@ class ACTMovimiento extends ACTbase
                 $this->objParam->addParametro('tamano', $tamano);
                 $this->objParam->addParametro('titulo_archivo', $titulo);
                 $this->objParam->addParametro('nombre_archivo', $archivo_fd);
-                if ($this->objParam->getParametro('cod_movimiento') == 'alta') {
+                if ($this->objParam->getParametro('cod_movimiento') == 'alta' || $this->objParam->getParametro('cod_movimiento') == 'deprec' || $this->objParam->getParametro('cod_movimiento') ==  'baja' || $this->objParam->getParametro('cod_movimiento') ==  'reval') {
                     $reporte = new RMovimiento2($this->objParam);
                 } else {
                     $reporte = new RMovimientoUpdate($this->objParam);
