@@ -523,5 +523,41 @@ class MODReportes extends MODbase{
       //Devuelve la respuesta
       return $this->respuesta;
     }
+
+    function listarDatalleDocumentosFirmaDigital(){
+        //fRnk: reporte documentos con Firma Digital
+        $this->procedimiento='kaf.ft_firma_dig_sel';
+        $this->transaccion='SKA_FIRMADIG_DOC_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+        $this->setParametro('fecha_desde','fecha_desde','varchar');
+        $this->setParametro('fecha_hasta','fecha_hasta','varchar');
+        $this->captura('tipo_proceso', 'varchar');
+        $this->captura('nro_tramite', 'varchar');
+        $this->captura('estado_firma', 'varchar');
+        $this->captura('fecha_firma', 'varchar');
+        $this->captura('usuario_firma', 'varchar');
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        return $this->respuesta;
+    }
+
+    function listarDatalleDocumentosFirmaDigitalUsuario(){
+        //fRnk: reporte documentos con Firma Digital
+        $this->procedimiento='kaf.ft_firma_dig_sel';
+        $this->transaccion='SKA_FIRMADIG_USU_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+        $this->setParametro('fecha_desde','fecha_desde','varchar');
+        $this->setParametro('fecha_hasta','fecha_hasta','varchar');
+        $this->captura('tipo_proceso', 'varchar');
+        $this->captura('nro_tramite', 'varchar');
+        $this->captura('estado_firma', 'varchar');
+        $this->captura('fecha_firma', 'varchar');
+        $this->captura('usuario_firma', 'varchar');
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        return $this->respuesta;
+    }
 }
 ?>

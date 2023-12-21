@@ -10,7 +10,7 @@ require_once(dirname(__FILE__).'/../reportes/RDepreciacionPeriodoXls.php');
 require_once(dirname(__FILE__).'/../reportes/RDepreciacionActulizadaXls.php');
 require_once(dirname(__FILE__).'/../reportes/RDepreciacionActulizadaPDF.php');
 require_once(dirname(__FILE__).'/../reportes/RKardexAFPDF.php');
-
+require_once(dirname(__FILE__).'/../reportes/RDocumentosFirmaDigitalPDF.php');
 
 class ACTReportes extends ACTbase {
 
@@ -474,5 +474,40 @@ class ACTReportes extends ACTbase {
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
+    function reporteDocumentosFirmaDigital()
+    { //fRnk: reporte Documentos Firma Digital PDF HR01318
+        $nombreArchivo = 'RDocumentosFirmaDigitalPDF' . uniqid(md5(session_id())) . '.pdf';
+        $dataSource = $this->recuperarDetalleDocsFD();//var_dump($dataSource->getDatos());exit();
+        $tamano = 'LETTER';
+        $orientacion = 'P';
+        $titulo = 'Documentos Firma Digital';
+        $this->objParam->addParametro('orientacion', $orientacion);
+        $this->objParam->addParametro('tamano', $tamano);
+        $this->objParam->addParametro('titulo_archivo', $titulo);
+        $this->objParam->addParametro('nombre_archivo', $nombreArchivo);
+        $reporte = new RDocumentosFirmaDigitalPDF($this->objParam);
+        $reporte->datosHeader($dataSource->getDatos(), $this->objParam->getParametro('fecha_desde'), $this->objParam->getParametro('fecha_hasta'), $this->objParam->getParametro('desc_tipo'));
+        $reporte->generarReporte();
+        $reporte->output($reporte->url_archivo, 'F');
+        $this->mensajeExito = new Mensaje();
+        $this->mensajeExito->setMensaje('EXITO', 'Reporte.php', 'Reporte generado', 'Se generó con éxito el reporte: ' . $nombreArchivo, 'control');
+        $this->mensajeExito->setArchivoGenerado($nombreArchivo);
+        $this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+    }
+
+    function recuperarDetalleDocsFD()
+    {
+        $this->objFunc = $this->create('MODReportes');
+        if($this->objParam->getParametro('tipo')=='1')
+            $cbteHeader = $this->objFunc->listarDatalleDocumentosFirmaDigital($this->objParam);
+        else
+            $cbteHeader = $this->objFunc->listarDatalleDocumentosFirmaDigitalUsuario($this->objParam);
+        if ($cbteHeader->getTipo() == 'EXITO') {
+            return $cbteHeader;
+        } else {
+            $cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+            exit;
+        }
+    }
 }
 ?>

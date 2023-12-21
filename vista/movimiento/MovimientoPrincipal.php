@@ -87,18 +87,18 @@ Phx.vista.MovimientoPrincipal = {
         me = this;
         this.addButton('btnAsignacion',
             {
-                iconCls: 'bexcel',
-                xtype: 'splitbutton',
+                iconCls: 'bpdf',
+                //xtype: 'splitbutton',
                 grupo: [0,4],
                 tooltip: '<b>Reporte de Asig./Trans./Devol. A.F.</b><br>Reporte de Asignación, Transferencia, Devolución de Activos Fijos.',
                 text: 'Reporte A/T/D',
-                //handler: this.onButtonExcel,
+                handler: this.onButtonATDPdf,
                 argument: {
                     'news': true,
                     def: 'reset'
                 },
                 scope: me,
-                menu: [{
+                /*menu: [{ //fRnk: se ocultó el reporte en formato Excel a solicitud HR01620
                     text: 'Reporte CSV',
                     iconCls: 'bexcel',
                     argument: {
@@ -116,7 +116,7 @@ Phx.vista.MovimientoPrincipal = {
                     },
                     handler: me.onButtonATDPdf,
                     scope: me
-                }]
+                }]*/
             }
         );
 

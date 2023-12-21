@@ -81,7 +81,7 @@
         $consulta = $link->query($sql);
         $consulta->execute();
         $data = $consulta->fetchAll(PDO::FETCH_ASSOC);
-        $fecha = strtotime($data[0]['fecha_mov']);
+        $fecha = empty($data[0]['fecha_mov']) ? '' : strtotime($data[0]['fecha_mov']);
         $html = '<table class="mb-30" cellspacing="0" cellpadding="4">';
         $html .= '<tr><td class="bold">Tipo de Proceso:</td><td>' . $data[0]['proceso'] . '</td></tr>';
         $html .= '<tr><td class="bold">Trámite:</td><td>' . $data[0]['num_tramite'] . '</td></tr>';

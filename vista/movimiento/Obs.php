@@ -1,5 +1,6 @@
 <?php
 header("content-type: text/javascript; charset=UTF-8");
+//fRnk: Firma Digital
 ?>
 <script src="../../../lib/ClienteRestJS/jquery-3.0.0.min.js"></script>
 <script>
