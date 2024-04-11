@@ -14,7 +14,7 @@ class RDetalleSigePDF extends  ReportePDF{
 		$fecha_fin = $this->objParam->getParametro('fecha_fin');		
         $this->Ln(3);
         //cabecera del reporte
-        $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 10,5,35,20);
+        $this->Image(dirname(__FILE__).'/../../lib'.$_SESSION['_DIR_LOGO'], 10,5,35,20);
         $this->ln(5);
         $this->SetFont('','B',11);
         $this->Cell(0,5,"REPORTE DETALLE SIGEP",0,1,'C');

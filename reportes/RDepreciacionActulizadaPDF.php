@@ -16,7 +16,7 @@ class RDepreciacionActulizadaPDF extends  ReportePDF{
             $title_2 = ' TRIBUTARIO';
         }
         //cabecera del reporte
-        $this->Image(dirname(__FILE__).'/../../lib/imagenes/logos/logo.jpg', 16,5,40,20);
+        $this->Image(dirname(__FILE__).'/../../lib'.$_SESSION['_DIR_LOGO'], 16,5,40,20);
         $this->ln(3);
         $this->SetMargins(2, 50.5, 2);
 
