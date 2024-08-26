@@ -1145,5 +1145,78 @@ class MODActivoFijo extends MODbase{
         //Devuelve la respuesta
         return $this->respuesta;
     }
+
+    function datosFuncionarios() {
+        $this->procedimiento='kaf.ft_activo_fijo_sel';
+        $this->transaccion='SKA_DATOSFUNC_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+        $this->setParametro('id_funcionario2','id_funcionario2','varchar');
+        $this->captura('id_funcionario','integer');
+        $this->captura('nombre_completo2','text');
+        $this->armarConsulta();
+        $this->ejecutarConsulta();
+        return $this->respuesta;
+    }
+
+    function reporteAFAsignadosFunc() { //fRnk: HR00763
+        $this->procedimiento='kaf.ft_activo_fijo_sel';
+        $this->transaccion='SKA_REPAFASIGFUN_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+        $this->setParametro('fecha_ini','fecha_ini','date');
+        $this->setParametro('fecha_fin','fecha_fin','date');
+        $this->setParametro('id_funcionario2','id_funcionario2','varchar');
+        $this->captura('id_activo_fijo','integer');
+        $this->captura('ubicacion','varchar');
+        $this->captura('denominacion','varchar');
+        $this->captura('id_funcionario','integer');
+        $this->captura('codigo','varchar');
+        $this->captura('descripcion','varchar');
+        $this->captura('estado','varchar');
+        $this->captura('estado_fun','varchar');
+        $this->captura('estado_compra','varchar');
+        $this->captura('nro_serie','varchar');
+        $this->captura('tipo_activo','varchar');
+        $this->captura('clasif_codigo','varchar');
+        $this->captura('ofi_ubicacion','varchar');
+        $this->captura('codigo_ant','varchar');
+        $this->captura('num_tramite','varchar');
+        $this->captura('estado_tramite','varchar');
+        $this->captura('fecha_mov','date');
+        $this->captura('fecha_finalizacion','date');
+        $this->armarConsulta();
+        //var_dump($this->getConsulta());exit();
+        $this->ejecutarConsulta();
+        return $this->respuesta;
+    }
+
+    function reporteAFDevueltosFunc() { //fRnk: HR00763
+        $this->procedimiento='kaf.ft_activo_fijo_sel';
+        $this->transaccion='SKA_REPAFDEVFUN_SEL';
+        $this->tipo_procedimiento='SEL';
+        $this->setCount(false);
+        $this->setParametro('fecha_ini','fecha_ini','date');
+        $this->setParametro('fecha_fin','fecha_fin','date');
+        $this->setParametro('id_funcionario2','id_funcionario2','varchar');
+        $this->captura('id_activo_fijo','integer');
+        $this->captura('ubicacion','varchar');
+        $this->captura('denominacion','varchar');
+        $this->captura('id_funcionario','integer');
+        $this->captura('codigo','varchar');
+        $this->captura('descripcion','varchar');
+        $this->captura('estado','varchar');
+        $this->captura('estado_fun','varchar');
+        $this->captura('nro_serie','varchar');
+        $this->captura('codigo_ant','varchar');
+        $this->captura('num_tramite','varchar');
+        $this->captura('estado_tramite','varchar');
+        $this->captura('fecha_mov','date');
+        $this->captura('fecha_finalizacion','date');
+        $this->armarConsulta();
+        //var_dump($this->getConsulta());exit();
+        $this->ejecutarConsulta();
+        return $this->respuesta;
+    }
 }
 ?>

@@ -27,7 +27,9 @@ header("content-type: text/javascript; charset=UTF-8");
                                 ['detalle_af', 'Detalle Activos Fijos'],
                                 ['pendientes_aprobacion', 'Pendientes de Aprobación'],
                                 ['sin_asignacion', 'Sin Asignación'],
-                                ['acti_fun_dep','Activos x Deposito']]
+                                ['acti_fun_dep','Activos x Deposito'],
+                                ['acti_fun_asignados','Activos Fijos Asignados'], //fRnk: HR00763-2024 a.
+                                ['acti_fun_devueltos','Activos Fijos Devueltos']]
                     }),
                     anchor : '100%',
                     valueField : 'tipo',
@@ -699,7 +701,7 @@ header("content-type: text/javascript; charset=UTF-8");
             },{
                 config : {
                     name : 'rep_sin_asignacion',
-                    fieldLabel : 'Reporte Mult Sin Asignacion',
+                    fieldLabel : 'Reporte Mult Sin Asignación',
                     allowBlank : true,
                     triggerAction : 'all',
                     lazyRender : true,
@@ -822,7 +824,86 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo : 1,
                 grid : true,
                 form : true
-            }, 
+            },
+            /*{
+                config : { //fRnk: HR00763-2024 a.
+                    name : 'id_funcionario2',
+                    fieldLabel : 'Funcionario',
+                    allowBlank : false,
+                    emptyText : 'Funcionario...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_organigrama/control/Funcionario/listarFuncionario',
+                        id: 'id_funcionario',
+                        root: 'datos',
+                        fields: ['id_funcionario','codigo','desc_person','ci','documento','telefono','celular','correo'],
+                        totalProperty: 'total',
+                        sortInfo: {
+                            field: 'desc_person',
+                            direction: 'ASC'
+                        },
+                        remoteSort: true,
+                        baseParams:{par_filtro:'funcio.codigo#nombre_completo1'}
+                    }),
+                    tpl:'<tpl for="."><div class="x-combo-list-item"><p>{codigo} - Sis: {codigo_sub} </p><p>{desc_person}</p><p>CI:{ci}</p> </div></tpl>',
+                    valueField: 'id_funcionario',
+                    displayField: 'desc_person',
+                    forceSelection: false,
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    pageSize: 10,
+                    queryDelay: 1000,
+                    minChars: 2,
+                    width: 250,
+                    listWidth: 230,
+                    anchor : '98%'
+                },
+
+                type : 'ComboBox',
+                id_grupo : 1,
+                grid : true,
+                form : true
+            },*/
+            {
+                config : { //fRnk: HR00763-2024 a.
+                    name : 'id_funcionario2',
+                    fieldLabel : 'Funcionario',
+                    allowBlank : true,
+                    emptyText : 'Funcionario...',
+                    store: new Ext.data.JsonStore({
+                        url: '../../sis_organigrama/control/Funcionario/listarFuncionario',
+                        id: 'id_funcionario',
+                        root: 'datos',
+                        fields: ['id_funcionario','codigo','desc_person','ci','documento','telefono','celular','correo'],
+                        totalProperty: 'total',
+                        sortInfo: {
+                            field: 'desc_person',
+                            direction: 'ASC'
+                        },
+                        remoteSort: true,
+                        baseParams:{par_filtro:'funcio.codigo#nombre_completo1'}
+                    }),
+                    valueField: 'id_funcionario',
+                    displayField: 'desc_person',
+                    forceSelection: false,
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender: true,
+                    mode: 'remote',
+                    enableMultiSelect: true,
+                    pageSize: 10,
+                    queryDelay: 1000,
+                    minChars: 2,
+                    width: 250,
+                    listWidth: 230,
+                    anchor : '98%'
+                },
+                type: 'AwesomeCombo',
+                id_grupo : 1,
+                grid : true,
+                form : true
+            },
 			{
 				config: {
 					name: 'id_deposito',
@@ -863,7 +944,16 @@ header("content-type: text/javascript; charset=UTF-8");
 				type: 'ComboBox',
 				id_grupo: 1,			
 				form: true
-			},                       
+			},
+            {
+                config:{
+                    labelSeparator:'',
+                    inputType:'hidden',
+                    name: 'nombre_funcionario2'
+                },
+                type:'Field',
+                form:true
+            },
         ],
         title : 'Reporte Global Activos Fijos',
         ActSave : '../../sis_kactivos_fijos/control/ActivoFijo/reportesAFGlobal',
@@ -888,7 +978,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getComponente('rep_acti_fun_dep').setVisible(false);
             this.getComponente('estado_mo').setVisible(false);
             this.getComponente('id_funcionario').setVisible(false);                        
-            this.getComponente('id_deposito').setVisible(false);                        
+            this.getComponente('id_funcionario2').setVisible(false);
+            this.getComponente('id_deposito').setVisible(false);
         },
 
         iniciarEventos:function(){        	        	
@@ -917,6 +1008,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.tipo_activo);
                     this.ocultarComponente(this.Cmp.estado_mo);
                     this.ocultarComponente(this.Cmp.id_funcionario);
+                    this.ocultarComponente(this.Cmp.id_funcionario2);
                     this.ocultarComponente(this.Cmp.id_deposito);
                     this.mostrarComponente(this.Cmp.fecha_ini);
                     this.mostrarComponente(this.Cmp.fecha_fin);
@@ -947,6 +1039,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.mostrarComponente(this.Cmp.tipo_activo);
                     this.ocultarComponente(this.Cmp.estado_mo);
                     this.ocultarComponente(this.Cmp.id_funcionario);
+                    this.ocultarComponente(this.Cmp.id_funcionario2);
                     this.ocultarComponente(this.Cmp.id_deposito);
                     this.Cmp.activo_multi.getStore().each(function(rec){
                         this.Cmp.activo_multi.checkRecord(rec);
@@ -974,6 +1067,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.tipo_activo);
                     this.mostrarComponente(this.Cmp.estado_mo);
 					this.ocultarComponente(this.Cmp.id_funcionario);
+                    this.ocultarComponente(this.Cmp.id_funcionario2);
 					this.ocultarComponente(this.Cmp.id_deposito);
                     this.ocultarComponente(this.Cmp.valor_actual);
                     this.ocultarComponente(this.Cmp.txtMontoSup);
@@ -1007,6 +1101,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.tipo_activo);
                     this.ocultarComponente(this.Cmp.estado_mo);
 					this.ocultarComponente(this.Cmp.id_funcionario);
+                    this.ocultarComponente(this.Cmp.id_funcionario2);
 					this.ocultarComponente(this.Cmp.id_deposito);
 					this.mostrarComponente(this.Cmp.fecha_ini);
 					this.mostrarComponente(this.Cmp.fecha_fin);
@@ -1044,11 +1139,45 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.ocultarComponente(this.Cmp.id_depto);
                     this.ocultarComponente(this.Cmp.fecha_ini);
                     this.ocultarComponente(this.Cmp.fecha_fin);
-                    this.mostrarComponente(this.Cmp.id_funcionario);                	
+                    this.mostrarComponente(this.Cmp.id_funcionario);
+                    this.ocultarComponente(this.Cmp.id_funcionario2);
                     this.mostrarComponente(this.Cmp.id_deposito);                	
                     this.ocultarComponente(this.Cmp.valor_actual);
                     this.ocultarComponente(this.Cmp.txtMontoSup);
                     this.ocultarComponente(this.Cmp.txtMontoInf);
+                }else if(rec.data.tipo == 'acti_fun_asignados' || rec.data.tipo == 'acti_fun_devueltos'){ //fRnk: HR00763 a.
+                    this.ocultarComponente(this.Cmp.activo_multi);
+                    this.ocultarComponente(this.Cmp.gestion_multi);
+                    this.ocultarComponente(this.Cmp.rep_pendiente_aprobacion);
+                    this.ocultarComponente(this.Cmp.rep_sin_asignacion);
+                    this.ocultarComponente(this.Cmp.tipo_reporte);
+                    this.ocultarComponente(this.Cmp.estado);
+                    this.ocultarComponente(this.Cmp.id_cat_estado_fun);
+                    this.ocultarComponente(this.Cmp.desc_nombre);
+                    this.ocultarComponente(this.Cmp.ubicacion);
+                    this.ocultarComponente(this.Cmp.nro_cbte_asociado);
+                    this.ocultarComponente(this.Cmp.column_busque);
+                    this.ocultarComponente(this.Cmp.id_proveedor);
+                    this.ocultarComponente(this.Cmp.nr_factura);
+                    this.ocultarComponente(this.Cmp.tramite_compra);
+                    this.ocultarComponente(this.Cmp.nro_serie);
+                    this.ocultarComponente(this.Cmp.id_oficina);
+                    this.ocultarComponente(this.Cmp.id_clasificacion);
+                    this.ocultarComponente(this.Cmp.id_lugar);
+                    this.ocultarComponente(this.Cmp.tipo_activo);
+                    this.ocultarComponente(this.Cmp.estado_mo);
+                    this.ocultarComponente(this.Cmp.id_funcionario);
+                    this.mostrarComponente(this.Cmp.id_funcionario2);
+                    this.ocultarComponente(this.Cmp.id_deposito);
+                    this.mostrarComponente(this.Cmp.fecha_ini);
+                    this.mostrarComponente(this.Cmp.fecha_fin);
+                    this.ocultarComponente(this.Cmp.id_depto);
+                    this.ocultarComponente(this.Cmp.valor_actual);
+                    this.ocultarComponente(this.Cmp.txtMontoSup);
+                    this.ocultarComponente(this.Cmp.txtMontoInf);
+                    this.Cmp.rep_sin_asignacion.getStore().each(function(rec){
+                        this.Cmp.rep_sin_asignacion.checkRecord(rec);
+                    },this);
                 }
             },this);
         	
@@ -1181,7 +1310,8 @@ header("content-type: text/javascript; charset=UTF-8");
         }, this)
         },
 
-        onSubmit:function(o){        	
+        onSubmit:function(o){
+            this.Cmp.nombre_funcionario2.setValue(this.Cmp.id_funcionario2.getRawValue());
             Phx.vista.ReporteGlobalAF.superclass.onSubmit.call(this,o);
         },
 
