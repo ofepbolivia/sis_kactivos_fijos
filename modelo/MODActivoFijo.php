@@ -28,7 +28,7 @@ class MODActivoFijo extends MODbase{
         $this->captura('foto','varchar');
         $this->captura('id_proveedor','int4');
         $this->captura('estado_reg','varchar');
-        $this->captura('fecha_compra','varchar');
+        $this->captura('fecha_compra','date'); //fRnk: modificado por date, original varchar 03092024
         $this->captura('monto_vigente','numeric');
         $this->captura('id_cat_estado_fun','int4');
         $this->captura('ubicacion','varchar');
