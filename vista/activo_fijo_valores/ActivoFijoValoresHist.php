@@ -415,7 +415,7 @@ Phx.vista.ActivoFijoValoresHist=Ext.extend(Phx.gridInterfaz,{
 				grid:true,
 				form:false
 		},
-		
+
 		
 		
 		{

@@ -277,18 +277,18 @@ class RSinAsignacionAFXls
 
 
         //*************************************Cabecera*****************************************
-
+        //fRnk: modificación cabeceras MONTO 100% y 87%, de acuerdo a solicitud por correo 09-04-2025
         $sheet0->setCellValue('B5', 'Nº');
 
-        $sheet0->setCellValue('C5', 'CODIGO');
+        $sheet0->setCellValue('C5', 'CÓDIGO');
 
-        $sheet0->setCellValue('D5', 'DESCRIPCION');
+        $sheet0->setCellValue('D5', 'DESCRIPCIÓN');
 
         $sheet0->setCellValue('E5', 'FECHA DE ALTA');
 
-        $sheet0->setCellValue('F5', 'MONTO 100%');
+        $sheet0->setCellValue('F5', 'VALOR COMPRA');
 
-        $sheet0->setCellValue('G5', 'MONTO 87%');
+        $sheet0->setCellValue('G5', 'COSTO AF');
 
         $sheet0->setCellValue('H5', 'UNIDAD SOLICITANTE');
 

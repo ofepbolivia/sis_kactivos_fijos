@@ -186,12 +186,13 @@ class RSinAsignacionAFPDF extends ReportePDF
         $this->SetFont('', 'B');
 
         //$this->Ln(6); no si nesto
+        //fRnk: modificación cabeceras MONTO 100% y 87%, de acuerdo a solicitud por correo 09-04-2025
         $this->MultiCell(8, $hGlobal, 'Nº', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false);
-        ($sacod == 'cod') ? $this->MultiCell($tam1 + $total, $hGlobal, 'CODIGO', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false) : '';
-        ($sades == 'des') ? $this->MultiCell($tam2 + $total, $hGlobal, 'DESCRIPCION', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false) : '';
+        ($sacod == 'cod') ? $this->MultiCell($tam1 + $total, $hGlobal, 'CÓDIGO', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false) : '';
+        ($sades == 'des') ? $this->MultiCell($tam2 + $total, $hGlobal, 'DESCRIPCIÓN', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false) : '';
         ($safea == 'fea') ? $this->MultiCell($tam3 + $total, $hGlobal, 'FECHA DE ALTA', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false) : '';
-        ($sa100 == '100') ? $this->MultiCell($tam4 + $total, $hGlobal, 'MONTO 100%', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false) : '';
-        ($sam87 == 'm87') ? $this->MultiCell($tam5 + $total, $hGlobal, 'MONTO 87%', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false) : '';
+        ($sa100 == '100') ? $this->MultiCell($tam4 + $total, $hGlobal, 'VALOR COMPRA', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false) : '';
+        ($sam87 == 'm87') ? $this->MultiCell($tam5 + $total, $hGlobal, 'COSTO AF', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false) : '';
         ($sauns == 'uns') ? $this->MultiCell($tam6 + $total, $hGlobal, 'UNIDAD SOLICITANTE', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false) : '';
         ($saprc == 'prc') ? $this->MultiCell($tam7 + $total, $hGlobal, 'Nº PROCESO COMPRA', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false) : '';
         ($sac31 == 'c31') ? $this->MultiCell($tam8 + $total, $hGlobal, 'C31', 1, 'C', false, 0, '', '', true, 0, false, true, 0, 'T', false) : '';

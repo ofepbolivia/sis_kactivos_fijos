@@ -1205,7 +1205,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config: {
                     name: 'monto_compra_orig',
-                    fieldLabel: 'Monto Compra Mon.Orig.',
+                    fieldLabel: 'Costo AF',
                     allowBlank: true,
                     anchor: '80%',
                     gwidth: 100

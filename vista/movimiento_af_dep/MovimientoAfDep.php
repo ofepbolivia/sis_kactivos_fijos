@@ -17,7 +17,7 @@ Phx.vista.MovimientoAfDep=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.MovimientoAfDep.superclass.constructor.call(this,config);
 		this.init();
-		
+
 		
 	},
 			
