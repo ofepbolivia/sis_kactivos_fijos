@@ -114,9 +114,13 @@ class MODClasificacionVariable extends MODbase{
 		$this->procedimiento='kaf.ft_clasificacion_variable_sel';
 		$this->transaccion='SKA_CLASIPAR_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
-				
-		
-		$this->setParametro('id_clasificacion','id_clasificacion','int4');		
+
+        if(empty($this->objParam->getParametro('id_clasificacion'))) { //fRnk: SOP15072025, validación
+            $this->addUpdParametro('id_clasificacion',0,'int4');
+        }else{
+            $this->setParametro('id_clasificacion','id_clasificacion','int4');
+        }
+
 		//Definicion de la lista del resultado del query
 		$this->captura('id_clasificacion_partida','int4');
 		$this->captura('id_clasificacion','int4');
